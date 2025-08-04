@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Manager.DomainModels
 {
-    internal class Invoce
+    internal class Invoice
     {
     }
 }
