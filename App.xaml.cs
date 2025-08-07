@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Hotel_Manager
 {
@@ -9,6 +10,8 @@ namespace Hotel_Manager
     /// </summary>
     public partial class App : Application
     {
+        public static IServiceProvider Services { get; private set; }
+        
     }
 
 }

@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Hotel_Manager.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Hotel_Manager.Views
 {
@@ -19,9 +21,11 @@ namespace Hotel_Manager.Views
     /// </summary>
     public partial class LoginWindow : Window
     {
+        ILoginViewModel _loginViewModel = App.Services.GetRequiredService<ILoginViewModel>();
         public LoginWindow()
         {
             InitializeComponent();
+            DataContext = _loginViewModel;
         }
     }
 }

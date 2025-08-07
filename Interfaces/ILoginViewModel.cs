@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Hotel_Manager.Interfaces
 {
-    class ILoginViewModel
+    interface ILoginViewModel
     {
+        public string Password { get; set; }
+        void Login(string username);
     }
 }
