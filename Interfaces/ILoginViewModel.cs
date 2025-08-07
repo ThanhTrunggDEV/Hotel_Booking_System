@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hotel_Manager.ViewModels
+namespace Hotel_Manager.Interfaces
 {
-    internal class temp
+    class ILoginViewModel
     {
     }
 }
