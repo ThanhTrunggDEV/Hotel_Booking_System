@@ -1,4 +1,6 @@
 ﻿using Hotel_Manager.Interfaces;
+using Hotel_Manager.Views;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +18,13 @@ namespace Hotel_Manager.Services
         public void NavigateToAdminWindow()
         {
             CloseCurrent();
+            App.Services.GetRequiredService<AdminWindow>().Show();
         }
 
         public void NavigateToUserWindow()
         {
             CloseCurrent();
+            App.Services.GetRequiredService<UserWindow>().Show();
         }
     }
 }

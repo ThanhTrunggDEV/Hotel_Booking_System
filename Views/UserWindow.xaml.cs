@@ -14,9 +14,9 @@ namespace Hotel_Manager.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class UserWindow : Window
     {
-        public MainWindow()
+        public UserWindow()
         {
             InitializeComponent();   
         }
