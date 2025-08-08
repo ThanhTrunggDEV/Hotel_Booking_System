@@ -21,5 +21,6 @@ namespace Hotel_Manager.Services
         {
             optionsBuilder.UseSqlite("Data Source=data.dat");
         }
+        
     }
 }

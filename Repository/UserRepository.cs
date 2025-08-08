@@ -16,6 +16,7 @@ namespace Hotel_Manager.Repository
         public UserRepository(AppDbContext context)
         {
             _context = context;
+            _context.Database.EnsureCreated();
         }
         public async Task AddAsync(User data)
         {

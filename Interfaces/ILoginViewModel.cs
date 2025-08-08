@@ -9,6 +9,6 @@ namespace Hotel_Manager.Interfaces
     interface ILoginViewModel
     {
         public string Password { get; set; }
-        void Login(string username);
+        Task Login(string username);
     }
 }
