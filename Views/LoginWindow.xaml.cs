@@ -21,7 +21,7 @@ namespace Hotel_Manager.Views
     /// </summary>
     public partial class LoginWindow : Window
     {
-        ILoginViewModel _loginViewModel = App.Services.GetRequiredService<ILoginViewModel>();
+        ILoginViewModel _loginViewModel = App.Provider!.GetRequiredService<ILoginViewModel>();
         public LoginWindow()
         {
             InitializeComponent();

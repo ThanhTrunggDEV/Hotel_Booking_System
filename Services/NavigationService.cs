@@ -18,13 +18,13 @@ namespace Hotel_Manager.Services
         public void NavigateToAdminWindow()
         {
             CloseCurrent();
-            App.Services.GetRequiredService<AdminWindow>().Show();
+            App.Provider.GetRequiredService<AdminWindow>().Show();
         }
 
         public void NavigateToUserWindow()
         {
             CloseCurrent();
-            App.Services.GetRequiredService<UserWindow>().Show();
+            App.Provider.GetRequiredService<UserWindow>().Show();
         }
     }
 }
