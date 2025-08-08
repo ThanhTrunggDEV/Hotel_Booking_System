@@ -30,7 +30,7 @@ namespace Hotel_Manager.ViewModels
             {
                 _navigationService.NavigateToUserWindow();
             }
-            else if (user.Role == "Admin")
+            else if (user != null && user.Username == username && Password == user.Password && user.Role == "Admin")
             {
                 _navigationService.NavigateToAdminWindow();
             }
