@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace Hotel_Manager.FrameWorks
 {
-    internal class temp
-    {
-    }
+
 }
