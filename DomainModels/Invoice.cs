@@ -8,5 +8,9 @@ namespace Hotel_Manager.DomainModels
 {
     internal class Invoice
     {
+        public string InvoiceID { get; set; } = "";
+        public string BookingID { get; set; } = "";
+        public double TotalPayment { get; set; }
+        public DateTime PaymentDate { get; set; }
     }
 }

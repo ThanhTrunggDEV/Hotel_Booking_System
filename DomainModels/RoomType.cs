@@ -8,5 +8,8 @@ namespace Hotel_Manager.DomainModels
 {
     internal class RoomType
     {
+        public string RoomTypeID { get; set; } = "";
+        public string Type { get; set; } = "";
+        public double PricePerNight { get; set; }
     }
 }
