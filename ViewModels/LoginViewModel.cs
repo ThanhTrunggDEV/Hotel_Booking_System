@@ -14,12 +14,14 @@ namespace Hotel_Manager.ViewModels
     internal partial class LoginViewModel : ILoginViewModel
     {
         private readonly INavigationService _navigationService;
+        private readonly IAuthentication _authenticationService;
         private readonly IUserRepository _userRepository;
 
         public string Password { get; set; } = "";
 
-        public LoginViewModel(INavigationService navigationService, IUserRepository userRepository)
+        public LoginViewModel(INavigationService navigationService, IAuthentication authenticationService, IUserRepository userRepository)
         {
+            _authenticationService = authenticationService;
             _userRepository = userRepository;
             _navigationService = navigationService;
             
@@ -28,11 +30,11 @@ namespace Hotel_Manager.ViewModels
         private async Task Login(string username)
         {
             var user = await _userRepository.GetByUsernameAsync(username);
-            if (user != null && user.Username == username && Password == user.Password && user.Role == "User")
+            if (user != null && user.Username == username && _authenticationService.VerifyPassword(Password, user.Password)  && user.Role == "User")
             {
                 _navigationService.NavigateToUserWindow();
             }
-            else if (user != null && user.Username == username && Password == user.Password && user.Role == "Admin")
+            else if (user != null && user.Username == username && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "Admin")
             {
                 _navigationService.NavigateToAdminWindow();
             }

@@ -8,9 +8,9 @@
         Background="AliceBlue"
         WindowStartupLocation="CenterScreen"
         Title="Login" Height="450" Width="800">
-    <Grid>
+    <Grid Margin="0,0,-71,-16">
         <Button Width="100" Height="30" Content="Login" Command="{Binding LoginCommand}" RenderTransformOrigin="0.507,5.347" Margin="338,315,362,89"></Button>
         <TextBox Width="500" Margin="150,115,150,289" x:Name="txtUsername"/>
-        <PasswordBox Width="500" Height="30" x:Name="txtPassword" PasswordChar="*" Margin="150,202,150,202"></PasswordBox>
+        <PasswordBox Width="500" Height="30" x:Name="txtPassword" Margin="150,202,150,202"></PasswordBox>
     </Grid>
 </Window>

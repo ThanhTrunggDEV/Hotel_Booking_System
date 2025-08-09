@@ -11,6 +11,5 @@ namespace Hotel_Manager.Interfaces
     interface ILoginViewModel
     {
         public string Password { get; set; }
-        IRelayCommand LoginCommand { get; set; }
     }
 }

@@ -26,6 +26,7 @@ namespace Hotel_Manager.Views
         {
             InitializeComponent();
             DataContext = _loginViewModel;
+            
         }
     }
 }

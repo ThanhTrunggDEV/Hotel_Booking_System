@@ -19,13 +19,14 @@ namespace Hotel_Manager
         public static IServiceProvider? Provider { get => provider ??= ConfigDI(); }
         private static IServiceProvider ConfigDI()
         {
-           return new ServiceCollection().AddDbContext<AppDbContext>()
-                              .AddScoped<LoginWindow>()
-                              .AddScoped<UserWindow>()
-                              .AddScoped<AdminWindow>()
-                              .AddScoped<IUserRepository, UserRepository>()
-                              .AddScoped<IRoomRepository, RoomRepository>()
-                              .AddScoped<INavigationService, NavigationService>()
+            return new ServiceCollection().AddDbContext<AppDbContext>()
+                               .AddScoped<LoginWindow>()
+                               .AddScoped<UserWindow>()
+                               .AddScoped<AdminWindow>()
+                               .AddScoped<IUserRepository, UserRepository>()
+                               .AddScoped<IRoomRepository, RoomRepository>()
+                               .AddScoped<INavigationService, NavigationService>()
+                               .AddScoped<IAuthentication, AuthenticationSerivce>()
                               .AddScoped<ILoginViewModel, LoginViewModel>()
                               .BuildServiceProvider();
         }
