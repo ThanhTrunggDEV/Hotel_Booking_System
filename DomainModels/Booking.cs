@@ -10,7 +10,6 @@ namespace Hotel_Manager.DomainModels
     {
         public string BookingID { get; set; } = "";
         public string RoomID { get; set; } = "";
-        public string CustomerID { get; set; } = "";
         public string UserID { get; set; } = "";
         public DateTime CheckinDate { get; set; }
         public DateTime CheckoutDate { get; set; }

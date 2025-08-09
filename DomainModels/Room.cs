@@ -10,8 +10,8 @@ namespace Hotel_Manager.DomainModels
     {
         public string RoomID { get; set; } = "";
         public string RoomNumber { get; set; } = "";
+        public string HotelID { get; set; } = "";
         public string RoomTypeID { get; set; } = "";
-        public string Position { get; set; } = "";
         public bool IsAvailable { get; set; }
     }
 }

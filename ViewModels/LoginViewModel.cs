@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Hotel_Manager.Interfaces;
 using Hotel_Manager.Services;
 using System;
@@ -14,6 +15,7 @@ namespace Hotel_Manager.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly IUserRepository _userRepository;
+
         public string Password { get; set; } = "";
 
         public LoginViewModel(INavigationService navigationService, IUserRepository userRepository)
@@ -23,7 +25,7 @@ namespace Hotel_Manager.ViewModels
             
         }
         [RelayCommand]
-        public async Task Login(string username)
+        private async Task Login(string username)
         {
             var user = await _userRepository.GetByUsernameAsync(username);
             if (user != null && user.Username == username && Password == user.Password && user.Role == "User")

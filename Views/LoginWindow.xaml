@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel_Manager.Views"
         mc:Ignorable="d"
+        Background="AliceBlue"
+        WindowStartupLocation="CenterScreen"
         Title="Login" Height="450" Width="800">
     <Grid>
         <Button Width="100" Height="30" Content="Login" Command="{Binding LoginCommand}" RenderTransformOrigin="0.507,5.347" Margin="338,315,362,89"></Button>
-        <TextBox Width="500" Height="30" Margin="150,115,150,289" x:Name="txtUsername"></TextBox>
-        <PasswordBox Width="500" Height="30" x:Name="txtPassword" PasswordChar="*" Margin="150,173,150,231"></PasswordBox>
+        <TextBox Width="500" Margin="150,115,150,289" x:Name="txtUsername"/>
+        <PasswordBox Width="500" Height="30" x:Name="txtPassword" PasswordChar="*" Margin="150,202,150,202"></PasswordBox>
     </Grid>
 </Window>
