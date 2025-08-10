@@ -13,5 +13,6 @@ namespace Hotel_Manager.DomainModels
         public string UserID { get; set; } = "";
         public DateTime CheckinDate { get; set; }
         public DateTime CheckoutDate { get; set; }
+        public string Status { get; set; } = "";
     }
 }
