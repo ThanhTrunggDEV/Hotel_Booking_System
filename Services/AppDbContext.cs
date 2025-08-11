@@ -1,4 +1,4 @@
-﻿using Hotel_Manager.DomainModels;
+﻿using Hotel_Booking_System.DomainModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hotel_Manager.Services
+namespace Hotel_Booking_System.Services
 {
     internal class AppDbContext : DbContext
     {

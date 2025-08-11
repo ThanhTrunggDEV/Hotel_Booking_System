@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hotel_Manager.Interfaces
+namespace Hotel_Booking_System.Interfaces
 {
     internal interface IAuthentication
     {

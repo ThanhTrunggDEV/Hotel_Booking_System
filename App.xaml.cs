@@ -1,14 +1,14 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
-using Hotel_Manager.Interfaces;
-using Hotel_Manager.Repository;
-using Hotel_Manager.Services;
-using Hotel_Manager.ViewModels;
-using Hotel_Manager.Views;
+using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.Repository;
+using Hotel_Booking_System.Services;
+using Hotel_Booking_System.ViewModels;
+using Hotel_Booking_System.Views;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Hotel_Manager
+namespace Hotel_Booking_System
 {
     /// <summary>
     /// Interaction logic for App.xaml

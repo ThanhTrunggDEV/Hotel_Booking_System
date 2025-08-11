@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Hotel_Manager.Views
+namespace Hotel_Booking_System.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

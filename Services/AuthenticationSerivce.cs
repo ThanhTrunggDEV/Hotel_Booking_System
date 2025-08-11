@@ -1,4 +1,4 @@
-﻿using Hotel_Manager.Interfaces;
+﻿using Hotel_Booking_System.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hotel_Manager.Services
+namespace Hotel_Booking_System.Services
 {
     internal class AuthenticationSerivce : IAuthentication
     {

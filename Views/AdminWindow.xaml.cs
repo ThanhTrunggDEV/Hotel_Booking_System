@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Hotel_Manager.Views
+namespace Hotel_Booking_System.Views
 {
     /// <summary>
     /// Interaction logic for AdminWindow.xaml

@@ -1,5 +1,5 @@
-﻿using Hotel_Manager.Interfaces;
-using Hotel_Manager.Views;
+﻿using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hotel_Manager.Services
+namespace Hotel_Booking_System.Services
 {
     class NavigationService : INavigationService
     {

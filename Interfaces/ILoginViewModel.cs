@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Hotel_Manager.Interfaces
+namespace Hotel_Booking_System.Interfaces
 {
     interface ILoginViewModel
     {

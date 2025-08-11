@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Hotel_Manager.Interfaces;
-using Hotel_Manager.Services;
+using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Hotel_Manager.ViewModels
+namespace Hotel_Booking_System.ViewModels
 {
     internal partial class LoginViewModel : ILoginViewModel
     {

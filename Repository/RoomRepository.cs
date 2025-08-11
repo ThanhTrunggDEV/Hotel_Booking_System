@@ -1,13 +1,13 @@
-﻿using Hotel_Manager.DomainModels;
-using Hotel_Manager.Interfaces;
-using Hotel_Manager.Services;
+﻿using Hotel_Booking_System.DomainModels;
+using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hotel_Manager.Repository
+namespace Hotel_Booking_System.Repository
 {
     class RoomRepository : IRoomRepository
     {

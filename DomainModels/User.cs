@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hotel_Manager.DomainModels
+namespace Hotel_Booking_System.DomainModels
 {
     internal class User
     {
