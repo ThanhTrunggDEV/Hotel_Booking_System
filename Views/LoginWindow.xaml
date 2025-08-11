@@ -5,12 +5,174 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel_Booking_System.Views"
         mc:Ignorable="d"
-        Background="AliceBlue"
+               Title="Đăng Nhập - NTT Hotel" 
+        Height="700" 
+        Width="541" 
         WindowStartupLocation="CenterScreen"
-        Title="Login" Height="450" Width="800">
-    <Grid Margin="0,0,-71,-16">
-        <Button Width="100" Height="30" Content="Login" Command="{Binding LoginCommand}" RenderTransformOrigin="0.507,5.347" Margin="338,315,362,89"></Button>
-        <TextBox Width="500" Margin="150,115,150,289" x:Name="txtUsername"/>
-        <PasswordBox Width="500" Height="30" x:Name="txtPassword" Margin="150,202,150,202"></PasswordBox>
+        ResizeMode="NoResize"
+        Background="Transparent">
+
+    <Window.Resources>
+        <LinearGradientBrush x:Key="BackgroundGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FF2196F3" Offset="0"/>
+            <GradientStop Color="#FF1976D2" Offset="1"/>
+        </LinearGradientBrush>
+        
+        
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#FF2196F3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+      
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFE0E0E0"/>
+            <Setter Property="Background" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#FF2196F3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="#FFE0E0E0"/>
+            <Setter Property="Background" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#FF2196F3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="LinkButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="FloralWhite"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#FF1976D2"/>
+                                <Setter Property="TextBlock.TextDecorations" Value="Underline"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+       
+        <Border Background="{StaticResource BackgroundGradient}">
+            <Grid>
+                
+                <Grid Height="60" VerticalAlignment="Top">
+                    <Grid.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#44000000" Offset="0"/>
+                            <GradientStop Color="Transparent" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+
+                   
+                </Grid>
+
+                <StackPanel VerticalAlignment="Center" Margin="40,0">
+
+                    <Grid Height="80" Margin="0,0,0,20">
+                        <Ellipse Fill="White" Width="80" Height="80" Opacity="0.9"/>
+                        <TextBlock Text="🏨" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+
+    
+                    <TextBlock Text="Đăng Nhập" 
+                               FontSize="28" 
+                               FontWeight="Bold" 
+                               Foreground="White" 
+                               HorizontalAlignment="Center" 
+                               Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Chào mừng bạn đến với NTT Hotel" 
+                               FontSize="14" 
+                               Foreground="#CCE3F2FD" 
+                               HorizontalAlignment="Center" 
+                               Margin="0,0,0,30"/>
+
+   
+                    <TextBlock Text="Tài Khoản" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox 
+                             Style="{StaticResource ModernTextBox}"
+                             
+                             IsEnabled="True"
+                             Margin="0,0,0,20"/>
+
+                    <TextBlock Text="Mật khẩu" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <PasswordBox 
+                                 Style="{StaticResource ModernPasswordBox}"
+                                 Margin="0,0,0,15"/>
+
+                    <Grid Margin="0,0,0,25">
+                        <CheckBox Content="Ghi nhớ đăng nhập" 
+                                  Foreground="White" 
+                                  FontSize="13"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"/>
+                        <Button x:Name="ForgotPasswordButton"
+                                Content="Quên mật khẩu?" 
+                                Style="{StaticResource LinkButton}"
+                                HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <Button x:Name="LoginButton"
+                            Content="ĐĂNG NHẬP" 
+                            Style="{StaticResource ModernButton}"
+                            Background="White"
+                            Foreground="#FF2196F3"
+                            Margin="0,0,0,20">
+                        <Button.Effect>
+                            <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" Opacity="0.2" BlurRadius="8"/>
+                        </Button.Effect>
+                    </Button>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                        <TextBlock Text="Chưa có tài khoản?" 
+                                   Foreground="#CCE3F2FD" 
+                                   FontSize="13" 
+                                   VerticalAlignment="Center"/>
+                        <Button x:Name="RegisterButton"
+                                Content="Đăng ký ngay" 
+                                Style="{StaticResource LinkButton}"
+                                Foreground="White"
+                                FontWeight="SemiBold"
+                                Margin="5,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
