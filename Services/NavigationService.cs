@@ -15,16 +15,35 @@ namespace Hotel_Booking_System.Services
         {
             App.Current.Windows[0].Close();
         }
-        public void NavigateToAdminWindow()
+        public void NavigateToAdmin()
         {
             CloseCurrent();
-            App.Provider.GetRequiredService<AdminWindow>().Show();
+            App.Provider!.GetRequiredService<AdminWindow>().Show();
         }
 
-        public void NavigateToUserWindow()
+        public void NavigateToUser()
         {
             CloseCurrent();
-            App.Provider.GetRequiredService<UserWindow>().Show();
+            App.Provider!.GetRequiredService<UserWindow>().Show();
+        }
+
+     
+        public void NavigateToSignUp()
+        {
+            CloseCurrent();
+            App.Provider!.GetRequiredService<SignUpWindow>().Show();
+        }
+
+        public void NavigateToLogin()
+        {
+            CloseCurrent();
+            App.Provider!.GetRequiredService<LoginWindow>().Show();
+        }
+
+        public void NavigationToForgotPassword()
+        {
+            CloseCurrent();
+            App.Provider!.GetRequiredService<ForgotPasswordWindow>().Show();
         }
     }
 }

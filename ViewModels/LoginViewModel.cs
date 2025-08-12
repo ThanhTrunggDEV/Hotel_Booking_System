@@ -32,16 +32,29 @@ namespace Hotel_Booking_System.ViewModels
             var user = await _userRepository.GetByUsernameAsync(username);
             if (user != null && user.Username == username && _authenticationService.VerifyPassword(Password, user.Password)  && user.Role == "User")
             {
-                _navigationService.NavigateToUserWindow();
+                _navigationService.NavigateToUser();
             }
             else if (user != null && user.Username == username && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "Admin")
             {
-                _navigationService.NavigateToAdminWindow();
+                _navigationService.NavigateToAdmin();
             }
             else
             {
                 MessageBox.Show("Sai tài khoản hoặc mật khẩu", "Đăng nhập thất bại", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+        [RelayCommand]
+        private void ForgotPassword()
+        {
+            _navigationService.NavigationToForgotPassword();
+        }
+        [RelayCommand]
+        private void SignUp()
+        {
+            _navigationService.NavigateToSignUp();
+        }
+        
+
+
     }
 }

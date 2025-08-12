@@ -21,6 +21,8 @@ namespace Hotel_Booking_System
         {
             return new ServiceCollection().AddDbContext<AppDbContext>()
                                .AddScoped<LoginWindow>()
+                               .AddScoped<ForgotPasswordWindow>()
+                               .AddScoped<SignUpWindow>()
                                .AddScoped<UserWindow>()
                                .AddScoped<AdminWindow>()
                                .AddScoped<IUserRepository, UserRepository>()
