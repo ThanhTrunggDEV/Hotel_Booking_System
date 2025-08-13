@@ -11,22 +11,23 @@ using DotNetEnv;
 
 namespace Hotel_Booking_System.Services
 {
-    internal class MailService : IMailService
+    internal class MailService
     {
 
-        public void SendOTP(string otp, string receiver)
+        public static async Task SendOTP(string otp, string receiver)
         {
-           
-            string s = Env.GetString("ZOHO_MAIL_USER");
+            Env.Load(); 
+
             string userEmail = Environment.GetEnvironmentVariable("ZOHO_MAIL_USER")!;
             string password = Environment.GetEnvironmentVariable("ZOHO_MAIL_PASSWORD")!;
 
             var fromAddress = new MailAddress(userEmail, "NTT Hotel");
-            var toAddress = new MailAddress(receiver, "Test");
+            var toAddress = new MailAddress(receiver);
+
 
             
-            string subject = "Test email from NTT";
-            string body = "Hello, this is a test email sent via Zoho SMTP!";
+            string subject = "NTT Hotel Xin Chào!";
+            string body = $"Đây là mã OTP của bạn: {otp}\nVui lòng không chia sẻ mã này cho bất cứ ai!";
 
             var smtp = new SmtpClient
             {
@@ -44,7 +45,7 @@ namespace Hotel_Booking_System.Services
                 Body = body
             })
             {
-                smtp.Send(message);
+                await smtp.SendMailAsync(message);
             }
 
             

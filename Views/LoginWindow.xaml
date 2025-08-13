@@ -157,6 +157,7 @@
                             Content="ĐĂNG NHẬP" 
                             Style="{StaticResource ModernButton}"
                             Background="White"
+                            Command="{Binding LoginCommand}"
                             Foreground="#FF2196F3"
                             Margin="0,0,0,20">
                         <Button.Effect>

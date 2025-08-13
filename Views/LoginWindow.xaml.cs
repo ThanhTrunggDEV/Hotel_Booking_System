@@ -29,11 +29,5 @@ namespace Hotel_Booking_System.Views
             DataContext = _loginViewModel;
             
         }
-
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
-        {
-            MailService test = new();
-            test.SendOTP("5432543", "trungff07@gmail.com");
-        }
     }
 }

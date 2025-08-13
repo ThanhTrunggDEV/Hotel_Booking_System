@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using DotNetEnv;
 using Hotel_Booking_System.Interfaces;
@@ -33,7 +34,6 @@ namespace Hotel_Booking_System
                               .AddScoped<ILoginViewModel, LoginViewModel>()
                               .BuildServiceProvider();
         }
-        
     }
 
 }
