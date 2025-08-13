@@ -125,11 +125,16 @@
 
    
                     <TextBlock Text="Tài Khoản" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <TextBox 
+                    <Border CornerRadius="20">
+                        <TextBox 
                              Style="{StaticResource ModernTextBox}"
-                             
+                             BorderThickness="0"
                              IsEnabled="True"
-                             Margin="0,0,0,20"/>
+                             Margin="0,0,0,20">
+                            
+                        </TextBox>
+                    </Border>
+                    
 
                     <TextBlock Text="Mật khẩu" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
                     <PasswordBox 

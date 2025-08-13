@@ -18,8 +18,8 @@ namespace Hotel_Booking_System.Services
         {
            
             string s = Env.GetString("ZOHO_MAIL_USER");
-            string userEmail = "marketing@lichuni.id.vn";//Environment.GetEnvironmentVariable("ZOHO_MAIL_USER")!;
-            string password = "jKSDbyc4zcqY"; //Environment.GetEnvironmentVariable("ZOHO_MAIL_PASSWORD")!;
+            string userEmail = Environment.GetEnvironmentVariable("ZOHO_MAIL_USER")!;
+            string password = Environment.GetEnvironmentVariable("ZOHO_MAIL_PASSWORD")!;
 
             var fromAddress = new MailAddress(userEmail, "NTT Hotel");
             var toAddress = new MailAddress(receiver, "Test");
