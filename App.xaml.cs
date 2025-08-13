@@ -17,6 +17,10 @@ namespace Hotel_Booking_System
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            Env.Load();
+        }
         private static IServiceProvider? provider;
         public static IServiceProvider? Provider { get => provider ??= ConfigDI(); }
         private static IServiceProvider ConfigDI()

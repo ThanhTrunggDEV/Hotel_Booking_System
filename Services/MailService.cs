@@ -13,13 +13,11 @@ namespace Hotel_Booking_System.Services
 {
     internal class MailService
     {
-
+        private static readonly string userEmail = Environment.GetEnvironmentVariable("ZOHO_MAIL_USER")!;
+        private static readonly string password = Environment.GetEnvironmentVariable("ZOHO_MAIL_PASSWORD")!;
         public static async Task SendOTP(string otp, string receiver)
         {
-            Env.Load(); 
-
-            string userEmail = Environment.GetEnvironmentVariable("ZOHO_MAIL_USER")!;
-            string password = Environment.GetEnvironmentVariable("ZOHO_MAIL_PASSWORD")!;
+            
 
             var fromAddress = new MailAddress(userEmail, "NTT Hotel");
             var toAddress = new MailAddress(receiver);
