@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hotel_Booking_System.Views
@@ -27,6 +28,12 @@ namespace Hotel_Booking_System.Views
             InitializeComponent();
             DataContext = _loginViewModel;
             
+        }
+
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            MailService test = new();
+            test.SendOTP("5432543", "trungff07@gmail.com");
         }
     }
 }
