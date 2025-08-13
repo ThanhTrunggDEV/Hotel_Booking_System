@@ -147,7 +147,7 @@
                                   FontSize="13"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"/>
-                        <Button x:Name="ForgotPasswordButton"
+                        <Button Command="{Binding ForgotPasswordCommand}"
                                 Content="Quên mật khẩu?" 
                                 Style="{StaticResource LinkButton}"
                                 HorizontalAlignment="Right"/>
@@ -170,7 +170,7 @@
                                    Foreground="#CCE3F2FD" 
                                    FontSize="13" 
                                    VerticalAlignment="Center"/>
-                        <Button x:Name="RegisterButton"
+                        <Button Command="{Binding SignUpCommand}"
                                 Content="Đăng ký ngay" 
                                 Style="{StaticResource LinkButton}"
                                 Foreground="White"

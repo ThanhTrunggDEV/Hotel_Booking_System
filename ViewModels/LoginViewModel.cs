@@ -29,7 +29,6 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private async Task Login(string username)
         {
-             MailService.SendOTP("123456", "trungff07@gmail.com");
             var user = await _userRepository.GetByUsernameAsync(username);
             if (user != null && user.Username == username && _authenticationService.VerifyPassword(Password, user.Password)  && user.Role == "User")
             {

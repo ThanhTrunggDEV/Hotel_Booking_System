@@ -1,7 +1,7 @@
 ﻿<Application x:Class="Hotel_Booking_System.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Hotel_Manager"
+             xmlns:local="clr-namespace:Hotel_Booking_System"
              StartupUri="Views/LoginWindow.xaml">
     <Application.Resources>
         

@@ -17,33 +17,39 @@ namespace Hotel_Booking_System.Services
         }
         public void NavigateToAdmin()
         {
-            CloseCurrent();
+            
             App.Provider!.GetRequiredService<AdminWindow>().Show();
+            CloseCurrent();
         }
 
         public void NavigateToUser()
         {
-            CloseCurrent();
+            
             App.Provider!.GetRequiredService<UserWindow>().Show();
+            CloseCurrent();
         }
 
      
         public void NavigateToSignUp()
         {
-            CloseCurrent();
+            
             App.Provider!.GetRequiredService<SignUpWindow>().Show();
+            CloseCurrent();
+
         }
 
         public void NavigateToLogin()
         {
-            CloseCurrent();
+            
             App.Provider!.GetRequiredService<LoginWindow>().Show();
+            CloseCurrent();
         }
 
         public void NavigationToForgotPassword()
         {
-            CloseCurrent();
+            
             App.Provider!.GetRequiredService<ForgotPasswordWindow>().Show();
+            CloseCurrent();
         }
     }
 }
