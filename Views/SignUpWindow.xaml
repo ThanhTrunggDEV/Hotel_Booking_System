@@ -5,8 +5,386 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel_Booking_System.Views"
         mc:Ignorable="d"
-        Title="SignUpWindow" Height="450" Width="800">
+        Title="Đăng Ký - Hotel Booking"
+        Height="775" Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Background="White">
+
+    <Window.Resources>
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF2E7D8C"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF1E5A66"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF2E7D8C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF2E7D8C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton" 
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="{TemplateBinding BorderThickness}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                CornerRadius="8"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="30"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Path Grid.Column="1" 
+                                                      Data="M7,10L12,15 17,10z" 
+                                                      Fill="#FF666666" 
+                                                      HorizontalAlignment="Center" 
+                                                      VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" 
+                                              IsHitTestVisible="False" 
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="15,0,30,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"/>
+                            <Popup Name="Popup" 
+                                   Placement="Bottom" 
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True">
+                                <Grid MinWidth="{TemplateBinding ActualWidth}" 
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Background="White" 
+                                            BorderBrush="#FFCCCCCC" 
+                                            BorderThickness="1"
+                                            CornerRadius="8">
+                                        <ScrollViewer>
+                                            <StackPanel IsItemsHost="True"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="ToggleButton" Property="BorderBrush" Value="#FF2E7D8C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernDatePicker" TargetType="DatePicker">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DatePicker">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="30"/>
+                                </Grid.ColumnDefinitions>
+                                <DatePickerTextBox Name="PART_TextBox" 
+                                                   Grid.Column="0" 
+                                                   Focusable="{TemplateBinding Focusable}"
+                                                   HorizontalContentAlignment="Stretch"
+                                                   VerticalContentAlignment="Center"
+                                                   Margin="15,0,0,0"
+                                                   Background="Transparent"
+                                                   BorderThickness="0"/>
+                                <Button Name="PART_Button" 
+                                        Grid.Column="1"
+                                        Focusable="False"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                    <Path Data="M19,3H18V1H16V3H8V1H6V3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M19,19H5V8H19V19Z" 
+                                          Fill="#FF666666" 
+                                          Width="14" Height="14"/>
+                                </Button>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF2E7D8C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FF666666"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFF5F5F5"/>
+                                <Setter Property="BorderBrush" Value="#FF2E7D8C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header --><!--
+        <Border Grid.Row="0" Background="#FF2E7D8C" Height="100">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="HOTEL BOOKING" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="White"/>
+                <TextBlock Text="Tạo tài khoản mới" 
+                           FontSize="14" 
+                           Foreground="#FFB8D4D9" 
+                           HorizontalAlignment="Center"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>-->
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,-149">
+            <StackPanel Margin="50,40,50,40" Height="634">
+                <TextBlock Text="Đăng Ký" 
+                           FontSize="28" 
+                           FontWeight="Bold" 
+                           Foreground="#FF333333" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,40"/>
+
+                <!-- Full Name -->
+                <TextBlock Text="Họ và tên" 
+                           FontSize="14" 
+                           Foreground="#FF666666" 
+                           Margin="0,0,0,8"/>
+                <TextBox Style="{StaticResource ModernTextBox}" 
+                         Name="FullNameTextBox"/>
+
+                <!-- Email -->
+                <TextBlock Text="Email" 
+                           FontSize="14" 
+                           Foreground="#FF666666" 
+                           Margin="0,20,0,8"/>
+                <TextBox Style="{StaticResource ModernTextBox}" 
+                         Name="EmailTextBox"/>
+
+                <!-- Phone -->
+                <TextBlock Text="Số điện thoại" 
+                           FontSize="14" 
+                           Foreground="#FF666666" 
+                           Margin="0,20,0,8"/>
+                <TextBox Style="{StaticResource ModernTextBox}" 
+                         Name="PhoneTextBox"/>
+
+                <!-- Date of Birth -->
+                <TextBlock Text="Ngày sinh" 
+                           FontSize="14" 
+                           Foreground="#FF666666" 
+                           Margin="0,20,0,8"/>
+                <DatePicker Style="{StaticResource ModernDatePicker}" 
+                            Name="DateOfBirthPicker"/>
+
+                <!-- Gender -->
+                <TextBlock Text="Giới tính" 
+                           FontSize="14" 
+                           Foreground="#FF666666" 
+                           Margin="0,20,0,8"/>
+                <ComboBox Style="{StaticResource ModernComboBox}" 
+                          Name="GenderComboBox">
+                    <ComboBoxItem Content="Nam"/>
+                    <ComboBoxItem Content="Nữ"/>
+                    <ComboBoxItem Content="Khác"/>
+                </ComboBox>
+
+                <!-- Password -->
+                <TextBlock Text="Mật khẩu" 
+                           FontSize="14" 
+                           Foreground="#FF666666" 
+                           Margin="0,20,0,8"/>
+                <PasswordBox Style="{StaticResource ModernPasswordBox}" 
+                             Name="PasswordBox"/>
+
+                <!-- Confirm Password -->
+                <TextBlock Text="Xác nhận mật khẩu" 
+                           FontSize="14" 
+                           Foreground="#FF666666" 
+                           Margin="0,20,0,8"/>
+                <PasswordBox Style="{StaticResource ModernPasswordBox}" 
+                             Name="ConfirmPasswordBox"/>
+
+                <!-- Terms & Conditions --><!--
+                <CheckBox Margin="0,25,0,0" 
+                          Name="TermsCheckBox">
+                    <CheckBox.Content>
+                        <TextBlock TextWrapping="Wrap" 
+                                   FontSize="12" 
+                                   Foreground="#FF666666">
+                            <Run Text="Tôi đồng ý với "/>
+                            <Run Text="Điều khoản sử dụng" 
+                                 Foreground="#FF2E7D8C" 
+                                 Cursor="Hand" 
+                                 TextDecorations="Underline"/>
+                            <Run Text=" và "/>
+                            <Run Text="Chính sách bảo mật" 
+                                 Foreground="#FF2E7D8C" 
+                                 Cursor="Hand" 
+                                 TextDecorations="Underline"/>
+                        </TextBlock>
+                    </CheckBox.Content>
+                </CheckBox>-->
+
+                
+
+                <!-- Sign Up Button -->
+                <Button Content="TẠO TÀI KHOẢN" 
+                        Style="{StaticResource ModernButton}" 
+                        Margin="0,30,0,0" 
+                        Name="SignUpButton"/>
+
+                <!-- Or Divider -->
+                <Grid Margin="0,30,0,0">
+                    <Separator Background="#FFCCCCCC"/>
+                    <TextBlock Text="hoặc" 
+                               Background="White" 
+                               Padding="15,0" 
+                               HorizontalAlignment="Center" 
+                               Foreground="#FF999999"/>
+                </Grid>
+
+                <!-- Login -->
+                <TextBlock HorizontalAlignment="Center" 
+                           Margin="0,30,0,0">
+                    <TextBlock.Inlines>
+                        <Run Text="Đã có tài khoản? " 
+                             Foreground="#FF666666"/>
+                        <Run Text="Đăng nhập ngay" 
+                             Foreground="#FF2E7D8C" 
+                             Cursor="Hand" 
+                             TextDecorations="Underline"/>
+                    </TextBlock.Inlines>
+                </TextBlock>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>
