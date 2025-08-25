@@ -35,7 +35,7 @@ namespace Hotel_Booking_System.Repository
 
         public Task<User?> GetByIdAsync(string id) => _context.Users.FirstOrDefaultAsync(u => u.UserID == id);
 
-        public Task<User?> GetByUsernameAsync(string username) => _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+        public Task<User?> GetByEmailAsync(string email) => _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
         public async Task SaveAsync()
         {
