@@ -19,6 +19,11 @@ namespace Hotel_Booking_System
     {
         public App()
         {
+            
+        }
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
             Env.Load();
         }
         private static IServiceProvider? provider;
@@ -36,6 +41,7 @@ namespace Hotel_Booking_System
                                .AddScoped<INavigationService, NavigationService>()
                                .AddScoped<IAuthentication, AuthenticationSerivce>()
                               .AddScoped<ILoginViewModel, LoginViewModel>()
+                              .AddScoped<IForgotPasswordViewModel, ForgotPasswordViewModel>()
                               .BuildServiceProvider();
         }
     }
