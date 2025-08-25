@@ -15,39 +15,42 @@ namespace Hotel_Booking_System.Services
     {
         private static readonly string userEmail = Environment.GetEnvironmentVariable("ZOHO_MAIL_USER")!;
         private static readonly string password = Environment.GetEnvironmentVariable("ZOHO_MAIL_PASSWORD")!;
-        public static async Task SendOTP(string otp, string receiver)
+        public static async Task<bool> SendOTP(string otp, string receiver)
         {
-            
-
-            var fromAddress = new MailAddress(userEmail, "NTT Hotel");
-            var toAddress = new MailAddress(receiver);
-
-
-            
-            string subject = "NTT Hotel Xin Chào!";
-            string body = $"Đây là mã OTP của bạn: {otp}\nVui lòng không chia sẻ mã này cho bất cứ ai!";
-
-            var smtp = new SmtpClient
+            try
             {
-                Host = "smtp.zoho.com",
-                Port = 587,
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(fromAddress.Address, password)
-            };
+                var fromAddress = new MailAddress(userEmail, "NTT Hotel");
+                var toAddress = new MailAddress(receiver);
 
-            using (var message = new MailMessage(fromAddress, toAddress)
-            {
-                Subject = subject,
-                Body = body
-            })
-            {
-                await smtp.SendMailAsync(message);
+                string subject = "NTT Hotel Xin Chào!";
+                string body = $"Đây là mã OTP của bạn: {otp}\nVui lòng không chia sẻ mã này cho bất cứ ai!";
+
+                using (var smtp = new SmtpClient
+                {
+                    Host = "smtp.zoho.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromAddress.Address, password)
+                })
+                using (var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body
+                })
+                {
+                    await smtp.SendMailAsync(message);
+                }
+
+                return true; 
             }
-
-            
+            catch
+            {
+                return false; 
+            }
         }
+
 
 
     }
