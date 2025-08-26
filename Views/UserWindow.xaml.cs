@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Hotel_Booking_System.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,7 +19,8 @@ namespace Hotel_Booking_System.Views
     {
         public UserWindow()
         {
-            InitializeComponent();   
+            InitializeComponent();
+            DataContext = new UserViewModel();
         }
     }
 }

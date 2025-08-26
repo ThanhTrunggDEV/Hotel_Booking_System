@@ -446,7 +446,7 @@
                                                HorizontalAlignment="Center" 
                                                Margin="0,0,0,10"/>
 
-                                    <TextBlock Text="Điền thông tin để bắt đầu hành trình" 
+                                    <TextBlock Text="Điền đầy đủ thông tin để tạo tài khoản" 
                                                FontSize="15" 
                                                Foreground="#7F8C8D" 
                                                HorizontalAlignment="Center" 

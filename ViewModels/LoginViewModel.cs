@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
 using System;
@@ -19,6 +20,7 @@ namespace Hotel_Booking_System.ViewModels
 
         public string Password { get; set; } = "";
 
+        
         public LoginViewModel(INavigationService navigationService, IAuthentication authenticationService, IUserRepository userRepository)
         {
             _authenticationService = authenticationService;
@@ -34,9 +36,13 @@ namespace Hotel_Booking_System.ViewModels
             if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password)  && user.Role == "User")
             {
                 _navigationService.NavigateToUser();
+                WeakReferenceMessenger.Default.Send(new MessageService(email));
+               
+                
             }
             else if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "Admin")
             {
+                WeakReferenceMessenger.Default.Send(new MessageService(email));
                 _navigationService.NavigateToAdmin();
             }
             else
