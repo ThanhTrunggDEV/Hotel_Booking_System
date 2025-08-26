@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Hotel_Booking_System.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +21,14 @@ namespace Hotel_Booking_System.Views
     /// </summary>
     public partial class SignUpWindow : Window
     {
+        ISignUpViewModel _signupViewModel = App.Provider.GetRequiredService<ISignUpViewModel>();
         public SignUpWindow()
         {
             InitializeComponent();
+            DataContext = _signupViewModel;
+            txtConfirmedPassword.PasswordChanged += (s, e) => { _signupViewModel.PasswordConfirmed = txtConfirmedPassword.Password; };
+            txtPassword.PasswordChanged += (s, e) => { _signupViewModel.Passoword = txtPassword.Password; };
+            
         }
     }
 }

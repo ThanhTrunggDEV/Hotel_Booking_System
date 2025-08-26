@@ -452,7 +452,7 @@
                                                HorizontalAlignment="Center" 
                                                Margin="0,0,0,40"/>
 
-    
+
                                     <TextBlock Text="Thông tin cá nhân" 
                                                FontSize="16" 
                                                HorizontalAlignment="Center"
@@ -467,7 +467,7 @@
                                                Margin="0,0,0,8"/>
                                     <TextBox Style="{StaticResource ModernTextBox}" 
                                              Margin="0,0,0,20"
-                                             Name="FullNameTextBox"/>
+                                             Name="txtFullName"/>
 
                                     <TextBlock Text="Email" 
                                                Foreground="#2C3E50" 
@@ -480,22 +480,24 @@
                                             <ColumnDefinition Width="15"/>
                                             <ColumnDefinition Width="120"/>
                                         </Grid.ColumnDefinitions>
-                                        
+
                                         <TextBox Grid.Column="0"
                                                  Style="{StaticResource ModernTextBox}" 
-                                                 Name="EmailTextBox"/>
+                                                 Name="txtEmail"/>
 
                                         <Button Grid.Column="2"
                                                 Content="Nhận mã" 
                                                 Style="{StaticResource SecondaryButton}"
                                                 Height="55"
                                                 FontSize="13"
+                                                Command="{Binding SendOTPCommand}"
+                                                CommandParameter="{Binding ElementName=txtEmail, Path=Text}"
                                                 Name="btnSendOTP">
                                             <Button.Triggers>
                                                 <EventTrigger RoutedEvent="Button.Click" >
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            
+
                                                             <StringAnimationUsingKeyFrames Storyboard.TargetName="btnSendOTP"
                                                                                            Storyboard.TargetProperty="Content"
                                                                                            Duration="0:1:0">
@@ -530,7 +532,7 @@
                                                                 <DiscreteStringKeyFrame Value="29" KeyTime="0:0:29"/>
                                                                 <DiscreteStringKeyFrame Value="30" KeyTime="0:0:30"/>
                                                                 <DiscreteStringKeyFrame Value="Nhận mã" KeyTime="0:0:32"/>
-                                                                
+
                                                             </StringAnimationUsingKeyFrames>
                                                         </Storyboard>
                                                     </BeginStoryboard>
@@ -546,7 +548,7 @@
                                                Margin="0,20,0,8"/>
                                     <TextBox Style="{StaticResource ModernTextBox}" 
                                              Margin="0,0,0,20"
-                                             Name="OTPTextBox"
+                                             Name="txtOTP"
                                              FontSize="18"
                                              FontWeight="Bold"
                                              TextAlignment="Center"
@@ -559,7 +561,7 @@
                                                Margin="0,0,0,8"/>
                                     <TextBox Style="{StaticResource ModernTextBox}" 
                                              Margin="0,0,0,20"
-                                             Name="PhoneTextBox"/>
+                                             Name="txtPhone"/>
 
                                     <Grid Margin="0,20,0,20">
                                         <Grid.ColumnDefinitions>
@@ -567,7 +569,7 @@
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        
+
                                         <StackPanel Grid.Column="0">
                                             <TextBlock Text="Ngày sinh" 
                                                        Foreground="#2C3E50" 
@@ -575,9 +577,9 @@
                                                        FontWeight="SemiBold" 
                                                        Margin="0,0,0,8"/>
                                             <DatePicker Style="{StaticResource ModernDatePicker}" 
-                                                        Name="DateOfBirthPicker"/>
+                                                        Name="dtpDOB"/>
                                         </StackPanel>
-                                        
+
                                         <StackPanel Grid.Column="2">
                                             <TextBlock Text="Giới tính" 
                                                        Foreground="#2C3E50" 
@@ -603,7 +605,8 @@
                                                Margin="0,0,0,8"/>
                                     <PasswordBox Style="{StaticResource ModernPasswordBox}" 
                                                  Margin="0,0,0,20"
-                                                 Name="PasswordBox"/>
+                                                 
+                                                 Name="txtPassword"/>
 
                                     <TextBlock Text="Xác nhận mật khẩu" 
                                                Foreground="#2C3E50" 
@@ -612,33 +615,27 @@
                                                Margin="0,0,0,8"/>
                                     <PasswordBox Style="{StaticResource ModernPasswordBox}" 
                                                  Margin="0,0,0,30"
-                                                 Name="ConfirmPasswordBox"/>
+                                                 Name="txtConfirmedPassword"/>
 
-                                    <!--<CheckBox Margin="0,0,0,30" 
-                                              Name="TermsCheckBox"
-                                              Style="{StaticResource ModernCheckBox}">
-                                        <CheckBox.Content>
-                                            <TextBlock TextWrapping="Wrap" 
-                                                       FontSize="12" 
-                                                       Foreground="#7F8C8D">
-                                                <Run Text="Tôi đồng ý với "/>
-                                                <Run Text="Điều khoản sử dụng" 
-                                                     Foreground="#667eea" 
-                                                     Cursor="Hand" 
-                                                     TextDecorations="Underline"/>
-                                                <Run Text=" và "/>
-                                                <Run Text="Chính sách bảo mật" 
-                                                     Foreground="#667eea" 
-                                                     Cursor="Hand" 
-                                                     TextDecorations="Underline"/>
-                                            </TextBlock>
-                                        </CheckBox.Content>
-                                    </CheckBox>-->
 
-                                    <Button Content="TIẾP TỤC" 
+                                    <Button Content="TẠO TÀI KHOẢN" 
                                             Style="{StaticResource PrimaryButton}"
                                             Margin="0,0,0,30"
-                                            Name="ContinueButton"/>
+                                            Command="{Binding CreateAccountCommand}"
+                                            >
+                                        <Button.CommandParameter>
+                                            <MultiBinding Converter="{StaticResource CreateAccountConverter}">
+                                                <Binding ElementName="txtFullName" Path="Text"></Binding>
+                                                <Binding ElementName="txtEmail" Path="Text"></Binding>
+                                                <Binding ElementName="txtPhone" Path="Text"></Binding>
+                                                <Binding ElementName="dtpDOB" Path="SelectedDate"></Binding>
+                                                <Binding ElementName="cbbGender" Path="SelectedValue"></Binding>
+                                                <Binding ElementName="txtOTP" Path="Text"></Binding>
+                                                
+
+                                            </MultiBinding>
+                                        </Button.CommandParameter>
+                                    </Button>
 
                                     <StackPanel Orientation="Horizontal" 
                                                 HorizontalAlignment="Center">
@@ -651,26 +648,6 @@
                                                 Foreground="#667eea"
                                                 FontWeight="SemiBold"/>
                                     </StackPanel>
-                                </StackPanel>
-
-                                <StackPanel x:Name="Step2Panel" Visibility="Collapsed">
-                                    <Border Background="#F8F9FA" 
-                                            CornerRadius="15" 
-                                            Padding="20,15"
-                                            Margin="0,0,0,30">
-                                        <StackPanel>
-                                            <TextBlock Text="📧 Email đã đăng ký" 
-                                                       FontSize="14" 
-                                                       FontWeight="SemiBold" 
-                                                       Foreground="#2C3E50"
-                                                       Margin="0,0,0,8"/>
-                                            <TextBlock x:Name="EmailDisplayText"
-                                                       Text="example@email.com" 
-                                                       FontSize="16" 
-                                                       FontWeight="Bold"
-                                                       Foreground="#667eea"/>
-                                        </StackPanel>
-                                    </Border>
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>

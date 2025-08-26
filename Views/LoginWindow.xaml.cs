@@ -27,7 +27,10 @@ namespace Hotel_Booking_System.Views
         {
             InitializeComponent();
             DataContext = _loginViewModel;
-            
+            txtPassword.PasswordChanged += (s, e) =>
+            {
+                _loginViewModel.Password = txtPassword.Password;    
+            };
         }
     }
 }

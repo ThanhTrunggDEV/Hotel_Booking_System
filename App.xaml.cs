@@ -42,6 +42,7 @@ namespace Hotel_Booking_System
                                .AddScoped<IAuthentication, AuthenticationSerivce>()
                               .AddScoped<ILoginViewModel, LoginViewModel>()
                               .AddScoped<IForgotPasswordViewModel, ForgotPasswordViewModel>()
+                              .AddScoped<ISignUpViewModel, SignUpViewModel>()
                               .BuildServiceProvider();
         }
     }

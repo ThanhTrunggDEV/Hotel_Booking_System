@@ -27,14 +27,15 @@ namespace Hotel_Booking_System.ViewModels
             
         }
         [RelayCommand]
-        private async Task Login(string username)
+        private async Task Login(string email)
         {
-            var user = await _userRepository.GetByEmailAsync(username);
-            if (user != null && user.Email == username && _authenticationService.VerifyPassword(Password, user.Password)  && user.Role == "User")
+            var user = await _userRepository.GetByEmailAsync(email);
+            MessageBox.Show(email + " " + Password);
+            if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password)  && user.Role == "User")
             {
                 _navigationService.NavigateToUser();
             }
-            else if (user != null && user.Email == username && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "Admin")
+            else if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "Admin")
             {
                 _navigationService.NavigateToAdmin();
             }

@@ -298,7 +298,7 @@
                                            Margin="0,0,0,8"/>
                                 <TextBox Style="{StaticResource ModernTextBox}" 
                                          Margin="0,0,0,20"
-                                         Name="EmailTextBox"
+                                         Name="txtEmail"
                                          />
 
                                 <TextBlock Text="Mật khẩu" 
@@ -308,7 +308,7 @@
                                            Margin="0,0,0,8"/>
                                 <PasswordBox Style="{StaticResource ModernPasswordBox}" 
                                              Margin="0,0,0,25"
-                                             Name="PasswordBox"/>
+                                             Name="txtPassword"/>
 
                                 <Grid Margin="0,0,0,35">
                                     <CheckBox Content="Ghi nhớ đăng nhập" 
@@ -324,6 +324,7 @@
                                 <Button Content="ĐĂNG NHẬP" 
                                         Style="{StaticResource PrimaryButton}"
                                         Command="{Binding LoginCommand}"
+                                        CommandParameter="{Binding ElementName=txtEmail, Path=Text}"
                                         Margin="0,0,0,30"/>
 
                                 <StackPanel Orientation="Horizontal" 
