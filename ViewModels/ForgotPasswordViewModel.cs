@@ -31,8 +31,7 @@ namespace Hotel_Booking_System.ViewModels
         private string stepThreeStatus = "Hidden";
 
         private string OTP = "";
-        public string UserEnteredOTP {  get; set; }
-        public string UserEmail { get; set; }
+        
 
         public string StepOneStatus { get => stepOneStatus; set => Set(ref stepOneStatus, value); } 
         public string StepTwoStatus { get => stepTwoStatus; set => Set(ref stepTwoStatus, value); } 
@@ -44,9 +43,9 @@ namespace Hotel_Booking_System.ViewModels
         private User? CurrentUser;
 
         [RelayCommand]
-        private async Task SendOTP()
+        private async Task SendOTP(string userEmail)
         {
-            CurrentUser = await _userRepository.GetByEmailAsync(UserEmail); 
+            CurrentUser = await _userRepository.GetByEmailAsync(userEmail); 
             if(CurrentUser == null)
             {
                 MessageBox.Show("Email Chưa Đăng Ký Vui Lòng Kiểm Tra Lại");
@@ -54,7 +53,7 @@ namespace Hotel_Booking_System.ViewModels
             }
             
             OTP = new Random().Next(100000, 999999).ToString();
-            bool isSent = await MailService.SendOTP(OTP, UserEmail);
+            bool isSent = await MailService.SendOTP(OTP, userEmail);
             if(isSent)
             {
                 StepOneStatus = "Hidden";
@@ -64,9 +63,9 @@ namespace Hotel_Booking_System.ViewModels
 
         }
         [RelayCommand]
-        private void ConfirmOTP()
+        private void ConfirmOTP(string userEnteredOTP)
         {
-            if(OTP == UserEnteredOTP)
+            if(OTP == userEnteredOTP)
             {
                 StepTwoStatus = "Hidden";
                 StepThreeStatus = "Visible";
