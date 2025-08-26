@@ -27,7 +27,7 @@ namespace Hotel_Booking_System.Services
 
                 using (var smtp = new SmtpClient
                 {
-                    Host = "smtp.zoho.com",
+                    Host = "smtp.gmail.com",
                     Port = 587,
                     EnableSsl = true,
                     DeliveryMethod = SmtpDeliveryMethod.Network,

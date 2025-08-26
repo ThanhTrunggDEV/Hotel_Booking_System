@@ -23,7 +23,26 @@ namespace Hotel_Booking_System.Services
 
         public bool VerifyPassword(string password, string hashedPassword)
         {
-            return HashPassword(password) == hashedPassword;
+            try
+            {
+                var parts = hashedPassword.Split(':');
+                if (parts.Length != 2)
+                    return false;
+
+                byte[] salt = Convert.FromBase64String(parts[0]);
+                byte[] storedHash = Convert.FromBase64String(parts[1]);
+
+
+                var rfc = new Rfc2898DeriveBytes(password, salt, 100, HashAlgorithmName.SHA256);
+                byte[] computedHash = rfc.GetBytes(32);
+
+
+                return CryptographicOperations.FixedTimeEquals(storedHash, computedHash);
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
