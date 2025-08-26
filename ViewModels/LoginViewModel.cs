@@ -55,6 +55,7 @@ namespace Hotel_Booking_System.ViewModels
             _navigationService.NavigateToSignUp();
         }
         
+        
 
 
     }

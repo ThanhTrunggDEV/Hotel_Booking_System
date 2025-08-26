@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Hotel_Booking_System.Services
 {
@@ -13,7 +14,14 @@ namespace Hotel_Booking_System.Services
     {
         private void CloseCurrent()
         {
-            App.Current.Windows[0].Close();
+             App.Current.Windows[0].Close();
+            //foreach (Window window in App.Current.Windows)
+            //{
+            //    if (window.IsVisible)
+            //    {
+            //        window.Hide();
+            //    }
+            //}
         }
         public void NavigateToAdmin()
         {
