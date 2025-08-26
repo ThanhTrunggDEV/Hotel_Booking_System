@@ -30,7 +30,7 @@ namespace Hotel_Booking_System.ViewModels
         private async Task Login(string email)
         {
             var user = await _userRepository.GetByEmailAsync(email);
-            MessageBox.Show(email + " " + Password);
+           
             if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password)  && user.Role == "User")
             {
                 _navigationService.NavigateToUser();
