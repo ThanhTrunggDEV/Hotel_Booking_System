@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Hotel_Booking_System"
+             xmlns:conv="clr-namespace:Hotel_Booking_System.Converters"
              StartupUri="Views/LoginWindow.xaml">
     <Application.Resources>
-        
+        <conv:CreateAccountConverter x:Key="CreateAccountConverter"/>
     </Application.Resources>
 </Application>
