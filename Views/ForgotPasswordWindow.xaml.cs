@@ -21,10 +21,21 @@ namespace Hotel_Booking_System.Views
     /// </summary>
     public partial class ForgotPasswordWindow : Window
     {
+        IForgotPasswordViewModel _forgotPasswordViewModel = App.Provider.GetRequiredService<IForgotPasswordViewModel>();
         public ForgotPasswordWindow()
         {
             InitializeComponent();
-            DataContext = App.Provider.GetRequiredService<IForgotPasswordViewModel>();
+            DataContext = _forgotPasswordViewModel;
+
+            txtPassword.PasswordChanged += (s, e) =>
+            {
+                _forgotPasswordViewModel.NewPassword = txtPassword.Password;
+            };
+            txtPasswordConfirmed.PasswordChanged += (s, e) =>
+            {
+                _forgotPasswordViewModel.NewPasswordConfirm = txtPasswordConfirmed.Password;
+            };
+            
 
         }
     }
