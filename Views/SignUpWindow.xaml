@@ -645,6 +645,7 @@
                                                    VerticalAlignment="Center"/>
                                         <Button Content="Đăng nhập ngay" 
                                                 Style="{StaticResource LinkButton}"
+                                                Command="{Binding BackToLoginCommand}"
                                                 Foreground="#667eea"
                                                 FontWeight="SemiBold"/>
                                     </StackPanel>

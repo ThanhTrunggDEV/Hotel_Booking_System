@@ -91,5 +91,16 @@ namespace Hotel_Booking_System.ViewModels
                 MessageBox.Show("Mật khẩu không khớp hoặc quá ngắn vui  lòng kiểm tra lại");
             }
         }
+        [RelayCommand]
+        private void BackToLogin()
+        {
+            _navigationService.NavigateToLogin();
+        }
+        [RelayCommand]
+        private void PreviousStep()
+        {
+            StepTwoStatus = "Hidden";
+            StepOneStatus = "Visible";
+        }
     }
 }

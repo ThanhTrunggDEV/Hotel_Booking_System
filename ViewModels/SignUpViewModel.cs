@@ -86,6 +86,11 @@ namespace Hotel_Booking_System.ViewModels
             }
 
         }
+        [RelayCommand]
+        private void BackToLogin()
+        {
+            _navigationService.NavigateToLogin();
+        }
 
     }
 }
