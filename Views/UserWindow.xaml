@@ -110,6 +110,7 @@ Title="Hotel Booking System" Height="900" Width="1200"
 
                                 <TextBlock Text="Price Range" FontWeight="SemiBold" Margin="0,10,0,5"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                    <Slider Width="100" Minimum="0" Maximum="1000"></Slider>
                                     <TextBox Text="$0" Width="60" Height="30" Margin="0,0,10,0"/>
                                     <TextBlock Text="to" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                     <TextBox Text="$500" Width="60" Height="30"/>
@@ -117,9 +118,9 @@ Title="Hotel Booking System" Height="900" Width="1200"
 
                                 <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,15,0,5"/>
                                 <StackPanel>
-                                    <CheckBox Content="⭐⭐⭐⭐⭐ 5 Stars" Margin="0,2"/>
-                                    <CheckBox Content="⭐⭐⭐⭐ 4 Stars" Margin="0,2"/>
-                                    <CheckBox Content="⭐⭐⭐ 3 Stars" Margin="0,2"/>
+                                    <CheckBox Foreground="YellowGreen" Content="⭐⭐⭐⭐⭐" Margin="0,2"/>
+                                    <CheckBox Foreground="YellowGreen" Content="⭐⭐⭐⭐" Margin="0,2"/>
+                                    <CheckBox Foreground="YellowGreen" Content="⭐⭐⭐" Margin="0,2"/>
                                 </StackPanel>
 
                                 <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,15,0,5"/>
