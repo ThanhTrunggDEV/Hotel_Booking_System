@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.DomainModels
 {
-    internal class Invoice
+    class Payment
     {
-        public string InvoiceID { get; set; } = "";
+        public string PaymentID { get; set; } = "";
         public string BookingID { get; set; } = "";
         public double TotalPayment { get; set; }
+        public string Method { get; set; }
         public DateTime PaymentDate { get; set; }
     }
 }
