@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.DomainModels
 {
-    class Hotel
+    public class Hotel
     {
         public string HotelID { get; set; }
         public string UserID { get; set; }

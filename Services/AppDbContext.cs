@@ -12,9 +12,14 @@ namespace Hotel_Booking_System.Services
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Booking> Bookings { get; set; }
-        //public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<AIChat> AIChats { get; set; }
         public DbSet<Room> Rooms { get; set; }
-        //public DbSet<RoomType> RoomTypes { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<HotelAdminRequest> HotelAdminRequests { get; set; }
+        public DbSet<Hotel> Hotels { get; set; }
+        
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

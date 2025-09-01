@@ -7,7 +7,8 @@
         mc:Ignorable="d"
 Title="Hotel Booking System" Height="900" Width="1200"
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
-
+   
+    <Window.WindowState>Maximized</Window.WindowState>
     <Grid Background="#FFF8F9FA">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -136,24 +137,37 @@ Title="Hotel Booking System" Height="900" Width="1200"
 
                         <ScrollViewer Grid.Column="1" Margin="20,0" VerticalScrollBarVisibility="Auto">
                             <StackPanel>
-                                
-                                
-                                <ListBox>
+
+                                <ListBox Width="Auto" ItemsSource="{Binding Hotels}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Style="{StaticResource CardStyle}">
-                                                <Grid Height="180" Margin="20">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="200"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
+                                            
+                                                <Grid Height="180" Width="Auto" Margin="20">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.Resources>
 
-                                                    <Image Source="{Binding HotelImage}">
-                                                        <Image.CacheMode>
-                                                            <BitmapCache/>
-                                                        </Image.CacheMode>
-                                                    </Image>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Width" Value="200"/>
+                                                        <Setter Property="Height" Value="160"/>
+                                                        <Setter Property="Stretch" Value="Fill"/>
+                                                        <Setter Property="CacheMode">
+                                                            <Setter.Value>
+                                                                <BitmapCache/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Setter Property="Margin" Value="0"/>
+                                                        <Setter Property="ClipToBounds" Value="True"/>
+                                                        
+                                                    </Style>
+                                                </Grid.Resources>
+                                                <Image Source="{Binding HotelImage}">
+                                                        
+                                                        
+                                                </Image>
                                                     
                                                     <StackPanel Grid.Column="1" Margin="20,10">
                                                         
@@ -183,14 +197,13 @@ Title="Hotel Booking System" Height="900" Width="1200"
                                           TextWrapping="Wrap" Foreground="#FF666666" Margin="0,10,0,0"/>
                                                     </StackPanel>
 
-                                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="20">
-                                                        <TextBlock Text="{Binding PricePerNight}" FontSize="24" FontWeight="Bold" />
-                                                        <TextBlock Text="per night" Foreground="#FF666666"  Margin="0,0,0,10"/>
-                                                        <Button Content="Details" Style="{StaticResource PrimaryButton}" Width="100" Margin="0,0,0,5"/>
+                                                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20">
+                                                        
+                                                        <Button HorizontalAlignment="Right" Content="Details" Style="{StaticResource PrimaryButton}" Width="100" Margin="0,0,0,5"/>
 
                                                     </StackPanel>
                                                 </Grid>
-                                            </Border>
+                                            
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
@@ -241,7 +254,7 @@ Title="Hotel Booking System" Height="900" Width="1200"
                             </StackPanel>
                         </ScrollViewer>
 
-                        <Border Grid.Column="2" Style="{StaticResource CardStyle}" Height="600" VerticalAlignment="Top">
+                        <Border Visibility="Visible" Grid.Column="2" Style="{StaticResource CardStyle}" Height="480" VerticalAlignment="Top">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -250,9 +263,12 @@ Title="Hotel Booking System" Height="900" Width="1200"
                                 </Grid.RowDefinitions>
 
                                 <Border Grid.Row="0" Background="#FF2196F3" CornerRadius="8,8,0,0">
-                                    <TextBlock Text="🤖 AI Travel Assistant" 
-                                  FontSize="16" FontWeight="Bold" Foreground="White" 
-                                  Margin="15,10" HorizontalAlignment="Center"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <TextBlock Text="🤖 AI Travel Assistant" 
+FontSize="16" FontWeight="Bold" Foreground="White" 
+Margin="15,10" HorizontalAlignment="Center"/>
+                                        <Button Content="✖" BorderThickness="0" Background="#FF2196F3" Width="25" Height="25"/>
+                                    </StackPanel>
                                 </Border>
 
                                 <ScrollViewer Grid.Row="1" Margin="15" VerticalScrollBarVisibility="Auto">
@@ -298,16 +314,16 @@ Title="Hotel Booking System" Height="900" Width="1200"
                     <StackPanel>
                         <TextBlock Text="My Bookings" Style="{StaticResource HeaderTextStyle}" Margin="0,0,0,20"/>
 
-                        <Grid Margin="0,0,0,20">
-                            <StackPanel Orientation="Horizontal">
+                        <!--<Grid Margin="0,0,0,20">
+                            --><!--<StackPanel Orientation="Horizontal">
                                 <Button Content="All" Style="{StaticResource SecondaryButton}"/>
                                 <Button Content="Confirmed" Background="#FF4CAF50" Style="{StaticResource SecondaryButton}"/>
                                 <Button Content="Pending" Background="#FFFF9800" Style="{StaticResource SecondaryButton}"/>
                                 <Button Content="Cancelled" Background="#FFFF5722" Style="{StaticResource SecondaryButton}"/>
-                            </StackPanel>
+                            </StackPanel>--><!--
                             <Button Content="➕ New Booking" Width="135" Style="{StaticResource PrimaryButton}" 
                        HorizontalAlignment="Right"/>
-                        </Grid>
+                        </Grid>-->
 
                         <Border Style="{StaticResource CardStyle}">
                             <Grid>
@@ -365,11 +381,11 @@ Title="Hotel Booking System" Height="900" Width="1200"
                                     </Grid>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                                        <Button Content="📄 Details" Style="{StaticResource SecondaryButton}" 
+                                        <Button Content="📄 Details" Width="100" Style="{StaticResource SecondaryButton}" 
                                    Background="Transparent" Foreground="#FF2196F3" BorderThickness="1" BorderBrush="#FF2196F3"/>
-                                        <Button Content="✏️ Modify" Background="#FFFF9800" Style="{StaticResource SecondaryButton}"/>
-                                        <Button Content="❌ Cancel" Background="#FFFF5722" Style="{StaticResource SecondaryButton}"/>
-                                        <Button Content="⭐ Review" Background="#FF4CAF50" Style="{StaticResource SecondaryButton}"/>
+                                        <Button Content="✏️ Modify" Width="100" Style="{StaticResource SecondaryButton}"/>
+                                        <Button Content="❌ Cancel"  Width="100" Style="{StaticResource SecondaryButton}"/>
+                                        <Button Content="⭐ Review"  Width="100" Style="{StaticResource SecondaryButton}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Grid>
