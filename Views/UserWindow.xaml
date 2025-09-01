@@ -7,7 +7,7 @@
         mc:Ignorable="d"
 Title="Hotel Booking System" Height="900" Width="1200"
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
-   
+
     <Window.WindowState>Maximized</Window.WindowState>
     <Grid Background="#FFF8F9FA">
         <Grid.RowDefinitions>
@@ -45,11 +45,14 @@ Title="Hotel Booking System" Height="900" Width="1200"
 
 
             <TabItem Style="{StaticResource TabItemStyle}" x:Name="SearchHotelsTab" Header="🔍 Search Hotels" Visibility="Visible">
+
                 <Grid Background="White">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
+
+
 
                     <Border Grid.Row="0" Background="White" BorderThickness="0,0,0,1" BorderBrush="#FFE0E0E0">
                         <StackPanel Margin="30,20">
@@ -141,8 +144,8 @@ Title="Hotel Booking System" Height="900" Width="1200"
                                 <ListBox Width="Auto" ItemsSource="{Binding Hotels}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            
-                                                <Grid Height="180" Width="Auto" Margin="20">
+
+                                            <Grid Height="180" Width="Auto" Margin="20">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="200"/>
                                                     <ColumnDefinition Width="*"/>
@@ -161,100 +164,57 @@ Title="Hotel Booking System" Height="900" Width="1200"
                                                         </Setter>
                                                         <Setter Property="Margin" Value="0"/>
                                                         <Setter Property="ClipToBounds" Value="True"/>
-                                                        
+
                                                     </Style>
                                                 </Grid.Resources>
                                                 <Image Source="{Binding HotelImage}">
-                                                        
-                                                        
+
+
                                                 </Image>
-                                                    
-                                                    <StackPanel Grid.Column="1" Margin="20,10">
-                                                        
-                                                        <TextBlock Text="{Binding HotelName}"  FontSize="18" FontWeight="Bold" Margin="0,0,0,5"/>
-                                                        
-                                                        <TextBlock Foreground="#FF666666" Margin="0,0,0,5">
-                                                            <TextBlock.Text>
-                                                                <MultiBinding Converter="{StaticResource LocationConverter}">
-                                                                    <Binding Path="City"/>
-                                                                    <Binding Path="Address"/>
-                                                                </MultiBinding>
-                                                            </TextBlock.Text>
-                                                        </TextBlock>
 
-                                                        <StackPanel Orientation="Horizontal" Margin="0,5">
-                                                            <TextBlock Text="⭐⭐⭐⭐⭐" Margin="0,0,5,0"/>
-                                                            <TextBlock Text="4.8 (234 reviews)" Foreground="#FF666666"/>
-                                                        </StackPanel>
+                                                <StackPanel Grid.Column="1" Margin="20,10">
 
-                                                        <StackPanel Orientation="Horizontal" Margin="0,10">
-                                                            <TextBlock Text="🌐 WiFi" Margin="0,0,10,0" Foreground="#FF666666"/>
-                                                            <TextBlock Text="🏊 Pool" Margin="0,0,10,0" Foreground="#FF666666"/>
-                                                            <TextBlock Text="🚗 Parking" Foreground="#FF666666"/>
-                                                        </StackPanel>
+                                                    <TextBlock Text="{Binding HotelName}"  FontSize="18" FontWeight="Bold" Margin="0,0,0,5"/>
 
-                                                        <TextBlock Text="{Binding Description}" 
+                                                    <TextBlock Foreground="#FF666666" Margin="0,0,0,5">
+                                                        <TextBlock.Text>
+                                                            <MultiBinding Converter="{StaticResource LocationConverter}">
+                                                                <Binding Path="City"/>
+                                                                <Binding Path="Address"/>
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+
+                                                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                                                        <TextBlock Text="⭐⭐⭐⭐⭐" Margin="0,0,5,0"/>
+                                                        <TextBlock Text="4.8 (234 reviews)" Foreground="#FF666666"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Margin="0,10">
+                                                        <TextBlock Text="🌐 WiFi" Margin="0,0,10,0" Foreground="#FF666666"/>
+                                                        <TextBlock Text="🏊 Pool" Margin="0,0,10,0" Foreground="#FF666666"/>
+                                                        <TextBlock Text="🚗 Parking" Foreground="#FF666666"/>
+                                                    </StackPanel>
+
+                                                    <TextBlock Text="{Binding Description}" 
                                           TextWrapping="Wrap" Foreground="#FF666666" Margin="0,10,0,0"/>
-                                                    </StackPanel>
+                                                </StackPanel>
 
-                                                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20">
-                                                        
-                                                        <Button HorizontalAlignment="Right" Content="Details" Style="{StaticResource PrimaryButton}" Width="100" Margin="0,0,0,5"/>
+                                                <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20">
 
-                                                    </StackPanel>
-                                                </Grid>
-                                            
+                                                    <Button HorizontalAlignment="Right" Content="Details" Style="{StaticResource PrimaryButton}" Width="100" Margin="0,0,0,5"/>
+
+                                                </StackPanel>
+                                            </Grid>
+
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
-                                
-                                <!--<Border Style="{StaticResource CardStyle}">
-                                    <Grid Height="180" Margin="20">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="200"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
 
-                                        <Image Source="https://i.ibb.co/KpJbSfNs/444503660-122160335006059468-7985090248807237237-n.jpg">
-                                            <Image.CacheMode>
-                                                <BitmapCache/>
-                                            </Image.CacheMode>
-
-
-                                        </Image>
-
-                                        <StackPanel Grid.Column="1" Margin="20,10">
-                                            <TextBlock Text="Luxury Downtown Hotel"  FontSize="18" FontWeight="Bold" Margin="0,0,0,5"/>
-                                            <TextBlock Text="📍 Hoan Kiem, Hanoi" Foreground="#FF666666" Margin="0,0,0,5"/>
-
-                                            <StackPanel Orientation="Horizontal" Margin="0,5">
-                                                <TextBlock Text="⭐⭐⭐⭐⭐" Margin="0,0,5,0"/>
-                                                <TextBlock Text="4.8 (234 reviews)" Foreground="#FF666666"/>
-                                            </StackPanel>
-
-                                            <StackPanel Orientation="Horizontal" Margin="0,10">
-                                                <TextBlock Text="🌐 WiFi" Margin="0,0,10,0" Foreground="#FF666666"/>
-                                                <TextBlock Text="🏊 Pool" Margin="0,0,10,0" Foreground="#FF666666"/>
-                                                <TextBlock Text="🚗 Parking" Foreground="#FF666666"/>
-                                            </StackPanel>
-
-                                            <TextBlock Text="Modern luxury hotel in the heart of Hanoi with panoramic city views and world-class amenities." 
-                                          TextWrapping="Wrap" Foreground="#FF666666" Margin="0,10,0,0"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="20">
-                                            <TextBlock Text="$120" FontSize="24" FontWeight="Bold" />
-                                            <TextBlock Text="per night" Foreground="#FF666666"  Margin="0,0,0,10"/>
-                                            <Button Content="View Details" Style="{StaticResource PrimaryButton}" Width="100" Margin="0,0,0,5"/>
-
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>-->
                             </StackPanel>
                         </ScrollViewer>
 
-                        <Border Visibility="Visible" Grid.Column="2" Style="{StaticResource CardStyle}" Height="480" VerticalAlignment="Top">
+                        <Border Visibility="Collapsed" Grid.Column="2" Style="{StaticResource CardStyle}" Height="480" VerticalAlignment="Bottom">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -265,8 +225,8 @@ Title="Hotel Booking System" Height="900" Width="1200"
                                 <Border Grid.Row="0" Background="#FF2196F3" CornerRadius="8,8,0,0">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <TextBlock Text="🤖 AI Travel Assistant" 
-FontSize="16" FontWeight="Bold" Foreground="White" 
-Margin="15,10" HorizontalAlignment="Center"/>
+                                           FontSize="16" FontWeight="Bold" Foreground="White" 
+                                           Margin="15,10" HorizontalAlignment="Center"/>
                                         <Button Content="✖" BorderThickness="0" Background="#FF2196F3" Width="25" Height="25"/>
                                     </StackPanel>
                                 </Border>
@@ -302,9 +262,51 @@ Margin="15,10" HorizontalAlignment="Center"/>
                                     <Button Grid.Column="1" Content="Send" 
                                Style="{StaticResource PrimaryButton}"
                                Width="50" Height="35" Margin="5,0,0,0"/>
+
                                 </Grid>
+                                <!--<Button x:Name="btnChat" Visibility="Visible" HorizontalAlignment="Center" Style="{StaticResource SecondaryButton}" Width="70" Height="70" VerticalAlignment="Bottom" Margin="204,0,1,1" Grid.Row="2">
+                                    <Image Source="/Resources/ChatbotLogo.jpg" RenderTransformOrigin="0.803,0.973">
+                                        
+                                    </Image>
+                                </Button>-->
+
                             </Grid>
                         </Border>
+                        <Button Width="60" Height="60"
+HorizontalAlignment="Right"
+VerticalAlignment="Bottom"
+Margin="0,0,10,10"
+
+BorderBrush="Transparent"
+Cursor="Hand"
+Padding="0" Grid.Column="2">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Grid>
+                                                    <Ellipse Fill="{TemplateBinding Background}">
+                                                        <Ellipse.Effect>
+                                                            <DropShadowEffect Color="Black"
+                                              Opacity="0.4"
+                                              BlurRadius="10"/>
+                                                        </Ellipse.Effect>
+                                                    </Ellipse>
+
+
+                                                    <Image Source="/Resources/Chatbotlogo.png"
+                                                 Width="50" Height="50"
+                                                Stretch="UniformToFill"
+                                                           CacheMode="BitmapCache"
+                                                           />
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                     </Grid>
                 </Grid>
             </TabItem>
@@ -314,16 +316,7 @@ Margin="15,10" HorizontalAlignment="Center"/>
                     <StackPanel>
                         <TextBlock Text="My Bookings" Style="{StaticResource HeaderTextStyle}" Margin="0,0,0,20"/>
 
-                        <!--<Grid Margin="0,0,0,20">
-                            --><!--<StackPanel Orientation="Horizontal">
-                                <Button Content="All" Style="{StaticResource SecondaryButton}"/>
-                                <Button Content="Confirmed" Background="#FF4CAF50" Style="{StaticResource SecondaryButton}"/>
-                                <Button Content="Pending" Background="#FFFF9800" Style="{StaticResource SecondaryButton}"/>
-                                <Button Content="Cancelled" Background="#FFFF5722" Style="{StaticResource SecondaryButton}"/>
-                            </StackPanel>--><!--
-                            <Button Content="➕ New Booking" Width="135" Style="{StaticResource PrimaryButton}" 
-                       HorizontalAlignment="Right"/>
-                        </Grid>-->
+
 
                         <Border Style="{StaticResource CardStyle}">
                             <Grid>
@@ -502,9 +495,11 @@ Margin="15,10" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
+
                     </Grid>
                 </ScrollViewer>
             </TabItem>
         </TabControl>
+
     </Grid>
 </Window>

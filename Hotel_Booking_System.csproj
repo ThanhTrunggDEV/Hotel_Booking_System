@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\ChatbotLogo.jpg" />
+    <None Remove="Resources\Chatbotlogo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
@@ -17,6 +22,11 @@
 
   <ItemGroup>
     <None Include="bin\Debug\net8.0-windows\.env" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\ChatbotLogo.jpg" />
+    <Resource Include="Resources\Chatbotlogo.png" />
   </ItemGroup>
 
 </Project>
