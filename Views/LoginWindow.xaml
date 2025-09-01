@@ -299,6 +299,7 @@
                                 <TextBox Style="{StaticResource ModernTextBox}" 
                                          Margin="0,0,0,20"
                                          Name="txtEmail"
+                                         Text="{Binding Email}"
                                          />
 
                                 <TextBlock Text="Mật khẩu" 
@@ -313,6 +314,7 @@
                                 <Grid Margin="0,0,0,35">
                                     <CheckBox Content="Ghi nhớ đăng nhập" 
                                               Style="{StaticResource ModernCheckBox}"
+                                              IsChecked="{Binding IsSavedCredentials}"
                                               HorizontalAlignment="Left"
                                               VerticalAlignment="Center"/>
                                     <Button Command="{Binding ForgotPasswordCommand}"
