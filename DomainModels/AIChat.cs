@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.DomainModels
 {
-    class AIChat
+    public class AIChat
     {
         [Key]
         public string ChatID {  get; set; }

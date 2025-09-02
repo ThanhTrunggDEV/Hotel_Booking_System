@@ -15,7 +15,6 @@ namespace Hotel_Booking_System.DomainModels
         public string City { get; set; }
         public string HotelImage { get; set; }
         public string Description { get; set; }
-        public string Phone { get; set; }
         public int Rating { get; set; }
     }
 }
