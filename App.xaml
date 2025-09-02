@@ -3,10 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Hotel_Booking_System"
              xmlns:conv="clr-namespace:Hotel_Booking_System.Converters"
-             StartupUri="Views/LoginWindow.xaml">
+             StartupUri="Views/UserWindow.xaml">
     <Application.Resources>
         <conv:CreateAccountConverter x:Key="CreateAccountConverter"/>
         <conv:LocationConverter x:Key="LocationConverter"/>
+        <conv:ImageUrlToBitMap x:Key="ImageUrlToBitMap"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
         <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#667eea" Offset="0"/>
