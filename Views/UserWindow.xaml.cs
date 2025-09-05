@@ -1,4 +1,6 @@
-﻿using Hotel_Booking_System.ViewModels;
+﻿using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,11 +19,11 @@ namespace Hotel_Booking_System.Views
     /// </summary>
     public partial class UserWindow : Window
     {
-        
+        IUserViewModel _userViewModel = App.Provider.GetRequiredService<IUserViewModel>();
         public UserWindow()
         {
             InitializeComponent();
-            DataContext = new UserViewModel();
+            DataContext = _userViewModel;
 
            
             
