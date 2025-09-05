@@ -48,25 +48,25 @@ namespace Hotel_Booking_System.ViewModels
         }
 
 
-        public ObservableCollection<Booking> Bookings { get; set; } = new ObservableCollection<Booking>();
+        public ObservableCollection<Booking> Bookings { get; set; }
 
         public ObservableCollection<Hotel> Hotels
         {
             get;
             set;
-        } = new ObservableCollection<Hotel>();
+        }
 
         public ObservableCollection<Room> Rooms
         {
             get;
             set;
-        } = new ObservableCollection<Room>();
+        }
 
         public ObservableCollection<Room> FilteredRooms
         {
             get;
             set;
-        } = new ObservableCollection<Room>();
+        }
 
         public ObservableCollection<AIChat> Chats { get; set; } = new ObservableCollection<AIChat>();
 
@@ -98,11 +98,11 @@ namespace Hotel_Booking_System.ViewModels
 
 
 
-            LoadHotels();
-            LoadChats();
-            LoadBookings();
-            LoadRooms();
-           
+            Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
+            Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
+            Bookings = new ObservableCollection<Booking>(_bookingRepository.GetAllAsync().Result);
+
+
         }
         private void GetCurrentUser()
         {
@@ -118,46 +118,7 @@ namespace Hotel_Booking_System.ViewModels
             Chats.Add(new AIChat { Message = message , Response = "Test"});
         }
 
-        private void LoadChats()
-        {
-            Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
-            Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
-            
-        }
-
-        private void LoadHotels()
-        {
-            Hotels.Add(new Hotel { HotelID = "1", HotelName = "Luxury Downtown Hotel", Address = "123 Main Street", City = "Hanoi", Description = "Experience luxury in the heart of the city with stunning views and world-class amenities.", Rating = 5, HotelImage = @"D:\Wallpaper\IMG_7230.JPG" });
-            Hotels.Add(new Hotel { HotelID = "2", HotelName = "Historic Boutique Hotel", Address = "456 Old Quarter", City = "Hanoi", Description = "A charming boutique hotel in the historic district with authentic Vietnamese architecture.", Rating = 4, HotelImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Hotels.Add(new Hotel { HotelID = "3", HotelName = "Modern City Hotel", Address = "789 Business District", City = "Hanoi", Description = "Contemporary gdfhgf jgfdn gjkdf ndfjkg hfd gfjkd hfd ghfdjk ghdfjk hgdfj ghfdkj hgdfjk ghfdjk ghdfkj ghfdk jgfd g design meets comfort in this modern hotel perfect for business travelers.", Rating = 4, HotelImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Hotels.Add(new Hotel { HotelID = "4", HotelName = "Riverside Resort", Address = "321 River Road", City = "Hanoi", Description = "Peaceful riverside location with beautiful gardens and outdoor swimming pool.", Rating = 5, HotelImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Hotels.Add(new Hotel { HotelID = "5", HotelName = "Airport Hotel", Address = "654 Airport Boulevard", City = "Hanoi", Description = "Convenient location near the airport with shuttle service and comfortable rooms.", Rating = 3, HotelImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-        }
-
-        private void LoadRooms()
-        {
-            
-            Rooms.Add(new Room { RoomID = "1", HotelID = "1", RoomNumber = "101", RoomType = "Deluxe King", PricePerNight = 120.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "2", HotelID = "1", RoomNumber = "102", RoomType = "Deluxe Twin", PricePerNight = 110.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-
-            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-
-            Rooms.Add(new Room { RoomID = "4", HotelID = "2", RoomNumber = "101", RoomType = "Boutique Room", PricePerNight = 85.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "5", HotelID = "2", RoomNumber = "102", RoomType = "Garden View", PricePerNight = 95.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            
-            
-            Rooms.Add(new Room { RoomID = "6", HotelID = "3", RoomNumber = "101", RoomType = "Business Room", PricePerNight = 95.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "7", HotelID = "3", RoomNumber = "102", RoomType = "Executive Suite", PricePerNight = 150.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            Rooms.Add(new Room { RoomID = "8", HotelID = "3", RoomNumber = "103", RoomType = "Standard Room", PricePerNight = 75.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-        }
+        
 
         [RelayCommand]
         private void ShowHotelDetails(string hotelID)
@@ -169,6 +130,25 @@ namespace Hotel_Booking_System.ViewModels
             ShowRoomList = "Visible";
         }
 
+        
+
+        [RelayCommand]
+        private void HideRooms()
+        {
+            ShowRoomList = "Collapsed";
+            ShowAvailableHotels = "Visible";
+        }
+        [RelayCommand]
+        private void Logout()
+        {
+            
+            _navigationService.NavigateToLogin();
+        }
+        [RelayCommand]
+        private void BookRoom(Room room)
+        {
+            MessageBox.Show($"Booking room {room.RoomNumber} - {room.RoomType} for ${room.PricePerNight}/night");
+        }
         private void FilterRoomsByHotel(string hotelId)
         {
             FilteredRooms.Clear();
@@ -179,19 +159,5 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
-        [RelayCommand]
-        private void HideRooms()
-        {
-            ShowRoomList = "Collapsed";
-            ShowAvailableHotels = "Visible";
-        }
-
-        [RelayCommand]
-        private void BookRoom(Room room)
-        {
-            MessageBox.Show($"Booking room {room.RoomNumber} - {room.RoomType} for ${room.PricePerNight}/night");
-        }
-
-        
     }
 }

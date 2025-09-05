@@ -38,7 +38,7 @@
                 <TextBlock Text="{Binding CurrentUser.FullName}" Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">
                     
                 </TextBlock>
-                <Button Content="Logout" Style="{StaticResource PrimaryButton}" Width="100"
+                <Button Command="{Binding LogoutCommand}" Content="Logout" Style="{StaticResource PrimaryButton}" Width="100"
                         Background="#FFFF5722" Margin="5,0,0,0"/>
             </StackPanel>
         </Grid>
