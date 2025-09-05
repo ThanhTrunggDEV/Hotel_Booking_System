@@ -1,11 +1,12 @@
-﻿using Hotel_Booking_System.DomainModels;
-using Hotel_Booking_System.Interfaces;
-using Hotel_Booking_System.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hotel_Booking_System.DomainModels;
+using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel_Booking_System.Repository
 {
@@ -16,34 +17,31 @@ namespace Hotel_Booking_System.Repository
         {
             _context = context;
         }
-        public Task AddAsync(Room room)
+        public async Task AddAsync(Room room)
         {
-            throw new NotImplementedException();
+            await _context.Rooms.AddAsync(room);
         }
 
-        public Task DeleteAsync(string id)
+        public async Task DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            var room = await _context.Rooms.FirstOrDefaultAsync(x => x.RoomID == id);
+            if (room == null) return;
+            _context.Rooms.Remove(room);
         }
 
-        public Task<List<Room>> GetAllAsync()
+        public Task<List<Room>> GetAllAsync() => _context.Rooms.ToListAsync();
+
+        public Task<Room?> GetByIdAsync(string id) => _context.Rooms.FirstOrDefaultAsync(r => r.RoomID == id);
+
+        public async Task SaveAsync()
         {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
 
-        public Task<Room?> GetByIdAsync(string id)
+        public async Task UpdateAsync(Room room)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(Room room)
-        {
-            throw new NotImplementedException();
+            _context.Rooms.Update(room);
+            await SaveAsync();
         }
     }
 }
