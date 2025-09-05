@@ -587,13 +587,13 @@
 
                                                     <StackPanel Grid.Column="0">
                                                         <TextBlock Text="Check-in" FontSize="12" Foreground="#FF666666"/>
-                                                        <TextBlock Text="{Binding CheckinDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding CheckInDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontWeight="SemiBold"/>
                                                         <TextBlock Text="{Binding CheckinTime, FallbackValue='3:00 PM'}" FontSize="12" Foreground="#FF666666"/>
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="1">
                                                         <TextBlock Text="Check-out" FontSize="12" Foreground="#FF666666"/>
-                                                        <TextBlock Text="{Binding CheckoutDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding CheckOutDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontWeight="SemiBold"/>
                                                         <TextBlock Text="{Binding CheckoutTime, FallbackValue='11:00 AM'}" FontSize="12" Foreground="#FF666666"/>
                                                     </StackPanel>
 
@@ -610,8 +610,8 @@
                                                         <TextBlock FontWeight="Bold" FontSize="16" Foreground="#FF4CAF50">
                                                             <TextBlock.Text>
                                                                 <MultiBinding Converter="{StaticResource DateDiffConverter}">
-                                                                    <Binding Path="CheckinDate"/>
-                                                                    <Binding Path="CheckoutDate"/>
+                                                                    <Binding Path="CheckInDate"/>
+                                                                    <Binding Path="CheckOutDate"/>
                                                                 </MultiBinding>
                                                             </TextBlock.Text>
                                                         </TextBlock>
@@ -628,7 +628,8 @@
 
                                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
 
-
+                                                    <!--TODO - add condition for canexecute-->
+                                                    
                                                     <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"
                                                 Command="{Binding CancelBookingCommand}"
                                                 CommandParameter="{Binding}"/>
