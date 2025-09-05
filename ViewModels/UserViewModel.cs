@@ -169,6 +169,11 @@ namespace Hotel_Booking_System.ViewModels
             Rooms.Add(new Room { RoomImage= "https://i.ibb.co/TMyV0ngc/room4.jpg", RoomID = "R4", HotelID = "HT2", RoomNumber = "202", RoomType = "Single", PricePerNight = 120, Status = "Available" });
             Rooms.Add(new Room { RoomImage = "https://i.ibb.co/TMyV0ngc/room2.jpg", RoomID = "R5", HotelID = "HT3", RoomNumber = "301", RoomType = "Double", PricePerNight = 180, Status = "Available" });
             Rooms.Add(new Room { RoomImage= "https://i.ibb.co/TMyV0ngc/room1.jpg", RoomID = "R6", HotelID = "HT3", RoomNumber = "302", RoomType = "Suite", PricePerNight = 350, Status = "Booked" });
+
+            Bookings.Add(new Booking { BookingID = "B1", UserID = "U1", RoomID = "R3", CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(2), Status = "Confirmed" });
+            Bookings.Add(new Booking { BookingID = "B2", UserID = "U2", RoomID = "R6", CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(3), Status = "Pending" });
+            Bookings.Add(new Booking { BookingID = "B3", UserID = "U1", RoomID = "R2", CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(1), Status = "Cancelled" });
+            Bookings.Add(new Booking { BookingID = "B4", UserID = "U3", RoomID = "R5", CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(4), Status = "Confirmed" });
         }
 
         [RelayCommand]
