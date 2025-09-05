@@ -7,7 +7,7 @@ using Hotel_Booking_System.DomainModels;
 
 namespace Hotel_Booking_System.Interfaces
 {
-    interface IHotelAdminRequestRepository : IRepository<HotelAdminRequest>
+    public interface IHotelAdminRequestRepository : IRepository<HotelAdminRequest>
     {
     }
 }

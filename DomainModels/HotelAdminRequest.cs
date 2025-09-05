@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.DomainModels
 {
-    class HotelAdminRequest
+    public class HotelAdminRequest
     {
         [Key]
         public string RequestID { get; set; }
