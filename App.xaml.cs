@@ -40,6 +40,7 @@ namespace Hotel_Booking_System
                                .AddScoped<IBookingRepository, BookingRepository>()
                                .AddScoped<IUserRepository, UserRepository>()
                                .AddScoped<IRoomRepository, RoomRepository>()
+                               .AddScoped<IHotelAdminRequestRepository, HotelAdminRequestRepository>()
                                .AddScoped<INavigationService, NavigationService>()
                                .AddScoped<IAuthentication, AuthenticationSerivce>()
                               .AddScoped<ILoginViewModel, LoginViewModel>()
