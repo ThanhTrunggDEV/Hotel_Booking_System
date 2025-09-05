@@ -741,7 +741,7 @@
                                     </Grid>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                                        <Button Content="Update Profile" Width="150" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
+                                        <Button Command="{Binding UpdateInfoCommand}" Content="Update Profile" Width="150" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
                                         <Button Content="Register Hotel Admin" Background="#FFFF9800" 
                                     Style="{StaticResource PrimaryButton}" Width="200"/>
                                     </StackPanel>

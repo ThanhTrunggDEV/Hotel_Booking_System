@@ -139,6 +139,12 @@ namespace Hotel_Booking_System.ViewModels
             ShowAvailableHotels = "Visible";
         }
         [RelayCommand]
+        private void UpdateInfo()
+        {
+            _userRepository.UpdateAsync(CurrentUser);
+           
+        }
+        [RelayCommand]
         private void Logout()
         {
             
