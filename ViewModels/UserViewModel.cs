@@ -90,13 +90,7 @@ namespace Hotel_Booking_System.ViewModels
         public ObservableCollection<AIChat> Chats { get; set; } = new ObservableCollection<AIChat>();
 
        
-        private void LoadBookings()
-        {
-            
-            Bookings.Add(new Booking { BookingID = "B001", UserID = "U001", RoomID = "R101", CheckInDate = DateTime.Now.AddDays(1), CheckOutDate = DateTime.Now.AddDays(5), Status = "Confirmed" });
-            Bookings.Add(new Booking { BookingID = "B002", UserID = "U002", RoomID = "R102", CheckInDate = DateTime.Now.AddDays(3), CheckOutDate = DateTime.Now.AddDays(6),  Status = "Pending" });
-            Bookings.Add(new Booking { BookingID = "B003", UserID = "U003", RoomID = "R201", CheckInDate = DateTime.Now.AddDays(2), CheckOutDate = DateTime.Now.AddDays(4), Status = "Cancelled" });
-        }
+        
         public UserViewModel(IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
         {
             _hotelAdminRequestRepository = hotelAdminRequestRepository;
@@ -122,7 +116,11 @@ namespace Hotel_Booking_System.ViewModels
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
             Bookings = new ObservableCollection<Booking>(_bookingRepository.GetAllAsync().Result);
 
-            
+
+            FilteredRooms = new ObservableCollection<Room>();
+
+            GenerateData();
+
         }
         private void GetCurrentUser()
         {
@@ -149,8 +147,29 @@ namespace Hotel_Booking_System.ViewModels
         {
             Chats.Add(new AIChat { Message = message , Response = "Test"});
         }
+// Hotel
+//https://i.ibb.co/JWDk4mxz/download-2.jpg
+//https://i.ibb.co/Z6XwmzzY/download-1.jpg
+//https://i.ibb.co/Wp5NCf4k/download.jpg
+//https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg
 
-        
+        //Room
+//   https://i.ibb.co/ksLcW4k4/room4.jpg
+//https://i.ibb.co/xKf2wdCn/room2.jpg
+//https://i.ibb.co/TMyV0ngc/room1.jpg
+        private void GenerateData()
+        {
+            Hotels.Add(new Hotel { HotelID = "HT1", HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg", HotelName = "Hotel Sunshine", City = "Hà Nội", Rating = 5, Description = "A luxurious hotel in the heart of the city." });
+            Hotels.Add(new Hotel { HotelID = "HT2", HotelImage = "https://i.ibb.co/Z6XwmzzY/download-1.jpg", HotelName = "Ocean View Resort", City = "Đà Nẵng", Rating = 4, Description = "A beautiful resort with stunning ocean views." });
+            Hotels.Add(new Hotel { HotelImage = "https://i.ibb.co/JWDk4mxz/download-2.jpg", HotelID = "HT3", HotelName = "Mountain Retreat", City = "Đà Lạt", Rating = 3, Description = "A peaceful retreat in the mountains." });
+
+            Rooms.Add(new Room {RoomImage= "https://i.ibb.co/ksLcW4k4/room4.jpg", RoomID = "R1", HotelID = "HT1", RoomNumber = "101", RoomType = "Single", PricePerNight = 100, Status = "Available" });
+            Rooms.Add(new Room { RoomImage = "https://i.ibb.co/xKf2wdCn/room2.jpg", RoomID = "R2", HotelID = "HT1", RoomNumber = "102", RoomType = "Double", PricePerNight = 150, Status = "Available" });
+            Rooms.Add(new Room { RoomImage = "https://i.ibb.co/TMyV0ngc/room1.jpg", RoomID = "R3", HotelID = "HT2", RoomNumber = "201", RoomType = "Suite", PricePerNight = 300, Status = "Booked" });
+            Rooms.Add(new Room { RoomImage= "https://i.ibb.co/TMyV0ngc/room4.jpg", RoomID = "R4", HotelID = "HT2", RoomNumber = "202", RoomType = "Single", PricePerNight = 120, Status = "Available" });
+            Rooms.Add(new Room { RoomImage = "https://i.ibb.co/TMyV0ngc/room2.jpg", RoomID = "R5", HotelID = "HT3", RoomNumber = "301", RoomType = "Double", PricePerNight = 180, Status = "Available" });
+            Rooms.Add(new Room { RoomImage= "https://i.ibb.co/TMyV0ngc/room1.jpg", RoomID = "R6", HotelID = "HT3", RoomNumber = "302", RoomType = "Suite", PricePerNight = 350, Status = "Booked" });
+        }
 
         [RelayCommand]
         private void ShowHotelDetails(string hotelID)
