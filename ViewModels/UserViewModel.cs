@@ -27,6 +27,8 @@ namespace Hotel_Booking_System.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public ObservableCollection<Booking> Bookings { get; set; } = new ObservableCollection<Booking>();
+
         public ObservableCollection<Hotel> Hotels
         {
             get;
@@ -66,7 +68,13 @@ namespace Hotel_Booking_System.ViewModels
                 OnPropertyChanged(nameof(ShowRooms));
             }
         }
-
+        private void LoadBookings()
+        {
+            
+            Bookings.Add(new Booking { BookingID = "B001", UserID = "U001", RoomID = "R101", CheckInDate = DateTime.Now.AddDays(1), CheckOutDate = DateTime.Now.AddDays(5), Status = "Confirmed" });
+            Bookings.Add(new Booking { BookingID = "B002", UserID = "U002", RoomID = "R102", CheckInDate = DateTime.Now.AddDays(3), CheckOutDate = DateTime.Now.AddDays(6),  Status = "Pending" });
+            Bookings.Add(new Booking { BookingID = "B003", UserID = "U003", RoomID = "R201", CheckInDate = DateTime.Now.AddDays(2), CheckOutDate = DateTime.Now.AddDays(4), Status = "Cancelled" });
+        }
         public UserViewModel()
         {
             WeakReferenceMessenger.Default.Register<MessageService>(this, (r, msg) =>
@@ -76,6 +84,7 @@ namespace Hotel_Booking_System.ViewModels
 
             LoadHotels();
             LoadChats();
+            LoadBookings();
             LoadRooms();
         }
 
