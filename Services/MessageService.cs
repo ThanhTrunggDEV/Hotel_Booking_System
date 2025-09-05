@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.Services
 {
-    class MessageService : ValueChangedMessage<string>
+    public class MessageService : ValueChangedMessage<string>
     {   
         public MessageService(string value) : base(value) { }
     }

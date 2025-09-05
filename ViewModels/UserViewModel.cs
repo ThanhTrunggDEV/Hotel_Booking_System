@@ -24,13 +24,15 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IHotelRepository _hotelRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly INavigationService _navigationService;
-        
-        private string userMail = "trunglqm07@gmail.com";
+        private readonly IBookingRepository _bookingRepository;
+
+        private string userMail;
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
         private Hotel _currentHotel;
-
-        public User CurrentUser { get; set; }
+        private User _currentUser;
+        
+        public User CurrentUser { get => _currentUser; set => Set(ref _currentUser, value); }
         public Hotel CurrentHotel { get => _currentHotel; set => Set(ref _currentHotel, value); }
 
         public string ShowAvailableHotels
@@ -76,25 +78,31 @@ namespace Hotel_Booking_System.ViewModels
             Bookings.Add(new Booking { BookingID = "B002", UserID = "U002", RoomID = "R102", CheckInDate = DateTime.Now.AddDays(3), CheckOutDate = DateTime.Now.AddDays(6),  Status = "Pending" });
             Bookings.Add(new Booking { BookingID = "B003", UserID = "U003", RoomID = "R201", CheckInDate = DateTime.Now.AddDays(2), CheckOutDate = DateTime.Now.AddDays(4), Status = "Cancelled" });
         }
-        public UserViewModel(IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication)
+        public UserViewModel(IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication)
         {
+            _bookingRepository = bookingRepository;
             _authenticationSerivce = authentication;
             _navigationService = navigationService;
             _hotelRepository = hotelRepository;
             _roomRepository = roomRepository;
             _userRepository = userRepository;
-            WeakReferenceMessenger.Default.Register<UserViewModel,MessageService>(this, (r, msg) =>
-            {
-                userMail = msg.Value;
-                
-            });
-            
+
+            WeakReferenceMessenger.Default.Register<UserViewModel, MessageService>(
+     this,
+     (recipient, message) =>
+     {
+         recipient.userMail = message.Value;
+         GetCurrentUser();
+     });
+
+
+
 
             LoadHotels();
             LoadChats();
             LoadBookings();
             LoadRooms();
-            GetCurrentUser();
+           
         }
         private void GetCurrentUser()
         {
