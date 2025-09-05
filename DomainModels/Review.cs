@@ -10,7 +10,7 @@ namespace Hotel_Booking_System.DomainModels
     class Review
     {
         [Key]
-        public string ReviewID { get; set; } = "";
+        public string ReviewID { get; set; }
         public string UserID { get; set; }
         public string HotelID { get; set; }
         public int Rating { get; set; }

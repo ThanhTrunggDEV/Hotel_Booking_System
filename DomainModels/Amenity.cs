@@ -10,7 +10,7 @@ namespace Hotel_Booking_System.DomainModels
     internal class Amenity
     {
         [Key]
-        public string AmenityID { get; set; } = "";
+        public string AmenityID { get; set; }
         public string AmenityName { get; set; } = "";
     }
 }

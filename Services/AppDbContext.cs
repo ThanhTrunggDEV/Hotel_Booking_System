@@ -1,10 +1,12 @@
-﻿using Hotel_Booking_System.DomainModels;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hotel_Booking_System.DomainModels;
+using Hotel_Booking_System.Helpers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace Hotel_Booking_System.Services
 {
@@ -28,6 +30,57 @@ namespace Hotel_Booking_System.Services
         {
             optionsBuilder.UseSqlite("Data Source=data.dat");
         }
-        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .Property(u => u.UserID)
+                .HasValueGenerator<StringGuidValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Room>()
+                .Property(u => u.RoomID)
+                .HasValueGenerator<StringGuidValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Hotel>()
+                .Property(u => u.HotelID)
+                .HasValueGenerator<StringGuidValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Booking>()
+                .Property(u => u.BookingID)
+                .HasValueGenerator<StringGuidValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Review>()
+                .Property(u => u.ReviewID)
+                .HasValueGenerator<StringGuidValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Payment>()
+                .Property(u => u.PaymentID)
+                .HasValueGenerator<StringGuidValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<AIChat>()
+                .Property(u => u.ChatID)
+                .HasValueGenerator<StringGuidValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<HotelAdminRequest>()
+                .Property(u => u.RequestID)
+                .HasValueGenerator<StringGuidValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Amenity>()
+                .Property(u => u.AmenityID)
+                .HasValueGenerator<StringGuidValueGenerator>()
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<HotelAmenity>()
+                .HasKey(ha => new { ha.HotelID, ha.AmenityID });
+        }
+
+
     }
 }
