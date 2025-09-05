@@ -5,12 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel_Booking_System.Repository
 {
     class HotelAdminRequestRepository : IHotelAdminRequestRepository
     {
         private readonly AppDbContext _context;
+        public HotelAdminRequestRepository(AppDbContext context)
+        {
+            _context = context;
+        }
         public async Task AddAsync(HotelAdminRequest data)
         {
             await _context.HotelAdminRequests.AddAsync(data);
@@ -34,7 +40,7 @@ namespace Hotel_Booking_System.Repository
 
         public async Task UpdateAsync(HotelAdminRequest data)
         {
-            await _context.HotelAdminRequests.UpdateAsync(data);
+             _context.HotelAdminRequests.Update(data);
             await SaveAsync();
         }
     }
