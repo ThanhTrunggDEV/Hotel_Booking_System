@@ -36,6 +36,7 @@ namespace Hotel_Booking_System
                                .AddSingleton<SignUpWindow>()
                                .AddSingleton<UserWindow>()
                                .AddSingleton<AdminWindow>()
+                               .AddScoped<IHotelRepository, HotelRepository>()
                                .AddScoped<IUserRepository, UserRepository>()
                                .AddScoped<IRoomRepository, RoomRepository>()
                                .AddScoped<INavigationService, NavigationService>()
@@ -43,6 +44,7 @@ namespace Hotel_Booking_System
                               .AddScoped<ILoginViewModel, LoginViewModel>()
                               .AddScoped<IForgotPasswordViewModel, ForgotPasswordViewModel>()
                               .AddScoped<ISignUpViewModel, SignUpViewModel>()
+                              .AddScoped<IUserViewModel, UserViewModel>()
                               .BuildServiceProvider();
         }
     }

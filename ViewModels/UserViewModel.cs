@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
+using Hotel_Manager.FrameWorks;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,16 +17,34 @@ using static System.Net.WebRequestMethods;
 
 namespace Hotel_Booking_System.ViewModels
 {
-    public partial class UserViewModel : INotifyPropertyChanged
+    public partial class UserViewModel : Bindable, IUserViewModel
     {
         private readonly IUserRepository _userRepository;
+        private readonly IAuthentication _authenticationSerivce;
+        private readonly IHotelRepository _hotelRepository;
+        private readonly IRoomRepository _roomRepository;
         private readonly INavigationService _navigationService;
         
-        private string userMail;
-        private Hotel _selectedHotel;
-        private bool _showRooms = false;
+        private string userMail = "trunglqm07@gmail.com";
+        private string _showAvailableHotels = "Visible";
+        private string _showRooms = "Collapsed";
+        private Hotel _currentHotel;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public User CurrentUser { get; set; }
+        public Hotel CurrentHotel { get => _currentHotel; set => Set(ref _currentHotel, value); }
+
+        public string ShowAvailableHotels
+        {
+            get => _showAvailableHotels;
+            set => Set(ref _showAvailableHotels, value);
+        }
+
+        public string ShowRoomList
+        {
+            get => _showRooms;
+            set => Set(ref _showRooms, value);
+        }
+
 
         public ObservableCollection<Booking> Bookings { get; set; } = new ObservableCollection<Booking>();
 
@@ -49,25 +68,7 @@ namespace Hotel_Booking_System.ViewModels
 
         public ObservableCollection<AIChat> Chats { get; set; } = new ObservableCollection<AIChat>();
 
-        public Hotel SelectedHotel
-        {
-            get => _selectedHotel;
-            set
-            {
-                _selectedHotel = value;
-                OnPropertyChanged(nameof(SelectedHotel));
-            }
-        }
-
-        public bool ShowRooms
-        {
-            get => _showRooms;
-            set
-            {
-                _showRooms = value;
-                OnPropertyChanged(nameof(ShowRooms));
-            }
-        }
+       
         private void LoadBookings()
         {
             
@@ -75,37 +76,45 @@ namespace Hotel_Booking_System.ViewModels
             Bookings.Add(new Booking { BookingID = "B002", UserID = "U002", RoomID = "R102", CheckInDate = DateTime.Now.AddDays(3), CheckOutDate = DateTime.Now.AddDays(6),  Status = "Pending" });
             Bookings.Add(new Booking { BookingID = "B003", UserID = "U003", RoomID = "R201", CheckInDate = DateTime.Now.AddDays(2), CheckOutDate = DateTime.Now.AddDays(4), Status = "Cancelled" });
         }
-        public UserViewModel()
+        public UserViewModel(IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication)
         {
-            WeakReferenceMessenger.Default.Register<MessageService>(this, (r, msg) =>
+            _authenticationSerivce = authentication;
+            _navigationService = navigationService;
+            _hotelRepository = hotelRepository;
+            _roomRepository = roomRepository;
+            _userRepository = userRepository;
+            WeakReferenceMessenger.Default.Register<UserViewModel,MessageService>(this, (r, msg) =>
             {
                 userMail = msg.Value;
+                
             });
+            
 
             LoadHotels();
             LoadChats();
             LoadBookings();
             LoadRooms();
+            GetCurrentUser();
         }
-
+        private void GetCurrentUser()
+        {
+            var user = _userRepository.GetByEmailAsync(userMail).Result;
+            if (user != null)
+            {
+                CurrentUser = user;
+            }
+        }
         [RelayCommand]
         private void Send(string message)
         {
-            Chats.Add(new AIChat { Message = message });
+            Chats.Add(new AIChat { Message = message , Response = "Test"});
         }
 
         private void LoadChats()
         {
             Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
             Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
-            Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
-            Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
-            Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
-            Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
-            Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
-            Chats.Add(new AIChat { Message = "Hello", Response = "Hello how can I help?" });
-            Chats.Add(new AIChat { Message = "Hello", Response = "Hello             gfddddddddddddddddddddddddddddddddddddddddddddd  fdgg fdhow can I help?" });
-            Chats.Add(new AIChat { Message = "Hello What is the thgoeuihgjuerigyhergergergdfgfdgfdgdddddddddddddddgggggggggggggggggregregergergergergregergergdfgdgdgdfgregregreg", Response = "Hello how can I help?" });
+            
         }
 
         private void LoadHotels()
@@ -123,8 +132,16 @@ namespace Hotel_Booking_System.ViewModels
             Rooms.Add(new Room { RoomID = "1", HotelID = "1", RoomNumber = "101", RoomType = "Deluxe King", PricePerNight = 120.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
             Rooms.Add(new Room { RoomID = "2", HotelID = "1", RoomNumber = "102", RoomType = "Deluxe Twin", PricePerNight = 110.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
             Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
-            
-           
+            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
+            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
+            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
+            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
+            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
+            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
+
+            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
+            Rooms.Add(new Room { RoomID = "3", HotelID = "1", RoomNumber = "201", RoomType = "Suite", PricePerNight = 200.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
+
             Rooms.Add(new Room { RoomID = "4", HotelID = "2", RoomNumber = "101", RoomType = "Boutique Room", PricePerNight = 85.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
             Rooms.Add(new Room { RoomID = "5", HotelID = "2", RoomNumber = "102", RoomType = "Garden View", PricePerNight = 95.0, Status = "Available", RoomImage = "https://i.ibb.co/0Rxmv6B9/444503660-122160335006059468-7985090248807237237-n.jpg" });
             
@@ -135,11 +152,13 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         [RelayCommand]
-        private void ShowHotelDetails(Hotel hotel)
+        private void ShowHotelDetails(string hotelID)
         {
-            SelectedHotel = hotel;
-            FilterRoomsByHotel(hotel.HotelID);
-            ShowRooms = true;
+
+            CurrentHotel = Hotels.FirstOrDefault(h => h.HotelID == hotelID);
+            FilterRoomsByHotel(hotelID);
+            ShowAvailableHotels = "Collapsed";
+            ShowRoomList = "Visible";
         }
 
         private void FilterRoomsByHotel(string hotelId)
@@ -155,8 +174,8 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private void HideRooms()
         {
-            ShowRooms = false;
-            SelectedHotel = null;
+            ShowRoomList = "Collapsed";
+            ShowAvailableHotels = "Visible";
         }
 
         [RelayCommand]
@@ -165,9 +184,6 @@ namespace Hotel_Booking_System.ViewModels
             MessageBox.Show($"Booking room {room.RoomNumber} - {room.RoomType} for ${room.PricePerNight}/night");
         }
 
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        
     }
 }
