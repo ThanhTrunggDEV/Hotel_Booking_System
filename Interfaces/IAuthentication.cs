@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.Interfaces
 {
-    internal interface IAuthentication
+    public interface IAuthentication
     {
         string HashPassword(string password);
         bool VerifyPassword(string password, string hashedPassword);

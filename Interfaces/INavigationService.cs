@@ -6,27 +6,27 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.Interfaces
 {
-    interface INavigationToSignUp
+    public interface INavigationToSignUp
     {
         void NavigateToSignUp();
     }
-    interface INavigationToUser
+    public interface INavigationToUser
     {
         void NavigateToUser();
     }
-    interface INavigationToAdmin
+    public interface INavigationToAdmin
     {
         void NavigateToAdmin();
     }
-    interface INavitionToLogin
+    public interface INavitionToLogin
     {
         void NavigateToLogin();
     }
-    interface NavigationToForgotPassword
+    public interface NavigationToForgotPassword
     {
         void NavigationToForgotPassword();
     }
-    interface INavigationService : INavigationToAdmin, INavigationToSignUp, INavigationToUser, INavitionToLogin, NavigationToForgotPassword
+    public interface INavigationService : INavigationToAdmin, INavigationToSignUp, INavigationToUser, INavitionToLogin, NavigationToForgotPassword
     {
         
     }

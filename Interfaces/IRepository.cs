@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.Interfaces
 {
-    interface IRepository<T>
+    public interface IRepository<T>
     {
         
         Task<List<T>> GetAllAsync();

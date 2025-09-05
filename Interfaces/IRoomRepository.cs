@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.Interfaces
 {
-     interface IRoomRepository : IRepository<Room>
+    public interface IRoomRepository : IRepository<Room>
     {
         
     }

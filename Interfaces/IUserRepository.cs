@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.Interfaces
 {
-    interface IUserRepository : IRepository<User>
+    public interface IUserRepository : IRepository<User>
     {
         Task<User?> GetByEmailAsync(string email);
     }
