@@ -37,6 +37,7 @@ namespace Hotel_Booking_System
                                .AddSingleton<UserWindow>()
                                .AddSingleton<AdminWindow>()
                                .AddScoped<IHotelRepository, HotelRepository>()
+                               .AddScoped<IBookingRepository, BookingRepository>()
                                .AddScoped<IUserRepository, UserRepository>()
                                .AddScoped<IRoomRepository, RoomRepository>()
                                .AddScoped<INavigationService, NavigationService>()
