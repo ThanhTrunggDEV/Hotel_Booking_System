@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace Hotel_Booking_System.DomainModels
 {
     class Review
     {
+        [Key]
         public string ReviewID { get; set; } = "";
         public string UserID { get; set; }
         public string HotelID { get; set; }
