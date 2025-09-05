@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Manager.FrameWorks
 {
-    internal class Bindable : INotifyPropertyChanged
+    public class Bindable : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void Set<T>(ref T prop, T value, [CallerMemberName] string propertyName = "")
