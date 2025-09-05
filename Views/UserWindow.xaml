@@ -742,7 +742,7 @@
 
                                     <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                         <Button Command="{Binding UpdateInfoCommand}" Content="Update Profile" Width="150" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
-                                        <Button Content="Register Hotel Admin" Background="#FFFF9800" 
+                                        <Button Command="{Binding RegisterCommand}" Content="Register Hotel Admin" Background="#FFFF9800" 
                                     Style="{StaticResource PrimaryButton}" Width="200"/>
                                     </StackPanel>
                                 </StackPanel>
@@ -882,7 +882,7 @@
                         </StackPanel>
 
 
-                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="HotelAdminPopup" Background="White" Visibility="Collapsed" Margin="141,10,0,0">
+                        <Grid  Visibility="{Binding ShowRegisterForm}"  HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="HotelAdminPopup" Background="White"  Margin="141,10,0,0">
                             <Border Background="White" CornerRadius="15" MaxWidth="600" MaxHeight="700" 
 HorizontalAlignment="Center" VerticalAlignment="Center" 
 Margin="50" Padding="0">
@@ -912,7 +912,7 @@ Margin="50" Padding="0">
                        FontSize="12" Foreground="White" Opacity="0.9" Margin="0,3,0,0"/>
                                             </StackPanel>
 
-                                            <Button Grid.Column="1" Content="✖" Width="30" Height="30" 
+                                            <Button Command="{Binding CloseFormCommand}" Grid.Column="1" Content="✖" Width="30" Height="30" 
                 Background="Transparent" BorderBrush="White" BorderThickness="1"
                 Foreground="White" 
                 />
@@ -968,7 +968,31 @@ Margin="50" Padding="0">
 
                                                 <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,15">
                                                     <TextBlock Text="City *" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                                    <ComboBox x:Name="cbbCity" Style="{StaticResource ModernComboBox}"/>
+                                                    <ComboBox x:Name="cbbCity" Style="{StaticResource ModernComboBox}">
+                                                        <ComboBoxItem>Hà Nội</ComboBoxItem>
+                                                        <ComboBoxItem>Tuyên Quang</ComboBoxItem>
+                                                        <ComboBoxItem>Lào Cai</ComboBoxItem>
+                                                        <ComboBoxItem>Thái Nguyên</ComboBoxItem>
+                                                        <ComboBoxItem>Phú Thọ</ComboBoxItem>
+                                                        <ComboBoxItem>Bắc Ninh</ComboBoxItem>
+                                                        <ComboBoxItem>Hưng Yên</ComboBoxItem>
+                                                        <ComboBoxItem>Hải Phòng</ComboBoxItem>
+                                                        <ComboBoxItem>Ninh Bình</ComboBoxItem>
+                                                        <ComboBoxItem>Quảng Trị</ComboBoxItem>
+                                                        <ComboBoxItem>Đà Nẵng</ComboBoxItem>
+                                                        <ComboBoxItem>Quảng Ngãi</ComboBoxItem>
+                                                        <ComboBoxItem>Gia Lai</ComboBoxItem>
+                                                        <ComboBoxItem>Khánh Hòa</ComboBoxItem>
+                                                        <ComboBoxItem>Lâm Đồng</ComboBoxItem>
+                                                        <ComboBoxItem>Đăk Lăk</ComboBoxItem>
+                                                        <ComboBoxItem>TP. Hồ Chí Minh</ComboBoxItem>
+                                                        <ComboBoxItem>TP. Cần Thơ</ComboBoxItem>
+                                                        <ComboBoxItem>Vĩnh Long</ComboBoxItem>
+                                                        <ComboBoxItem>Đồng Tháp</ComboBoxItem>
+                                                        <ComboBoxItem>Cà Mau</ComboBoxItem>
+                                                        <ComboBoxItem>An Giang</ComboBoxItem>
+
+                                                    </ComboBox>
                                                 </StackPanel>
 
 
@@ -1028,10 +1052,10 @@ Margin="50" Padding="0">
 
                                     <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="#FFE0E0E0" Padding="25,15">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                            <Button Content="Cancel" Width="100" Height="40" 
+                                            <Button Command="{Binding CloseFormCommand}" Content="Cancel" Width="100" Height="40" 
                 Style="{StaticResource SecondaryButton}" 
                 Margin="0,0,10,0"/>
-                                            <Button Content="Submit Application" Width="150" Height="40" 
+                                            <Button Content="Submit" Width="150" Height="40" 
                 Style="{StaticResource PrimaryButton}" Background="#FFFF9800"
                 />
                                         </StackPanel>

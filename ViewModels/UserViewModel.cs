@@ -20,6 +20,7 @@ namespace Hotel_Booking_System.ViewModels
     public partial class UserViewModel : Bindable, IUserViewModel
     {
         private readonly IUserRepository _userRepository;
+        private readonly IHotelAdminRequestRepository _hotelAdminRequestRepository;
         private readonly IAuthentication _authenticationSerivce;
         private readonly IHotelRepository _hotelRepository;
         private readonly IRoomRepository _roomRepository;
@@ -29,12 +30,18 @@ namespace Hotel_Booking_System.ViewModels
         private string userMail;
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
+        private string _showRegisterForm = "Collapsed";
         private Hotel _currentHotel;
         private User _currentUser;
         
         public User CurrentUser { get => _currentUser; set => Set(ref _currentUser, value); }
         public Hotel CurrentHotel { get => _currentHotel; set => Set(ref _currentHotel, value); }
 
+        public string ShowRegisterForm
+        {
+            get => _showRegisterForm;
+            set => Set(ref _showRegisterForm, value);
+        }
         public string ShowAvailableHotels
         {
             get => _showAvailableHotels;
@@ -78,8 +85,9 @@ namespace Hotel_Booking_System.ViewModels
             Bookings.Add(new Booking { BookingID = "B002", UserID = "U002", RoomID = "R102", CheckInDate = DateTime.Now.AddDays(3), CheckOutDate = DateTime.Now.AddDays(6),  Status = "Pending" });
             Bookings.Add(new Booking { BookingID = "B003", UserID = "U003", RoomID = "R201", CheckInDate = DateTime.Now.AddDays(2), CheckOutDate = DateTime.Now.AddDays(4), Status = "Cancelled" });
         }
-        public UserViewModel(IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication)
+        public UserViewModel(IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
         {
+            _hotelAdminRequestRepository = hotelAdminRequestRepository;
             _bookingRepository = bookingRepository;
             _authenticationSerivce = authentication;
             _navigationService = navigationService;
@@ -102,7 +110,7 @@ namespace Hotel_Booking_System.ViewModels
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
             Bookings = new ObservableCollection<Booking>(_bookingRepository.GetAllAsync().Result);
 
-
+            
         }
         private void GetCurrentUser()
         {
@@ -129,9 +137,16 @@ namespace Hotel_Booking_System.ViewModels
             ShowAvailableHotels = "Collapsed";
             ShowRoomList = "Visible";
         }
-
-        
-
+        [RelayCommand]
+        private void Register()
+        {
+            ShowRegisterForm = "Visible";
+        }
+        [RelayCommand]
+        private void CloseForm()
+        {
+            ShowRegisterForm = "Collapsed";
+        }
         [RelayCommand]
         private void HideRooms()
         {
