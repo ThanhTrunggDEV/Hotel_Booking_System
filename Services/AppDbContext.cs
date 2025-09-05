@@ -18,7 +18,10 @@ namespace Hotel_Booking_System.Services
         public DbSet<Payment> Payments { get; set; }
         public DbSet<HotelAdminRequest> HotelAdminRequests { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
-        
+        public DbSet<Amenity> Amenities { get; set; }
+        public DbSet<HotelAmenity> HotelAmenities { get; set; }
+
+
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
