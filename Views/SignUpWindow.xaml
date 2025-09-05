@@ -187,9 +187,9 @@
                                             <ComboBox Style="{StaticResource ModernComboBox}" 
                                                       Name="cbbGender"
                                                       >
-                                                <ComboBoxItem Content="Nam"/>
-                                                <ComboBoxItem Content="Nữ"/>
-                                                <ComboBoxItem Content="Khác"/>
+                                                <ComboBoxItem Content="Male"/>
+                                                <ComboBoxItem Content="Female"/>
+                                                <ComboBoxItem Content="Other"/>
                                             </ComboBox>
                                         </StackPanel>
                                     </Grid>
