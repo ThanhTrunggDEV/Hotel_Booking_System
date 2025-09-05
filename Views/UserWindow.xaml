@@ -415,13 +415,14 @@
                             </ListView>
                         </Grid>
 
-                        <Button x:Name="btnChat" Width="60" Height="60"
+                        <Button Visibility="{Binding ShowChatButton}" x:Name="btnChat" Width="60" Height="60"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Margin="0,0,30,30"
                     BorderBrush="Transparent"
                     Cursor="Hand"
-                    Padding="0" Grid.Column="1">
+                    Padding="0" Grid.Column="1"
+                    Command="{Binding ShowChatBoxFuncCommand}">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Template">
@@ -447,9 +448,9 @@
                             </Button.Style>
                         </Button>
 
-                        <Border x:Name="AIChatPanel" Grid.Column="1" Style="{StaticResource CardStyle}" 
-                    Height="480" VerticalAlignment="Top" HorizontalAlignment="Right" 
-                    Width="350" Margin="0,0,30,0" Visibility="Collapsed">
+                        <Border Visibility="{Binding ShowChatBox}" x:Name="AIChatPanel" Grid.Column="1" Style="{StaticResource CardStyle}" 
+                    Height="600" VerticalAlignment="Center" HorizontalAlignment="Right" 
+                    Width="350" Margin="0,0,30,0">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -462,10 +463,10 @@
                                         <CornerRadius TopLeft="8" TopRight="8" BottomLeft="0" BottomRight="0"/>
                                     </Border.CornerRadius>
                                     <StackPanel Orientation="Horizontal"  Margin="15,12">
-                                        <TextBlock Text="🤖 AI Travel Assistant" 
+                                        <TextBlock Text="🤖 AI Travel Assistant                       " 
                                        FontSize="16" FontWeight="Bold" Foreground="White" 
                                        HorizontalAlignment="Center"/>
-                                        <Button x:Name="btnCloseChat" Content="✖" BorderThickness="0" Background="Transparent" 
+                                        <Button Command="{Binding ShowChatButtonFuncCommand}" x:Name="btnCloseChat" Content="✖" BorderThickness="0" Background="Transparent" 
                                     Width="25" Height="25" Foreground="White" 
                                     HorizontalAlignment="Right" Margin="10,0,0,0"/>
                                     </StackPanel>

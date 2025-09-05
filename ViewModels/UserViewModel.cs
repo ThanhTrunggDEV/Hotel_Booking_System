@@ -31,12 +31,24 @@ namespace Hotel_Booking_System.ViewModels
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
         private string _showRegisterForm = "Collapsed";
+        private string _showChatBox = "Collapsed";
+        private string _showChatButton = "Visible";
         private Hotel _currentHotel;
         private User _currentUser;
         
         public User CurrentUser { get => _currentUser; set => Set(ref _currentUser, value); }
         public Hotel CurrentHotel { get => _currentHotel; set => Set(ref _currentHotel, value); }
 
+        public string ShowChatBox
+        {
+            get => _showChatBox;
+            set => Set(ref _showChatBox, value);
+        }
+        public string ShowChatButton
+        {
+            get => _showChatButton;
+            set => Set(ref _showChatButton, value);
+        }
         public string ShowRegisterForm
         {
             get => _showRegisterForm;
@@ -119,6 +131,18 @@ namespace Hotel_Booking_System.ViewModels
             {
                 CurrentUser = user;
             }
+        }
+        [RelayCommand]
+        private void ShowChatButtonFunc()
+        {
+            ShowChatButton = "Visible";
+            ShowChatBox = "Collapsed";
+        }
+        [RelayCommand]
+        private void ShowChatBoxFunc()
+        {
+            ShowChatButton = "Collapsed";
+            ShowChatBox = "Visible";
         }
         [RelayCommand]
         private void Send(string message)
