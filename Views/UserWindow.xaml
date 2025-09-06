@@ -361,7 +361,7 @@
                                                         <TextBlock Foreground="#666" Text="💲 From " FontSize="14"/>
                                                         <TextBlock Foreground="#666" Text="{Binding MinPrice}"/>
                                                         <TextBlock Foreground="#666" Text=" to "/>
-                                                        <TextBlock Foreground="#666" Text="{Binding MaxPrice}"/>
+                                                        <TextBlock Foreground="#666" Margin="5,0,0,0" Text="{Binding MaxPrice}"/>
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">

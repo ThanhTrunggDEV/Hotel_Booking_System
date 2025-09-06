@@ -172,7 +172,7 @@ namespace Hotel_Booking_System.ViewModels
             }
             else if (SortType == "Price: High to Low")
             {
-                var sorted = Hotels.OrderByDescending(h => h.MinPrice).ToList();
+                var sorted = Hotels.OrderByDescending(h => h.MaxPrice).ToList();
                 Hotels.Clear();
                 foreach (var hotel in sorted)
                 {
