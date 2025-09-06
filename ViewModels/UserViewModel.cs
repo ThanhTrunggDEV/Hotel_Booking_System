@@ -212,9 +212,9 @@ namespace Hotel_Booking_System.ViewModels
 //https://i.ibb.co/TMyV0ngc/room1.jpg
         private void GenerateData()
         {
-            Hotels.Add(new Hotel { HotelID = "HT1", HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg", HotelName = "Hotel Sunshine", City = "Hà Nội", Rating = 5, Description = "A luxurious hotel in the heart of the city." });
-            Hotels.Add(new Hotel { HotelID = "HT2", HotelImage = "https://i.ibb.co/Z6XwmzzY/download-1.jpg", HotelName = "Ocean View Resort", City = "Đà Nẵng", Rating = 4, Description = "A beautiful resort with stunning ocean views." });
-            Hotels.Add(new Hotel { HotelImage = "https://i.ibb.co/JWDk4mxz/download-2.jpg", HotelID = "HT3", HotelName = "Mountain Retreat", City = "Đà Lạt", Rating = 3, Description = "A peaceful retreat in the mountains." });
+            Hotels.Add(new Hotel { MinPrice = 500, MaxPrice = 2000, HotelID = "HT1", HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg", HotelName = "Hotel Sunshine", City = "Hà Nội", Rating = 5, Description = "A luxurious hotel in the heart of the city." });
+            Hotels.Add(new Hotel {MinPrice = 200, MaxPrice = 700, HotelID = "HT2", HotelImage = "https://i.ibb.co/Z6XwmzzY/download-1.jpg", HotelName = "Ocean View Resort", City = "Đà Nẵng", Rating = 4, Description = "A beautiful resort with stunning ocean views." });
+            Hotels.Add(new Hotel { MinPrice = 100, MaxPrice = 500, HotelImage = "https://i.ibb.co/JWDk4mxz/download-2.jpg", HotelID = "HT3", HotelName = "Mountain Retreat", City = "Đà Lạt", Rating = 3, Description = "A peaceful retreat in the mountains." });
 
             Rooms.Add(new Room {RoomImage= "https://i.ibb.co/ksLcW4k4/room4.jpg", RoomID = "R1", HotelID = "HT1", RoomNumber = "101", RoomType = "Single", PricePerNight = 100, Status = "Available" });
             Rooms.Add(new Room { RoomImage = "https://i.ibb.co/xKf2wdCn/room2.jpg", RoomID = "R2", HotelID = "HT1", RoomNumber = "102", RoomType = "Double", PricePerNight = 150, Status = "Available" });
