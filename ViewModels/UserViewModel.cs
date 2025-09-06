@@ -161,6 +161,24 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
+            else if(SortType == "Price: Low to High")
+            {
+                var sorted = Hotels.OrderBy(h => h.MinPrice).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
+            else if (SortType == "Price: High to Low")
+            {
+                var sorted = Hotels.OrderByDescending(h => h.MinPrice).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
             else if (SortType == "Name: Z to A")
             {
                 var sorted = Hotels.OrderByDescending(h => h.HotelName).ToList();
