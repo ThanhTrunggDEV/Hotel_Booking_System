@@ -288,6 +288,8 @@
                                         <ComboBoxItem Content="Default"/>
                                         <ComboBoxItem Content="Price: Low to High"/>
                                         <ComboBoxItem Content="Price: High to Low"/>
+                                        <ComboBoxItem Content="Name: A to Z"/>
+                                        <ComboBoxItem Content="Name: Z to A"/>
                                         <ComboBoxItem Content="Rating: Low to High"/>
                                         <ComboBoxItem Content="Rating: High to Low"/>
                                     </ComboBox>
