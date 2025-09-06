@@ -4,6 +4,7 @@ using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,13 +19,14 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IAuthentication _authentication;
 
         private string OTP = "";
+        private bool _isOTPSent = false;
 
         public SignUpViewModel(IUserRepository userRepository, INavigationService navigationService, IAuthentication authentication)
         {
             _userRepository = userRepository;
             _navigationService = navigationService;
             _authentication = authentication;
-
+            
         }
 
 
@@ -32,7 +34,7 @@ namespace Hotel_Booking_System.ViewModels
         public string Passoword { get; set; }
         public string PasswordConfirmed { get; set; }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanSendOTP))]
         private async Task SendOTP(string userEmail)
         {
             if (!userEmail.EndsWith("@gmail.com"))
@@ -49,13 +51,24 @@ namespace Hotel_Booking_System.ViewModels
             OTP = new Random().Next(100000, 999999).ToString();
            bool isSent = await MailService.SendOTP(OTP, userEmail);
 
+
             if (isSent)
-                MessageBox.Show("Sent OTP");
-            else
-                MessageBox.Show("Lỗi khi gửi OTP vui lòng thử lại");
+            {
+                _isOTPSent = true;
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                await Task.Run(() =>
+                {
+                    while (stopwatch.Elapsed.TotalSeconds < 60) ;
+                });
+                _isOTPSent = false;
+            }
+                
+
         }
+        private bool CanSendOTP() => !_isOTPSent;
         [RelayCommand]
-        private async void CreateAccount(object para)
+        private async Task CreateAccount(object para)
         {
             if(Passoword != PasswordConfirmed)
             {
