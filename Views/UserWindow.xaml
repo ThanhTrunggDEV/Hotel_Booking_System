@@ -370,7 +370,7 @@
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <TextBlock Text="⭐" Foreground="Gold" FontSize="16"/>
                                                         <TextBlock Text="{Binding Rating}" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"/>
-                                                        <TextBlock Text=" (234 reviews)" Foreground="#666" Margin="5,0,0,0" FontSize="12"/>
+                                                        
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
@@ -588,19 +588,17 @@
                                                     <StackPanel Grid.Column="0">
                                                         <TextBlock Text="Check-in" FontSize="12" Foreground="#FF666666"/>
                                                         <TextBlock Text="{Binding CheckInDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontWeight="SemiBold"/>
-                                                        <TextBlock Text="{Binding CheckinTime, FallbackValue='3:00 PM'}" FontSize="12" Foreground="#FF666666"/>
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="1">
                                                         <TextBlock Text="Check-out" FontSize="12" Foreground="#FF666666"/>
                                                         <TextBlock Text="{Binding CheckOutDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontWeight="SemiBold"/>
-                                                        <TextBlock Text="{Binding CheckoutTime, FallbackValue='11:00 AM'}" FontSize="12" Foreground="#FF666666"/>
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="2">
                                                         <TextBlock Text="Room" FontSize="12" Foreground="#FF666666"/>
                                                         <TextBlock Text="{Binding RoomID, StringFormat='Room {0}'}" FontWeight="SemiBold"/>
-                                                        <TextBlock Text="{Binding GuestInfo, FallbackValue='Guest Info'}" FontSize="12" Foreground="#FF666666"/>
+                                                        <TextBlock Text="{Binding CurrentUser.FullName, FallbackValue='Guest Infoo'}" FontSize="12" Foreground="#FF666666"/>
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="3">
