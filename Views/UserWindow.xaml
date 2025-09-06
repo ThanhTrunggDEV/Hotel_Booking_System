@@ -357,6 +357,12 @@
                                                 <StackPanel Grid.Column="1" Margin="20,15" VerticalAlignment="Top">
                                                     <TextBlock Text="{Binding HotelName}" 
                                                    FontSize="20" FontWeight="Bold" Margin="0,0,0,8"/>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Foreground="#666" Text="💲 From " FontSize="14"/>
+                                                        <TextBlock Foreground="#666" Text="{Binding MinPrice}"/>
+                                                        <TextBlock Foreground="#666" Text=" to "/>
+                                                        <TextBlock Foreground="#666" Text="{Binding MaxPrice}"/>
+                                                    </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                                         <TextBlock Text="📍" FontSize="14"/>
