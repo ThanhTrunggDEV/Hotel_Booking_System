@@ -38,7 +38,7 @@ namespace Hotel_Booking_System.ViewModels
 
             LoadCredential();
         }
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanLogin))]
         private async Task Login(string email)
         {
             var user = await _userRepository.GetByEmailAsync(email);
@@ -63,6 +63,9 @@ namespace Hotel_Booking_System.ViewModels
                 MessageBox.Show("Sai tài khoản hoặc mật khẩu", "Đăng nhập thất bại", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
+        private bool CanLogin(string email) => !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(Password);
+
         [RelayCommand]
         private void ForgotPassword()
         {

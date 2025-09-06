@@ -628,7 +628,7 @@
 
                                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
 
-                                                    <!--TODO - add condition for canexecute-->
+                                                    
                                                     
                                                     <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"
                                                 Command="{Binding CancelBookingCommand}"
