@@ -76,9 +76,9 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
-            Tuple<User, string> data = para as Tuple<User, string>;
+            Tuple<User, string>? data = para as Tuple<User, string>;
 
-            if (data.Item2 != OTP)
+            if (data!.Item2 != OTP)
             {
                 MessageBox.Show("OTP không khớp vui lòng kiểm tra lại");
                 return;
