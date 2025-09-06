@@ -283,12 +283,13 @@
                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                                     <TextBlock Text="Sort by:" VerticalAlignment="Center" Margin="0,0,10,0" 
                                    Foreground="White"/>
-                                    <ComboBox Style="{StaticResource ModernComboBox}" Width="200" SelectedIndex="0"
+                                    <ComboBox SelectedValue="{Binding SortType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Content" Style="{StaticResource ModernComboBox}" Width="200" SelectedIndex="0"
                                   Background="White">
                                         <ComboBoxItem Content="Default"/>
                                         <ComboBoxItem Content="Price: Low to High"/>
                                         <ComboBoxItem Content="Price: High to Low"/>
-                                        <ComboBoxItem Content="Rating"/>
+                                        <ComboBoxItem Content="Rating: Low to High"/>
+                                        <ComboBoxItem Content="Rating: High to Low"/>
                                     </ComboBox>
 
                                 </StackPanel>

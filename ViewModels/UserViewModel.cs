@@ -28,6 +28,7 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IBookingRepository _bookingRepository;
 
         private string userMail;
+        private string _sortType = "Default";
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
         private string _showRegisterForm = "Collapsed";
@@ -36,6 +37,15 @@ namespace Hotel_Booking_System.ViewModels
         private Hotel _currentHotel;
         private User _currentUser;
         
+
+        public string SortType { 
+            get => _sortType; 
+            set 
+            {
+                Set(ref _sortType, value);
+                SortHotels();
+            }
+        }
         public User CurrentUser { get => _currentUser; set => Set(ref _currentUser, value); }
         public Hotel CurrentHotel { get => _currentHotel; set => Set(ref _currentHotel, value); }
 
@@ -121,6 +131,49 @@ namespace Hotel_Booking_System.ViewModels
 
             GenerateData();
 
+        }
+        private void SortHotels()
+        {
+            if (SortType == "Rating: High to Low")
+            {
+                var sorted = Hotels.OrderByDescending(h => h.Rating).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
+            else if (SortType == "Rating: Low to High")
+            {
+                var sorted = Hotels.OrderBy(h => h.Rating).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
+            else if (SortType == "Name: A to Z")
+            {
+                var sorted = Hotels.OrderBy(h => h.HotelName).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
+            else if (SortType == "Name: Z to A")
+            {
+                var sorted = Hotels.OrderByDescending(h => h.HotelName).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
+            //else
+            //{
+            //    Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
+            //}
         }
         private void GetCurrentUser()
         {
