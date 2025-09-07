@@ -10,6 +10,7 @@
         <conv:ImageUrlToBitMap x:Key="ImageUrlToBitMap"/>
         <conv:DateDiffConverter x:Key="DateDiffConverter"/>
         <conv:NightsCalculatorConverter x:Key="NightsCalculatorConverter"/>
+        <conv:FilterHotelConverter x:Key="FilterHotelConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
         <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
