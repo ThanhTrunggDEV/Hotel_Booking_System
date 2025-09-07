@@ -69,7 +69,7 @@
 
                                     <TextBlock HorizontalAlignment="Center" Text="Search Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
                                     <TextBlock Text="Location" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                    <ComboBox Style="{StaticResource ModernComboBox}">
+                                    <ComboBox x:Name="cbbLocation" Style="{StaticResource ModernComboBox}">
                                         <ComboBoxItem>Hà Nội</ComboBoxItem>
                                         <ComboBoxItem>Tuyên Quang</ComboBoxItem>
                                         <ComboBoxItem>Lào Cai</ComboBoxItem>
@@ -103,14 +103,14 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBox Text="0"  Width="80" Height="30" 
+                                                <TextBox x:Name="txtMinPrice" Width="80" Height="30" 
                                           
                                          HorizontalAlignment="Center"/>
                                                 <TextBlock Grid.Column="1" Text="to" 
                                            VerticalAlignment="Center" 
                                            Margin="10,0" 
                                            HorizontalAlignment="Center"/>
-                                                <TextBox Grid.Column="2" Text="0" Width="80" Height="30" 
+                                                <TextBox x:Name="txtMaxPrice" Grid.Column="2" Width="80" Height="30" 
                                          
                                          HorizontalAlignment="Center"/>
                                             </Grid>
@@ -120,11 +120,11 @@
                                     <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                     <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
                                         <StackPanel>
-                                            <CheckBox Content="⭐⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                            <CheckBox Content="⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                            <CheckBox Content="⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                            <CheckBox Content="⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                            <CheckBox Content="⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                            <CheckBox x:Name="cbFiveStar" Content="⭐⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                            <CheckBox x:Name="cbFourStar" Content="⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                            <CheckBox x:Name="cbThreeStar" Content="⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                            <CheckBox x:Name="cbTwoStar" Content="⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                            <CheckBox x:Name="cbOneStar" Content="⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
 
                                         </StackPanel>
                                     </Border>
@@ -132,14 +132,32 @@
                                     <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                     <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
                                         <StackPanel>
-                                            <CheckBox Content="🌐 Free WiFi" Margin="0,5"/>
-                                            <CheckBox Content="🏊 Swimming Pool" Margin="0,5"/>
-                                            <CheckBox Content="🚗 Free Parking" Margin="0,5"/>
-                                            <CheckBox Content="🍽️ Restaurant" Margin="0,5"/>
-                                            <CheckBox Content="🏋️ Gym" Margin="0,5"/>
+                                            <CheckBox x:Name="cbFreeWifi" Content="🌐 Free WiFi" Margin="0,5"/>
+                                            <CheckBox x:Name="cbSwimmingPool" Content="🏊 Swimming Pool" Margin="0,5"/>
+                                            <CheckBox x:Name="cbFreeParking" Content="🚗 Free Parking" Margin="0,5"/>
+                                            <CheckBox x:Name="cbRestaurant" Content="🍽️ Restaurant" Margin="0,5"/>
+                                            <CheckBox x:Name="cbGym" Content="🏋️ Gym" Margin="0,5"/>
                                         </StackPanel>
                                     </Border>
-                                    <Button Style="{StaticResource PrimaryButton}">Search</Button>
+                                    <Button Command="{Binding SearchHotelsCommand}" Content="Search" Style="{StaticResource PrimaryButton}">
+                                        <Button.CommandParameter>
+                                            <MultiBinding Converter="{StaticResource FilterHotelConverter}">
+                                                <Binding ElementName="cbbLocation" Path="Text"/>
+                                                <Binding ElementName="txtMinPrice" Path="Text"/>
+                                                <Binding ElementName="txtMaxPrice" Path="Text"/>
+                                                <Binding ElementName="cbFiveStar" Path="IsChecked"/>
+                                                <Binding ElementName="cbFourStar" Path="IsChecked"/>
+                                                <Binding ElementName="cbThreeStar" Path="IsChecked"/>
+                                                <Binding ElementName="cbTwoStar" Path="IsChecked"/>
+                                                <Binding ElementName="cbOneStar" Path="IsChecked"/>
+                                                <Binding ElementName="cbFreeWifi" Path="IsChecked"/>
+                                                <Binding ElementName="cbSwimmingPool" Path="IsChecked"/>
+                                                <Binding ElementName="cbFreeParking" Path="IsChecked"/>
+                                                <Binding ElementName="cbRestaurant" Path="IsChecked"/>
+                                                <Binding ElementName="cbGym" Path="IsChecked"/>
+                                            </MultiBinding>
+                                        </Button.CommandParameter>
+                                    </Button>
 
 
                                 </StackPanel>

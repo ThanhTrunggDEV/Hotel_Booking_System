@@ -202,6 +202,80 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
         [RelayCommand]
+        private void SearchHotels(object parameter)
+        {
+             
+            if (parameter is Dictionary<string, object?> searchParams)
+            {
+                string location = searchParams.TryGetValue("Location", out var loc) ? loc?.ToString() ?? string.Empty : string.Empty;
+                decimal? minPrice = searchParams.TryGetValue("MinPrice", out var min) && min is decimal dmin ? dmin : null;
+                decimal? maxPrice = searchParams.TryGetValue("MaxPrice", out var max) && max is decimal dmax ? dmax : null;
+                bool? fiveStar = searchParams.TryGetValue("FiveStar", out var five) ? five as bool? : null;
+                bool? fourStar = searchParams.TryGetValue("FourStar", out var four) ? four as bool? : null;
+                bool? threeStar = searchParams.TryGetValue("ThreeStar", out var three) ? three as bool? : null;
+                bool? twoStar = searchParams.TryGetValue("TwoStar", out var two) ? two as bool? : null;
+                bool? oneStar = searchParams.TryGetValue("OneStar", out var one) ? one as bool? : null;
+                bool? freeWifi = searchParams.TryGetValue("FreeWifi", out var wifi) ? wifi as bool? : null;
+                bool? swimmingPool = searchParams.TryGetValue("SwimmingPool", out var pool) ? pool as bool? : null;
+                bool? freeParking = searchParams.TryGetValue("FreeParking", out var parking) ? parking as bool? : null;
+                bool? restaurant = searchParams.TryGetValue("Restaurant", out var rest) ? rest as bool? : null;
+                bool? gym = searchParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
+
+
+                var hotels = Hotels .AsQueryable();
+
+
+
+                if (!string.IsNullOrWhiteSpace(location))
+                {
+                    hotels = hotels.Where(h =>
+                        (!string.IsNullOrEmpty(h.City) && h.City == location) ||
+                        (!string.IsNullOrEmpty(h.HotelName) && h.HotelName.Contains(location, StringComparison.OrdinalIgnoreCase)));
+                }
+
+                
+                if (minPrice.HasValue)
+                    hotels = hotels.Where(h => h.MinPrice >= (double)minPrice.Value);
+                if (maxPrice.HasValue)
+                    hotels = hotels.Where(h => h.MaxPrice <= (double)maxPrice.Value);
+
+                var starFilters = new List<int>();
+                if (fiveStar == true) starFilters.Add(5);
+                if (fourStar == true) starFilters.Add(4);
+                if (threeStar == true) starFilters.Add(3);
+                if (twoStar == true) starFilters.Add(2);
+                if (oneStar == true) starFilters.Add(1);
+                if (starFilters.Count > 0)
+                    hotels = hotels.Where(h => starFilters.Contains(h.Rating));
+
+
+                //var filteredHotels = hotels.ToList();
+                //var currentHotel = Hotels.ToList();
+
+                //foreach (var hotel in currentHotel)
+                //{
+                //    if (hotel.HotelID == )
+                //}
+
+                var filteredHotels = hotels.ToList();
+                for (int i = Hotels.Count - 1; i >= 0; i--)
+                {
+                    if (!filteredHotels.Any(h => h.HotelID == Hotels[i].HotelID))
+                    {
+                        Hotels.RemoveAt(i);
+                    }
+                }
+
+            }
+            //else
+            //{
+            //    Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
+            //}
+            
+            
+        }
+
+        [RelayCommand]
         private void ShowChatButtonFunc()
         {
             ShowChatButton = "Visible";
