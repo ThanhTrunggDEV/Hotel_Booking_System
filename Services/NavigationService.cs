@@ -14,50 +14,70 @@ namespace Hotel_Booking_System.Services
     {
         private void CloseCurrent()
         {
-             App.Current.Windows[0].Close();
-            //foreach (Window window in App.Current.Windows)
-            //{
-            //    if (window.IsVisible)
-            //    {
-            //        window.Hide();
-            //    }
-            //}
+            Window currentWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive)!;
+            currentWindow.Close();
+
         }
+
         public void NavigateToAdmin()
         {
-            
-            App.Provider!.GetRequiredService<AdminWindow>().Show();
+
+            var newWindow = App.Provider!.GetRequiredService<AdminWindow>();
+
+
+            Application.Current.MainWindow = newWindow;
+
             CloseCurrent();
+            newWindow.Show();
         }
 
         public void NavigateToUser()
         {
-            
-            App.Provider!.GetRequiredService<UserWindow>().Show();
+            var newWindow = App.Provider!.GetRequiredService<UserWindow>();
+
+
+            Application.Current.MainWindow = newWindow;
+
             CloseCurrent();
+            newWindow.Show();
         }
 
      
         public void NavigateToSignUp()
         {
-            
-            App.Provider!.GetRequiredService<SignUpWindow>().Show();
+
+            var newWindow = App.Provider!.GetRequiredService<SignUpWindow>();
+
+
+            Application.Current.MainWindow = newWindow;
+
             CloseCurrent();
+            newWindow.Show();
 
         }
 
         public void NavigateToLogin()
         {
-            
-            App.Provider!.GetRequiredService<LoginWindow>().Show();
+
+            var newWindow = App.Provider!.GetRequiredService<LoginWindow>();
+
+
+            Application.Current.MainWindow = newWindow;
+
             CloseCurrent();
+            newWindow.Show();
         }
 
         public void NavigationToForgotPassword()
         {
-            
-            App.Provider!.GetRequiredService<ForgotPasswordWindow>().Show();
+
+            var newWindow = App.Provider!.GetRequiredService<ForgotPasswordWindow>();
+
+
+            Application.Current.MainWindow = newWindow;
+
             CloseCurrent();
+            newWindow.Show();
         }
     }
 }
