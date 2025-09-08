@@ -185,10 +185,7 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            //else
-            //{
-            //    Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
-            //}
+            
         }
         private void GetCurrentUser()
         {
@@ -219,7 +216,7 @@ namespace Hotel_Booking_System.ViewModels
                 bool? gym = searchParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
 
 
-                var hotels = Hotels .AsQueryable();
+                var hotels = _hotelRepository.GetAllAsync().Result.AsQueryable();
 
 
 
@@ -264,12 +261,12 @@ namespace Hotel_Booking_System.ViewModels
                 }
 
             }
-            //else
-            //{
-            //    Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
-            //}
-            
-            
+            else
+            {
+                Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
+            }
+
+
         }
 
         [RelayCommand]

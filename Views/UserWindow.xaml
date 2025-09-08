@@ -63,7 +63,7 @@
                         </Grid.ColumnDefinitions>
 
                         <ScrollViewer>
-                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Height="800" VerticalAlignment="Top">
+                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
 
                                 <StackPanel Margin="25">
 
@@ -139,7 +139,8 @@
                                             <CheckBox x:Name="cbGym" Content="🏋️ Gym" Margin="0,5"/>
                                         </StackPanel>
                                     </Border>
-                                    <Button Command="{Binding SearchHotelsCommand}" Content="Search" Style="{StaticResource PrimaryButton}">
+                                    <Button Content="Clear Filters" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
+                                    <Button Command="{Binding SearchHotelsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
                                         <Button.CommandParameter>
                                             <MultiBinding Converter="{StaticResource FilterHotelConverter}">
                                                 <Binding ElementName="cbbLocation" Path="Text"/>
@@ -643,8 +644,8 @@
                                                         <TextBlock FontSize="12" Foreground="#FF666666">
                                                             <TextBlock.Text>
                                                                 <MultiBinding Converter="{StaticResource NightsCalculatorConverter}">
-                                                                    <Binding Path="CheckinDate"/>
-                                                                    <Binding Path="CheckoutDate"/>
+                                                                    <Binding Path="CheckInDate"/>
+                                                                    <Binding Path="CheckOutDate"/>
                                                                 </MultiBinding>
                                                             </TextBlock.Text>
                                                         </TextBlock>
@@ -661,6 +662,7 @@
                                                     <Button Content="Review" Width="100" Style="{StaticResource SecondaryButton}"
                                                 Command="{Binding ReviewBookingCommand}"
                                                 CommandParameter="{Binding}"/>
+                                                    <Button Content="Request changes" Width="100" Style="{StaticResource SecondaryButton}"/>
                                                 </StackPanel>
                                             </StackPanel>
                                         </Grid>
