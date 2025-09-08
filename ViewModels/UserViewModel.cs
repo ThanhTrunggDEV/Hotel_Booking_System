@@ -120,16 +120,120 @@ namespace Hotel_Booking_System.ViewModels
      });
 
 
+           // SeedData();
 
             Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
             Bookings = new ObservableCollection<Booking>(_bookingRepository.GetAllAsync().Result);
 
+            
+
             FilteredRooms = new ObservableCollection<Room>();
 
         }
+        private void SeedData()
+        {
+            //_roomRepository.AddAsync(new Room
+            //{
+            //    RoomID = Guid.NewGuid().ToString(),
+            //    HotelID = "H1003",
+            //    RoomNumber = "301",
+            //    RoomType = "Single",
+            //    PricePerNight = 120,
+            //    Status = "Available"
+            //}).Wait();
+            //_roomRepository.AddAsync(new Room
+            //{
+            //    RoomID = Guid.NewGuid().ToString(),
+            //    HotelID = "H1001",
+            //    RoomNumber = "101",
+            //    RoomType = "Single",
+            //    PricePerNight = 100,
+            //    Status = "Available"
+            //}).Wait();
+            //_roomRepository.AddAsync(new Room
+            //{
+            //    RoomID = Guid.NewGuid().ToString(),
+            //    HotelID = "H1001",
+            //    RoomNumber = "102",
+            //    RoomType = "Double",
+            //    PricePerNight = 150,
+            //    Status = "Available"
+            //}).Wait();
+            //_roomRepository.AddAsync(new Room
+            //{
+            //    RoomID = Guid.NewGuid().ToString(),
+            //    HotelID = "H1002",
+            //    RoomNumber = "201",
+            //    RoomType = "Suite",
+            //    PricePerNight = 300,
+            //    Status = "Available"
+            //}).Wait();
+            //_roomRepository.SaveAsync().Wait();
+            //_hotelRepository.AddAsync(new Hotel
+            //{
+            //    HotelID = "H1001",
+            //    HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg",
+            //    UserID = "U1001",
+            //    HotelName = "Grand Plaza",
+            //    Address = "123 Main St, Cityville",
+            //    City = "Cityville",
+            //    Rating = 5,
+            //    MinPrice = 100,
+            //    MaxPrice = 500,
+            //    Description = "A luxurious hotel with stunning city views.",
+            //    Amenities = new List<Amenity>
+            //    {
+            //        new Amenity { AmenityName = "Free WiFi" },
+            //        new Amenity { AmenityName = "Swimming Pool" },
+            //        new Amenity { AmenityName = "Free Parking" },
+            //        new Amenity { AmenityName = "Restaurant" },
+            //        new Amenity { AmenityName = "Gym" }
+            //    }
+            //}).Wait();
+            //_hotelRepository.AddAsync(new Hotel
+            //{
+            //    HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg",
+            //    HotelID = "H1002",
+            //    UserID = "U1002",
+            //    HotelName = "City Inn",
+            //    Address = "456 Market St, Townsville",
+            //    City = "Townsville",
+            //    Rating = 4,
+            //    MinPrice = 80,
+            //    MaxPrice = 300,
+            //    Description = "A comfortable stay in the heart of the city.",
+            //    Amenities = new List<Amenity>
+            //    {
+            //        new Amenity { AmenityName = "Free WiFi" },
+            //        new Amenity { AmenityName = "Free Parking" },
+            //        new Amenity { AmenityName = "Restaurant" }
+            //    }
+            //}).Wait();
+            _hotelRepository.AddAsync(new Hotel
+            {
+                HotelID = "H1003",
+                HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg",
+                UserID = "U1003",
+                HotelName = "Beachside Resort",
+                Address = "789 Ocean Ave, Beachtown",
+                City = "Beachtown",
+                Rating = 5,
+                MinPrice = 150,
+                MaxPrice = 600,
+                Description = "A beachfront resort with all the amenities.",
+                Amenities = new List<Amenity>
+                {
+                    new Amenity { AmenityName = "Free WiFi" },
+                    new Amenity { AmenityName = "Swimming Pool" },
+                    new Amenity { AmenityName = "Free Parking" },
+                    new Amenity { AmenityName = "Restaurant" },
+                    new Amenity { AmenityName = "Gym" }
+                }
+            }).Wait();
+            _hotelRepository.SaveAsync().Wait();
+        }
 
-       
 
         private void SortHotels()
         {
