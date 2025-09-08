@@ -34,7 +34,7 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="30,0">
-                <TextBlock Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">Hello, </TextBlock>
+                <TextBlock  Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">Hello, </TextBlock>
                 <TextBlock Text="{Binding CurrentUser.FullName}" Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">
                     
                 </TextBlock>
@@ -139,7 +139,7 @@
                                             <CheckBox x:Name="cbGym" Content="🏋️ Gym" Margin="0,5"/>
                                         </StackPanel>
                                     </Border>
-                                    <Button Content="Clear Filters" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
+                                    <Button Content="Clear Filters" Command="{Binding ClearSearchCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
                                     <Button Command="{Binding SearchHotelsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
                                         <Button.CommandParameter>
                                             <MultiBinding Converter="{StaticResource FilterHotelConverter}">
@@ -297,12 +297,12 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="🏨 Available Hotels" 
+                                <TextBlock Margin="10" Grid.Column="0" VerticalAlignment="Center" Text="Available Hotels" 
                                FontSize="20" FontWeight="Bold" Foreground="White"/>
-                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <StackPanel Height="50" Grid.Column="1" Orientation="Horizontal">
                                     <TextBlock Text="Sort by:" VerticalAlignment="Center" Margin="0,0,10,0" 
                                    Foreground="White"/>
-                                    <ComboBox SelectedValue="{Binding SortType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Content" Style="{StaticResource ModernComboBox}" Width="200" SelectedIndex="0"
+                                    <ComboBox Height="30" SelectedValue="{Binding SortType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Content" Style="{StaticResource ModernComboBox}" Width="200" SelectedIndex="0"
                                   Background="White">
                                         <ComboBoxItem Content="Default"/>
                                         <ComboBoxItem Content="Price: Low to High"/>
@@ -380,7 +380,7 @@
                                                         <TextBlock Foreground="#666" Text="💲 From " FontSize="14"/>
                                                         <TextBlock Foreground="#666" Text="{Binding MinPrice}"/>
                                                         <TextBlock Foreground="#666" Text=" to "/>
-                                                        <TextBlock Foreground="#666" Margin="5,0,0,0" Text="{Binding MaxPrice}"/>
+                                                        <TextBlock Foreground="#666" Text="{Binding MaxPrice}"/>
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">

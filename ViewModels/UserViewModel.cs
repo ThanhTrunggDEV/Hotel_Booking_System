@@ -251,6 +251,16 @@ namespace Hotel_Booking_System.ViewModels
 
 
         }
+        [RelayCommand]
+        private void ClearSearch()
+        {
+            Hotels.Clear();
+            var allHotels = _hotelRepository.GetAllAsync().Result;
+            foreach (var hotel in allHotels)
+            {
+                Hotels.Add(hotel);
+            }
+        }
 
         [RelayCommand]
         private void ShowChatButtonFunc()
