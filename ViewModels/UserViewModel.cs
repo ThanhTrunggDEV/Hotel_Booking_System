@@ -119,7 +119,6 @@ namespace Hotel_Booking_System.ViewModels
          GetCurrentUser();
      });
 
-            //SeedHotels();
 
 
             Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
@@ -130,51 +129,7 @@ namespace Hotel_Booking_System.ViewModels
 
         }
 
-        private void SeedHotels()
-        {
-            var hotel1 = new Hotel
-            {
-                HotelID = Guid.NewGuid().ToString(),
-                UserID = "user1",
-                HotelName = "Sunshine Hotel",
-                Address = "123 Trần Hưng Đạo",
-                City = "Hà Nội",
-                HotelImage = "sunshine.jpg",
-                MinPrice = 500000,
-                MaxPrice = 2000000,
-                Description = "Khách sạn sang trọng với view thành phố",
-                Rating = 4,
-                Amenities = new List<Amenity>
-            {
-                new Amenity { AmenityName = "WiFi miễn phí" },
-                new Amenity { AmenityName = "Bể bơi" },
-                new Amenity { AmenityName = "Gym" }
-            }
-            };
-
-            var hotel2 = new Hotel
-            {
-                HotelID = Guid.NewGuid().ToString(),
-                UserID = "user2",
-                HotelName = "Ocean View",
-                Address = "456 Nguyễn Huệ",
-                City = "Đà Nẵng",
-                HotelImage = "oceanview.jpg",
-                MinPrice = 800000,
-                MaxPrice = 3000000,
-                Description = "Khách sạn ven biển với view cực chill",
-                Rating = 5,
-                Amenities = new List<Amenity>
-            {
-                new Amenity { AmenityName = "Nhà hàng" },
-                new Amenity { AmenityName = "Spa" },
-                new Amenity { AmenityName = "Đưa đón sân bay" }
-            }
-            };
-            _hotelRepository.AddAsync(hotel1).Wait();
-            _hotelRepository.AddAsync(hotel2).Wait();
-            _hotelRepository.SaveAsync().Wait();
-        }
+       
 
         private void SortHotels()
         {
@@ -286,6 +241,19 @@ namespace Hotel_Booking_System.ViewModels
                 if (oneStar == true) starFilters.Add(1);
                 if (starFilters.Count > 0)
                     hotels = hotels.Where(h => starFilters.Contains(h.Rating)).ToList();
+
+                if (freeWifi == true)
+                    hotels = hotels.Where(h => h.Amenities.Any(a => a.AmenityName == "Free WiFi")).ToList();
+                if (swimmingPool == true)
+                    hotels = hotels.Where(h => h.Amenities.Any(a => a.AmenityName == "Swimming Pool")).ToList();
+                if (freeParking == true)
+                    hotels = hotels.Where(h => h.Amenities.Any(a => a.AmenityName == "Free Parking")).ToList();
+                if (restaurant == true)
+                    hotels = hotels.Where(h => h.Amenities.Any(a => a.AmenityName == "Restaurant")).ToList();
+                if (gym == true)
+                    hotels = hotels.Where(h => h.Amenities.Any(a => a.AmenityName == "Gym")).ToList();
+
+
 
                 Hotels.Clear();
                 for (int i = 0; i < hotels.Count; i++)
