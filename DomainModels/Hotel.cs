@@ -20,5 +20,7 @@ namespace Hotel_Booking_System.DomainModels
         public double MaxPrice { get; set; }
         public string Description { get; set; }
         public int Rating { get; set; }
+
+        public ICollection<Amenity> Amenities { get; set; } = new List<Amenity>();
     }
 }

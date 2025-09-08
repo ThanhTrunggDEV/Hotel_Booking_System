@@ -21,7 +21,6 @@ namespace Hotel_Booking_System.Services
         public DbSet<HotelAdminRequest> HotelAdminRequests { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
-        public DbSet<HotelAmenity> HotelAmenities { get; set; }
 
 
 
@@ -43,6 +42,9 @@ namespace Hotel_Booking_System.Services
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Hotel>()
+                .HasMany(h => h.Amenities)
+                .WithMany(a => a.Hotels)
+                .UsingEntity(j => j.ToTable("HotelAmenity"))
                 .Property(u => u.HotelID)
                 .HasValueGenerator<StringGuidValueGenerator>()
                 .ValueGeneratedOnAdd();
@@ -77,8 +79,6 @@ namespace Hotel_Booking_System.Services
                 .HasValueGenerator<StringGuidValueGenerator>()
                 .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<HotelAmenity>()
-                .HasKey(ha => new { ha.HotelID, ha.AmenityID });
         }
 
 

@@ -31,7 +31,9 @@ namespace Hotel_Booking_System.Repository
             _context.Hotels.Remove(hotel);
         }
 
-        public Task<List<Hotel>> GetAllAsync() => _context.Hotels.ToListAsync();
+        public Task<List<Hotel>> GetAllAsync() => _context.Hotels
+                                                          .Include(h => h.Amenities)
+                                                          .ToListAsync();
 
         public Task<Hotel?> GetByIdAsync(string id) => _context.Hotels.FirstOrDefaultAsync(r => r.HotelID == id);
 

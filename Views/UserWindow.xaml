@@ -402,21 +402,20 @@
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                                        <Border Background="#FFE3F2FD" CornerRadius="12" Padding="6,3" Margin="0,0,8,0">
-                                                            <TextBlock Text="🌐 WiFi" FontSize="11" Foreground="#FF1976D2"/>
-                                                        </Border>
-                                                        <Border Background="#FFE8F5E8" CornerRadius="12" Padding="6,3" Margin="0,0,8,0">
-                                                            <TextBlock Text="🏊 Pool" FontSize="11" Foreground="#FF4CAF50"/>
-                                                        </Border>
-                                                        <Border Background="#FFFFF3E0" CornerRadius="12" Padding="6,3" Margin="0,0,8,0">
-                                                            <TextBlock Text="🚗 Parking" FontSize="11" Foreground="#FFFF9800"/>
-                                                        </Border>
-                                                        <Border Background="#FFF3E5F5" CornerRadius="12" Padding="6,3">
-                                                            <TextBlock Text="💪 Gym" FontSize="11" Foreground="#FF9C27B0"/>
-                                                        </Border>
-                                                        <Border Background="#FFF3E5F5" CornerRadius="12" Padding="6,3">
-                                                            <TextBlock Text="🍽️ Restaurant" FontSize="11" Foreground="#FF9C27B0"/>
-                                                        </Border>
+                                                        <ItemsControl ItemsSource="{Binding Amenities}">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <StackPanel Orientation="Horizontal"/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border Background="#FFE3F2FD" CornerRadius="12" Padding="6,3" Margin="0,0,8,0">
+                                                                        <TextBlock Text="{Binding AmenityName}" FontSize="11" Foreground="#FF1976D2"/>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
                                                     </StackPanel>
 
                                                     <TextBlock Text="{Binding Description}" 

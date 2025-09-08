@@ -39,7 +39,6 @@ namespace Hotel_Booking_System
                                .AddScoped<IHotelRepository, HotelRepository>()
                                .AddScoped<IBookingRepository, BookingRepository>()
                                .AddScoped<IUserRepository, UserRepository>()
-                                 .AddScoped<IHotelAmenityRepository, HotelAmenityRepository>()
                                  .AddScoped<IReviewRepository, ReviewRepository>()
                                  .AddScoped<IPaymentRepository, PaymentRepository>()
                                  .AddScoped<IAmenityRepository, AmenityRepository>()

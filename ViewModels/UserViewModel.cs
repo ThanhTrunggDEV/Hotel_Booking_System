@@ -26,6 +26,7 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IRoomRepository _roomRepository;
         private readonly INavigationService _navigationService;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IAIChatRepository _aiChatRepository;
 
         private string userMail;
         private string _sortType = "Default";
@@ -36,7 +37,6 @@ namespace Hotel_Booking_System.ViewModels
         private string _showChatButton = "Visible";
         private Hotel _currentHotel;
         private User _currentUser;
-        
 
         public string SortType { 
             get => _sortType; 
@@ -76,7 +76,6 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _showRooms, value);
         }
 
-
         public ObservableCollection<Booking> Bookings { get; set; }
 
         public ObservableCollection<Hotel> Hotels
@@ -99,10 +98,11 @@ namespace Hotel_Booking_System.ViewModels
 
         public ObservableCollection<AIChat> Chats { get; set; } = new ObservableCollection<AIChat>();
 
-       
-        
-        public UserViewModel(IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
+
+        public UserViewModel(IAIChatRepository aIChatRepository , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
         {
+
+            _aiChatRepository = aIChatRepository;
             _hotelAdminRequestRepository = hotelAdminRequestRepository;
             _bookingRepository = bookingRepository;
             _authenticationSerivce = authentication;
@@ -119,7 +119,7 @@ namespace Hotel_Booking_System.ViewModels
          GetCurrentUser();
      });
 
-
+            //SeedHotels();
 
 
             Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
@@ -129,6 +129,53 @@ namespace Hotel_Booking_System.ViewModels
             FilteredRooms = new ObservableCollection<Room>();
 
         }
+
+        private void SeedHotels()
+        {
+            var hotel1 = new Hotel
+            {
+                HotelID = Guid.NewGuid().ToString(),
+                UserID = "user1",
+                HotelName = "Sunshine Hotel",
+                Address = "123 Trần Hưng Đạo",
+                City = "Hà Nội",
+                HotelImage = "sunshine.jpg",
+                MinPrice = 500000,
+                MaxPrice = 2000000,
+                Description = "Khách sạn sang trọng với view thành phố",
+                Rating = 4,
+                Amenities = new List<Amenity>
+            {
+                new Amenity { AmenityName = "WiFi miễn phí" },
+                new Amenity { AmenityName = "Bể bơi" },
+                new Amenity { AmenityName = "Gym" }
+            }
+            };
+
+            var hotel2 = new Hotel
+            {
+                HotelID = Guid.NewGuid().ToString(),
+                UserID = "user2",
+                HotelName = "Ocean View",
+                Address = "456 Nguyễn Huệ",
+                City = "Đà Nẵng",
+                HotelImage = "oceanview.jpg",
+                MinPrice = 800000,
+                MaxPrice = 3000000,
+                Description = "Khách sạn ven biển với view cực chill",
+                Rating = 5,
+                Amenities = new List<Amenity>
+            {
+                new Amenity { AmenityName = "Nhà hàng" },
+                new Amenity { AmenityName = "Spa" },
+                new Amenity { AmenityName = "Đưa đón sân bay" }
+            }
+            };
+            _hotelRepository.AddAsync(hotel1).Wait();
+            _hotelRepository.AddAsync(hotel2).Wait();
+            _hotelRepository.SaveAsync().Wait();
+        }
+
         private void SortHotels()
         {
             if (SortType == "Rating: High to Low")
@@ -279,17 +326,7 @@ namespace Hotel_Booking_System.ViewModels
         {
             Chats.Add(new AIChat { Message = message , Response = "Test"});
         }
-// Hotel
-//https://i.ibb.co/JWDk4mxz/download-2.jpg
-//https://i.ibb.co/Z6XwmzzY/download-1.jpg
-//https://i.ibb.co/Wp5NCf4k/download.jpg
-//https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg
 
-        //Room
-//   https://i.ibb.co/ksLcW4k4/room4.jpg
-//https://i.ibb.co/xKf2wdCn/room2.jpg
-//https://i.ibb.co/TMyV0ngc/room1.jpg
-        
 
         [RelayCommand]
         private void ShowHotelDetails(string hotelID)
@@ -342,6 +379,9 @@ namespace Hotel_Booking_System.ViewModels
                 FilteredRooms.Add(room);
             }
         }
+
+        
+        
 
     }
 }

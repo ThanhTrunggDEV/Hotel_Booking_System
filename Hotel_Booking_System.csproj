@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\ChatbotLogo.jpg" />
     <None Remove="Resources\Chatbotlogo.png" />
   </ItemGroup>
 
@@ -25,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\ChatbotLogo.jpg" />
     <Resource Include="Resources\Chatbotlogo.png" />
   </ItemGroup>
 
