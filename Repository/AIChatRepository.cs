@@ -61,6 +61,7 @@ namespace Hotel_Booking_System.Repository
                 existing.CreatedAt = data.CreatedAt;
                 _context.AIChats.Update(existing);
             }
+            await SaveAsync();
         }
     }
 }
