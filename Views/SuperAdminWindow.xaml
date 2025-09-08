@@ -22,8 +22,8 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="30,0">
-                <TextBlock Text="🏨" FontSize="32" VerticalAlignment="Center" Margin="0,0,15,0"/>
-                <TextBlock Text="Multi-Hotel Booking System" 
+                <TextBlock Text="" FontSize="32" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <TextBlock Text="Hotel Booking System" 
                           FontSize="24" FontWeight="Bold" 
                           Foreground="White" 
                           VerticalAlignment="Center"/>

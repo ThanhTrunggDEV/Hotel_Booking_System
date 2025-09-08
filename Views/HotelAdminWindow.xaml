@@ -23,8 +23,8 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="30,0">
-                <TextBlock Text="🏨" FontSize="32" VerticalAlignment="Center" Margin="0,0,15,0"/>
-                <TextBlock Text="Multi-Hotel Booking System" 
+                <TextBlock Text="" FontSize="32" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <TextBlock Text="Hotel Booking System" 
                       FontSize="24" FontWeight="Bold" 
                       Foreground="White" 
                       VerticalAlignment="Center"/>
@@ -120,13 +120,13 @@
 
                                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Address" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="123 Tran Hung Dao Street, Hoan Kiem District, Hanoi" 
+                                        <TextBox Text="" 
                                             Style="{StaticResource ModernTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="Modern luxury hotel in the heart of Hanoi with panoramic city views and world-class amenities." 
+                                        <TextBox Text="" 
                                             Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                                     </StackPanel>
 
@@ -252,32 +252,32 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                                    <TextBlock Text="4.8" FontSize="48" FontWeight="Bold" Foreground="#FF4CAF50" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="0" FontSize="48" FontWeight="Bold" Foreground="#FF4CAF50" HorizontalAlignment="Center"/>
                                     <TextBlock Text="⭐⭐⭐⭐⭐" FontSize="20" HorizontalAlignment="Center" Margin="0,5"/>
                                     <TextBlock Text="Overall Rating" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Based on 234 reviews" FontSize="12" Foreground="#FF666666" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Based on " FontSize="12" Foreground="#FF666666" HorizontalAlignment="Center"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1">
                                     <StackPanel Orientation="Horizontal" Margin="0,5">
                                         <TextBlock Text="5⭐" Width="30"/>
-                                        <ProgressBar Value="75" Width="100" Height="10" VerticalAlignment="Center" Margin="10,0"/>
-                                        <TextBlock Text="175" Width="30" TextAlignment="Right"/>
+                                        <ProgressBar Value="0" Width="100" Height="10" VerticalAlignment="Center" Margin="10,0"/>
+                                        <TextBlock Text="0" Width="30" TextAlignment="Right"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,5">
                                         <TextBlock Text="4⭐" Width="30"/>
-                                        <ProgressBar Value="15" Width="100" Height="10" VerticalAlignment="Center" Margin="10,0"/>
-                                        <TextBlock Text="35" Width="30" TextAlignment="Right"/>
+                                        <ProgressBar Value="0" Width="100" Height="10" VerticalAlignment="Center" Margin="10,0"/>
+                                        <TextBlock Text="0" Width="30" TextAlignment="Right"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,5">
                                         <TextBlock Text="3⭐" Width="30"/>
-                                        <ProgressBar Value="8" Width="100" Height="10" VerticalAlignment="Center" Margin="10,0"/>
-                                        <TextBlock Text="19" Width="30" TextAlignment="Right"/>
+                                        <ProgressBar Value="0" Width="100" Height="10" VerticalAlignment="Center" Margin="10,0"/>
+                                        <TextBlock Text="0" Width="30" TextAlignment="Right"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,5">
                                         <TextBlock Text="2⭐" Width="30"/>
-                                        <ProgressBar Value="2" Width="100" Height="10" VerticalAlignment="Center" Margin="10,0"/>
-                                        <TextBlock Text="5" Width="30" TextAlignment="Right"/>
+                                        <ProgressBar Value="0" Width="100" Height="10" VerticalAlignment="Center" Margin="10,0"/>
+                                        <TextBlock Text="0" Width="30" TextAlignment="Right"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,5">
                                         <TextBlock Text="1⭐" Width="30"/>
