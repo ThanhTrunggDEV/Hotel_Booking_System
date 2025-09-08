@@ -11,6 +11,7 @@
         <conv:DateDiffConverter x:Key="DateDiffConverter"/>
         <conv:NightsCalculatorConverter x:Key="NightsCalculatorConverter"/>
         <conv:FilterHotelConverter x:Key="FilterHotelConverter"/>
+        <conv:StatusToColorConverter x:Key="StatusToColorConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
         <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
@@ -22,6 +23,69 @@
             <GradientStop Color="#f093fb" Offset="0"/>
             <GradientStop Color="#f5576c" Offset="1"/>
         </LinearGradientBrush>
+
+        <Style x:Key="RoomCardStyle" TargetType="Border">
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="Height" Value="300"/>
+            <Setter Property="Background" Value="#FFF8F9FA"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="15"/>
+
+            <!-- Default Shadow + Scale -->
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000"
+                              BlurRadius="8"
+                              ShadowDepth="2"
+                              Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                  
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                         To="1.05" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                         To="1.05" Duration="0:0:0.2"/>
+                    
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                         To="0.4" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                         To="14" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                              
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                         To="1" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                         To="1" Duration="0:0:0.2"/>
+                            
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.Opacity)"
+                                         To="0.2" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Effect.(DropShadowEffect.BlurRadius)"
+                                         To="8" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryGradient}"/>
