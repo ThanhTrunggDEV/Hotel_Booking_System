@@ -129,8 +129,6 @@ namespace Hotel_Booking_System.ViewModels
 
             FilteredRooms = new ObservableCollection<Room>();
 
-            GenerateData();
-
         }
         private void SortHotels()
         {
@@ -302,24 +300,7 @@ namespace Hotel_Booking_System.ViewModels
 //   https://i.ibb.co/ksLcW4k4/room4.jpg
 //https://i.ibb.co/xKf2wdCn/room2.jpg
 //https://i.ibb.co/TMyV0ngc/room1.jpg
-        private void GenerateData()
-        {
-            Hotels.Add(new Hotel { MinPrice = 500, MaxPrice = 2000, HotelID = "HT1", HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg", HotelName = "Hotel Sunshine", City = "Hà Nội", Rating = 5, Description = "A luxurious hotel in the heart of the city." });
-            Hotels.Add(new Hotel {MinPrice = 200, MaxPrice = 700, HotelID = "HT2", HotelImage = "https://i.ibb.co/Z6XwmzzY/download-1.jpg", HotelName = "Ocean View Resort", City = "Đà Nẵng", Rating = 4, Description = "A beautiful resort with stunning ocean views." });
-            Hotels.Add(new Hotel { MinPrice = 100, MaxPrice = 500, HotelImage = "https://i.ibb.co/JWDk4mxz/download-2.jpg", HotelID = "HT3", HotelName = "Mountain Retreat", City = "Đà Lạt", Rating = 3, Description = "A peaceful retreat in the mountains." });
-
-            Rooms.Add(new Room {RoomImage= "https://i.ibb.co/ksLcW4k4/room4.jpg", RoomID = "R1", HotelID = "HT1", RoomNumber = "101", RoomType = "Single", PricePerNight = 100, Status = "Available" });
-            Rooms.Add(new Room { RoomImage = "https://i.ibb.co/xKf2wdCn/room2.jpg", RoomID = "R2", HotelID = "HT1", RoomNumber = "102", RoomType = "Double", PricePerNight = 150, Status = "Available" });
-            Rooms.Add(new Room { RoomImage = "https://i.ibb.co/TMyV0ngc/room1.jpg", RoomID = "R3", HotelID = "HT2", RoomNumber = "201", RoomType = "Suite", PricePerNight = 300, Status = "Booked" });
-            Rooms.Add(new Room { RoomImage= "https://i.ibb.co/TMyV0ngc/room4.jpg", RoomID = "R4", HotelID = "HT2", RoomNumber = "202", RoomType = "Single", PricePerNight = 120, Status = "Available" });
-            Rooms.Add(new Room { RoomImage = "https://i.ibb.co/TMyV0ngc/room2.jpg", RoomID = "R5", HotelID = "HT3", RoomNumber = "301", RoomType = "Double", PricePerNight = 180, Status = "Available" });
-            Rooms.Add(new Room { RoomImage= "https://i.ibb.co/TMyV0ngc/room1.jpg", RoomID = "R6", HotelID = "HT3", RoomNumber = "302", RoomType = "Suite", PricePerNight = 350, Status = "Booked" });
-
-            Bookings.Add(new Booking { BookingID = "B1", UserID = "U1", RoomID = "R3", CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(2), Status = "Confirmed" });
-            Bookings.Add(new Booking { BookingID = "B2", UserID = "U2", RoomID = "R6", CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(3), Status = "Pending" });
-            Bookings.Add(new Booking { BookingID = "B3", UserID = "U1", RoomID = "R2", CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(1), Status = "Cancelled" });
-            Bookings.Add(new Booking { BookingID = "B4", UserID = "U3", RoomID = "R5", CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(4), Status = "Confirmed" });
-        }
+        
 
         [RelayCommand]
         private void ShowHotelDetails(string hotelID)
