@@ -126,7 +126,6 @@ namespace Hotel_Booking_System.ViewModels
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
             Bookings = new ObservableCollection<Booking>(_bookingRepository.GetAllAsync().Result);
 
-
             FilteredRooms = new ObservableCollection<Room>();
 
         }
