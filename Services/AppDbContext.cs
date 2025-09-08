@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace Hotel_Booking_System.Services
 {
-    internal class AppDbContext : DbContext
+    public class AppDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Booking> Bookings { get; set; }
