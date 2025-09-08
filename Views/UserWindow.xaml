@@ -63,107 +63,167 @@
                         </Grid.ColumnDefinitions>
 
                         <ScrollViewer>
-                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
+     
 
-                                <StackPanel Margin="25">
+                            <StackPanel>
+                                <Border Visibility="Collapsed" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
+                                    <StackPanel Margin="25">
+                                        <TextBlock HorizontalAlignment="Center" Text="Hotel Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+                                        <TextBlock Text="Location" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <ComboBox x:Name="cbbLocation" Style="{StaticResource ModernComboBox}">
+                                            <ComboBoxItem>Hà Nội</ComboBoxItem>
+                                            <ComboBoxItem>Tuyên Quang</ComboBoxItem>
+                                            <ComboBoxItem>Lào Cai</ComboBoxItem>
+                                            <ComboBoxItem>Thái Nguyên</ComboBoxItem>
+                                            <ComboBoxItem>Phú Thọ</ComboBoxItem>
+                                            <ComboBoxItem>Bắc Ninh</ComboBoxItem>
+                                            <ComboBoxItem>Hưng Yên</ComboBoxItem>
+                                            <ComboBoxItem>Hải Phòng</ComboBoxItem>
+                                            <ComboBoxItem>Ninh Bình</ComboBoxItem>
+                                            <ComboBoxItem>Quảng Trị</ComboBoxItem>
+                                            <ComboBoxItem>Đà Nẵng</ComboBoxItem>
+                                            <ComboBoxItem>Quảng Ngãi</ComboBoxItem>
+                                            <ComboBoxItem>Gia Lai</ComboBoxItem>
+                                            <ComboBoxItem>Khánh Hòa</ComboBoxItem>
+                                            <ComboBoxItem>Lâm Đồng</ComboBoxItem>
+                                            <ComboBoxItem>Đăk Lăk</ComboBoxItem>
+                                            <ComboBoxItem>TP. Hồ Chí Minh</ComboBoxItem>
+                                            <ComboBoxItem>TP. Cần Thơ</ComboBoxItem>
+                                            <ComboBoxItem>Vĩnh Long</ComboBoxItem>
+                                            <ComboBoxItem>Đồng Tháp</ComboBoxItem>
+                                            <ComboBoxItem>Cà Mau</ComboBoxItem>
+                                            <ComboBoxItem>An Giang</ComboBoxItem>
 
-                                    <TextBlock HorizontalAlignment="Center" Text="Search Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
-                                    <TextBlock Text="Location" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                    <ComboBox x:Name="cbbLocation" Style="{StaticResource ModernComboBox}">
-                                        <ComboBoxItem>Hà Nội</ComboBoxItem>
-                                        <ComboBoxItem>Tuyên Quang</ComboBoxItem>
-                                        <ComboBoxItem>Lào Cai</ComboBoxItem>
-                                        <ComboBoxItem>Thái Nguyên</ComboBoxItem>
-                                        <ComboBoxItem>Phú Thọ</ComboBoxItem>
-                                        <ComboBoxItem>Bắc Ninh</ComboBoxItem>
-                                        <ComboBoxItem>Hưng Yên</ComboBoxItem>
-                                        <ComboBoxItem>Hải Phòng</ComboBoxItem>
-                                        <ComboBoxItem>Ninh Bình</ComboBoxItem>
-                                        <ComboBoxItem>Quảng Trị</ComboBoxItem>
-                                        <ComboBoxItem>Đà Nẵng</ComboBoxItem>
-                                        <ComboBoxItem>Quảng Ngãi</ComboBoxItem>
-                                        <ComboBoxItem>Gia Lai</ComboBoxItem>
-                                        <ComboBoxItem>Khánh Hòa</ComboBoxItem>
-                                        <ComboBoxItem>Lâm Đồng</ComboBoxItem>
-                                        <ComboBoxItem>Đăk Lăk</ComboBoxItem>
-                                        <ComboBoxItem>TP. Hồ Chí Minh</ComboBoxItem>
-                                        <ComboBoxItem>TP. Cần Thơ</ComboBoxItem>
-                                        <ComboBoxItem>Vĩnh Long</ComboBoxItem>
-                                        <ComboBoxItem>Đồng Tháp</ComboBoxItem>
-                                        <ComboBoxItem>Cà Mau</ComboBoxItem>
-                                        <ComboBoxItem>An Giang</ComboBoxItem>
+                                        </ComboBox>
+                                        <TextBlock Text="Price Range ($)" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBox x:Name="txtMinPrice" Width="80" Height="30" 
+                                     
+                                    HorizontalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="1" Text="to" 
+                                      VerticalAlignment="Center" 
+                                      Margin="10,0" 
+                                      HorizontalAlignment="Center"/>
+                                                    <TextBox x:Name="txtMaxPrice" Grid.Column="2" Width="80" Height="30" 
+                                    
+                                    HorizontalAlignment="Center"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <StackPanel>
+                                                <CheckBox x:Name="cbFiveStar" Content="⭐⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                                <CheckBox x:Name="cbFourStar" Content="⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                                <CheckBox x:Name="cbThreeStar" Content="⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                                <CheckBox x:Name="cbTwoStar" Content="⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                                <CheckBox x:Name="cbOneStar" Content="⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+
+                                            </StackPanel>
+                                        </Border>
+
+                                        <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <StackPanel>
+                                                <CheckBox x:Name="cbFreeWifi" Content="🌐 Free WiFi" Margin="0,5"/>
+                                                <CheckBox x:Name="cbSwimmingPool" Content="🏊 Swimming Pool" Margin="0,5"/>
+                                                <CheckBox x:Name="cbFreeParking" Content="🚗 Free Parking" Margin="0,5"/>
+                                                <CheckBox x:Name="cbRestaurant" Content="🍽️ Restaurant" Margin="0,5"/>
+                                                <CheckBox x:Name="cbGym" Content="🏋️ Gym" Margin="0,5"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <Button Content="Clear Filters" Command="{Binding ClearSearchCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
+                                        <Button Command="{Binding SearchHotelsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource FilterHotelConverter}">
+                                                    <Binding ElementName="cbbLocation" Path="Text"/>
+                                                    <Binding ElementName="txtMinPrice" Path="Text"/>
+                                                    <Binding ElementName="txtMaxPrice" Path="Text"/>
+                                                    <Binding ElementName="cbFiveStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbFourStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbThreeStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbTwoStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbOneStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbFreeWifi" Path="IsChecked"/>
+                                                    <Binding ElementName="cbSwimmingPool" Path="IsChecked"/>
+                                                    <Binding ElementName="cbFreeParking" Path="IsChecked"/>
+                                                    <Binding ElementName="cbRestaurant" Path="IsChecked"/>
+                                                    <Binding ElementName="cbGym" Path="IsChecked"/>
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Visibility="Visible" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
+                                    <StackPanel Margin="25">
+                                        <TextBlock HorizontalAlignment="Center" Text="Room Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
                                         
-                                    </ComboBox>
-                                    <TextBlock Text="Price Range ($)" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                    <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                        <StackPanel>
-                                            <Grid Margin="0,0,0,10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBox x:Name="txtMinPrice" Width="80" Height="30" 
-                                          
-                                         HorizontalAlignment="Center"/>
-                                                <TextBlock Grid.Column="1" Text="to" 
-                                           VerticalAlignment="Center" 
-                                           Margin="10,0" 
-                                           HorizontalAlignment="Center"/>
-                                                <TextBox x:Name="txtMaxPrice" Grid.Column="2" Width="80" Height="30" 
-                                         
-                                         HorizontalAlignment="Center"/>
-                                            </Grid>
-                                        </StackPanel>
-                                    </Border>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                            
+                                                    <TextBlock Grid.Column="1" Text="to" 
+                                      VerticalAlignment="Center" 
+                                      Margin="10,0" 
+                                      HorizontalAlignment="Center"/>
+                                                   
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
 
-                                    <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                    <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                        <StackPanel>
-                                            <CheckBox x:Name="cbFiveStar" Content="⭐⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                            <CheckBox x:Name="cbFourStar" Content="⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                            <CheckBox x:Name="cbThreeStar" Content="⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                            <CheckBox x:Name="cbTwoStar" Content="⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                            <CheckBox x:Name="cbOneStar" Content="⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <StackPanel>
+                                               
 
-                                        </StackPanel>
-                                    </Border>
+                                            </StackPanel>
+                                        </Border>
 
-                                    <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                    <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                        <StackPanel>
-                                            <CheckBox x:Name="cbFreeWifi" Content="🌐 Free WiFi" Margin="0,5"/>
-                                            <CheckBox x:Name="cbSwimmingPool" Content="🏊 Swimming Pool" Margin="0,5"/>
-                                            <CheckBox x:Name="cbFreeParking" Content="🚗 Free Parking" Margin="0,5"/>
-                                            <CheckBox x:Name="cbRestaurant" Content="🍽️ Restaurant" Margin="0,5"/>
-                                            <CheckBox x:Name="cbGym" Content="🏋️ Gym" Margin="0,5"/>
-                                        </StackPanel>
-                                    </Border>
-                                    <Button Content="Clear Filters" Command="{Binding ClearSearchCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
-                                    <Button Command="{Binding SearchHotelsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
-                                        <Button.CommandParameter>
-                                            <MultiBinding Converter="{StaticResource FilterHotelConverter}">
-                                                <Binding ElementName="cbbLocation" Path="Text"/>
-                                                <Binding ElementName="txtMinPrice" Path="Text"/>
-                                                <Binding ElementName="txtMaxPrice" Path="Text"/>
-                                                <Binding ElementName="cbFiveStar" Path="IsChecked"/>
-                                                <Binding ElementName="cbFourStar" Path="IsChecked"/>
-                                                <Binding ElementName="cbThreeStar" Path="IsChecked"/>
-                                                <Binding ElementName="cbTwoStar" Path="IsChecked"/>
-                                                <Binding ElementName="cbOneStar" Path="IsChecked"/>
-                                                <Binding ElementName="cbFreeWifi" Path="IsChecked"/>
-                                                <Binding ElementName="cbSwimmingPool" Path="IsChecked"/>
-                                                <Binding ElementName="cbFreeParking" Path="IsChecked"/>
-                                                <Binding ElementName="cbRestaurant" Path="IsChecked"/>
-                                                <Binding ElementName="cbGym" Path="IsChecked"/>
-                                            </MultiBinding>
-                                        </Button.CommandParameter>
-                                    </Button>
+                                        <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <StackPanel>
+                                               
+                                            </StackPanel>
+                                        </Border>
+                                        <Button Content="Clear Filters" Command="{Binding ClearSearchCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
+                                        <Button Command="{Binding SearchHotelsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource FilterHotelConverter}">
+                                                    <Binding ElementName="cbbLocation" Path="Text"/>
+                                                    <Binding ElementName="txtMinPrice" Path="Text"/>
+                                                    <Binding ElementName="txtMaxPrice" Path="Text"/>
+                                                    <Binding ElementName="cbFiveStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbFourStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbThreeStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbTwoStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbOneStar" Path="IsChecked"/>
+                                                    <Binding ElementName="cbFreeWifi" Path="IsChecked"/>
+                                                    <Binding ElementName="cbSwimmingPool" Path="IsChecked"/>
+                                                    <Binding ElementName="cbFreeParking" Path="IsChecked"/>
+                                                    <Binding ElementName="cbRestaurant" Path="IsChecked"/>
+                                                    <Binding ElementName="cbGym" Path="IsChecked"/>
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
 
-
-                                </StackPanel>
-
-                            </Border>
+                            </StackPanel>
+                            
                         </ScrollViewer>
 
 
@@ -205,79 +265,80 @@
                                         </Grid>
                                     </Border>
 
-                                    
+
                                     <ListView Grid.Row="1" Grid.Column="1"
-                  Margin="4,20,20,20"
-                  ItemsSource="{Binding FilteredRooms}"
-                  MaxHeight="400"
-                  Background="Transparent"
-                  BorderThickness="0"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+          Margin="4,20,20,20"
+          ItemsSource="{Binding FilteredRooms}"
+          MaxHeight="400"
+          Background="Transparent"
+          BorderThickness="0"
+           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+          ScrollViewer.VerticalScrollBarVisibility="Auto">
+
                                        
                                         <ListView.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <UniformGrid/>
+                                           
+                                                <WrapPanel Orientation="Horizontal" />
                                             </ItemsPanelTemplate>
                                         </ListView.ItemsPanel>
 
-                                        
+                                      
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Width="300" Height="300" Background="#FFF8F9FA" 
-                            CornerRadius="12" Margin="10" Padding="15">
+                                                <Border Width="260" Height="340" CornerRadius="20" Margin="12" Padding="0"
+        Background="White" Style="{StaticResource RoomCardStyle}">
                                                     <Grid>
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="150"/>
+                                                            <RowDefinition Height="170"/>
                                                             <RowDefinition Height="*"/>
                                                         </Grid.RowDefinitions>
 
-                                                     
-                                                        <Border Grid.Row="0" CornerRadius="8" ClipToBounds="True" Margin="0,0,0,10">
-                                                            <Image Source="{Binding RoomImage, Converter={StaticResource ImageUrlToBitMap}}" 
-                                       Stretch="Fill"/>
+                                                        
+                                                        <Border Grid.Row="0" CornerRadius="20,20,0,0" ClipToBounds="True">
+                                                            <Image Source="{Binding RoomImage, Converter={StaticResource ImageUrlToBitMap}}"
+                   Stretch="UniformToFill"/>
                                                         </Border>
 
-                                                        
-                                                        <StackPanel Grid.Row="1">
-                                                            <TextBlock Text="{Binding RoomType}" 
-                                           FontSize="16" FontWeight="Bold" 
-                                           Margin="0,0,0,5"/>
-                                                            <TextBlock Text="{Binding RoomNumber, StringFormat=Room {0}}" 
-                                           FontSize="12" Foreground="#666" 
-                                           Margin="0,0,0,8"/>
+                                                       
+                                                        <StackPanel Grid.Row="1" Margin="15">
+                                                            <TextBlock Text="{Binding RoomNumber, StringFormat=Room {0}}"
+                       FontSize="16" FontWeight="Bold" Foreground="#333" Margin="0,0,0,6"/>
 
-                                                            <Border Background="#FFE8F5E8" CornerRadius="12" 
-                                        Padding="8,4" HorizontalAlignment="Left" 
-                                        Margin="0,0,0,10">
+                                                            <TextBlock Text="{Binding Capacity, StringFormat=Capacity: {0} people}"
+                       FontSize="12" Foreground="#666" Margin="0,0,0,10"/>
+
+                                                            <Border CornerRadius="12" Padding="8,3" HorizontalAlignment="Left"
+                    Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}">
                                                                 <TextBlock Text="{Binding Status}" 
-                                               FontSize="11" Foreground="#FF4CAF50" 
-                                               FontWeight="SemiBold"/>
+                           FontSize="11" Foreground="White" FontWeight="SemiBold"/>
                                                             </Border>
 
-                                                            <Grid>
+                                                            <Grid Margin="0,15,0,0">
                                                                 <Grid.ColumnDefinitions>
                                                                     <ColumnDefinition Width="*"/>
                                                                     <ColumnDefinition Width="Auto"/>
                                                                 </Grid.ColumnDefinitions>
 
                                                                 <StackPanel Grid.Column="0">
-                                                                    <TextBlock Text="Price per night" 
-                                                   FontSize="10" Foreground="#666"/>
-                                                                    <TextBlock Text="{Binding PricePerNight, StringFormat='${0:F0}'}" 
-                                                   FontSize="18" FontWeight="Bold" 
-                                                   Foreground="#FF4CAF50"/>
+                                                                    <TextBlock Text="Price per night" FontSize="11" Foreground="#999"/>
+                                                                    <TextBlock Text="{Binding PricePerNight, StringFormat='${0:F0}'}"
+                               FontSize="20" FontWeight="Bold" Foreground="#2E7D32"/>
                                                                 </StackPanel>
 
-                                                                <Button Grid.Column="1" Content="Book Now" 
-                                            Style="{StaticResource PrimaryButton}"
-                                            Width="80" Height="30"
-                                            Command="{Binding DataContext.BookRoomCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"/>
+                                                                <Button Grid.Column="1" Content="Book"
+                                                                        Style="{StaticResource PrimaryButton}"
+                                                                        Width="80"
+                                                                        Height="35"
+                        Command="{Binding DataContext.BookRoomCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="{Binding}"/>
                                                             </Grid>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
+
                                             </DataTemplate>
+
                                         </ListView.ItemTemplate>
                                     </ListView>
                                 </Grid>
@@ -350,7 +411,7 @@
                                 </ListView.ItemContainerStyle>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Border CornerRadius="15" Background="White" Margin="0,0,0,20"
+                                        <Border Style="{StaticResource RoomCardStyle}" Width="Auto" CornerRadius="15" Background="White" Margin="5,0,0,10"
                                     BorderThickness="1" BorderBrush="#FFE0E0E0">
                                             <Border.Effect>
                                                 <DropShadowEffect Color="#FFE0E0E0" Opacity="0.3" BlurRadius="8" ShadowDepth="2"/>
