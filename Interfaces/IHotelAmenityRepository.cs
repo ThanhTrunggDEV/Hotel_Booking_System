@@ -7,8 +7,8 @@ using Hotel_Booking_System.DomainModels;
 
 namespace Hotel_Booking_System.Interfaces
 {
-    internal interface IHotelAmenityRepository : IRepository<HotelAmenity>
+    public interface IHotelAmenityRepository : IRepository<HotelAmenity>
     {
-        public Task GetAmenitiesByHotelId(string hotelId);
+         Task GetAmenitiesByHotelId(string hotelId);
     }
 }

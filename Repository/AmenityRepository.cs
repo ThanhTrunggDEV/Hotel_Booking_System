@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel_Booking_System.Repository
 {
-    class AmenityRepository : IAmenityRepository
+    public class AmenityRepository : IAmenityRepository
     {
         private readonly AppDbContext _context;
         public AmenityRepository(AppDbContext context)

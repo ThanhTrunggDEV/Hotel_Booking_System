@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel_Booking_System.Repository
 {
-    internal class AIChatRepository : IAIChatRepository
+    public class AIChatRepository : IAIChatRepository
     {
         private readonly AppDbContext _context;
 

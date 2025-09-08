@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel_Booking_System.Repository
 {
-    class HotelAdminRequestRepository : IHotelAdminRequestRepository
+    public class HotelAdminRequestRepository : IHotelAdminRequestRepository
     {
         private readonly AppDbContext _context;
         public HotelAdminRequestRepository(AppDbContext context)

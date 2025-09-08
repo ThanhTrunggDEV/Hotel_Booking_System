@@ -7,7 +7,7 @@ using Hotel_Booking_System.DomainModels;
 
 namespace Hotel_Booking_System.Interfaces
 {
-    internal interface IAIChatRepository : IRepository<AIChat>
+    public interface IAIChatRepository : IRepository<AIChat>
     {
     }
 }
