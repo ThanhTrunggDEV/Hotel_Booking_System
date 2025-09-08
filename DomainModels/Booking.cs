@@ -11,6 +11,7 @@ namespace Hotel_Booking_System.DomainModels
     {
         [Key]
         public string BookingID { get; set; }
+        public string HotelID { get; set; } = "";
         public string RoomID { get; set; } = "";
         public string UserID { get; set; } = "";
         public DateTime CheckInDate { get; set; }
