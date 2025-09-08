@@ -9,5 +9,6 @@ namespace Hotel_Booking_System.Interfaces
 {
     internal interface IHotelAmenityRepository : IRepository<HotelAmenity>
     {
+        public Task GetAmenitiesByHotelId(string hotelId);
     }
 }

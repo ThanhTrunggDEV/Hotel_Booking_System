@@ -38,6 +38,11 @@ namespace Hotel_Booking_System.Repository
             return await _context.HotelAmenities.ToListAsync();
         }
 
+        public Task GetAmenitiesByHotelId(string hotelId) => 
+            _context.HotelAmenities
+                .Where(ha => ha.HotelID == hotelId)
+                .ToListAsync();
+
         public async Task<HotelAmenity?> GetByIdAsync(string id)
         {
             return await _context.HotelAmenities.FindAsync(id);
