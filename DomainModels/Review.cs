@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.DomainModels
 {
-    class Review
+    public class Review
     {
         [Key]
         public string ReviewID { get; set; }
