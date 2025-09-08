@@ -14,12 +14,12 @@ namespace Hotel_Booking_System.Converters
         {
             string location = values[0]?.ToString() ?? string.Empty;
 
-            decimal? minPrice = null;
-            if (decimal.TryParse(values[1]?.ToString(), out var min))
+            double? minPrice = null;
+            if (double.TryParse(values[1]?.ToString(), out var min))
                 minPrice = min;
 
-            decimal? maxPrice = null;
-            if (decimal.TryParse(values[2]?.ToString(), out var max))
+            double? maxPrice = null;
+            if (double.TryParse(values[2]?.ToString(), out var max))
                 maxPrice = max;
 
             bool? fiveStar = values[3] as bool?;

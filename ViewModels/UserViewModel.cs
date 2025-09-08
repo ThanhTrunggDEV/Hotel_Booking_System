@@ -202,8 +202,8 @@ namespace Hotel_Booking_System.ViewModels
             if (parameter is Dictionary<string, object?> searchParams)
             {
                 string location = searchParams.TryGetValue("Location", out var loc) ? loc?.ToString() ?? string.Empty : string.Empty;
-                decimal? minPrice = searchParams.TryGetValue("MinPrice", out var min) && min is decimal dmin ? dmin : null;
-                decimal? maxPrice = searchParams.TryGetValue("MaxPrice", out var max) && max is decimal dmax ? dmax : null;
+                double? minPrice = searchParams.TryGetValue("MinPrice", out var min) && min is double dmin ? dmin : null;
+                double? maxPrice = searchParams.TryGetValue("MaxPrice", out var max) && max is double dmax ? dmax : null;
                 bool? fiveStar = searchParams.TryGetValue("FiveStar", out var five) ? five as bool? : null;
                 bool? fourStar = searchParams.TryGetValue("FourStar", out var four) ? four as bool? : null;
                 bool? threeStar = searchParams.TryGetValue("ThreeStar", out var three) ? three as bool? : null;
@@ -216,22 +216,20 @@ namespace Hotel_Booking_System.ViewModels
                 bool? gym = searchParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
 
 
-                var hotels = _hotelRepository.GetAllAsync().Result.AsQueryable();
+                List<Hotel> hotels = _hotelRepository.GetAllAsync().Result;
 
 
 
                 if (!string.IsNullOrWhiteSpace(location))
                 {
-                    hotels = hotels.Where(h =>
-                        (!string.IsNullOrEmpty(h.City) && h.City == location) ||
-                        (!string.IsNullOrEmpty(h.HotelName) && h.HotelName.Contains(location, StringComparison.OrdinalIgnoreCase)));
+                    hotels = hotels.Where(h => h.City.Contains(location, StringComparison.OrdinalIgnoreCase) || h.Address.Contains(location, StringComparison.OrdinalIgnoreCase)).ToList();
                 }
 
                 
                 if (minPrice.HasValue)
-                    hotels = hotels.Where(h => h.MinPrice >= (double)minPrice.Value);
+                    hotels = hotels.Where(h => h.MinPrice >= minPrice.Value).ToList();
                 if (maxPrice.HasValue)
-                    hotels = hotels.Where(h => h.MaxPrice <= (double)maxPrice.Value);
+                    hotels = hotels.Where(h => h.MaxPrice <= maxPrice.Value).ToList();
 
                 var starFilters = new List<int>();
                 if (fiveStar == true) starFilters.Add(5);
@@ -240,31 +238,16 @@ namespace Hotel_Booking_System.ViewModels
                 if (twoStar == true) starFilters.Add(2);
                 if (oneStar == true) starFilters.Add(1);
                 if (starFilters.Count > 0)
-                    hotels = hotels.Where(h => starFilters.Contains(h.Rating));
+                    hotels = hotels.Where(h => starFilters.Contains(h.Rating)).ToList();
 
-
-                //var filteredHotels = hotels.ToList();
-                //var currentHotel = Hotels.ToList();
-
-                //foreach (var hotel in currentHotel)
-                //{
-                //    if (hotel.HotelID == )
-                //}
-
-                var filteredHotels = hotels.ToList();
-                for (int i = Hotels.Count - 1; i >= 0; i--)
+                Hotels.Clear();
+                for (int i = 0; i < hotels.Count; i++)
                 {
-                    if (!filteredHotels.Any(h => h.HotelID == Hotels[i].HotelID))
-                    {
-                        Hotels.RemoveAt(i);
-                    }
+                    Hotels.Add(hotels[i]);
                 }
 
             }
-            else
-            {
-                Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
-            }
+            
 
 
         }
