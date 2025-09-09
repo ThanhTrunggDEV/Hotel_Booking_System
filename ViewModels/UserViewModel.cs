@@ -29,6 +29,8 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IAIChatRepository _aiChatRepository;
 
         private string userMail;
+        private int _totalBookings;
+        private double _totalSpent;
         private string _sortType = "Default";
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
@@ -37,6 +39,11 @@ namespace Hotel_Booking_System.ViewModels
         private string _showChatButton = "Visible";
         private Hotel _currentHotel;
         private User _currentUser;
+
+
+        public double TotalSpent { get => _totalSpent; set => Set(ref _totalSpent, value); }
+
+        public int TotalBookings { get => _totalBookings; set => Set(ref _totalBookings, value); }
 
         public string SortType { 
             get => _sortType; 
@@ -356,7 +363,11 @@ namespace Hotel_Booking_System.ViewModels
             foreach (var booking in userBookings)
             {
                 Bookings.Add(booking);
+                //TODO: Calculate total spent
             }
+
+
+            TotalBookings = Bookings.Count;
         }
         private void FilterRoomsByHotel(string hotelId)
         {

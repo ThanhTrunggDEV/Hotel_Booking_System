@@ -647,7 +647,7 @@
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
 
-                                            <!-- Header -->
+                                            
                                             <Grid Grid.Row="0" Margin="0,0,0,10">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
@@ -682,7 +682,7 @@
                                FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
 
                                                     <TextBlock Text="Room" FontSize="12" Foreground="#666"/>
-                                                    <TextBlock Text="{Binding RoomID, StringFormat='Room {0}'}" 
+                                                    <TextBlock Text="{Binding RoomID, Converter={StaticResource RoomIdToRoomNumberConverter}, StringFormat='Room {0}'}" 
                                FontSize="14" FontWeight="Bold"/>
                                                 </StackPanel>
 
@@ -696,7 +696,7 @@
                                                     </TextBlock>
 
                                                     <TextBlock Text="Duration" FontSize="12" Foreground="#666" Margin="0,8,0,0"/>
-                                                    <TextBlock FontWeight="Bold" Foreground="#4CAF50">
+                                                    <TextBlock x:Name="tblNights" FontWeight="Bold" Foreground="#4CAF50">
                                                         <TextBlock.Text>
                                                             <MultiBinding Converter="{StaticResource NightsCalculatorConverter}">
                                                                 <Binding Path="CheckInDate"/>
@@ -706,8 +706,15 @@
                                                     </TextBlock>
 
                                                     <TextBlock Text="Total" FontSize="12" Foreground="#666" Margin="0,8,0,0"/>
-                                                    <TextBlock Text="{Binding TotalAmount, StringFormat='{}{0:C}'}" 
-                               FontWeight="Bold" FontSize="16" Foreground="#4CAF50"/>
+                                                    <TextBlock FontWeight="Bold" FontSize="16" Foreground="#4CAF50">
+                                                        <TextBlock.Text>
+                                                            <MultiBinding Converter="{StaticResource TotalAmountCalculatorConverter}">
+                                                                <Binding Path="RoomID"/>
+                                                                <Binding ElementName="tblNights" Path="Text"/>
+                                                                
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
                                                 </StackPanel>
                                             </Grid>
 
@@ -929,17 +936,8 @@
                                             <TextBlock Text="Bookings" FontSize="10" Foreground="#FF666666" HorizontalAlignment="Center"/>
                                         </StackPanel>
 
+
                                         <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Margin="0,5">
-                                            <TextBlock Text="{Binding TotalNights, FallbackValue=0}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                            <TextBlock Text="Nights" FontSize="10" Foreground="#FF666666" HorizontalAlignment="Center"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Margin="0,5">
-                                            <TextBlock Text="{Binding CitiesVisited, FallbackValue=0}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                            <TextBlock Text="Cities" FontSize="10" Foreground="#FF666666" HorizontalAlignment="Center"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Margin="0,5">
                                             <TextBlock Text="{Binding TotalSpent, StringFormat='${0:F0}',FallbackValue=0}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
                                             <TextBlock Text="Spent" FontSize="10" Foreground="#FF666666" HorizontalAlignment="Center"/>
                                         </StackPanel>
