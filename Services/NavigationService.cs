@@ -81,13 +81,14 @@ namespace Hotel_Booking_System.Services
             newWindow.Show();
         }
 
-        public void OpenBookingDialog(Room room, User currentUser, string hotelName)
+        public void OpenBookingDialog(Room room, User currentUser, Hotel hotel)
         {
             var bookingWindow = App.Provider!.GetRequiredService<BookingDialog>();
             var vm = App.Provider!.GetRequiredService<IBookingViewModel>();
             vm.SelectedRoom = room;
             vm.CurrentUser = currentUser;
-            vm.HotelName = hotelName;
+            vm.Hotel = hotel;
+            
             bookingWindow.DataContext = vm;
             bookingWindow.ShowDialog();
             

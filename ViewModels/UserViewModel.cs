@@ -432,7 +432,7 @@ namespace Hotel_Booking_System.ViewModels
         private void BookRoom(Room room)
         {
             var hotel = Hotels.FirstOrDefault(h => h.HotelID == room.HotelID);
-            _navigationService.OpenBookingDialog(room, CurrentUser, hotel.HotelName);
+            _navigationService.OpenBookingDialog(room, CurrentUser, hotel);
         }
         private void FilterRoomsByHotel(string hotelId)
         {

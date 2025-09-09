@@ -11,6 +11,6 @@ namespace Hotel_Booking_System.Interfaces
     {
         Room SelectedRoom { get; set; }
         User CurrentUser { get; set; }
-        string HotelName { get; set; }
+        Hotel Hotel{ get; set; }
     }
 }
