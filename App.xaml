@@ -32,7 +32,6 @@
             <Setter Property="Margin" Value="10"/>
             <Setter Property="Padding" Value="15"/>
 
-            <!-- Default Shadow + Scale -->
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect Color="#000"

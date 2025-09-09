@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hotel_Booking_System.DomainModels;
 
 namespace Hotel_Booking_System.Interfaces
 {
@@ -26,7 +27,11 @@ namespace Hotel_Booking_System.Interfaces
     {
         void NavigationToForgotPassword();
     }
-    public interface INavigationService : INavigationToAdmin, INavigationToSignUp, INavigationToUser, INavitionToLogin, NavigationToForgotPassword
+    public interface IOpenBookingDialog
+    {
+        void OpenBookingDialog(Room room, User currentUser, string hotelName);
+    }
+    public interface INavigationService : INavigationToAdmin, INavigationToSignUp, INavigationToUser, INavitionToLogin, NavigationToForgotPassword, IOpenBookingDialog
     {
         
     }

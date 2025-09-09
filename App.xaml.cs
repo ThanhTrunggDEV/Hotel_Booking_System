@@ -31,11 +31,14 @@ namespace Hotel_Booking_System
         private static IServiceProvider ConfigDI()
         {
             return new ServiceCollection().AddDbContext<AppDbContext>()
+
                                .AddSingleton<LoginWindow>()
                                .AddSingleton<ForgotPasswordWindow>()
                                .AddSingleton<SignUpWindow>()
                                .AddSingleton<UserWindow>()
+                               .AddSingleton<BookingDialog>()
                                .AddSingleton<AdminWindow>()
+
                                .AddScoped<IHotelRepository, HotelRepository>()
                                .AddScoped<IBookingRepository, BookingRepository>()
                                .AddScoped<IUserRepository, UserRepository>()
@@ -45,9 +48,12 @@ namespace Hotel_Booking_System
                                  .AddScoped<IAIChatRepository, AIChatRepository>()
                                .AddScoped<IRoomRepository, RoomRepository>()
                                .AddScoped<IHotelAdminRequestRepository, HotelAdminRequestRepository>()
+
                                .AddScoped<INavigationService, NavigationService>()
                                .AddScoped<IAuthentication, AuthenticationSerivce>()
+
                               .AddScoped<ILoginViewModel, LoginViewModel>()
+                              .AddScoped<IBookingViewModel, BookingViewModel>()
                               .AddScoped<IForgotPasswordViewModel, ForgotPasswordViewModel>()
                               .AddScoped<ISignUpViewModel, SignUpViewModel>()
                               .AddScoped<IUserViewModel, UserViewModel>()

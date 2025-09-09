@@ -1,4 +1,5 @@
-﻿using Hotel_Booking_System.Interfaces;
+﻿using Hotel_Booking_System.DomainModels;
+using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -78,6 +79,18 @@ namespace Hotel_Booking_System.Services
 
             CloseCurrent();
             newWindow.Show();
+        }
+
+        public void OpenBookingDialog(Room room, User currentUser, string hotelName)
+        {
+            var bookingWindow = App.Provider!.GetRequiredService<BookingDialog>();
+            var vm = App.Provider!.GetRequiredService<IBookingViewModel>();
+            vm.SelectedRoom = room;
+            vm.CurrentUser = currentUser;
+            vm.HotelName = hotelName;
+            bookingWindow.DataContext = vm;
+            bookingWindow.ShowDialog();
+            
         }
     }
 }
