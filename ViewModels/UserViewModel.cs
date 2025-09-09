@@ -431,7 +431,8 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private void BookRoom(Room room)
         {
-            WeakReferenceMessenger.Default.Send(new BookRoomMessage(room, CurrentUser));
+            var hotel = Hotels.FirstOrDefault(h => h.HotelID == room.HotelID);
+            _navigationService.OpenBookingDialog(room, CurrentUser, hotel.HotelName);
         }
         private void FilterRoomsByHotel(string hotelId)
         {
