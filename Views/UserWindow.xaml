@@ -597,8 +597,13 @@
                                                         </Border>
 
                                                         <Grid Grid.Column="1" Width="32" Height="32">
-                                                            <Ellipse Fill="#FFBDBDBD"/>
-                                                            <TextBlock Text="👤" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            <Image Source="{Binding CurrentUser.AvatarUrl, FallbackValue=\Resources\avatar_default.png}"
+Stretch="UniformToFill">
+                                                                <Image.Clip>
+                                                                    <EllipseGeometry Center="16,16" RadiusX="16" RadiusY="16"/>
+                                                                </Image.Clip>
+                                                            </Image>
+                                                            <Ellipse Stroke="#FFE0E0E0" StrokeThickness="3"/>
                                                         </Grid>
                                                     </Grid>
                                                 </StackPanel>
