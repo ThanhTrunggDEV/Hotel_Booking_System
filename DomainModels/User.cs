@@ -14,6 +14,7 @@ namespace Hotel_Booking_System.DomainModels
         [Key]
         public string UserID { get; set; }
         public string FullName { get; set; } = "";
+        public string AvatarUrl { get; set; } = "https://i.ibb.co/FLvg0hX4/avatar-default.png";
         public string Phone { get; set; } = "";
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; } = "";

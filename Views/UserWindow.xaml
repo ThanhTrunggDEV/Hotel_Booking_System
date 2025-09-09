@@ -903,12 +903,15 @@
                             <Border Style="{StaticResource CardStyle}">
                                 <StackPanel Margin="25" HorizontalAlignment="Center">
 
-                                    <Border Width="100" Height="100" CornerRadius="50" Margin="0,0,0,15"
-                                Background="#FF2196F3" BorderBrush="#FFE0E0E0" BorderThickness="3">
-                                        <TextBlock Text="{Binding CurrentUser.FullName}" 
-                                       FontSize="32" FontWeight="Bold" Foreground="White"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
+                                    <Grid Width="100" Height="100">
+                                        <Image Source="{Binding CurrentUser.AvatarUrl, FallbackValue=\Resources\avatar_default.png}"
+           Stretch="UniformToFill">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="50,50" RadiusX="50" RadiusY="50"/>
+                                            </Image.Clip>
+                                        </Image>
+                                        <Ellipse Stroke="#FFE0E0E0" StrokeThickness="3"/>
+                                    </Grid>
 
 
                                     <TextBlock Text="{Binding CurrentUser.FullName}" FontSize="18" FontWeight="Bold" 
