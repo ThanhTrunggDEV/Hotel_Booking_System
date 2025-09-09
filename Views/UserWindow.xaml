@@ -639,95 +639,89 @@
                         <ItemsControl x:Name="BookingsItemsControl" ItemsSource="{Binding Bookings}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,15">
+                                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,15" Padding="15">
                                         <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
 
-                                            <StackPanel Grid.Column="0">
-                                                <Grid>
-                                                    <StackPanel>
+                                            <!-- Header -->
+                                            <Grid Grid.Row="0" Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
 
-                                                        <TextBlock Text="{Binding HotelID, Converter={StaticResource HotelIdToHotelNameConverter}}" 
-                                                      FontSize="20" FontWeight="Bold" Margin="0,0,0,5"/>
-
-                                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-
-                                                            <TextBlock Text="{Binding Status}" FontWeight="SemiBold">
-
-                                                            </TextBlock>
-                                                        </StackPanel>
-                                                    </StackPanel>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="{Binding HotelID, Converter={StaticResource HotelIdToHotelNameConverter}}" 
+                               FontSize="20" FontWeight="Bold" Foreground="#333"/>
                                                     <TextBlock Text="{Binding BookingID, StringFormat='Booking #{0}'}" 
-                                                  FontSize="12" Foreground="#FF999999" 
-                                                  HorizontalAlignment="Right" VerticalAlignment="Top"/>
-                                                </Grid>
-
-                                                <Grid Margin="0,15">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-
-                                                    <StackPanel Grid.Column="0">
-                                                        <TextBlock Text="Check-in" FontSize="12" Foreground="#FF666666"/>
-                                                        <TextBlock Text="{Binding CheckInDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontWeight="SemiBold"/>
-                                                    </StackPanel>
-
-                                                    <StackPanel Grid.Column="1">
-                                                        <TextBlock Text="Check-out" FontSize="12" Foreground="#FF666666"/>
-                                                        <TextBlock Text="{Binding CheckOutDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontWeight="SemiBold"/>
-                                                    </StackPanel>
-
-                                                    <StackPanel Grid.Column="2">
-                                                        <TextBlock Text="Room" FontSize="12" Foreground="#FF666666"/>
-                                                        <TextBlock Text="{Binding RoomID, StringFormat='Room {0}'}" FontWeight="SemiBold"/>
-                                                        <TextBlock Text="{Binding CurrentUser.FullName, FallbackValue='Guest Infoo'}" FontSize="12" Foreground="#FF666666"/>
-                                                    </StackPanel>
-
-                                                    <StackPanel Grid.Column="3">
-                                                        <TextBlock Text="Total Amount" FontSize="12" Foreground="#FF666666"/>
-                                                        <TextBlock Text="{Binding TotalAmount, StringFormat='{}{0:C}'}" FontWeight="Bold" FontSize="16" Foreground="#FF4CAF50"/>
-                                                        <TextBlock Text="Duration" FontSize="12" Foreground="#FF666666"/>
-                                                        <TextBlock FontWeight="Bold" FontSize="16" Foreground="#FF4CAF50">
-                                                            <TextBlock.Text>
-                                                                <MultiBinding Converter="{StaticResource DateDiffConverter}">
-                                                                    <Binding Path="CheckInDate"/>
-                                                                    <Binding Path="CheckOutDate"/>
-                                                                </MultiBinding>
-                                                            </TextBlock.Text>
-                                                        </TextBlock>
-                                                        <TextBlock FontSize="12" Foreground="#FF666666">
-                                                            <TextBlock.Text>
-                                                                <MultiBinding Converter="{StaticResource NightsCalculatorConverter}">
-                                                                    <Binding Path="CheckInDate"/>
-                                                                    <Binding Path="CheckOutDate"/>
-                                                                </MultiBinding>
-                                                            </TextBlock.Text>
-                                                        </TextBlock>
-                                                    </StackPanel>
-                                                </Grid>
-
-                                                <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-
-                                                    
-                                                    
-                                                    <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"
-                                                Command="{Binding CancelBookingCommand}"
-                                                CommandParameter="{Binding}"/>
-                                                    <Button Content="Review" Width="100" Style="{StaticResource SecondaryButton}"
-                                                Command="{Binding ReviewBookingCommand}"
-                                                CommandParameter="{Binding}"/>
-                                                    <Button Content="Request changes" Width="120" Style="{StaticResource SecondaryButton}"/>
+                               FontSize="12" Foreground="#999"/>
                                                 </StackPanel>
+
+                                                
+                                                <Border Grid.Column="1" Background="#E3F2FD" Padding="8,4" CornerRadius="10" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Status}" 
+                               FontWeight="SemiBold" Foreground="#2196F3"/>
+                                                </Border>
+                                            </Grid>
+
+                                         
+                                            <Grid Grid.Row="1" Margin="0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                
+                                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                                    <TextBlock Text="Guest" FontSize="12" Foreground="#666"/>
+                                                    <TextBlock Text="{Binding CurrentUser.FullName, FallbackValue='Guest'}" 
+                               FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                                                    <TextBlock Text="Room" FontSize="12" Foreground="#666"/>
+                                                    <TextBlock Text="{Binding RoomID, StringFormat='Room {0}'}" 
+                               FontSize="14" FontWeight="Bold"/>
+                                                </StackPanel>
+
+                                                
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="Check-in / Check-out" FontSize="12" Foreground="#666"/>
+                                                    <TextBlock>
+                        <Run Text="{Binding CheckInDate, StringFormat='{}{0:MMM dd}'}"/>
+                        <Run Text=" → "/>
+                        <Run Text="{Binding CheckOutDate, StringFormat='{}{0:MMM dd}'}"/>
+                                                    </TextBlock>
+
+                                                    <TextBlock Text="Duration" FontSize="12" Foreground="#666" Margin="0,8,0,0"/>
+                                                    <TextBlock FontWeight="Bold" Foreground="#4CAF50">
+                                                        <TextBlock.Text>
+                                                            <MultiBinding Converter="{StaticResource NightsCalculatorConverter}">
+                                                                <Binding Path="CheckInDate"/>
+                                                                <Binding Path="CheckOutDate"/>
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+
+                                                    <TextBlock Text="Total" FontSize="12" Foreground="#666" Margin="0,8,0,0"/>
+                                                    <TextBlock Text="{Binding TotalAmount, StringFormat='{}{0:C}'}" 
+                               FontWeight="Bold" FontSize="16" Foreground="#4CAF50"/>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0" >
+                                                <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"
+                        Command="{Binding CancelBookingCommand}" CommandParameter="{Binding}"/>
+                                                <Button Content="Review" Width="100" Style="{StaticResource SecondaryButton}"
+                        Command="{Binding ReviewBookingCommand}" CommandParameter="{Binding}"/>
+                                                <Button Content="Request changes" Width="120" Style="{StaticResource SecondaryButton}"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
+
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
