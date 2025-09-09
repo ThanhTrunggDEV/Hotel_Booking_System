@@ -12,7 +12,7 @@
         <conv:NightsCalculatorConverter x:Key="NightsCalculatorConverter"/>
         <conv:FilterHotelConverter x:Key="FilterHotelConverter"/>
         <conv:StatusToColorConverter x:Key="StatusToColorConverter"/>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <conv:HotelIdToHotelNameConverter x:Key="HotelIdToHotelNameConverter"/>
 
         <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#667eea" Offset="0"/>
