@@ -120,7 +120,7 @@ namespace Hotel_Booking_System.ViewModels
      });
 
 
-           // SeedData();
+            SeedData();
 
             Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
@@ -210,28 +210,19 @@ namespace Hotel_Booking_System.ViewModels
             //        new Amenity { AmenityName = "Restaurant" }
             //    }
             //}).Wait();
-            _hotelRepository.AddAsync(new Hotel
+           _roomRepository.AddAsync(new Room
             {
+                RoomID = Guid.NewGuid().ToString(),
                 HotelID = "H1003",
-                HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg",
-                UserID = "U1003",
-                HotelName = "Beachside Resort",
-                Address = "789 Ocean Ave, Beachtown",
-                City = "Beachtown",
-                Rating = 5,
-                MinPrice = 150,
-                MaxPrice = 600,
-                Description = "A beachfront resort with all the amenities.",
-                Amenities = new List<Amenity>
-                {
-                    new Amenity { AmenityName = "Free WiFi" },
-                    new Amenity { AmenityName = "Swimming Pool" },
-                    new Amenity { AmenityName = "Free Parking" },
-                    new Amenity { AmenityName = "Restaurant" },
-                    new Amenity { AmenityName = "Gym" }
-                }
+                RoomNumber = "301",
+                RoomImage = "https://i.ibb.co/xKf2wdCn/room2.jpg",
+                RoomType = "Single",
+                PricePerNight = 120,
+                Status = "Available"
             }).Wait();
-            _hotelRepository.SaveAsync().Wait();
+
+           _roomRepository.SaveAsync().Wait();
+
         }
 
 
@@ -440,7 +431,7 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private void BookRoom(Room room)
         {
-            MessageBox.Show($"Booking room {room.RoomNumber} - {room.RoomType} for ${room.PricePerNight}/night");
+            WeakReferenceMessenger.Default.Send(new BookRoomMessage(room, CurrentUser));
         }
         private void FilterRoomsByHotel(string hotelId)
         {
