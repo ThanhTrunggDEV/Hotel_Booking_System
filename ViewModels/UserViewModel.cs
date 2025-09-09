@@ -4,6 +4,7 @@ using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
 using Hotel_Manager.FrameWorks;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -331,6 +332,20 @@ namespace Hotel_Booking_System.ViewModels
             ShowRoomList = "Collapsed";
             ShowAvailableHotels = "Visible";
         }
+        [RelayCommand]
+        private async Task UploadImage()
+        {
+            FileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                CurrentUser.AvatarUrl = await UploadImageService.UploadAsync(openFileDialog.FileName);
+                await _userRepository.UpdateAsync(CurrentUser);
+                CurrentUser = await _userRepository.GetByIdAsync(CurrentUser.UserID);
+            }
+        }
+
         [RelayCommand]
         private void UpdateInfo()
         {

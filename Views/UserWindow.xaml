@@ -959,6 +959,7 @@
 
                                     <StackPanel Margin="0,20,0,0">
                                         <Button Content="Upload Avatar" Width="150" Height="35"
+                                                Command="{Binding UploadImageCommand}"
                                     Style="{StaticResource SecondaryButton}" Margin="0,0,0,8"/>
 
                                     </StackPanel>
