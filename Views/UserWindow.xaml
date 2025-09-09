@@ -780,6 +780,7 @@
                                             <TextBox Text="{Binding CurrentUser.UserID}" 
                                          Style="{StaticResource ModernTextBox}"
                                          IsReadOnly="True"
+                                                     BorderThickness="0"
                                          Background="#FFF5F5F5"
                                          Foreground="#FF666666"/>
                                         </StackPanel>
