@@ -76,7 +76,7 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _showRooms, value);
         }
 
-        public ObservableCollection<Booking> Bookings { get; set; }
+        public ObservableCollection<Booking> Bookings { get; set; } = new ObservableCollection<Booking>();
 
         public ObservableCollection<Hotel> Hotels
         {
@@ -117,6 +117,7 @@ namespace Hotel_Booking_System.ViewModels
      {
          recipient.userMail = message.Value;
          GetCurrentUser();
+         FilterBookingsByUser(CurrentUser.UserID);
      });
 
 
@@ -124,9 +125,9 @@ namespace Hotel_Booking_System.ViewModels
 
             Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
-            Bookings = new ObservableCollection<Booking>(_bookingRepository.GetAllAsync().Result);
-
             
+
+
 
             FilteredRooms = new ObservableCollection<Room>();
 
@@ -344,12 +345,17 @@ namespace Hotel_Booking_System.ViewModels
             if (res)
             {
                 FilterRoomsByHotel(room.HotelID);
-                Bookings.Clear();
-                var allBookings = _bookingRepository.GetAllAsync().Result;
-                foreach (var booking in allBookings)
-                {
-                    Bookings.Add(booking);
-                }
+                FilterBookingsByUser(CurrentUser.UserID);
+            }
+        }
+        private void FilterBookingsByUser(string userId)
+        {
+            var bookingList = _bookingRepository.GetBookingByUserId(userId).Result;
+            Bookings.Clear();
+            var userBookings = bookingList.Where(b => b.UserID == userId).ToList();
+            foreach (var booking in userBookings)
+            {
+                Bookings.Add(booking);
             }
         }
         private void FilterRoomsByHotel(string hotelId)

@@ -31,6 +31,8 @@ namespace Hotel_Booking_System.Repository
 
         public Task<List<Booking>> GetAllAsync() => _context.Bookings.ToListAsync();
 
+        public Task<List<Booking?>> GetBookingByUserId(string userId) => _context.Bookings.Where(b => b.UserID == userId).ToListAsync();
+
         public Task<Booking?> GetByIdAsync(string id) => _context.Bookings.FirstOrDefaultAsync(r => r.BookingID == id);
 
         public async Task SaveAsync()

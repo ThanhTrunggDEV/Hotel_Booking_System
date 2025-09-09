@@ -9,6 +9,6 @@ namespace Hotel_Booking_System.Interfaces
 {
     public interface IBookingRepository : IRepository<Booking>
     {
-
+        Task<List<Booking?>> GetBookingByUserId(string userId);
     }
 }
