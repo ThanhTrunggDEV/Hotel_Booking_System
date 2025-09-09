@@ -96,5 +96,9 @@ namespace Hotel_Booking_System.Services
             bookingWindow.ShowDialog();
             
         }
+        public void CloseBookingDialog()
+        {
+            CloseCurrent();
+        }
     }
 }
