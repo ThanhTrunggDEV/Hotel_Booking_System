@@ -12,6 +12,8 @@
         <conv:NightsCalculatorConverter x:Key="NightsCalculatorConverter"/>
         <conv:FilterHotelConverter x:Key="FilterHotelConverter"/>
         <conv:StatusToColorConverter x:Key="StatusToColorConverter"/>
+        <conv:TotalAmountCalculatorConverter x:Key="TotalAmountCalculatorConverter"/>
+        <conv:RoomIdToRoomNumberConverter x:Key="RoomIdToRoomNumberConverter"/>
         <conv:HotelIdToHotelNameConverter x:Key="HotelIdToHotelNameConverter"/>
 
         <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
