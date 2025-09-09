@@ -66,7 +66,7 @@
      
 
                             <StackPanel>
-                                <Border Visibility="Collapsed" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
+                                <Border Visibility="{Binding ShowSearchHotel}" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
                                     <StackPanel Margin="25">
                                         <TextBlock HorizontalAlignment="Center" Text="Hotel Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
                                         <TextBlock Text="Location" FontWeight="SemiBold" Margin="0,0,0,10"/>
@@ -163,7 +163,7 @@
                                     </StackPanel>
                                 </Border>
 
-                                <Border Visibility="Visible" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
+                                <Border Visibility="{Binding ShowSearchRoom}" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
                                     <StackPanel Margin="25">
                                         <TextBlock HorizontalAlignment="Center" Text="Room Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
                                         

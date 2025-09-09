@@ -32,6 +32,8 @@ namespace Hotel_Booking_System.ViewModels
         private string userMail;
         private int _totalBookings;
         private double _totalSpent;
+        private string _showSearchRoom = "Collapsed";
+        private string _showSearchHotel = "Visible";
         private string _sortType = "Default";
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
@@ -41,7 +43,8 @@ namespace Hotel_Booking_System.ViewModels
         private Hotel _currentHotel;
         private User _currentUser;
 
-
+        public string ShowSearchRoom { get => _showSearchRoom; set => Set(ref _showSearchRoom, value); }
+        public string ShowSearchHotel { get => _showSearchHotel; set => Set(ref _showSearchHotel, value); }
         public double TotalSpent { get => _totalSpent; set => Set(ref _totalSpent, value); }
 
         public int TotalBookings { get => _totalBookings; set => Set(ref _totalBookings, value); }
@@ -314,6 +317,9 @@ namespace Hotel_Booking_System.ViewModels
             CurrentHotel = Hotels.FirstOrDefault(h => h.HotelID == hotelID);
             FilterRoomsByHotel(hotelID);
             ShowAvailableHotels = "Collapsed";
+            ShowSearchHotel = "Collapsed";
+
+            ShowSearchRoom = "Visible";
             ShowRoomList = "Visible";
         }
         [RelayCommand]
@@ -331,6 +337,9 @@ namespace Hotel_Booking_System.ViewModels
         {
             ShowRoomList = "Collapsed";
             ShowAvailableHotels = "Visible";
+
+            ShowSearchHotel = "Visible";
+            ShowSearchRoom = "Collapsed";
         }
         [RelayCommand]
         private async Task UploadImage()
