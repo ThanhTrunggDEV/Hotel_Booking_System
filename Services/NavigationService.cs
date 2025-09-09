@@ -84,6 +84,9 @@ namespace Hotel_Booking_System.Services
         public void OpenBookingDialog(Room room, User currentUser, Hotel hotel)
         {
             var bookingWindow = App.Provider!.GetRequiredService<BookingDialog>();
+
+            bookingWindow.btnCancel.Click += (s, e) => bookingWindow.Close();
+
             var vm = App.Provider!.GetRequiredService<IBookingViewModel>();
             vm.SelectedRoom = room;
             vm.CurrentUser = currentUser;

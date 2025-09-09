@@ -32,12 +32,12 @@ namespace Hotel_Booking_System
         {
             return new ServiceCollection().AddDbContext<AppDbContext>()
 
-                               .AddSingleton<LoginWindow>()
-                               .AddSingleton<ForgotPasswordWindow>()
-                               .AddSingleton<SignUpWindow>()
-                               .AddSingleton<UserWindow>()
-                               .AddSingleton<BookingDialog>()
-                               .AddSingleton<AdminWindow>()
+                               .AddTransient<LoginWindow>()
+                               .AddTransient<ForgotPasswordWindow>()
+                               .AddTransient<SignUpWindow>()
+                               .AddTransient<UserWindow>()
+                               .AddTransient<BookingDialog>()
+                               .AddTransient<AdminWindow>()
 
                                .AddScoped<IHotelRepository, HotelRepository>()
                                .AddScoped<IBookingRepository, BookingRepository>()

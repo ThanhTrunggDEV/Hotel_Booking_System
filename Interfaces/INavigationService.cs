@@ -31,6 +31,7 @@ namespace Hotel_Booking_System.Interfaces
     {
         void OpenBookingDialog(Room room, User currentUser, Hotel hotel);
     }
+
     public interface INavigationService : INavigationToAdmin, INavigationToSignUp, INavigationToUser, INavitionToLogin, NavigationToForgotPassword, IOpenBookingDialog
     {
         
