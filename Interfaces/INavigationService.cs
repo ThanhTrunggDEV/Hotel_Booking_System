@@ -29,7 +29,7 @@ namespace Hotel_Booking_System.Interfaces
     }
     public interface IOpenBookingDialog
     {
-        void OpenBookingDialog(Room room, User currentUser, Hotel hotel);
+        bool OpenBookingDialog(Room room, User currentUser, Hotel hotel);
     }
     public interface ICloseBookingDialog
     {

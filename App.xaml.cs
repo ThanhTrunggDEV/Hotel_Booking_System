@@ -40,7 +40,7 @@ namespace Hotel_Booking_System
                                .AddTransient<AdminWindow>()
 
                                .AddScoped<IHotelRepository, HotelRepository>()
-                               .AddScoped<IBookingRepository, BookingRepository>()
+                               .AddSingleton<IBookingRepository, BookingRepository>()
                                .AddScoped<IUserRepository, UserRepository>()
                                  .AddScoped<IReviewRepository, ReviewRepository>()
                                  .AddScoped<IPaymentRepository, PaymentRepository>()

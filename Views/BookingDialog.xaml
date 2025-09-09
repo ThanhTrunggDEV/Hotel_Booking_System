@@ -107,6 +107,7 @@
                        />
                 <Button Content="Book Now" Width="100" Height="36"
                         Command="{Binding ConfirmBookingCommand}"
+                        x:Name="btnBook"
                         Background="#27AE60" Foreground="White"
                         FontWeight="Bold"
                         BorderBrush="{x:Null}" 

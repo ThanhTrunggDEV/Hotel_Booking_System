@@ -650,7 +650,7 @@
                                                 <Grid>
                                                     <StackPanel>
 
-                                                        <TextBlock Text="{Binding HotelName, FallbackValue='Hotel Hehe'}" 
+                                                        <TextBlock Text="{Binding HotelID, FallbackValue='Hotel Hehe'}" 
                                                       FontSize="20" FontWeight="Bold" Margin="0,0,0,5"/>
 
                                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -722,7 +722,7 @@
                                                     <Button Content="Review" Width="100" Style="{StaticResource SecondaryButton}"
                                                 Command="{Binding ReviewBookingCommand}"
                                                 CommandParameter="{Binding}"/>
-                                                    <Button Content="Request changes" Width="100" Style="{StaticResource SecondaryButton}"/>
+                                                    <Button Content="Request changes" Width="120" Style="{StaticResource SecondaryButton}"/>
                                                 </StackPanel>
                                             </StackPanel>
                                         </Grid>

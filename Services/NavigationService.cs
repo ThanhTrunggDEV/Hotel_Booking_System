@@ -81,11 +81,16 @@ namespace Hotel_Booking_System.Services
             newWindow.Show();
         }
 
-        public void OpenBookingDialog(Room room, User currentUser, Hotel hotel)
+        public bool OpenBookingDialog(Room room, User currentUser, Hotel hotel)
         {
             var bookingWindow = App.Provider!.GetRequiredService<BookingDialog>();
 
-            bookingWindow.btnCancel.Click += (s, e) => bookingWindow.Close();
+            bookingWindow.btnCancel.Click += (s, e) =>
+            {
+                bookingWindow.DialogResult = false;
+                bookingWindow.Close();
+            };
+            bookingWindow.btnBook.Click += (s,e) => bookingWindow.DialogResult = true;
 
             var vm = App.Provider!.GetRequiredService<IBookingViewModel>();
             vm.SelectedRoom = room;
@@ -94,6 +99,7 @@ namespace Hotel_Booking_System.Services
             
             bookingWindow.DataContext = vm;
             bookingWindow.ShowDialog();
+            return (bool)bookingWindow.DialogResult!;
             
         }
         public void CloseBookingDialog()

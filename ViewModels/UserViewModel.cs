@@ -120,7 +120,7 @@ namespace Hotel_Booking_System.ViewModels
      });
 
 
-            SeedData();
+          //  SeedData();
 
             Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
@@ -129,99 +129,6 @@ namespace Hotel_Booking_System.ViewModels
             
 
             FilteredRooms = new ObservableCollection<Room>();
-
-        }
-        private void SeedData()
-        {
-            //_roomRepository.AddAsync(new Room
-            //{
-            //    RoomID = Guid.NewGuid().ToString(),
-            //    HotelID = "H1003",
-            //    RoomNumber = "301",
-            //    RoomType = "Single",
-            //    PricePerNight = 120,
-            //    Status = "Available"
-            //}).Wait();
-            //_roomRepository.AddAsync(new Room
-            //{
-            //    RoomID = Guid.NewGuid().ToString(),
-            //    HotelID = "H1001",
-            //    RoomNumber = "101",
-            //    RoomType = "Single",
-            //    PricePerNight = 100,
-            //    Status = "Available"
-            //}).Wait();
-            //_roomRepository.AddAsync(new Room
-            //{
-            //    RoomID = Guid.NewGuid().ToString(),
-            //    HotelID = "H1001",
-            //    RoomNumber = "102",
-            //    RoomType = "Double",
-            //    PricePerNight = 150,
-            //    Status = "Available"
-            //}).Wait();
-            //_roomRepository.AddAsync(new Room
-            //{
-            //    RoomID = Guid.NewGuid().ToString(),
-            //    HotelID = "H1002",
-            //    RoomNumber = "201",
-            //    RoomType = "Suite",
-            //    PricePerNight = 300,
-            //    Status = "Available"
-            //}).Wait();
-            //_roomRepository.SaveAsync().Wait();
-            //_hotelRepository.AddAsync(new Hotel
-            //{
-            //    HotelID = "H1001",
-            //    HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg",
-            //    UserID = "U1001",
-            //    HotelName = "Grand Plaza",
-            //    Address = "123 Main St, Cityville",
-            //    City = "Cityville",
-            //    Rating = 5,
-            //    MinPrice = 100,
-            //    MaxPrice = 500,
-            //    Description = "A luxurious hotel with stunning city views.",
-            //    Amenities = new List<Amenity>
-            //    {
-            //        new Amenity { AmenityName = "Free WiFi" },
-            //        new Amenity { AmenityName = "Swimming Pool" },
-            //        new Amenity { AmenityName = "Free Parking" },
-            //        new Amenity { AmenityName = "Restaurant" },
-            //        new Amenity { AmenityName = "Gym" }
-            //    }
-            //}).Wait();
-            //_hotelRepository.AddAsync(new Hotel
-            //{
-            //    HotelImage = "https://i.ibb.co/Ngw8W2PZ/hotel-photography-chup-anh-khach-san-khach-san-bamboo-sapa-hotel-18-1024x683.jpg",
-            //    HotelID = "H1002",
-            //    UserID = "U1002",
-            //    HotelName = "City Inn",
-            //    Address = "456 Market St, Townsville",
-            //    City = "Townsville",
-            //    Rating = 4,
-            //    MinPrice = 80,
-            //    MaxPrice = 300,
-            //    Description = "A comfortable stay in the heart of the city.",
-            //    Amenities = new List<Amenity>
-            //    {
-            //        new Amenity { AmenityName = "Free WiFi" },
-            //        new Amenity { AmenityName = "Free Parking" },
-            //        new Amenity { AmenityName = "Restaurant" }
-            //    }
-            //}).Wait();
-           _roomRepository.AddAsync(new Room
-            {
-                RoomID = Guid.NewGuid().ToString(),
-                HotelID = "H1003",
-                RoomNumber = "301",
-                RoomImage = "https://i.ibb.co/xKf2wdCn/room2.jpg",
-                RoomType = "Single",
-                PricePerNight = 120,
-                Status = "Available"
-            }).Wait();
-
-           _roomRepository.SaveAsync().Wait();
 
         }
 
@@ -432,7 +339,18 @@ namespace Hotel_Booking_System.ViewModels
         private void BookRoom(Room room)
         {
             var hotel = Hotels.FirstOrDefault(h => h.HotelID == room.HotelID);
-            _navigationService.OpenBookingDialog(room, CurrentUser, hotel);
+            bool res = _navigationService.OpenBookingDialog(room, CurrentUser, hotel);
+
+            if (res)
+            {
+                FilterRoomsByHotel(room.HotelID);
+                Bookings.Clear();
+                var allBookings = _bookingRepository.GetAllAsync().Result;
+                foreach (var booking in allBookings)
+                {
+                    Bookings.Add(booking);
+                }
+            }
         }
         private void FilterRoomsByHotel(string hotelId)
         {

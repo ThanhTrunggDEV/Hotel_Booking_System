@@ -95,12 +95,14 @@ namespace Hotel_Booking_System.ViewModels
 
 
             };
+            SelectedRoom.Status = "Booked";
+            await _roomRepository.UpdateAsync(SelectedRoom);
             await _bookingRepository.AddAsync(booking);
             await _bookingRepository.SaveAsync();
             
             MessageBox.Show("Booked Successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            _navigationService.CloseBookingDialog();
+           
 
 
         }
