@@ -751,7 +751,7 @@ Stretch="UniformToFill">
             </TabItem>
 
 
-            <TabItem Style="{StaticResource TabItemStyle}" x:Name="CustomerProfileTab" Header="👤 Profile" Visibility="Visible">
+            <TabItem Style="{StaticResource TabItemStyle}" Header="👤 Profile" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <Grid MaxWidth="1000">
                         <Grid.ColumnDefinitions>

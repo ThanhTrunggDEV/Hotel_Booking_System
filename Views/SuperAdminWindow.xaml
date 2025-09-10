@@ -166,6 +166,200 @@
                 </ScrollViewer>
             </TabItem>
 
+
+            <TabItem x:Name="HotelManagementTab" Header="🏨 Hotel Management" Visibility="Visible">
+                <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Hotel Management" Style="{StaticResource HeaderTextStyle}"/>
+
+                        <Grid Margin="0,0,0,20">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="All Hotels" Style="{StaticResource PrimaryButton}" Width="100"/>
+                                <Button Content="Active" Background="#FF4CAF50" Style="{StaticResource PrimaryButton}" Width="80"/>
+                                <Button Content="Pending" Background="#FFFF9800" Style="{StaticResource PrimaryButton}" Width="80"/>
+                                <Button Content="Suspended" Background="#FFFF5722" Style="{StaticResource PrimaryButton}" Width="100"/>
+                                <ComboBox Style="{StaticResource ModernComboBox}" Width="120" Margin="10,0,0,0">
+                                    <ComboBoxItem Content="All Cities"/>
+                                    <ComboBoxItem Content="Hà Nội"/>
+                                    <ComboBoxItem Content="TP. Hồ Chí Minh"/>
+                                    <ComboBoxItem Content="Đà Nẵng"/>
+                                    <ComboBoxItem Content="Hải Phòng"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <TextBox Text="Search hotels..." 
+                            Style="{StaticResource ModernTextBox}" Width="200" Margin="0,0,10,0"/>
+                                <Button Content="🔍 Search" Width="100" Style="{StaticResource SecondaryButton}"/>
+                                <Button Content="+ Add Hotel" Width="120" Style="{StaticResource PrimaryButton}" 
+                           Background="#FF4CAF50" Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,30">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Background="#FF4CAF50">
+                                <StackPanel Margin="15" HorizontalAlignment="Center">
+                                    <TextBlock Text="142" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Active Hotels" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Background="#FFFF9800">
+                                <StackPanel Margin="15" HorizontalAlignment="Center">
+                                    <TextBlock Text="14" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Pending Approval" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Style="{StaticResource CardStyle}" Background="#FFFF5722">
+                                <StackPanel Margin="15" HorizontalAlignment="Center">
+                                    <TextBlock Text="8" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Suspended" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FF2196F3">
+                                <StackPanel Margin="15" HorizontalAlignment="Center">
+                                    <TextBlock Text="4.2" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Avg Rating" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel Margin="25">
+                                <Grid Margin="0,0,0,15">
+                                    <TextBlock Text="Hotel Directory" FontSize="18" FontWeight="Bold"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Content="📊 Export" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,5,0"/>
+                                        <Button Content="🔄 Refresh" Style="{StaticResource SecondaryButton}" Width="80"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <DataGrid Height="500" AutoGenerateColumns="False" CanUserAddRows="False">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Hotel ID" Width="80" Binding="{Binding HotelId}"/>
+                                        <DataGridTextColumn Header="Hotel Name" Width="200" Binding="{Binding HotelName}"/>
+                                        <DataGridTextColumn Header="City" Width="100" Binding="{Binding City}"/>
+                                        <DataGridTextColumn Header="Address" Width="250" Binding="{Binding Address}"/>
+                                        <DataGridTextColumn Header="Star Rating" Width="80" Binding="{Binding StarRating}"/>
+                                        <DataGridTextColumn Header="Total Rooms" Width="90" Binding="{Binding TotalRooms}"/>
+                                        <DataGridTextColumn Header="Admin" Width="120" Binding="{Binding AdminName}"/>
+                                        <DataGridTemplateColumn Header="Status" Width="80">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Border CornerRadius="12" Padding="8,4" HorizontalAlignment="Center">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Active">
+                                                                        <Setter Property="Background" Value="#FF4CAF50"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                        <Setter Property="Background" Value="#FFFF9800"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Suspended">
+                                                                        <Setter Property="Background" Value="#FFFF5722"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                        <TextBlock Text="{Binding Status}" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Created Date" Width="100" Binding="{Binding CreatedDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+                                        <DataGridTemplateColumn Header="Actions" Width="220">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Button Content="👁️" ToolTip="View Details" Style="{StaticResource SecondaryButton}" 
+                                                   Width="25" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="✏️" ToolTip="Edit Hotel" Style="{StaticResource SecondaryButton}" 
+                                                   Background="#FF2196F3" Width="25" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="🏠" ToolTip="Manage Rooms" Style="{StaticResource SecondaryButton}" 
+                                                   Background="#FFFF9800" Width="25" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="📊" ToolTip="Analytics" Style="{StaticResource SecondaryButton}" 
+                                                   Background="#FF9C27B0" Width="25" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="⚠️" ToolTip="Suspend" Style="{StaticResource SecondaryButton}" 
+                                                   Background="#FFFF5722" Width="25" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="📧" ToolTip="Contact Admin" Style="{StaticResource SecondaryButton}" 
+                                                   Background="#FF607D8B" Width="25" Height="25" Margin="2" FontSize="10"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <Grid Margin="0,15,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Showing 1-10 of 156 hotels" VerticalAlignment="Center" FontSize="12" Foreground="#FF666666"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Content="Previous" Style="{StaticResource SecondaryButton}" Width="70" Height="30" Margin="0,0,5,0"/>
+                                        <Button Content="1" Style="{StaticResource PrimaryButton}" Width="30" Height="30" Margin="2"/>
+                                        <Button Content="2" Style="{StaticResource SecondaryButton}" Width="30" Height="30" Margin="2"/>
+                                        <Button Content="3" Style="{StaticResource SecondaryButton}" Width="30" Height="30" Margin="2"/>
+                                        <Button Content="..." Style="{StaticResource SecondaryButton}" Width="30" Height="30" Margin="2"/>
+                                        <Button Content="16" Style="{StaticResource SecondaryButton}" Width="30" Height="30" Margin="2"/>
+                                        <Button Content="Next" Style="{StaticResource SecondaryButton}" Width="70" Height="30" Margin="5,0,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource CardStyle}" Margin="0,20,0,0">
+                            <StackPanel Margin="25">
+                                <TextBlock Text="Quick Actions Reports" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                        <Button Content="📈 Hotel Performance Report" Style="{StaticResource PrimaryButton}" 
+                                   HorizontalAlignment="Stretch" Margin="0,5"/>
+                                        <Button Content="🏆 Top Performing Hotels" Style="{StaticResource PrimaryButton}" 
+                                   HorizontalAlignment="Stretch" Margin="0,5"/>
+                                        <Button Content="📋 Occupancy Analytics" Style="{StaticResource PrimaryButton}" 
+                                   HorizontalAlignment="Stretch" Margin="0,5"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Margin="7.5,0">
+                                        <Button Content="⭐ Rating Review Summary" Style="{StaticResource PrimaryButton}" 
+                                   HorizontalAlignment="Stretch" Margin="0,5"/>
+                                        <Button Content="💰 Revenue by Hotel" Style="{StaticResource PrimaryButton}" 
+                                   HorizontalAlignment="Stretch" Margin="0,5"/>
+                                        <Button Content="🚨 Hotels Needing Attention" Style="{StaticResource PrimaryButton}" 
+                                   Background="#FFFF5722" HorizontalAlignment="Stretch" Margin="0,5"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Margin="15,0,0,0">
+                                        <Button Content="📊 Bulk Update Hotels" Style="{StaticResource PrimaryButton}" 
+                                   Background="#FFFF9800" HorizontalAlignment="Stretch" Margin="0,5"/>
+                                        <Button Content="📤 Export Hotel Data" Style="{StaticResource PrimaryButton}" 
+                                   Background="#FF4CAF50" HorizontalAlignment="Stretch" Margin="0,5"/>
+                                        <Button Content="🔧 System Maintenance" Style="{StaticResource PrimaryButton}" 
+                                   Background="#FF9C27B0" HorizontalAlignment="Stretch" Margin="0,5"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
             <TabItem x:Name="UserManagementTab" Header="👥 User Management" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
@@ -220,6 +414,418 @@
                 </ScrollViewer>
             </TabItem>
 
+
+            <TabItem Style="{StaticResource TabItemStyle}" Header="👤 Profile" Visibility="Visible">
+                <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
+                    <Grid MaxWidth="1000">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="300"/>
+                        </Grid.ColumnDefinitions>
+
+
+                        <StackPanel Grid.Column="0" Margin="0,0,30,0">
+
+
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                                <StackPanel Margin="25">
+                                    <TextBlock Text="Personal Information" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+
+                                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                            <TextBlock Text="User ID" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding CurrentUser.UserID}" 
+                                         Style="{StaticResource ModernTextBox}"
+                                         IsReadOnly="True"
+                                                     BorderThickness="0"
+                                         Background="#FFF5F5F5"
+                                         Foreground="#FF666666"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                            <TextBlock Text="Full Name" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding CurrentUser.FullName}" Style="{StaticResource ModernTextBox}"/>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                            <TextBlock Text="Email Address" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox IsReadOnly="True" Text="{Binding CurrentUser.Email}" Style="{StaticResource ModernTextBox}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,15">
+                                            <TextBlock Text="Phone Number" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding CurrentUser.Phone}" Style="{StaticResource ModernTextBox}"/>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,0,0,15">
+                                            <TextBlock Text="Gender" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <ComboBox SelectedValue="{Binding CurrentUser.Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+          SelectedValuePath="Content" Style="{StaticResource ModernComboBox}">
+                                                <ComboBoxItem Content="Male" />
+                                                <ComboBoxItem Content="Female" />
+                                                <ComboBoxItem Content="Other" />
+
+                                            </ComboBox>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,10,15">
+                                            <TextBlock Text="Date of Birth" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <DatePicker SelectedDate="{Binding CurrentUser.DateOfBirth}" Style="{StaticResource ModernDatePicker}"/>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="4" Grid.Column="1" Margin="10,0,0,15">
+                                            <TextBlock Text="Role" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding CurrentUser.Role}" 
+                                         Style="{StaticResource ModernTextBox}"
+                                         IsReadOnly="True"
+                                         Background="#FFF5F5F5"
+                                         Foreground="#FF666666"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                                        <Button Command="{Binding UpdateInfoCommand}" Content="Update Profile" Width="150" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
+                                        <Button Command="{Binding RegisterCommand}" Content="Register Hotel Admin" Background="#FFFF9800" 
+                                    Style="{StaticResource PrimaryButton}" Width="200"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+
+                            <Border Style="{StaticResource CardStyle}">
+                                <StackPanel Margin="25">
+                                    <TextBlock Text="Change Password" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+
+                                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                            <TextBlock Text="Current Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <PasswordBox x:Name="txtCurrentPassword" 
+                                           Style="{StaticResource ModernPasswordBox}"
+                                           />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,15">
+                                            <TextBlock Text="New Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <PasswordBox x:Name="txtNewPassword" 
+                                           Style="{StaticResource ModernPasswordBox}"
+                                           />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,15">
+                                            <TextBlock Text="Confirm New Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <PasswordBox x:Name="txtConfirmPassword" 
+                                           Style="{StaticResource ModernPasswordBox}"
+                                           />
+                                        </StackPanel>
+
+
+                                        <Border Grid.Row="2" Grid.ColumnSpan="2" Background="#FFF3E5F5" CornerRadius="8" Padding="12" Margin="0,0,0,15">
+                                            <StackPanel>
+                                                <TextBlock Text="Password Requirements:" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,5"/>
+                                                <TextBlock Text="• At least 8 characters long" FontSize="11" Margin="0,2"/>
+                                                <TextBlock Text="• Contains uppercase and lowercase letters" FontSize="11" Margin="0,2"/>
+                                                <TextBlock Text="• Contains at least one number" FontSize="11" Margin="0,2"/>
+                                                <TextBlock Text="• Contains at least one special character" FontSize="11" Margin="0,2"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                                        <Button Content="Change Password" Width="150" Style="{StaticResource PrimaryButton}" 
+                                    Background="#FFFF5722" Margin="0,0,10,0"/>
+                                        <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+
+                        <StackPanel Grid.Column="1">
+                            <Border Style="{StaticResource CardStyle}">
+                                <StackPanel Margin="25" HorizontalAlignment="Center">
+
+                                    <Grid Width="100" Height="100">
+                                        <Image Source="{Binding CurrentUser.AvatarUrl, FallbackValue=\Resources\avatar_default.png}"
+           Stretch="UniformToFill">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="50,50" RadiusX="50" RadiusY="50"/>
+                                            </Image.Clip>
+                                        </Image>
+                                        <Ellipse Stroke="#FFE0E0E0" StrokeThickness="3"/>
+                                    </Grid>
+
+
+                                    <TextBlock Text="{Binding CurrentUser.FullName}" FontSize="18" FontWeight="Bold" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <Border 
+                                CornerRadius="12" Padding="8,4" HorizontalAlignment="Center" Margin="0,0,0,20">
+                                        <TextBlock Text="{Binding CurrentUser.Role}" FontSize="12" Foreground="White" 
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    </Border>
+
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Margin="0,5">
+                                            <TextBlock Text="{Binding TotalBookings, FallbackValue=0}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="Bookings" FontSize="10" Foreground="#FF666666" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Margin="0,5">
+                                            <TextBlock Text="{Binding TotalSpent, StringFormat='${0:F0}',FallbackValue=0}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="Spent" FontSize="10" Foreground="#FF666666" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+
+
+                                        <Border Grid.Row="2" Grid.ColumnSpan="2" Background="#FFFFF3E0" CornerRadius="8" 
+                                    Padding="10,8" Margin="0,15,0,0" HorizontalAlignment="Stretch">
+                                            <StackPanel HorizontalAlignment="Center">
+                                                <TextBlock Text="🏆 Membership Level" FontSize="10" Foreground="#FF666666" 
+                                               HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{Binding MembershipLevel}" FontSize="14" FontWeight="Bold" 
+                                               Foreground="#FFFF9800" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
+                                    <StackPanel Margin="0,20,0,0">
+                                        <Button Content="Upload Avatar" Width="150" Height="35"
+                                                Command="{Binding UploadImageCommand}"
+                                    Style="{StaticResource SecondaryButton}" Margin="0,0,0,8"/>
+
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+
+                        <Grid  Visibility="{Binding ShowRegisterForm}"  HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="HotelAdminPopup" Background="White"  Margin="141,10,0,0">
+                            <Border Background="White" CornerRadius="15" MaxWidth="600" MaxHeight="700" 
+HorizontalAlignment="Center" VerticalAlignment="Center" 
+Margin="50" Padding="0">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="15" ShadowDepth="5"/>
+                                </Border.Effect>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+
+                                    <Border Grid.Row="0" Background="#FFFF9800" CornerRadius="15,15,0,0" Padding="25,20">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0">
+                                                <TextBlock Text="🏪 Become Hotel Admin" FontSize="22" FontWeight="Bold" 
+                       Foreground="White"/>
+                                                <TextBlock Text="Register your hotel and start managing bookings" 
+                       FontSize="12" Foreground="White" Opacity="0.9" Margin="0,3,0,0"/>
+                                            </StackPanel>
+
+                                            <Button Command="{Binding CloseFormCommand}" Grid.Column="1" Content="✖" Width="30" Height="30" 
+                Background="Transparent" BorderBrush="White" BorderThickness="1"
+                Foreground="White" 
+                />
+                                        </Grid>
+                                    </Border>
+
+
+                                    <ScrollViewer Grid.Row="1" Margin="25" VerticalScrollBarVisibility="Auto">
+                                        <StackPanel>
+
+                                            <TextBlock HorizontalAlignment="Center" Text="Hotel Information" FontSize="16" FontWeight="Bold" 
+                   Margin="0,0,0,15"/>
+
+                                            <Grid Margin="0,0,0,20">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+
+                                                <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
+                                                    <TextBlock Text="Hotel Name *" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                                    <TextBox x:Name="txtHotelName" Style="{StaticResource ModernTextBox}"
+                         />
+                                                </StackPanel>
+
+
+                                                <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,0,0,15">
+                                                    <TextBlock Text="Star Rating *" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                                    <ComboBox x:Name="cmbStarRating" Style="{StaticResource ModernComboBox}">
+                                                        <ComboBoxItem Content="⭐ 1 Star"/>
+                                                        <ComboBoxItem Content="⭐⭐ 2 Stars"/>
+                                                        <ComboBoxItem Content="⭐⭐⭐ 3 Stars"/>
+                                                        <ComboBoxItem Content="⭐⭐⭐⭐ 4 Stars"/>
+                                                        <ComboBoxItem Content="⭐⭐⭐⭐⭐ 5 Stars"/>
+                                                    </ComboBox>
+                                                </StackPanel>
+
+
+                                                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                                    <TextBlock Text="Hotel Address *" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                                    <TextBox x:Name="txtHotelAddress" Style="{StaticResource ModernTextBox}"
+                        />
+                                                </StackPanel>
+
+
+                                                <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,15">
+                                                    <TextBlock Text="City *" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                                    <ComboBox x:Name="cbbCity" Style="{StaticResource ModernComboBox}">
+                                                        <ComboBoxItem>Hà Nội</ComboBoxItem>
+                                                        <ComboBoxItem>Tuyên Quang</ComboBoxItem>
+                                                        <ComboBoxItem>Lào Cai</ComboBoxItem>
+                                                        <ComboBoxItem>Thái Nguyên</ComboBoxItem>
+                                                        <ComboBoxItem>Phú Thọ</ComboBoxItem>
+                                                        <ComboBoxItem>Bắc Ninh</ComboBoxItem>
+                                                        <ComboBoxItem>Hưng Yên</ComboBoxItem>
+                                                        <ComboBoxItem>Hải Phòng</ComboBoxItem>
+                                                        <ComboBoxItem>Ninh Bình</ComboBoxItem>
+                                                        <ComboBoxItem>Quảng Trị</ComboBoxItem>
+                                                        <ComboBoxItem>Đà Nẵng</ComboBoxItem>
+                                                        <ComboBoxItem>Quảng Ngãi</ComboBoxItem>
+                                                        <ComboBoxItem>Gia Lai</ComboBoxItem>
+                                                        <ComboBoxItem>Khánh Hòa</ComboBoxItem>
+                                                        <ComboBoxItem>Lâm Đồng</ComboBoxItem>
+                                                        <ComboBoxItem>Đăk Lăk</ComboBoxItem>
+                                                        <ComboBoxItem>TP. Hồ Chí Minh</ComboBoxItem>
+                                                        <ComboBoxItem>TP. Cần Thơ</ComboBoxItem>
+                                                        <ComboBoxItem>Vĩnh Long</ComboBoxItem>
+                                                        <ComboBoxItem>Đồng Tháp</ComboBoxItem>
+                                                        <ComboBoxItem>Cà Mau</ComboBoxItem>
+                                                        <ComboBoxItem>An Giang</ComboBoxItem>
+
+                                                    </ComboBox>
+                                                </StackPanel>
+
+
+                                                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                                    <TextBlock Text="Hotel Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                                    <TextBox x:Name="txtHotelDescription" Style="{StaticResource ModernTextBox}"
+                         Height="80" TextWrapping="Wrap" AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto"/>
+                                                </StackPanel>
+                                            </Grid>
+
+
+
+                                            <Grid Margin="0,0,0,20">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                            </Grid>
+
+
+                                            <TextBlock HorizontalAlignment="Center" Text="Hotel Amenities" FontSize="16" FontWeight="Bold" 
+                   Margin="0,10,0,15"/>
+
+                                            <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <CheckBox Style="{StaticResource ModernCheckBox}" Grid.Row="0" Grid.Column="0" Content="🌐 Free WiFi" Margin="0,3"/>
+                                                    <CheckBox Style="{StaticResource ModernCheckBox}" Grid.Row="0" Grid.Column="1" Content="🏊 Swimming Pool" Margin="0,3"/>
+                                                    <CheckBox Style="{StaticResource ModernCheckBox}" Grid.Row="1" Grid.Column="0" Content="🚗 Free Parking" Margin="0,3"/>
+                                                    <CheckBox Style="{StaticResource ModernCheckBox}" Grid.Row="1" Grid.Column="1" Content="💪 Gym" Margin="0,3"/>
+                                                    <CheckBox Style="{StaticResource ModernCheckBox}" Grid.Row="2" Grid.Column="0" Content="🍽️ Restaurant" Margin="0,3"/>
+
+                                                </Grid>
+                                            </Border>
+
+
+
+                                        </StackPanel>
+                                    </ScrollViewer>
+
+
+                                    <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="#FFE0E0E0" Padding="25,15">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <Button Command="{Binding CloseFormCommand}" Content="Cancel" Width="100" Height="40" 
+                Style="{StaticResource SecondaryButton}" 
+                Margin="0,0,10,0"/>
+                                            <Button Content="Submit" Width="150" Height="40" 
+                Style="{StaticResource PrimaryButton}" Background="#FFFF9800"
+                />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                    </Grid>
+
+
+
+                </ScrollViewer>
+
+            </TabItem>
 
         </TabControl>
     </Grid>
