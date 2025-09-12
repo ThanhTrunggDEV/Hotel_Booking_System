@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Google.AI.GenerativeAI;
+using Mscc.GenerativeAI;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -36,7 +36,8 @@ namespace Hotel_Booking_System.Services
             if (string.IsNullOrWhiteSpace(message))
                 throw new ArgumentException("Message is required", nameof(message));
 
-            var generativeModel = new GenerativeModel(model ?? _options.DefaultModel, _options.ApiKey);
+            var googleAI = new GoogleAI(apiKey: _options.ApiKey);
+            var generativeModel = googleAI.GenerativeModel(model ?? _options.DefaultModel);
             var result = await generativeModel.GenerateContentAsync(message);
             var response = await GetResponseFromAIAsync(message, model);
 
