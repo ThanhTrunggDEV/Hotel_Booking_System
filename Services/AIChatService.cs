@@ -1,12 +1,6 @@
-using System;
-using System.Threading.Tasks;
-using Mscc.GenerativeAI;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
+using Mscc.GenerativeAI;
 
 namespace Hotel_Booking_System.Services
 {
@@ -14,19 +8,23 @@ namespace Hotel_Booking_System.Services
     {
         private readonly IAIChatRepository _repository;
         private readonly GeminiOptions _options;
-        private readonly HttpClient _httpClient;
-        private readonly GeminiOptions _options;
-        private readonly string _apiKey;
-        private readonly string _model;
+        private readonly GenerativeModel _generativeModel;
 
-        public AIChatService(IAIChatRepository repository, HttpClient httpClient, GeminiOptions options)
+        public AIChatService(IAIChatRepository repository, GeminiOptions options)
         {
             _repository = repository;
-            _httpClient = httpClient;
             _options = options;
-            _apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")
-                      ?? throw new InvalidOperationException("GEMINI_API_KEY is not set");
-            _model = Environment.GetEnvironmentVariable("GEMINI_MODEL") ?? "gemini-pro";
+
+            var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")
+                         ?? throw new InvalidOperationException("GEMINI_API_KEY is not set");
+
+            var modelName = Environment.GetEnvironmentVariable("GEMINI_MODEL")
+                            ?? _options.DefaultModel
+                            ?? Model.Gemini15Pro; 
+
+         
+            var googleAI = new GoogleAI(apiKey);
+            _generativeModel = googleAI.GenerativeModel(model: modelName);
         }
 
         public async Task<AIChat> SendAsync(string userId, string message, string? model = null)
@@ -36,10 +34,8 @@ namespace Hotel_Booking_System.Services
             if (string.IsNullOrWhiteSpace(message))
                 throw new ArgumentException("Message is required", nameof(message));
 
-            var googleAI = new GoogleAI(apiKey: _options.ApiKey);
-            var generativeModel = googleAI.GenerativeModel(model ?? _options.DefaultModel);
-            var result = await generativeModel.GenerateContentAsync(message);
-            var response = await GetResponseFromAIAsync(message, model);
+            var result = await _generativeModel.GenerateContent(message);
+            var response = result.Text ?? string.Empty;
 
             var chat = new AIChat
             {
@@ -52,57 +48,8 @@ namespace Hotel_Booking_System.Services
 
             await _repository.AddAsync(chat);
             await _repository.SaveAsync();
+
             return chat;
         }
-
-
-        private async Task<string> GetResponseFromAIAsync(string message, string model)
-        {
-            var modelToUse = string.IsNullOrWhiteSpace(model) ? _options.DefaultModel : model;
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{modelToUse}:generateContent?key={_options.ApiKey}";
-
-            var request = new
-            {
-                contents = new[]
-                {
-                    new
-                    {
-                        parts = new[] { new { text = message } }
-                    }
-                }
-            };
-
-            var httpResponse = await _httpClient.PostAsJsonAsync(url, request);
-            httpResponse.EnsureSuccessStatusCode();
-
-            using var stream = await httpResponse.Content.ReadAsStreamAsync();
-            var result = await JsonSerializer.DeserializeAsync<GeminiResponse>(stream);
-            var text = result?.candidates?.FirstOrDefault()?.content?.parts?.FirstOrDefault()?.text;
-            return text ?? string.Empty;
-        }
-
-        private class GeminiResponse
-        {
-            public Candidate[] candidates { get; set; }
-        }
-
-        private class Candidate
-        {
-            public Content content { get; set; }
-        }
-
-        private class Content
-        {
-            public Part[] parts { get; set; }
-        }
-
-        private class Part
-        {
-            public string text { get; set; }
-            // Simulated call to Gemini API using the configured model.
-            await Task.Delay(500);
-            return $"AI ({_model}) response: {message}";
-        }
-
     }
 }

@@ -30,7 +30,6 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IAIChatService _aiChatService;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IAIChatRepository _aiChatRepository;
-        private readonly IAIChatService _aiChatService;
 
         private string userMail;
         private int _totalBookings;
@@ -51,9 +50,6 @@ namespace Hotel_Booking_System.ViewModels
         private string _requestHotelName = "";
         private string _requestHotelAddress = "";
         private string _requestReason = "";
-        private string _loadingVisibility = "Collapsed";
-        private string _errorVisibility = "Collapsed";
-        private string _errorMessage = string.Empty;
         private string _selectedModel;
 
 
