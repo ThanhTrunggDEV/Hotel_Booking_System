@@ -45,6 +45,7 @@ namespace Hotel_Booking_System.ViewModels
         private string _loadingVisibility = "Collapsed";
         private string _errorVisibility = "Collapsed";
         private string _errorMessage = string.Empty;
+        private string _selectedModel;
 
         public string ShowSearchRoom { get => _showSearchRoom; set => Set(ref _showSearchRoom, value); }
         public string ShowSearchHotel { get => _showSearchHotel; set => Set(ref _showSearchHotel, value); }
@@ -114,6 +115,7 @@ namespace Hotel_Booking_System.ViewModels
         public string ErrorVisibility { get => _errorVisibility; set => Set(ref _errorVisibility, value); }
         public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
         public ObservableCollection<AIChat> Chats { get; set; } = new ObservableCollection<AIChat>();
+        public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
 
 
         public UserViewModel(IAIChatService aIChatService , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
@@ -319,7 +321,7 @@ namespace Hotel_Booking_System.ViewModels
             ErrorMessage = string.Empty;
             try
             {
-                var chat = await _aiChatService.SendAsync(CurrentUser.UserID, message);
+                var chat = await _aiChatService.SendAsync(CurrentUser.UserID, message, SelectedModel);
                 Chats.Add(chat);
             }
             catch (Exception ex)
