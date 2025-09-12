@@ -14,6 +14,7 @@ namespace Hotel_Booking_System.DomainModels
         public string UserID { get; set; }
         public string HotelName { get; set; }
         public string HotelAddress { get; set; }
+        public string Reason { get; set; }
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }

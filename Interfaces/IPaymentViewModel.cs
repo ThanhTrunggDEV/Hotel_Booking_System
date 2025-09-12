@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +7,10 @@ using Hotel_Booking_System.DomainModels;
 
 namespace Hotel_Booking_System.Interfaces
 {
-    public interface IPaymentRepository : IRepository<Payment>
+    internal interface IPaymentViewModel
     {
+        string BookingID { get; set; }
+        double TotalPayment { get; set; }
+        Task LoadPaymentsAsync();
     }
 }
