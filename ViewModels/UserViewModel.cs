@@ -27,8 +27,9 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IRoomRepository _roomRepository;
         private readonly INavigationService _navigationService;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IPaymentRepository _paymentRepository;
+        private readonly IAIChatRepository _aiChatRepository;
         private readonly IAIChatService _aiChatService;
-
         private string userMail;
         private int _totalBookings;
         private double _totalSpent;
@@ -125,11 +126,13 @@ namespace Hotel_Booking_System.ViewModels
         public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
 
 
-        public UserViewModel(IAIChatService aIChatService , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
+
+        public UserViewModel(IPaymentRepository paymentRepository,IAIChatRepository aIChatRepository ,IAIChatService aIChatService , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
         {
             _aiChatService = aIChatService;
             _hotelAdminRequestRepository = hotelAdminRequestRepository;
             _bookingRepository = bookingRepository;
+            _paymentRepository = paymentRepository;
             _authenticationSerivce = authentication;
             _navigationService = navigationService;
             _hotelRepository = hotelRepository;
@@ -435,15 +438,21 @@ namespace Hotel_Booking_System.ViewModels
         private void FilterBookingsByUser(string userId)
         {
             var bookingList = _bookingRepository.GetBookingByUserId(userId).Result;
+            var payments = _paymentRepository.GetAllAsync().Result;
             Bookings.Clear();
+            double totalSpent = 0;
             var userBookings = bookingList.Where(b => b.UserID == userId).ToList();
             foreach (var booking in userBookings)
             {
                 Bookings.Add(booking);
-                //TODO: Calculate total spent
+                var payment = payments.FirstOrDefault(p => p.BookingID == booking.BookingID);
+                if (payment != null)
+                {
+                    totalSpent += payment.TotalPayment;
+                }
             }
 
-
+            TotalSpent = totalSpent;
             TotalBookings = Bookings.Count;
         }
         private void FilterRoomsByHotel(string hotelId)
