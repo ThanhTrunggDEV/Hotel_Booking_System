@@ -2,6 +2,7 @@
 using System.Data;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Net.Http;
 using DotNetEnv;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Repository;
@@ -45,8 +46,14 @@ namespace Hotel_Booking_System
                                  .AddScoped<IReviewRepository, ReviewRepository>()
                                  .AddScoped<IPaymentRepository, PaymentRepository>()
                                  .AddScoped<IAmenityRepository, AmenityRepository>()
-                                 .AddScoped<IAIChatRepository, AIChatRepository>()
+                               .AddScoped<IAIChatRepository, AIChatRepository>()
                                  .AddScoped<IAIChatService, AIChatService>()
+                                 .AddSingleton(new HttpClient())
+                                 .AddSingleton(provider => new GeminiOptions
+                                 {
+                                     ApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY") ?? string.Empty,
+                                     DefaultModel = Environment.GetEnvironmentVariable("GEMINI_DEFAULT_MODEL") ?? string.Empty
+                                 })
                                .AddScoped<IRoomRepository, RoomRepository>()
                                .AddScoped<IHotelAdminRequestRepository, HotelAdminRequestRepository>()
 

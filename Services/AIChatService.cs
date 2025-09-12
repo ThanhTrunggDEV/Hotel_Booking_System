@@ -1,4 +1,8 @@
 using System;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
@@ -8,20 +12,24 @@ namespace Hotel_Booking_System.Services
     public class AIChatService : IAIChatService
     {
         private readonly IAIChatRepository _repository;
+        private readonly HttpClient _httpClient;
+        private readonly GeminiOptions _options;
 
-        public AIChatService(IAIChatRepository repository)
+        public AIChatService(IAIChatRepository repository, HttpClient httpClient, GeminiOptions options)
         {
             _repository = repository;
+            _httpClient = httpClient;
+            _options = options;
         }
 
-        public async Task<AIChat> SendAsync(string userId, string message)
+        public async Task<AIChat> SendAsync(string userId, string message, string model = null)
         {
             if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException("User ID is required", nameof(userId));
             if (string.IsNullOrWhiteSpace(message))
                 throw new ArgumentException("Message is required", nameof(message));
 
-            var response = await GetResponseFromAIAsync(message);
+            var response = await GetResponseFromAIAsync(message, model);
 
             var chat = new AIChat
             {
@@ -37,11 +45,49 @@ namespace Hotel_Booking_System.Services
             return chat;
         }
 
-        private async Task<string> GetResponseFromAIAsync(string message)
+        private async Task<string> GetResponseFromAIAsync(string message, string model)
         {
-            // Simulated call to AI API or internal module
-            await Task.Delay(500);
-            return $"AI response: {message}";
+            var modelToUse = string.IsNullOrWhiteSpace(model) ? _options.DefaultModel : model;
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{modelToUse}:generateContent?key={_options.ApiKey}";
+
+            var request = new
+            {
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new[] { new { text = message } }
+                    }
+                }
+            };
+
+            var httpResponse = await _httpClient.PostAsJsonAsync(url, request);
+            httpResponse.EnsureSuccessStatusCode();
+
+            using var stream = await httpResponse.Content.ReadAsStreamAsync();
+            var result = await JsonSerializer.DeserializeAsync<GeminiResponse>(stream);
+            var text = result?.candidates?.FirstOrDefault()?.content?.parts?.FirstOrDefault()?.text;
+            return text ?? string.Empty;
+        }
+
+        private class GeminiResponse
+        {
+            public Candidate[] candidates { get; set; }
+        }
+
+        private class Candidate
+        {
+            public Content content { get; set; }
+        }
+
+        private class Content
+        {
+            public Part[] parts { get; set; }
+        }
+
+        private class Part
+        {
+            public string text { get; set; }
         }
     }
 }
