@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -30,6 +31,12 @@ namespace Hotel_Booking_System
         public static IServiceProvider? Provider { get => provider ??= ConfigDI(); }
         private static IServiceProvider ConfigDI()
         {
+            var geminiOptions = new GeminiOptions
+            {
+                ApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY") ?? string.Empty,
+                DefaultModel = Environment.GetEnvironmentVariable("GEMINI_MODEL") ?? "gemini-2.5-flash"
+            };
+
             return new ServiceCollection().AddDbContext<AppDbContext>()
 
                                .AddTransient<LoginWindow>()
@@ -44,8 +51,10 @@ namespace Hotel_Booking_System
                                .AddScoped<IUserRepository, UserRepository>()
                                  .AddScoped<IReviewRepository, ReviewRepository>()
                                  .AddScoped<IPaymentRepository, PaymentRepository>()
-                                 .AddScoped<IAmenityRepository, AmenityRepository>()
-                                 .AddScoped<IAIChatRepository, AIChatRepository>()
+                                  .AddScoped<IAmenityRepository, AmenityRepository>()
+                                  .AddSingleton(geminiOptions)
+                                  .AddScoped<IAIChatRepository, AIChatRepository>()
+                                  .AddScoped<IAIChatService, AIChatService>()
                                .AddScoped<IRoomRepository, RoomRepository>()
                                .AddScoped<IHotelAdminRequestRepository, HotelAdminRequestRepository>()
 
