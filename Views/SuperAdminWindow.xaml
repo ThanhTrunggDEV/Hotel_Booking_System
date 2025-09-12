@@ -827,6 +827,7 @@ Margin="50" Padding="0">
 
             </TabItem>
 
+
             <TabItem x:Name="PaymentSummaryTab" Header="💰 Payment Summary">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
@@ -843,6 +844,29 @@ Margin="50" Padding="0">
                         <TextBlock Text="{Binding TotalRevenue, StringFormat='Total Revenue: ${0:F0}'}" FontSize="16" FontWeight="Bold" Foreground="#27AE60" HorizontalAlignment="Right"/>
                     </StackPanel>
                 </ScrollViewer>
+            </TabItem>
+
+
+            <TabItem Header="Hotel Admin Requests">
+                <DataGrid ItemsSource="{Binding Requests}" AutoGenerateColumns="False" Margin="30,20">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Request ID" Binding="{Binding RequestID}" Width="*"/>
+                        <DataGridTextColumn Header="User ID" Binding="{Binding UserID}" Width="*"/>
+                        <DataGridTextColumn Header="Hotel Name" Binding="{Binding HotelName}" Width="*"/>
+                          <DataGridTextColumn Header="Reason" Binding="{Binding Reason}" Width="*"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                        <DataGridTemplateColumn Header="Actions" Width="200">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Approve" Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding RequestID}" Margin="2"/>
+                                        <Button Content="Reject" Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding RequestID}" Margin="2"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
 
         </TabControl>
