@@ -1032,12 +1032,13 @@ Margin="50" Padding="0">
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
+                                                      <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
 
 
                                                 <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
                                                     <TextBlock Text="Hotel Name *" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                                    <TextBox x:Name="txtHotelName" Style="{StaticResource ModernTextBox}"
+                                                    <TextBox Text="{Binding RequestHotelName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"
                          />
                                                 </StackPanel>
 
@@ -1056,7 +1057,7 @@ Margin="50" Padding="0">
 
                                                 <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                                     <TextBlock Text="Hotel Address *" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                                    <TextBox x:Name="txtHotelAddress" Style="{StaticResource ModernTextBox}"
+                                                    <TextBox Text="{Binding RequestHotelAddress, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"
                         />
                                                 </StackPanel>
 
@@ -1096,6 +1097,10 @@ Margin="50" Padding="0">
                                                     <TextBox x:Name="txtHotelDescription" Style="{StaticResource ModernTextBox}"
                          Height="80" TextWrapping="Wrap" AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                                    <TextBlock Text="Reason *" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                                    <TextBox Text="{Binding RequestReason, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                                                 </StackPanel>
                                             </Grid>
 
@@ -1150,7 +1155,7 @@ Margin="50" Padding="0">
                                             <Button Command="{Binding CloseFormCommand}" Content="Cancel" Width="100" Height="40" 
                 Style="{StaticResource SecondaryButton}" 
                 Margin="0,0,10,0"/>
-                                            <Button Content="Submit" Width="150" Height="40" 
+                                            <Button Command="{Binding SubmitRequestCommand}" Content="Submit" Width="150" Height="40" 
                 Style="{StaticResource PrimaryButton}" Background="#FFFF9800"
                 />
                                         </StackPanel>
