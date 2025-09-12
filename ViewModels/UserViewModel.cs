@@ -304,6 +304,50 @@ namespace Hotel_Booking_System.ViewModels
 
 
         }
+
+        [RelayCommand]
+        private void FilterRooms(object parameter)
+        {
+            if (parameter is Dictionary<string, object?> filterParams && CurrentHotel != null)
+            {
+                double? minPrice = filterParams.TryGetValue("MinPrice", out var min) && min is double dmin ? dmin : null;
+                double? maxPrice = filterParams.TryGetValue("MaxPrice", out var max) && max is double dmax ? dmax : null;
+                int? capacity = filterParams.TryGetValue("Capacity", out var cap) && cap is int icap ? icap : null;
+                bool? freeWifi = filterParams.TryGetValue("FreeWifi", out var wifi) ? wifi as bool? : null;
+                bool? swimmingPool = filterParams.TryGetValue("SwimmingPool", out var pool) ? pool as bool? : null;
+                bool? freeParking = filterParams.TryGetValue("FreeParking", out var parking) ? parking as bool? : null;
+                bool? restaurant = filterParams.TryGetValue("Restaurant", out var rest) ? rest as bool? : null;
+                bool? gym = filterParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
+
+                var rooms = Rooms.Where(r => r.HotelID == CurrentHotel.HotelID).ToList();
+
+                if (minPrice.HasValue)
+                    rooms = rooms.Where(r => r.PricePerNight >= minPrice.Value).ToList();
+                if (maxPrice.HasValue)
+                    rooms = rooms.Where(r => r.PricePerNight <= maxPrice.Value).ToList();
+                if (capacity.HasValue)
+                    rooms = rooms.Where(r => r.Capacity >= capacity.Value).ToList();
+
+                var amenities = CurrentHotel.Amenities.Select(a => a.AmenityName).ToList();
+                if (freeWifi == true && !amenities.Contains("Free WiFi")) rooms = new List<Room>();
+                if (swimmingPool == true && !amenities.Contains("Swimming Pool")) rooms = new List<Room>();
+                if (freeParking == true && !amenities.Contains("Free Parking")) rooms = new List<Room>();
+                if (restaurant == true && !amenities.Contains("Restaurant")) rooms = new List<Room>();
+                if (gym == true && !amenities.Contains("Gym")) rooms = new List<Room>();
+
+                FilteredRooms.Clear();
+                foreach (var room in rooms)
+                    FilteredRooms.Add(room);
+            }
+        }
+
+        [RelayCommand]
+        private void ClearRoomFilters()
+        {
+            if (CurrentHotel != null)
+                FilterRoomsByHotel(CurrentHotel.HotelID);
+        }
+
         [RelayCommand]
         private void ClearSearch()
         {

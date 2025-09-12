@@ -11,6 +11,7 @@
         <conv:DateDiffConverter x:Key="DateDiffConverter"/>
         <conv:NightsCalculatorConverter x:Key="NightsCalculatorConverter"/>
         <conv:FilterHotelConverter x:Key="FilterHotelConverter"/>
+        <conv:FilterRoomConverter x:Key="FilterRoomConverter"/>
         <conv:StatusToColorConverter x:Key="StatusToColorConverter"/>
         <conv:TotalAmountCalculatorConverter x:Key="TotalAmountCalculatorConverter"/>
         <conv:RoomIdToRoomNumberConverter x:Key="RoomIdToRoomNumberConverter"/>
