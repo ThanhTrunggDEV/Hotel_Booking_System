@@ -27,9 +27,11 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IRoomRepository _roomRepository;
         private readonly INavigationService _navigationService;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IAIChatService _aiChatService;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IAIChatRepository _aiChatRepository;
         private readonly IAIChatService _aiChatService;
+
         private string userMail;
         private int _totalBookings;
         private double _totalSpent;
@@ -43,6 +45,9 @@ namespace Hotel_Booking_System.ViewModels
         private string _showChatButton = "Visible";
         private Hotel _currentHotel;
         private User _currentUser;
+        private string _loadingVisibility = "Collapsed";
+        private string _errorVisibility = "Collapsed";
+        private string _errorMessage = string.Empty;
         private string _requestHotelName = "";
         private string _requestHotelAddress = "";
         private string _requestReason = "";
@@ -50,6 +55,7 @@ namespace Hotel_Booking_System.ViewModels
         private string _errorVisibility = "Collapsed";
         private string _errorMessage = string.Empty;
         private string _selectedModel;
+
 
 
         public string ShowSearchRoom { get => _showSearchRoom; set => Set(ref _showSearchRoom, value); }
@@ -331,7 +337,9 @@ namespace Hotel_Booking_System.ViewModels
             ErrorMessage = string.Empty;
             try
             {
-                var chat = await _aiChatService.SendAsync(CurrentUser.UserID, message, SelectedModel);
+                var chat = await _aiChatService.SendAsync(CurrentUser.UserID, message);
+    
+
                 Chats.Add(chat);
             }
             catch (Exception ex)
