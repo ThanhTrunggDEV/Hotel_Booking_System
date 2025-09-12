@@ -612,22 +612,26 @@ Stretch="UniformToFill">
                                     </ListBox>
                                 </ScrollViewer>
 
-                                <Grid Grid.Row="2" Margin="15,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="2" Margin="15,10">
+                                    <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Visibility="{Binding ErrorVisibility}" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Loading..." Foreground="Gray" Visibility="{Binding LoadingVisibility}" Margin="0,0,0,5"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <TextBox Grid.Column="0" x:Name="txtChatInput" 
+                                        <TextBox Grid.Column="0" x:Name="txtChatInput"
                                 Style="{StaticResource ModernTextBox}"/>
 
-                                    <Button Grid.Column="1" Content="➤" 
+                                        <Button Grid.Column="1" Content="➤"
                                Style="{StaticResource PrimaryButton}"
                                 Command="{Binding SendCommand}"
                                 CommandParameter="{Binding ElementName=txtChatInput, Path=Text}"
                                Width="40" Height="35" Margin="8,0,0,0"
                                FontWeight="Bold"/>
-                                </Grid>
+                                    </Grid>
+                                </StackPanel>
                             </Grid>
                         </Border>
                     </Grid>

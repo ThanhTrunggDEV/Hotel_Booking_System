@@ -27,7 +27,7 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IRoomRepository _roomRepository;
         private readonly INavigationService _navigationService;
         private readonly IBookingRepository _bookingRepository;
-        private readonly IAIChatRepository _aiChatRepository;
+        private readonly IAIChatService _aiChatService;
 
         private string userMail;
         private int _totalBookings;
@@ -45,6 +45,11 @@ namespace Hotel_Booking_System.ViewModels
         private string _requestHotelName = "";
         private string _requestHotelAddress = "";
         private string _requestReason = "";
+        private string _loadingVisibility = "Collapsed";
+        private string _errorVisibility = "Collapsed";
+        private string _errorMessage = string.Empty;
+        private string _selectedModel;
+
 
         public string ShowSearchRoom { get => _showSearchRoom; set => Set(ref _showSearchRoom, value); }
         public string ShowSearchHotel { get => _showSearchHotel; set => Set(ref _showSearchHotel, value); }
@@ -113,13 +118,16 @@ namespace Hotel_Booking_System.ViewModels
             set;
         }
 
+        public string LoadingVisibility { get => _loadingVisibility; set => Set(ref _loadingVisibility, value); }
+        public string ErrorVisibility { get => _errorVisibility; set => Set(ref _errorVisibility, value); }
+        public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
         public ObservableCollection<AIChat> Chats { get; set; } = new ObservableCollection<AIChat>();
+        public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
 
 
-        public UserViewModel(IAIChatRepository aIChatRepository , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
+        public UserViewModel(IAIChatService aIChatService , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
         {
-
-            _aiChatRepository = aIChatRepository;
+            _aiChatService = aIChatService;
             _hotelAdminRequestRepository = hotelAdminRequestRepository;
             _bookingRepository = bookingRepository;
             _authenticationSerivce = authentication;
@@ -310,9 +318,28 @@ namespace Hotel_Booking_System.ViewModels
             ShowChatBox = "Visible";
         }
         [RelayCommand]
-        private void Send(string message)
+        private async Task Send(string message)
         {
-            Chats.Add(new AIChat { Message = message , Response = "Test"});
+            if (string.IsNullOrWhiteSpace(message) || CurrentUser == null)
+                return;
+
+            LoadingVisibility = "Visible";
+            ErrorVisibility = "Collapsed";
+            ErrorMessage = string.Empty;
+            try
+            {
+                var chat = await _aiChatService.SendAsync(CurrentUser.UserID, message, SelectedModel);
+                Chats.Add(chat);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                ErrorVisibility = "Visible";
+            }
+            finally
+            {
+                LoadingVisibility = "Collapsed";
+            }
         }
 
 
