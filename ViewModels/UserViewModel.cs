@@ -42,10 +42,14 @@ namespace Hotel_Booking_System.ViewModels
         private string _showChatButton = "Visible";
         private Hotel _currentHotel;
         private User _currentUser;
+        private string _requestHotelName = "";
+        private string _requestHotelAddress = "";
+        private string _requestReason = "";
         private string _loadingVisibility = "Collapsed";
         private string _errorVisibility = "Collapsed";
         private string _errorMessage = string.Empty;
         private string _selectedModel;
+
 
         public string ShowSearchRoom { get => _showSearchRoom; set => Set(ref _showSearchRoom, value); }
         public string ShowSearchHotel { get => _showSearchHotel; set => Set(ref _showSearchHotel, value); }
@@ -63,6 +67,9 @@ namespace Hotel_Booking_System.ViewModels
         }
         public User CurrentUser { get => _currentUser; set => Set(ref _currentUser, value); }
         public Hotel CurrentHotel { get => _currentHotel; set => Set(ref _currentHotel, value); }
+        public string RequestHotelName { get => _requestHotelName; set => Set(ref _requestHotelName, value); }
+        public string RequestHotelAddress { get => _requestHotelAddress; set => Set(ref _requestHotelAddress, value); }
+        public string RequestReason { get => _requestReason; set => Set(ref _requestReason, value); }
 
         public string ShowChatBox
         {
@@ -358,6 +365,26 @@ namespace Hotel_Booking_System.ViewModels
         {
             ShowRegisterForm = "Collapsed";
         }
+        [RelayCommand]
+        private async Task SubmitRequest()
+        {
+            if (string.IsNullOrWhiteSpace(RequestHotelName) || string.IsNullOrWhiteSpace(RequestHotelAddress) || string.IsNullOrWhiteSpace(RequestReason)) return;
+            var req = new HotelAdminRequest
+            {
+                RequestID = Guid.NewGuid().ToString(),
+                UserID = CurrentUser.UserID,
+                HotelName = RequestHotelName,
+                HotelAddress = RequestHotelAddress,
+                Reason = RequestReason,
+                Status = "Pending",
+                CreatedAt = DateTime.Now
+            };
+            await _hotelAdminRequestRepository.AddAsync(req);
+            await _hotelAdminRequestRepository.SaveAsync();
+            RequestHotelName = RequestHotelAddress = RequestReason = string.Empty;
+            ShowRegisterForm = "Collapsed";
+        }
+
         [RelayCommand]
         private void HideRooms()
         {
