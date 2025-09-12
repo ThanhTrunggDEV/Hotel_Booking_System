@@ -42,15 +42,12 @@ namespace Hotel_Booking_System
 
                                .AddTransient<LoginWindow>()
                                .AddTransient<ForgotPasswordWindow>()
-                               .AddTransient<SignUpWindow>()
-                               .AddTransient<UserWindow>()
-                              .AddTransient<BookingDialog>()
-                              .AddTransient<AdminWindow>()
+                              .AddTransient<SignUpWindow>()
+                              .AddTransient<UserWindow>()
+                             .AddTransient<BookingDialog>()
                                .AddTransient<BookingDialog>()
                                .AddTransient<ReviewDialog>()
-                               .AddTransient<AdminWindow>()
                                .AddTransient<HotelAdminWindow>()
-                               .AddTransient<AdminWindow>()
                                .AddTransient<SuperAdminWindow>()
 
                                .AddScoped<IHotelRepository, HotelRepository>()

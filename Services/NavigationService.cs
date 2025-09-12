@@ -23,7 +23,7 @@ namespace Hotel_Booking_System.Services
         public void NavigateToAdmin()
         {
 
-            var newWindow = App.Provider!.GetRequiredService<AdminWindow>();
+            var newWindow = App.Provider!.GetRequiredService<SuperAdminWindow>();
 
 
             Application.Current.MainWindow = newWindow;
