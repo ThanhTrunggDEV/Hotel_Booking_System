@@ -8,10 +8,15 @@ namespace Hotel_Booking_System.Services
     public class AIChatService : IAIChatService
     {
         private readonly IAIChatRepository _repository;
+        private readonly string _apiKey;
+        private readonly string _model;
 
         public AIChatService(IAIChatRepository repository)
         {
             _repository = repository;
+            _apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")
+                      ?? throw new InvalidOperationException("GEMINI_API_KEY is not set");
+            _model = Environment.GetEnvironmentVariable("GEMINI_MODEL") ?? "gemini-pro";
         }
 
         public async Task<AIChat> SendAsync(string userId, string message)
@@ -39,9 +44,9 @@ namespace Hotel_Booking_System.Services
 
         private async Task<string> GetResponseFromAIAsync(string message)
         {
-            // Simulated call to AI API or internal module
+            // Simulated call to Gemini API using the configured model.
             await Task.Delay(500);
-            return $"AI response: {message}";
+            return $"AI ({_model}) response: {message}";
         }
     }
 }
