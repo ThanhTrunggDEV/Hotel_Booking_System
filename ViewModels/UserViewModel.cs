@@ -28,6 +28,7 @@ namespace Hotel_Booking_System.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IBookingRepository _bookingRepository;
         private readonly IAIChatRepository _aiChatRepository;
+        private readonly IReviewRepository _reviewRepository;
 
         private string userMail;
         private int _totalBookings;
@@ -108,9 +109,10 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         public ObservableCollection<AIChat> Chats { get; set; } = new ObservableCollection<AIChat>();
+        public ObservableCollection<Review> Reviews { get; set; } = new ObservableCollection<Review>();
 
 
-        public UserViewModel(IAIChatRepository aIChatRepository , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
+        public UserViewModel(IAIChatRepository aIChatRepository , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository, IReviewRepository reviewRepository)
         {
 
             _aiChatRepository = aIChatRepository;
@@ -121,6 +123,7 @@ namespace Hotel_Booking_System.ViewModels
             _hotelRepository = hotelRepository;
             _roomRepository = roomRepository;
             _userRepository = userRepository;
+            _reviewRepository = reviewRepository;
 
             WeakReferenceMessenger.Default.Register<UserViewModel, MessageService>(
      this,
@@ -316,6 +319,7 @@ namespace Hotel_Booking_System.ViewModels
 
             CurrentHotel = Hotels.FirstOrDefault(h => h.HotelID == hotelID);
             FilterRoomsByHotel(hotelID);
+            LoadReviewsForHotel(hotelID);
             ShowAvailableHotels = "Collapsed";
             ShowSearchHotel = "Collapsed";
 
@@ -379,6 +383,15 @@ namespace Hotel_Booking_System.ViewModels
                 FilterBookingsByUser(CurrentUser.UserID);
             }
         }
+        [RelayCommand]
+        private void ReviewBooking(Booking booking)
+        {
+            bool res = _navigationService.OpenReviewDialog(booking);
+            if (res)
+            {
+                LoadReviewsForHotel(booking.HotelID);
+            }
+        }
         private void FilterBookingsByUser(string userId)
         {
             var bookingList = _bookingRepository.GetBookingByUserId(userId).Result;
@@ -400,6 +413,16 @@ namespace Hotel_Booking_System.ViewModels
             foreach (var room in hotelRooms)
             {
                 FilteredRooms.Add(room);
+            }
+        }
+        private void LoadReviewsForHotel(string hotelId)
+        {
+            Reviews.Clear();
+            var reviewList = _reviewRepository.GetAllAsync().Result;
+            var hotelReviews = reviewList.Where(r => r.HotelID == hotelId).ToList();
+            foreach (var review in hotelReviews)
+            {
+                Reviews.Add(review);
             }
         }
 

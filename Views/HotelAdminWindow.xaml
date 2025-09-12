@@ -297,60 +297,18 @@
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
                                 <TextBlock Text="Recent Reviews" FontSize="16" FontWeight="Bold" Margin="0,0,0,15"/>
-
-                                <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Padding="0,0,0,15" Margin="0,0,0,15">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Ellipse Grid.Column="0" Width="50" Height="50" Fill="#FF2196F3" Margin="0,0,15,0"/>
-
-                                        <StackPanel Grid.Column="1">
-                                            <Grid>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="Nguyen Van B" FontWeight="Bold" Margin="0,0,10,0"/>
-                                                    <TextBlock Text="⭐⭐⭐⭐⭐" Foreground="#FF4CAF50"/>
+                                <ListView x:Name="lvAdminReviews" ItemsSource="{Binding Reviews}" BorderThickness="0" Background="Transparent">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Padding="0,0,0,15" Margin="0,0,0,15">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Rating, StringFormat='Rating: {0}'}" FontWeight="Bold"/>
+                                                    <TextBlock Text="{Binding Comment}" TextWrapping="Wrap"/>
                                                 </StackPanel>
-                                                <TextBlock Text="2 days ago" FontSize="12" Foreground="#FF666666" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
-                                            </Grid>
-                                            <TextBlock Text="Excellent service and beautiful rooms! The staff was very helpful and the location is perfect for exploring the city."
-                                                  TextWrapping="Wrap" Margin="0,5"/>
-                                        </StackPanel>
-
-
-                                    </Grid>
-                                </Border>
-
-                                <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Padding="0,0,0,15" Margin="0,0,0,15">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Ellipse Grid.Column="0" Width="50" Height="50" Fill="#FFFF9800" Margin="0,0,15,0"/>
-
-                                        <StackPanel Grid.Column="1">
-                                            <Grid>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="Tran Thi C" FontWeight="Bold" Margin="0,0,10,0"/>
-                                                    <TextBlock Text="⭐⭐⭐⭐" Foreground="#FF4CAF50"/>
-                                                </StackPanel>
-                                                <TextBlock Text="5 days ago" FontSize="12" Foreground="#FF666666" HorizontalAlignment="Right"/>
-                                            </Grid>
-                                            <TextBlock Text="Great hotel with modern amenities. Room was clean and comfortable. Only minor issue was the Wi-Fi speed in some areas."
-                                                  TextWrapping="Wrap" Margin="0,5"/>
-
-
-                                        </StackPanel>
-
-
-                                    </Grid>
-                                </Border>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
                             </StackPanel>
                         </Border>
                     </StackPanel>

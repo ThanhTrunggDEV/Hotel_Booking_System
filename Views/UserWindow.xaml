@@ -237,7 +237,8 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                    
@@ -339,6 +340,19 @@
 
                                             </DataTemplate>
 
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                    <ListView Grid.Row="2" Grid.Column="1" Margin="4,0,20,20" ItemsSource="{Binding Reviews}" Background="Transparent" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Padding="0,10">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Rating, StringFormat='Rating: {0}'}" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding Comment}" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
                                         </ListView.ItemTemplate>
                                     </ListView>
                                 </Grid>
@@ -727,7 +741,7 @@ Stretch="UniformToFill">
                                                 <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"
                         Command="{Binding CancelBookingCommand}" CommandParameter="{Binding}"/>
                                                 <Button Content="Review" Width="100" Style="{StaticResource SecondaryButton}"
-                        Command="{Binding ReviewBookingCommand}" CommandParameter="{Binding}"/>
+                        Command="{Binding DataContext.ReviewBookingCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
                                                 <Button Content="Request changes" Width="120" Style="{StaticResource SecondaryButton}"/>
                                             </StackPanel>
                                         </Grid>

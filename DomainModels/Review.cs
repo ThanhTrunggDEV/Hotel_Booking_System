@@ -13,6 +13,7 @@ namespace Hotel_Booking_System.DomainModels
         public string ReviewID { get; set; }
         public string UserID { get; set; }
         public string HotelID { get; set; }
+        public string RoomID { get; set; }
         public int Rating { get; set; }
         public string Comment { get; set; }
         public DateTime CreatedAt { get; set; }
