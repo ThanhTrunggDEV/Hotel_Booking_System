@@ -51,6 +51,9 @@ namespace Hotel_Booking_System
                                .AddTransient<SuperAdminWindow>()
                                .AddTransient<HotelAdminWindow>()
                                .AddTransient<SuperAdminWindow>()
+                               .AddTransient<BookingDialog>()
+                               .AddTransient<ReviewDialog>()
+                               .AddTransient<HotelAdminWindow>()
                                .AddTransient<SuperAdminWindow>()
 
                                .AddScoped<IHotelRepository, HotelRepository>()
