@@ -15,6 +15,7 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IPaymentRepository _paymentRepository;
         private string _bookingId = string.Empty;
         private double _totalPayment;
+        private double _totalRevenue;
         private string _method = "Cash";
         public ObservableCollection<Payment> Payments { get; } = new();
 
@@ -41,7 +42,7 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _method, value);
         }
 
-        public double TotalRevenue => Payments.Sum(p => p.TotalPayment);
+        public double TotalRevenue { get => _totalRevenue; set => Set(ref _totalRevenue, value); }
 
         public async Task LoadPaymentsAsync()
         {
@@ -49,7 +50,7 @@ namespace Hotel_Booking_System.ViewModels
             var payments = await _paymentRepository.GetAllAsync();
             foreach (var p in payments)
                 Payments.Add(p);
-            PropertyChanged?.Invoke(this, new(nameof(TotalRevenue)));
+            TotalRevenue = Payments.Sum(p => p.TotalPayment);
         }
 
         [RelayCommand]
@@ -65,7 +66,9 @@ namespace Hotel_Booking_System.ViewModels
             await _paymentRepository.AddAsync(payment);
             await _paymentRepository.SaveAsync();
             Payments.Add(payment);
-            PropertyChanged?.Invoke(this, new(nameof(TotalRevenue)));
+            
+            TotalRevenue = Payments.Sum(_ => _.TotalPayment);
+
             MessageBox.Show("Payment Successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
