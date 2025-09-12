@@ -1,3 +1,7 @@
+
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+
 using CommunityToolkit.Mvvm.Input;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
@@ -11,6 +15,9 @@ namespace Hotel_Booking_System.ViewModels
     {
         private readonly IBookingRepository _bookingRepository;
         public ObservableCollection<Booking> Bookings { get; } = new ObservableCollection<Booking>();
+         private readonly IHotelAdminRequestRepository _requestRepository;
+        private readonly IUserRepository _userRepository;
+        public ObservableCollection<HotelAdminRequest> Requests { get; set; } = new ObservableCollection<HotelAdminRequest>();
 
         public AdminViewModel(IBookingRepository bookingRepository)
         {
@@ -25,6 +32,24 @@ namespace Hotel_Booking_System.ViewModels
             foreach (var booking in all)
             {
                 Bookings.Add(booking);
+            }
+         }
+          
+
+        public AdminViewModel(IHotelAdminRequestRepository requestRepository, IUserRepository userRepository)
+        {
+            _requestRepository = requestRepository;
+            _userRepository = userRepository;
+            LoadRequests();
+        }
+
+        private async void LoadRequests()
+        {
+            var list = await _requestRepository.GetAllAsync();
+            Requests.Clear();
+            foreach (var r in list)
+            {
+                Requests.Add(r);
             }
         }
 
@@ -48,6 +73,30 @@ namespace Hotel_Booking_System.ViewModels
             booking.Status = "Modified";
             await _bookingRepository.UpdateAsync(booking);
             LoadBookings();
+        }
+        private async Task ApproveRequest(string id)
+        {
+            var request = await _requestRepository.GetByIdAsync(id);
+            if (request == null) return;
+            request.Status = "Approved";
+            await _requestRepository.UpdateAsync(request);
+            var user = await _userRepository.GetByIdAsync(request.UserID);
+            if (user != null)
+            {
+                user.Role = "HotelAdmin";
+                await _userRepository.UpdateAsync(user);
+            }
+            LoadRequests();
+        }
+
+        [RelayCommand]
+        private async Task RejectRequest(string id)
+        {
+            var request = await _requestRepository.GetByIdAsync(id);
+            if (request == null) return;
+            request.Status = "Rejected";
+            await _requestRepository.UpdateAsync(request);
+            LoadRequests();
         }
     }
 }

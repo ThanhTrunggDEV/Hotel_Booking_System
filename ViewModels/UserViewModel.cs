@@ -27,6 +27,8 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IRoomRepository _roomRepository;
         private readonly INavigationService _navigationService;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IAIChatService _aiChatService;
+        private readonly IPaymentRepository _paymentRepository;
         private readonly IAIChatRepository _aiChatRepository;
 
         private string userMail;
@@ -42,6 +44,15 @@ namespace Hotel_Booking_System.ViewModels
         private string _showChatButton = "Visible";
         private Hotel _currentHotel;
         private User _currentUser;
+        private string _loadingVisibility = "Collapsed";
+        private string _errorVisibility = "Collapsed";
+        private string _errorMessage = string.Empty;
+        private string _requestHotelName = "";
+        private string _requestHotelAddress = "";
+        private string _requestReason = "";
+        private string _selectedModel;
+
+
 
         public string ShowSearchRoom { get => _showSearchRoom; set => Set(ref _showSearchRoom, value); }
         public string ShowSearchHotel { get => _showSearchHotel; set => Set(ref _showSearchHotel, value); }
@@ -59,6 +70,9 @@ namespace Hotel_Booking_System.ViewModels
         }
         public User CurrentUser { get => _currentUser; set => Set(ref _currentUser, value); }
         public Hotel CurrentHotel { get => _currentHotel; set => Set(ref _currentHotel, value); }
+        public string RequestHotelName { get => _requestHotelName; set => Set(ref _requestHotelName, value); }
+        public string RequestHotelAddress { get => _requestHotelAddress; set => Set(ref _requestHotelAddress, value); }
+        public string RequestReason { get => _requestReason; set => Set(ref _requestReason, value); }
 
         public string ShowChatBox
         {
@@ -107,15 +121,20 @@ namespace Hotel_Booking_System.ViewModels
             set;
         }
 
+        public string LoadingVisibility { get => _loadingVisibility; set => Set(ref _loadingVisibility, value); }
+        public string ErrorVisibility { get => _errorVisibility; set => Set(ref _errorVisibility, value); }
+        public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
         public ObservableCollection<AIChat> Chats { get; set; } = new ObservableCollection<AIChat>();
+        public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
 
 
-        public UserViewModel(IAIChatRepository aIChatRepository , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
+
+        public UserViewModel(IPaymentRepository paymentRepository,IAIChatRepository aIChatRepository ,IAIChatService aIChatService , IBookingRepository bookingRepository ,IUserRepository userRepository, IHotelRepository hotelRepository, INavigationService navigationService, IRoomRepository roomRepository, IAuthentication authentication, IHotelAdminRequestRepository hotelAdminRequestRepository)
         {
-
-            _aiChatRepository = aIChatRepository;
+            _aiChatService = aIChatService;
             _hotelAdminRequestRepository = hotelAdminRequestRepository;
             _bookingRepository = bookingRepository;
+            _paymentRepository = paymentRepository;
             _authenticationSerivce = authentication;
             _navigationService = navigationService;
             _hotelRepository = hotelRepository;
@@ -304,9 +323,30 @@ namespace Hotel_Booking_System.ViewModels
             ShowChatBox = "Visible";
         }
         [RelayCommand]
-        private void Send(string message)
+        private async Task Send(string message)
         {
-            Chats.Add(new AIChat { Message = message , Response = "Test"});
+            if (string.IsNullOrWhiteSpace(message) || CurrentUser == null)
+                return;
+
+            LoadingVisibility = "Visible";
+            ErrorVisibility = "Collapsed";
+            ErrorMessage = string.Empty;
+            try
+            {
+                var chat = await _aiChatService.SendAsync(CurrentUser.UserID, message);
+    
+
+                Chats.Add(chat);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                ErrorVisibility = "Visible";
+            }
+            finally
+            {
+                LoadingVisibility = "Collapsed";
+            }
         }
 
 
@@ -332,6 +372,26 @@ namespace Hotel_Booking_System.ViewModels
         {
             ShowRegisterForm = "Collapsed";
         }
+        [RelayCommand]
+        private async Task SubmitRequest()
+        {
+            if (string.IsNullOrWhiteSpace(RequestHotelName) || string.IsNullOrWhiteSpace(RequestHotelAddress) || string.IsNullOrWhiteSpace(RequestReason)) return;
+            var req = new HotelAdminRequest
+            {
+                RequestID = Guid.NewGuid().ToString(),
+                UserID = CurrentUser.UserID,
+                HotelName = RequestHotelName,
+                HotelAddress = RequestHotelAddress,
+                Reason = RequestReason,
+                Status = "Pending",
+                CreatedAt = DateTime.Now
+            };
+            await _hotelAdminRequestRepository.AddAsync(req);
+            await _hotelAdminRequestRepository.SaveAsync();
+            RequestHotelName = RequestHotelAddress = RequestReason = string.Empty;
+            ShowRegisterForm = "Collapsed";
+        }
+
         [RelayCommand]
         private void HideRooms()
         {
@@ -403,15 +463,21 @@ namespace Hotel_Booking_System.ViewModels
         private void FilterBookingsByUser(string userId)
         {
             var bookingList = _bookingRepository.GetBookingByUserId(userId).Result;
+            var payments = _paymentRepository.GetAllAsync().Result;
             Bookings.Clear();
+            double totalSpent = 0;
             var userBookings = bookingList.Where(b => b.UserID == userId).ToList();
             foreach (var booking in userBookings)
             {
                 Bookings.Add(booking);
-                //TODO: Calculate total spent
+                var payment = payments.FirstOrDefault(p => p.BookingID == booking.BookingID);
+                if (payment != null)
+                {
+                    totalSpent += payment.TotalPayment;
+                }
             }
 
-
+            TotalSpent = totalSpent;
             TotalBookings = Bookings.Count;
         }
         private void FilterRoomsByHotel(string hotelId)

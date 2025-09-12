@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Hotel_Booking_System.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,9 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hotel_Booking_System.Views
 {
-    /// <summary>
-    /// Interaction logic for AdminWindow.xaml
-    /// </summary>
     public partial class AdminWindow : Window
     {
         IAdminViewModel _adminViewModel = App.Provider.GetRequiredService<IAdminViewModel>();
@@ -26,6 +20,7 @@ namespace Hotel_Booking_System.Views
         {
             InitializeComponent();
             DataContext = _adminViewModel;
+    
         }
     }
 }
