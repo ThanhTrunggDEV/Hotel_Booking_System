@@ -37,6 +37,7 @@ namespace Hotel_Booking_System
                                .AddTransient<SignUpWindow>()
                                .AddTransient<UserWindow>()
                                .AddTransient<BookingDialog>()
+                               .AddTransient<PaymentDialog>()
                                .AddTransient<AdminWindow>()
 
                                .AddScoped<IHotelRepository, HotelRepository>()
@@ -45,15 +46,16 @@ namespace Hotel_Booking_System
                                  .AddScoped<IReviewRepository, ReviewRepository>()
                                  .AddScoped<IPaymentRepository, PaymentRepository>()
                                  .AddScoped<IAmenityRepository, AmenityRepository>()
-                                 .AddScoped<IAIChatRepository, AIChatRepository>()
+                                .AddScoped<IAIChatRepository, AIChatRepository>()
                                .AddScoped<IRoomRepository, RoomRepository>()
-                               .AddScoped<IHotelAdminRequestRepository, HotelAdminRequestRepository>()
+                                .AddScoped<IHotelAdminRequestRepository, HotelAdminRequestRepository>()
 
                                .AddScoped<INavigationService, NavigationService>()
                                .AddScoped<IAuthentication, AuthenticationSerivce>()
 
                               .AddScoped<ILoginViewModel, LoginViewModel>()
                               .AddScoped<IBookingViewModel, BookingViewModel>()
+                              .AddScoped<IPaymentViewModel, PaymentViewModel>()
                               .AddScoped<IForgotPasswordViewModel, ForgotPasswordViewModel>()
                               .AddScoped<ISignUpViewModel, SignUpViewModel>()
                               .AddScoped<IUserViewModel, UserViewModel>()

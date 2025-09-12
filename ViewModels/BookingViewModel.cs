@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
@@ -99,12 +98,9 @@ namespace Hotel_Booking_System.ViewModels
             await _roomRepository.UpdateAsync(SelectedRoom);
             await _bookingRepository.AddAsync(booking);
             await _bookingRepository.SaveAsync();
-            
-            MessageBox.Show("Booked Successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-           
-
-
+            _navigationService.CloseBookingDialog();
+            _navigationService.OpenPaymentDialog(booking.BookingID, TotalPayment);
         }
     }
 }

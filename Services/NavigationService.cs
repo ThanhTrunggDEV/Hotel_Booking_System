@@ -106,5 +106,28 @@ namespace Hotel_Booking_System.Services
         {
             CloseCurrent();
         }
+
+        public bool OpenPaymentDialog(string bookingId, double amount)
+        {
+            var paymentWindow = App.Provider!.GetRequiredService<PaymentDialog>();
+
+            paymentWindow.btnCancel.Click += (s, e) =>
+            {
+                paymentWindow.DialogResult = false;
+                paymentWindow.Close();
+            };
+            paymentWindow.btnPay.Click += (s, e) => paymentWindow.DialogResult = true;
+
+            var vm = App.Provider!.GetRequiredService<IPaymentViewModel>();
+            vm.BookingID = bookingId;
+            vm.TotalPayment = amount;
+            paymentWindow.DataContext = vm;
+            paymentWindow.ShowDialog();
+            return (bool)paymentWindow.DialogResult!;
+        }
+        public void ClosePaymentDialog()
+        {
+            CloseCurrent();
+        }
     }
 }
