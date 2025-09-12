@@ -54,7 +54,7 @@ namespace Hotel_Booking_System.ViewModels
             else if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "Admin")
             {
                 WeakReferenceMessenger.Default.Send(new MessageService(email));
-                _navigationService.NavigateToAdmin();
+                _navigationService.NavigateToSuperAdmin();
                 await SaveCredentials();
 
             }
