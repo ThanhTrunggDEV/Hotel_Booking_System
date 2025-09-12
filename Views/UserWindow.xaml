@@ -725,10 +725,11 @@ Stretch="UniformToFill">
 
                                             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0" >
                                                 <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"
-                        Command="{Binding CancelBookingCommand}" CommandParameter="{Binding}"/>
+                        Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
                                                 <Button Content="Review" Width="100" Style="{StaticResource SecondaryButton}"
                         Command="{Binding ReviewBookingCommand}" CommandParameter="{Binding}"/>
-                                                <Button Content="Request changes" Width="120" Style="{StaticResource SecondaryButton}"/>
+                                                <Button Content="Edit" Width="120" Style="{StaticResource SecondaryButton}"
+                        Command="{Binding DataContext.EditBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
