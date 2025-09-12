@@ -17,7 +17,7 @@
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
-    <PackageReference Include="Google.AI" Version="1.0.0" />
+    <PackageReference Include="Mscc.GenerativeAI" Version="2.8.9" />
   </ItemGroup>
 
   <ItemGroup>
