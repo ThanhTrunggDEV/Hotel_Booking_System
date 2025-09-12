@@ -827,6 +827,26 @@ Margin="50" Padding="0">
 
             </TabItem>
 
+
+            <TabItem x:Name="PaymentSummaryTab" Header="💰 Payment Summary">
+                <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Payment Summary" Style="{StaticResource HeaderTextStyle}"/>
+                        <DataGrid ItemsSource="{Binding Payments}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,20,0,20">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Payment ID" Binding="{Binding PaymentID}" Width="*"/>
+                                <DataGridTextColumn Header="Booking ID" Binding="{Binding BookingID}" Width="*"/>
+                                <DataGridTextColumn Header="Amount" Binding="{Binding TotalPayment}" Width="*"/>
+                                <DataGridTextColumn Header="Method" Binding="{Binding Method}" Width="*"/>
+                                <DataGridTextColumn Header="Date" Binding="{Binding PaymentDate}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Text="{Binding TotalRevenue, StringFormat='Total Revenue: ${0:F0}'}" FontSize="16" FontWeight="Bold" Foreground="#27AE60" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+
             <TabItem Header="Hotel Admin Requests">
                 <DataGrid ItemsSource="{Binding Requests}" AutoGenerateColumns="False" Margin="30,20">
                     <DataGrid.Columns>
@@ -848,6 +868,7 @@ Margin="50" Padding="0">
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
+
         </TabControl>
     </Grid>
 </Window>

@@ -45,6 +45,7 @@ namespace Hotel_Booking_System
                                .AddTransient<SignUpWindow>()
                                .AddTransient<UserWindow>()
                                .AddTransient<BookingDialog>()
+                               .AddTransient<PaymentDialog>()
                                .AddTransient<AdminWindow>()
                                .AddTransient<SuperAdminWindow>()
 
@@ -53,6 +54,8 @@ namespace Hotel_Booking_System
                                .AddScoped<IUserRepository, UserRepository>()
                                  .AddScoped<IReviewRepository, ReviewRepository>()
                                  .AddScoped<IPaymentRepository, PaymentRepository>()
+                                 .AddScoped<IAmenityRepository, AmenityRepository>()
+                                .AddScoped<IAIChatRepository, AIChatRepository>()
                                   .AddScoped<IAmenityRepository, AmenityRepository>()
                                   .AddSingleton(geminiOptions)
                                   .AddScoped<IAIChatRepository, AIChatRepository>()
@@ -68,13 +71,14 @@ namespace Hotel_Booking_System
                                  })
 
                                .AddScoped<IRoomRepository, RoomRepository>()
-                               .AddScoped<IHotelAdminRequestRepository, HotelAdminRequestRepository>()
+                                .AddScoped<IHotelAdminRequestRepository, HotelAdminRequestRepository>()
 
                                .AddScoped<INavigationService, NavigationService>()
                                .AddScoped<IAuthentication, AuthenticationSerivce>()
 
                               .AddScoped<ILoginViewModel, LoginViewModel>()
                               .AddScoped<IBookingViewModel, BookingViewModel>()
+                              .AddScoped<IPaymentViewModel, PaymentViewModel>()
                               .AddScoped<IForgotPasswordViewModel, ForgotPasswordViewModel>()
                               .AddScoped<ISignUpViewModel, SignUpViewModel>()
                               .AddScoped<IAdminViewModel, AdminViewModel>()
