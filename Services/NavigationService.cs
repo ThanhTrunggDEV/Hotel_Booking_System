@@ -20,14 +20,13 @@ namespace Hotel_Booking_System.Services
 
         }
 
-        public void NavigateToAdmin()
+        public void NavigateToSuperAdmin()
         {
 
+
+
             var newWindow = App.Provider!.GetRequiredService<SuperAdminWindow>();
-
-
             Application.Current.MainWindow = newWindow;
-
             CloseCurrent();
             newWindow.Show();
         }
