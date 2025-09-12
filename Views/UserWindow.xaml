@@ -166,7 +166,8 @@
                                 <Border Visibility="{Binding ShowSearchRoom}" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
                                     <StackPanel Margin="25">
                                         <TextBlock HorizontalAlignment="Center" Text="Room Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
-                                        
+
+                                        <TextBlock Text="Price Range ($)" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
                                             <StackPanel>
                                                 <Grid Margin="0,0,0,10">
@@ -175,47 +176,39 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                            
-                                                    <TextBlock Grid.Column="1" Text="to" 
-                                      VerticalAlignment="Center" 
-                                      Margin="10,0" 
-                                      HorizontalAlignment="Center"/>
-                                                   
+                                                    <TextBox x:Name="txtRoomMinPrice" Width="80" Height="30" HorizontalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="1" Text="to" VerticalAlignment="Center" Margin="10,0" HorizontalAlignment="Center"/>
+                                                    <TextBox x:Name="txtRoomMaxPrice" Grid.Column="2" Width="80" Height="30" HorizontalAlignment="Center"/>
                                                 </Grid>
                                             </StackPanel>
                                         </Border>
 
-                                        <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                            <StackPanel>
-                                               
-
-                                            </StackPanel>
-                                        </Border>
+                                        <TextBlock Text="Capacity" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <TextBox x:Name="txtRoomCapacity" Width="80" Height="30" Margin="0,0,0,20"/>
 
                                         <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
                                             <StackPanel>
-                                               
+                                                <CheckBox x:Name="cbRoomFreeWifi" Content="🌐 Free WiFi" Margin="0,5"/>
+                                                <CheckBox x:Name="cbRoomSwimmingPool" Content="🏊 Swimming Pool" Margin="0,5"/>
+                                                <CheckBox x:Name="cbRoomFreeParking" Content="🚗 Free Parking" Margin="0,5"/>
+                                                <CheckBox x:Name="cbRoomRestaurant" Content="🍽️ Restaurant" Margin="0,5"/>
+                                                <CheckBox x:Name="cbRoomGym" Content="🏋️ Gym" Margin="0,5"/>
                                             </StackPanel>
                                         </Border>
-                                        <Button Content="Clear Filters" Command="{Binding ClearSearchCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
-                                        <Button Command="{Binding SearchHotelsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
+
+                                        <Button Content="Clear Filters" Command="{Binding ClearRoomFiltersCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
+                                        <Button Command="{Binding FilterRoomsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
                                             <Button.CommandParameter>
-                                                <MultiBinding Converter="{StaticResource FilterHotelConverter}">
-                                                    <Binding ElementName="cbbLocation" Path="Text"/>
-                                                    <Binding ElementName="txtMinPrice" Path="Text"/>
-                                                    <Binding ElementName="txtMaxPrice" Path="Text"/>
-                                                    <Binding ElementName="cbFiveStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbFourStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbThreeStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbTwoStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbOneStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbFreeWifi" Path="IsChecked"/>
-                                                    <Binding ElementName="cbSwimmingPool" Path="IsChecked"/>
-                                                    <Binding ElementName="cbFreeParking" Path="IsChecked"/>
-                                                    <Binding ElementName="cbRestaurant" Path="IsChecked"/>
-                                                    <Binding ElementName="cbGym" Path="IsChecked"/>
+                                                <MultiBinding Converter="{StaticResource FilterRoomConverter}">
+                                                    <Binding ElementName="txtRoomMinPrice" Path="Text"/>
+                                                    <Binding ElementName="txtRoomMaxPrice" Path="Text"/>
+                                                    <Binding ElementName="txtRoomCapacity" Path="Text"/>
+                                                    <Binding ElementName="cbRoomFreeWifi" Path="IsChecked"/>
+                                                    <Binding ElementName="cbRoomSwimmingPool" Path="IsChecked"/>
+                                                    <Binding ElementName="cbRoomFreeParking" Path="IsChecked"/>
+                                                    <Binding ElementName="cbRoomRestaurant" Path="IsChecked"/>
+                                                    <Binding ElementName="cbRoomGym" Path="IsChecked"/>
                                                 </MultiBinding>
                                             </Button.CommandParameter>
                                         </Button>
