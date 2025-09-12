@@ -35,6 +35,14 @@ namespace Hotel_Booking_System.Interfaces
     {
         void CloseBookingDialog();
     }
+    public interface IOpenReviewDialog
+    {
+        bool OpenReviewDialog(Booking booking);
+    }
+    public interface ICloseReviewDialog
+    {
+        void CloseReviewDialog();
+    }
     public interface IOpenPaymentDialog
     {
         bool OpenPaymentDialog(string bookingId, double amount);
