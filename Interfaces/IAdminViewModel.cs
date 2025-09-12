@@ -5,6 +5,7 @@ namespace Hotel_Booking_System.Interfaces
 {
     interface IAdminViewModel
     {
+        ObservableCollection<Booking> Bookings { get; }
         ObservableCollection<HotelAdminRequest> Requests { get; set; }
     }
 }

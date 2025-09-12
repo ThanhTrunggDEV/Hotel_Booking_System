@@ -44,6 +44,8 @@ namespace Hotel_Booking_System
                                .AddTransient<ForgotPasswordWindow>()
                                .AddTransient<SignUpWindow>()
                                .AddTransient<UserWindow>()
+                              .AddTransient<BookingDialog>()
+                              .AddTransient<AdminWindow>()
                                .AddTransient<BookingDialog>()
                                .AddTransient<PaymentDialog>()
                                .AddTransient<AdminWindow>()
@@ -83,6 +85,7 @@ namespace Hotel_Booking_System
                               .AddScoped<ISignUpViewModel, SignUpViewModel>()
                               .AddScoped<IAdminViewModel, AdminViewModel>()
                               .AddScoped<IUserViewModel, UserViewModel>()
+                              .AddScoped<IAdminViewModel, AdminViewModel>()
                               .BuildServiceProvider();
         }
     }

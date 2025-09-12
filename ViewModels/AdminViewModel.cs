@@ -1,18 +1,40 @@
+
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+
 using CommunityToolkit.Mvvm.Input;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Manager.FrameWorks;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.ViewModels
 {
     public partial class AdminViewModel : Bindable, IAdminViewModel
     {
-        private readonly IHotelAdminRequestRepository _requestRepository;
+        private readonly IBookingRepository _bookingRepository;
+        public ObservableCollection<Booking> Bookings { get; } = new ObservableCollection<Booking>();
+         private readonly IHotelAdminRequestRepository _requestRepository;
         private readonly IUserRepository _userRepository;
-
         public ObservableCollection<HotelAdminRequest> Requests { get; set; } = new ObservableCollection<HotelAdminRequest>();
+
+        public AdminViewModel(IBookingRepository bookingRepository)
+        {
+            _bookingRepository = bookingRepository;
+            LoadBookings();
+        }
+
+        private void LoadBookings()
+        {
+            var all = _bookingRepository.GetAllAsync().Result;
+            Bookings.Clear();
+            foreach (var booking in all)
+            {
+                Bookings.Add(booking);
+            }
+         }
+          
 
         public AdminViewModel(IHotelAdminRequestRepository requestRepository, IUserRepository userRepository)
         {
@@ -32,6 +54,26 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         [RelayCommand]
+        private async Task CancelBooking(Booking booking)
+        {
+            if (booking == null)
+                return;
+
+            booking.Status = "Cancelled";
+            await _bookingRepository.UpdateAsync(booking);
+            LoadBookings();
+        }
+
+        [RelayCommand]
+        private async Task EditBooking(Booking booking)
+        {
+            if (booking == null)
+                return;
+
+            booking.Status = "Modified";
+            await _bookingRepository.UpdateAsync(booking);
+            LoadBookings();
+        }
         private async Task ApproveRequest(string id)
         {
             var request = await _requestRepository.GetByIdAsync(id);

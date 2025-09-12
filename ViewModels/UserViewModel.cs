@@ -439,6 +439,27 @@ namespace Hotel_Booking_System.ViewModels
                 FilterBookingsByUser(CurrentUser.UserID);
             }
         }
+        [RelayCommand]
+        private async Task CancelBooking(Booking booking)
+        {
+            if (booking == null)
+                return;
+
+            booking.Status = "Cancelled";
+            await _bookingRepository.UpdateAsync(booking);
+            FilterBookingsByUser(CurrentUser.UserID);
+        }
+
+        [RelayCommand]
+        private async Task EditBooking(Booking booking)
+        {
+            if (booking == null)
+                return;
+
+            booking.Status = "Modified";
+            await _bookingRepository.UpdateAsync(booking);
+            FilterBookingsByUser(CurrentUser.UserID);
+        }
         private void FilterBookingsByUser(string userId)
         {
             var bookingList = _bookingRepository.GetBookingByUserId(userId).Result;
