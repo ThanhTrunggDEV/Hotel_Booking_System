@@ -15,9 +15,9 @@ namespace Hotel_Booking_System.Interfaces
     {
         void NavigateToUser();
     }
-    public interface INavigationToAdmin
+    public interface INavigationToSuperAdmin
     {
-        void NavigateToAdmin();
+        void NavigateToSuperAdmin();
     }
     public interface INavitionToLogin
     {
@@ -51,7 +51,7 @@ namespace Hotel_Booking_System.Interfaces
     {
         void ClosePaymentDialog();
     }
-    public interface INavigationService : INavigationToAdmin, INavigationToSignUp, INavigationToUser, INavitionToLogin, NavigationToForgotPassword, IOpenBookingDialog, ICloseBookingDialog, IOpenPaymentDialog, IClosePaymentDialog
+    public interface INavigationService : INavigationToSuperAdmin, INavigationToSignUp, INavigationToUser, INavitionToLogin, NavigationToForgotPassword, IOpenBookingDialog, ICloseBookingDialog, IOpenPaymentDialog, IClosePaymentDialog
     {
         bool OpenReviewDialog(Booking booking);
     }
