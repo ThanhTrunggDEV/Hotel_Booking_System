@@ -7,7 +7,7 @@ using Hotel_Booking_System.DomainModels;
 
 namespace Hotel_Booking_System.Interfaces
 {
-    internal interface IReviewRepository : IRepository<Review>
+    public interface IReviewRepository : IRepository<Review>
     {
     }
 }
