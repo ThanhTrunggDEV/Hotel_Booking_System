@@ -577,6 +577,31 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
+                                                   
+                                                    <Grid Margin="0,5">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Border Grid.Column="0" HorizontalAlignment="Right" Background="#FFF0F8FF"
+                    CornerRadius="12" Margin="0,0,8,0" Padding="12">
+                                                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" FontSize="12"
+                           TextAlignment="Right" MaxWidth="220"/>
+                                                        </Border>
+
+                                                        <Grid Grid.Column="1" Width="32" Height="32">
+                                                            <Image Source="{Binding CurrentUser.AvatarUrl, FallbackValue=\Resources\avatar_default.png}"
+                       Stretch="UniformToFill">
+                                                                <Image.Clip>
+                                                                    <EllipseGeometry Center="16,16" RadiusX="16" RadiusY="16"/>
+                                                                </Image.Clip>
+                                                            </Image>
+                                                            <Ellipse Stroke="#FFE0E0E0" StrokeThickness="3"/>
+                                                        </Grid>
+                                                    </Grid>
+
+                                                  
                                                     <Grid Margin="0,5">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"/>
@@ -585,36 +610,19 @@
 
                                                         <Grid Grid.Column="0" Width="32" Height="32" Margin="0,0,8,0">
                                                             <Ellipse Fill="#FF2196F3"/>
-                                                            <Image Source="/Resources/Chatbotlogo.png" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            <Image Source="/Resources/Chatbotlogo.png" Width="20" Height="20"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                         </Grid>
 
-                                                        <Border Grid.Column="1" HorizontalAlignment="Left" Background="#FFE8F5E8" CornerRadius="12" Margin="0,0,0,0" Padding="12">
-                                                            <TextBlock Text="{Binding Response}" TextWrapping="Wrap" FontSize="12" MaxWidth="220"/>
+                                                        <Border Grid.Column="1" HorizontalAlignment="Left" Background="#FFE8F5E8"
+                    CornerRadius="12" Margin="0,0,0,0" Padding="12">
+                                                            <TextBlock Text="{Binding Response}" TextWrapping="Wrap" FontSize="12"
+                           MaxWidth="220"/>
                                                         </Border>
-                                                    </Grid>
-
-                                                    <Grid Margin="0,5">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-
-                                                        <Border Grid.Column="0" HorizontalAlignment="Right" Background="#FFF0F8FF" CornerRadius="12" Margin="0,0,8,0" Padding="12">
-                                                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" FontSize="12" TextAlignment="Right" MaxWidth="220"/>
-                                                        </Border>
-
-                                                        <Grid Grid.Column="1" Width="32" Height="32">
-                                                            <Image Source="{Binding CurrentUser.AvatarUrl, FallbackValue=\Resources\avatar_default.png}"
-Stretch="UniformToFill">
-                                                                <Image.Clip>
-                                                                    <EllipseGeometry Center="16,16" RadiusX="16" RadiusY="16"/>
-                                                                </Image.Clip>
-                                                            </Image>
-                                                            <Ellipse Stroke="#FFE0E0E0" StrokeThickness="3"/>
-                                                        </Grid>
                                                     </Grid>
                                                 </StackPanel>
                                             </DataTemplate>
+
                                         </ListBox.ItemTemplate>
                                     </ListBox>
                                 </ScrollViewer>
