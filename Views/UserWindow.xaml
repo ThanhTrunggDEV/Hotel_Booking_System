@@ -300,8 +300,6 @@
                            FontSize="11" Foreground="White" FontWeight="SemiBold"/>
                                                             </Border>
 
-                                                            <TextBlock Text="{Binding NotAvailableMessage}" Foreground="Red" FontSize="11" Margin="0,5,0,0"
-                                                                       Visibility="{Binding NotAvailableMessage, Converter={StaticResource NullToVisibilityConverter}}"/>
 
                                                             <Grid Margin="0,15,0,0">
                                                                 <Grid.ColumnDefinitions>

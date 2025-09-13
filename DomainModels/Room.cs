@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,10 +19,5 @@ namespace Hotel_Booking_System.DomainModels
         public double PricePerNight {  get; set; }
         public string Status { get; set; }
 
-        [NotMapped]
-        public bool IsAvailable { get; set; } = true;
-
-        [NotMapped]
-        public string? NotAvailableMessage { get; set; }
     }
 }

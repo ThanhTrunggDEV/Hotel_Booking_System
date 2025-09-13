@@ -771,32 +771,17 @@ namespace Hotel_Booking_System.ViewModels
         private void EvaluateRoomAvailability(Room room, List<Booking> bookings, DateTime? checkIn, DateTime? checkOut)
         {
             var roomBookings = bookings.Where(b => b.RoomID == room.RoomID && b.Status != "Cancelled");
-            string? message = null;
             bool available = true;
 
             if (checkIn.HasValue && checkOut.HasValue)
             {
-                var conflict = roomBookings.FirstOrDefault(b => checkIn < b.CheckOutDate && checkOut > b.CheckInDate);
-                if (conflict != null)
-                {
-                    available = false;
-                    message = $"Not available: {conflict.CheckInDate:dd/MM/yyyy} - {conflict.CheckOutDate:dd/MM/yyyy}";
-                }
+                available = !roomBookings.Any(b => checkIn < b.CheckOutDate && checkOut > b.CheckInDate);
             }
             else
             {
-                var upcoming = roomBookings.Where(b => b.CheckOutDate > DateTime.Now)
-                                            .OrderBy(b => b.CheckInDate)
-                                            .FirstOrDefault();
-                if (upcoming != null)
-                {
-                    available = false;
-                    message = $"Not available: {upcoming.CheckInDate:dd/MM/yyyy} - {upcoming.CheckOutDate:dd/MM/yyyy}";
-                }
+                available = !roomBookings.Any(b => b.CheckOutDate > DateTime.Now);
             }
 
-            room.IsAvailable = available;
-            room.NotAvailableMessage = message;
             room.Status = available ? "Available" : "Booked";
         }
         private void LoadReviewsForHotel(string hotelId)
