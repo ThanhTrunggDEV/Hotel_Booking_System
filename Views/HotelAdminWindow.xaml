@@ -87,6 +87,7 @@
                         <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
                             <StackPanel Margin="25">
                                 <TextBlock Text="Hotel Information" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                                <ComboBox ItemsSource="{Binding Hotels}" SelectedItem="{Binding CurrentHotel}" DisplayMemberPath="HotelName" Margin="0,0,0,15"/>
 
                                 <Grid>
                                     <Grid.ColumnDefinitions>
