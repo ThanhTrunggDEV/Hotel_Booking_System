@@ -167,48 +167,20 @@
                                     <StackPanel Margin="25">
                                         <TextBlock HorizontalAlignment="Center" Text="Room Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
 
-                                        <TextBlock Text="Price Range ($)" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <TextBlock Text="Price ($)" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                            <StackPanel>
-                                                <Grid Margin="0,0,0,10">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBox x:Name="txtRoomMinPrice" Width="80" Height="30" HorizontalAlignment="Center"/>
-                                                    <TextBlock Grid.Column="1" Text="to" VerticalAlignment="Center" Margin="10,0" HorizontalAlignment="Center"/>
-                                                    <TextBox x:Name="txtRoomMaxPrice" Grid.Column="2" Width="80" Height="30" HorizontalAlignment="Center"/>
-                                                </Grid>
-                                            </StackPanel>
+                                            <TextBox x:Name="txtRoomPrice" Width="80" Height="30" HorizontalAlignment="Center"/>
                                         </Border>
 
                                         <TextBlock Text="Capacity" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <TextBox x:Name="txtRoomCapacity" Width="80" Height="30" Margin="0,0,0,20"/>
 
-                                        <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                            <StackPanel>
-                                                <CheckBox x:Name="cbRoomFreeWifi" Content="🌐 Free WiFi" Margin="0,5"/>
-                                                <CheckBox x:Name="cbRoomSwimmingPool" Content="🏊 Swimming Pool" Margin="0,5"/>
-                                                <CheckBox x:Name="cbRoomFreeParking" Content="🚗 Free Parking" Margin="0,5"/>
-                                                <CheckBox x:Name="cbRoomRestaurant" Content="🍽️ Restaurant" Margin="0,5"/>
-                                                <CheckBox x:Name="cbRoomGym" Content="🏋️ Gym" Margin="0,5"/>
-                                            </StackPanel>
-                                        </Border>
-
                                         <Button Content="Clear Filters" Command="{Binding ClearRoomFiltersCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
                                         <Button Command="{Binding FilterRoomsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
                                             <Button.CommandParameter>
                                                 <MultiBinding Converter="{StaticResource FilterRoomConverter}">
-                                                    <Binding ElementName="txtRoomMinPrice" Path="Text"/>
-                                                    <Binding ElementName="txtRoomMaxPrice" Path="Text"/>
+                                                    <Binding ElementName="txtRoomPrice" Path="Text"/>
                                                     <Binding ElementName="txtRoomCapacity" Path="Text"/>
-                                                    <Binding ElementName="cbRoomFreeWifi" Path="IsChecked"/>
-                                                    <Binding ElementName="cbRoomSwimmingPool" Path="IsChecked"/>
-                                                    <Binding ElementName="cbRoomFreeParking" Path="IsChecked"/>
-                                                    <Binding ElementName="cbRoomRestaurant" Path="IsChecked"/>
-                                                    <Binding ElementName="cbRoomGym" Path="IsChecked"/>
                                                 </MultiBinding>
                                             </Button.CommandParameter>
                                         </Button>
@@ -240,16 +212,28 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock Text="{Binding CurrentHotel.HotelName, FallbackValue=Test}" 
+                                                <TextBlock Text="{Binding CurrentHotel.HotelName, FallbackValue=Test}"
                                FontSize="20" FontWeight="Bold" Foreground="White"/>
-                                                <TextBlock Text="Available Rooms" 
+                                                <TextBlock Text="Available Rooms"
                                FontSize="14" Foreground="White" Opacity="0.9"/>
                                             </StackPanel>
 
-                                            <Button Grid.Column="1" Content="✖" 
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                                                <TextBlock Text="Sort by:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="White"/>
+                                                <ComboBox Height="30" SelectedValue="{Binding RoomSortType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Content" Style="{StaticResource ModernComboBox}" Width="200" SelectedIndex="0" Background="White">
+                                                    <ComboBoxItem Content="Default"/>
+                                                    <ComboBoxItem Content="Price: Low to High"/>
+                                                    <ComboBoxItem Content="Price: High to Low"/>
+                                                    <ComboBoxItem Content="Capacity: Low to High"/>
+                                                    <ComboBoxItem Content="Capacity: High to Low"/>
+                                                </ComboBox>
+                                            </StackPanel>
+
+                                            <Button Grid.Column="2" Content="✖"
                         Style="{StaticResource SecondaryButton}"
                         Width="30" Height="30"
                         Background="Transparent"
