@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Linq;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Mscc.GenerativeAI;
@@ -13,13 +14,15 @@ namespace Hotel_Booking_System.Services
         private readonly IHotelRepository _hotelRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IReviewRepository _reviewRepository;
 
-        public AIChatService(IAIChatRepository repository, GeminiOptions options, IBookingRepository bookingRepository, IHotelRepository hotelRepository, IRoomRepository roomRepository)
+        public AIChatService(IAIChatRepository repository, GeminiOptions options, IBookingRepository bookingRepository, IHotelRepository hotelRepository, IRoomRepository roomRepository, IReviewRepository reviewRepository)
         {
             _repository = repository;
             _hotelRepository = hotelRepository;
             _roomRepository = roomRepository;
             _bookingRepository = bookingRepository;
+            _reviewRepository = reviewRepository;
             _options = options;
 
             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")
@@ -45,6 +48,11 @@ namespace Hotel_Booking_System.Services
             var hotels = await _hotelRepository.GetAllAsync();
             var rooms = await _roomRepository.GetAllAsync();
             var bookings = await _bookingRepository.GetBookingByUserId(userId);
+            var reviews = await _reviewRepository.GetAllAsync();
+
+            var ratingsByHotel = reviews
+                .GroupBy(r => r.HotelID)
+                .ToDictionary(g => g.Key, g => g.Average(r => r.Rating));
 
             // 2. Build context text
             var context = new StringBuilder();
@@ -52,7 +60,8 @@ namespace Hotel_Booking_System.Services
             context.AppendLine("\nHotels:");
             foreach (var h in hotels)
             {
-                context.AppendLine($"- {h.HotelID}, {h.HotelName}, Location: {h.Address}, {h.City}, Price Range: {h.MinPrice}-{h.MaxPrice}, Hotel Rating: {h.Rating}");
+                ratingsByHotel.TryGetValue(h.HotelID, out var userRating);
+                context.AppendLine($"- {h.HotelID}, {h.HotelName}, Location: {h.Address}, {h.City}, Price Range: {h.MinPrice}-{h.MaxPrice}, Hotel Rating: {h.Rating}, User Rating: {userRating:F1}");
             }
 
             context.AppendLine("\nRooms:");
