@@ -5,10 +5,9 @@ using System.Windows.Media;
 namespace Hotel_Booking_System.Behaviors
 {
     /// <summary>
-    /// Provides an attached property that keeps a <see cref="ListBox"/>
-    /// scrolled to the bottom while the user is viewing the latest messages.
-    /// Scrolling is suppressed once the user scrolls away from the bottom so
-    /// manual navigation feels natural.
+    /// Provides an attached property that scrolls a <see cref="ListBox"/>
+    /// to the most recent item when it is first loaded. No further automatic
+    /// scrolling is performed so users can navigate messages manually.
     /// </summary>
     public static class ListBoxExtensions
     {
@@ -37,24 +36,7 @@ namespace Hotel_Booking_System.Behaviors
             listBox.Loaded += (_, _) =>
             {
                 var scrollViewer = FindDescendant<ScrollViewer>(listBox);
-                if (scrollViewer == null)
-                    return;
-
-                bool autoScroll = true;
-
-                scrollViewer.ScrollChanged += (_, args) =>
-                {
-                    if (args.ExtentHeightChange == 0)
-                    {
-                        // user-initiated scroll: track if we are at the bottom
-                        autoScroll = scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight;
-                    }
-                    else if (autoScroll)
-                    {
-                        // content changed while we were at the bottom
-                        scrollViewer.ScrollToEnd();
-                    }
-                };
+                scrollViewer?.ScrollToEnd();
             };
         }
 
