@@ -104,22 +104,19 @@ namespace Hotel_Booking_System.ViewModels
             // Validate booking details before proceeding
             if (CheckOutDate <= CheckInDate)
             {
-                NotificationMessage = "Check-out date must be later than check-in date.";
-                NotificationVisibility = "Visible";
+                ShowNotification("Check-out date must be later than check-in date.");
                 return;
             }
 
             if (CheckInDate.Date < DateTime.Today)
             {
-                NotificationMessage = "Check-in date cannot be in the past.";
-                NotificationVisibility = "Visible";
+                ShowNotification("Check-in date cannot be in the past.");
                 return;
             }
 
             if (NumberOfGuests > SelectedRoom.Capacity)
             {
-                NotificationMessage = "Number of guests exceeds room capacity.";
-                NotificationVisibility = "Visible";
+                ShowNotification("Number of guests exceeds room capacity.");
                 return;
             }
 
@@ -127,8 +124,7 @@ namespace Hotel_Booking_System.ViewModels
                 .Where(b => b.RoomID == SelectedRoom.RoomID && b.Status != "Cancelled");
             if (existing.Any(b => CheckInDate < b.CheckOutDate && CheckOutDate > b.CheckInDate))
             {
-                NotificationMessage = "Selected dates are not available for this room.";
-                NotificationVisibility = "Visible";
+                ShowNotification("Selected dates are not available for this room.");
                 return;
             }
             var booking = new Booking
@@ -147,7 +143,17 @@ namespace Hotel_Booking_System.ViewModels
             await _bookingRepository.AddAsync(booking);
             await _bookingRepository.SaveAsync();
 
+            _navigationService.CloseBookingDialog();
             _navigationService.OpenPaymentDialog(booking.BookingID, TotalPayment);
+        }
+
+        private async void ShowNotification(string message)
+        {
+            NotificationMessage = message;
+            NotificationVisibility = "Visible";
+            await Task.Delay(TimeSpan.FromSeconds(5));
+            NotificationVisibility = "Collapsed";
+            NotificationMessage = string.Empty;
         }
     }
 }
