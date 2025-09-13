@@ -7,7 +7,6 @@ using CommunityToolkit.Mvvm.Input;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Manager.FrameWorks;
-using System.Windows;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -21,6 +20,8 @@ namespace Hotel_Booking_System.ViewModels
         private DateTime _checkOutDate = DateTime.Now;
         private int _numberOfGuests;
         private double _totalPayment;
+        private string _notificationMessage;
+        private string _notificationVisibility = "Collapsed";
 
         public BookingViewModel(IBookingRepository bookingRepository, IRoomRepository roomRepository, INavigationService navigationService)
         {
@@ -62,6 +63,18 @@ namespace Hotel_Booking_System.ViewModels
         public User CurrentUser { get ; set ; }
         public Hotel Hotel { get ; set ; }
 
+        public string NotificationMessage
+        {
+            get => _notificationMessage;
+            set => Set(ref _notificationMessage, value);
+        }
+
+        public string NotificationVisibility
+        {
+            get => _notificationVisibility;
+            set => Set(ref _notificationVisibility, value);
+        }
+
         private void CalculateTotalPayment()
         {
             if (SelectedRoom == null)
@@ -85,22 +98,28 @@ namespace Hotel_Booking_System.ViewModels
             if (SelectedRoom == null || CurrentUser == null)
                 return;
 
+            NotificationMessage = string.Empty;
+            NotificationVisibility = "Collapsed";
+
             // Validate booking details before proceeding
             if (CheckOutDate <= CheckInDate)
             {
-                MessageBox.Show("Check-out date must be later than check-in date.", "Invalid Dates", MessageBoxButton.OK, MessageBoxImage.Warning);
+                NotificationMessage = "Check-out date must be later than check-in date.";
+                NotificationVisibility = "Visible";
                 return;
             }
 
             if (CheckInDate.Date < DateTime.Today)
             {
-                MessageBox.Show("Check-in date cannot be in the past.", "Invalid Dates", MessageBoxButton.OK, MessageBoxImage.Warning);
+                NotificationMessage = "Check-in date cannot be in the past.";
+                NotificationVisibility = "Visible";
                 return;
             }
 
             if (NumberOfGuests > SelectedRoom.Capacity)
             {
-                MessageBox.Show("Number of guests exceeds room capacity.", "Guest Limit", MessageBoxButton.OK, MessageBoxImage.Warning);
+                NotificationMessage = "Number of guests exceeds room capacity.";
+                NotificationVisibility = "Visible";
                 return;
             }
 
@@ -108,7 +127,8 @@ namespace Hotel_Booking_System.ViewModels
                 .Where(b => b.RoomID == SelectedRoom.RoomID && b.Status != "Cancelled");
             if (existing.Any(b => CheckInDate < b.CheckOutDate && CheckOutDate > b.CheckInDate))
             {
-                MessageBox.Show("Selected dates are not available for this room.", "Unavailable", MessageBoxButton.OK, MessageBoxImage.Warning);
+                NotificationMessage = "Selected dates are not available for this room.";
+                NotificationVisibility = "Visible";
                 return;
             }
             var booking = new Booking

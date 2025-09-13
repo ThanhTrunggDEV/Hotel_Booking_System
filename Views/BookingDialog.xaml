@@ -25,6 +25,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock Text="Booking Information"
@@ -91,17 +92,20 @@
             <StackPanel Grid.Row="7" Margin="0,15,0,0">
                 <TextBlock Text="Total Payment" FontSize="12" Foreground="#7F8C8D"/>
                 <TextBlock Text="{Binding TotalPayment, StringFormat='${0:F0}'}"
-                           FontSize="20" FontWeight="Bold" 
+                           FontSize="20" FontWeight="Bold"
                            Foreground="#27AE60"/>
             </StackPanel>
 
-      
-            <StackPanel Grid.Row="8" Orientation="Horizontal"
+            <TextBlock Grid.Row="8" Text="{Binding NotificationMessage}" Foreground="Red"
+                       Visibility="{Binding NotificationVisibility}" Margin="0,10,0,0" TextWrapping="Wrap"/>
+
+
+            <StackPanel Grid.Row="9" Orientation="Horizontal"
                         HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button Content="Cancel" Width="90" Height="36"
                         x:Name="btnCancel"
                         Background="#ECF0F1" Foreground="#2C3E50"
-                        BorderBrush="{x:Null}" 
+                        BorderBrush="{x:Null}"
                         
                         Margin="0,0,10,0"
                        />
@@ -110,7 +114,7 @@
                         x:Name="btnBook"
                         Background="#27AE60" Foreground="White"
                         FontWeight="Bold"
-                        BorderBrush="{x:Null}" 
+                        BorderBrush="{x:Null}"
                        />
             </StackPanel>
         </Grid>
