@@ -34,7 +34,7 @@ namespace Hotel_Booking_System.Services
             _generativeModel = googleAI.GenerativeModel(model: modelName);
         }
 
-        public async Task<AIChat> SendAsync(string userId, string message)
+        public async Task<AIChat> SendAsync(string userId, string message, string? model = null)
         {
             if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException("User ID is required", nameof(userId));
@@ -96,5 +96,6 @@ namespace Hotel_Booking_System.Services
             return chat;
         }
 
+       
     }
 }
