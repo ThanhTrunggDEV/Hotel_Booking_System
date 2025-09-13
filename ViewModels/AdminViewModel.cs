@@ -1,5 +1,6 @@
 
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 using CommunityToolkit.Mvvm.Input;
@@ -15,9 +16,10 @@ namespace Hotel_Booking_System.ViewModels
     {
         private readonly IBookingRepository _bookingRepository;
         public ObservableCollection<Booking> Bookings { get; } = new ObservableCollection<Booking>();
-         private readonly IHotelAdminRequestRepository _requestRepository;
+        private readonly IHotelAdminRequestRepository _requestRepository;
         private readonly IUserRepository _userRepository;
         public ObservableCollection<HotelAdminRequest> Requests { get; set; } = new ObservableCollection<HotelAdminRequest>();
+        public ObservableCollection<HotelAdminRequest> PendingRequest { get; set; } = new();
 
         private string _userEmail = string.Empty;
         private User _currentUser = new();
@@ -57,9 +59,14 @@ namespace Hotel_Booking_System.ViewModels
         {
             var list = await _requestRepository.GetAllAsync();
             Requests.Clear();
+            PendingRequest.Clear();
             foreach (var r in list)
             {
                 Requests.Add(r);
+                if (r.Status == "Pending")
+                {
+                    PendingRequest.Add(r);
+                }
             }
         }
 
@@ -84,6 +91,7 @@ namespace Hotel_Booking_System.ViewModels
             await _bookingRepository.UpdateAsync(booking);
             LoadBookings();
         }
+        [RelayCommand]
         private async Task ApproveRequest(string id)
         {
             var request = await _requestRepository.GetByIdAsync(id);
