@@ -38,6 +38,7 @@ namespace Hotel_Booking_System.ViewModels
         private string _showSearchRoom = "Collapsed";
         private string _showSearchHotel = "Visible";
         private string _sortType = "Default";
+        private string _roomSortType = "Default";
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
         private string _showRegisterForm = "Collapsed";
@@ -61,12 +62,22 @@ namespace Hotel_Booking_System.ViewModels
 
         public int TotalBookings { get => _totalBookings; set => Set(ref _totalBookings, value); }
 
-        public string SortType { 
-            get => _sortType; 
-            set 
+        public string SortType {
+            get => _sortType;
+            set
             {
                 Set(ref _sortType, value);
                 SortHotels();
+            }
+        }
+
+        public string RoomSortType
+        {
+            get => _roomSortType;
+            set
+            {
+                Set(ref _roomSortType, value);
+                SortRooms();
             }
         }
         public User CurrentUser { get => _currentUser; set => Set(ref _currentUser, value); }
@@ -249,6 +260,37 @@ namespace Hotel_Booking_System.ViewModels
             }
             
         }
+
+        private void SortRooms()
+        {
+            List<Room> sorted;
+            if (RoomSortType == "Price: Low to High")
+            {
+                sorted = FilteredRooms.OrderBy(r => r.PricePerNight).ToList();
+            }
+            else if (RoomSortType == "Price: High to Low")
+            {
+                sorted = FilteredRooms.OrderByDescending(r => r.PricePerNight).ToList();
+            }
+            else if (RoomSortType == "Capacity: Low to High")
+            {
+                sorted = FilteredRooms.OrderBy(r => r.Capacity).ToList();
+            }
+            else if (RoomSortType == "Capacity: High to Low")
+            {
+                sorted = FilteredRooms.OrderByDescending(r => r.Capacity).ToList();
+            }
+            else
+            {
+                return;
+            }
+
+            FilteredRooms.Clear();
+            foreach (var room in sorted)
+            {
+                FilteredRooms.Add(room);
+            }
+        }
         private void GetCurrentUser()
         {
             var user = _userRepository.GetByEmailAsync(userMail).Result;
@@ -332,34 +374,20 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (parameter is Dictionary<string, object?> filterParams && CurrentHotel != null)
             {
-                double? minPrice = filterParams.TryGetValue("MinPrice", out var min) && min is double dmin ? dmin : null;
-                double? maxPrice = filterParams.TryGetValue("MaxPrice", out var max) && max is double dmax ? dmax : null;
+                double? price = filterParams.TryGetValue("Price", out var p) && p is double dp ? dp : null;
                 int? capacity = filterParams.TryGetValue("Capacity", out var cap) && cap is int icap ? icap : null;
-                bool? freeWifi = filterParams.TryGetValue("FreeWifi", out var wifi) ? wifi as bool? : null;
-                bool? swimmingPool = filterParams.TryGetValue("SwimmingPool", out var pool) ? pool as bool? : null;
-                bool? freeParking = filterParams.TryGetValue("FreeParking", out var parking) ? parking as bool? : null;
-                bool? restaurant = filterParams.TryGetValue("Restaurant", out var rest) ? rest as bool? : null;
-                bool? gym = filterParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
 
                 var rooms = Rooms.Where(r => r.HotelID == CurrentHotel.HotelID).ToList();
 
-                if (minPrice.HasValue)
-                    rooms = rooms.Where(r => r.PricePerNight >= minPrice.Value).ToList();
-                if (maxPrice.HasValue)
-                    rooms = rooms.Where(r => r.PricePerNight <= maxPrice.Value).ToList();
+                if (price.HasValue)
+                    rooms = rooms.Where(r => r.PricePerNight <= price.Value).ToList();
                 if (capacity.HasValue)
                     rooms = rooms.Where(r => r.Capacity >= capacity.Value).ToList();
-
-                var amenities = CurrentHotel.Amenities.Select(a => a.AmenityName).ToList();
-                if (freeWifi == true && !amenities.Contains("Free WiFi")) rooms = new List<Room>();
-                if (swimmingPool == true && !amenities.Contains("Swimming Pool")) rooms = new List<Room>();
-                if (freeParking == true && !amenities.Contains("Free Parking")) rooms = new List<Room>();
-                if (restaurant == true && !amenities.Contains("Restaurant")) rooms = new List<Room>();
-                if (gym == true && !amenities.Contains("Gym")) rooms = new List<Room>();
 
                 FilteredRooms.Clear();
                 foreach (var room in rooms)
                     FilteredRooms.Add(room);
+                SortRooms();
             }
         }
 
@@ -614,6 +642,7 @@ namespace Hotel_Booking_System.ViewModels
             {
                 FilteredRooms.Add(room);
             }
+            SortRooms();
         }
         private void LoadReviewsForHotel(string hotelId)
         {
