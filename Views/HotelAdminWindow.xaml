@@ -208,25 +208,53 @@
   
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
-                                <DataGrid Height="400" AutoGenerateColumns="False" CanUserAddRows="False">
+                                <DataGrid Height="400" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bookings}">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Booking ID" Width="120" Binding="{Binding BookingId}"/>
-                                        <DataGridTextColumn Header="Guest Name" Width="150" Binding="{Binding GuestName}"/>
-                                        <DataGridTextColumn Header="Room" Width="80" Binding="{Binding Room}"/>
-                                        <DataGridTextColumn Header="Check-in" Width="100" Binding="{Binding CheckIn}"/>
-                                        <DataGridTextColumn Header="Check-out" Width="100" Binding="{Binding CheckOut}"/>
+                                        <DataGridTextColumn Header="Booking ID" Width="120" Binding="{Binding BookingID}"/>
+                                        <DataGridTextColumn Header="Guest Name" Width="150" Binding="{Binding UserID}"/>
+                                        <DataGridTextColumn Header="Room" Width="80" Binding="{Binding RoomID}"/>
+                                        <DataGridTextColumn Header="Check-in" Width="100" Binding="{Binding CheckInDate}"/>
+                                        <DataGridTextColumn Header="Check-out" Width="100" Binding="{Binding CheckOutDate}"/>
                                         <DataGridTextColumn Header="Status" Width="100" Binding="{Binding Status}"/>
-                                        <DataGridTextColumn Header="Total" Width="100" Binding="{Binding Total}"/>
                                         <DataGridTemplateColumn Header="Actions" Width="200">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Button Content="Confirm" Style="{StaticResource SecondaryButton}" 
-                                                           Background="#FF4CAF50" Width="60" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content= "Cancel" Style="{StaticResource SecondaryButton}" 
-                                                           Background="#FFFF5722" Width="60" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="Email" Style="{StaticResource SecondaryButton}" 
-                                                           Background="#FF2196F3" Width="50" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Width="60" Height="25" Margin="2" FontSize="10" Background="#FF4CAF50"
+                                                            Command="{Binding DataContext.ConfirmBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Setter Property="Content" Value="Confirm"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+                                                        <Button Width="80" Height="25" Margin="2" FontSize="10" Background="#FFFF5722"
+                                                            Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Setter Property="Content" Value="Cancel"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                            <Setter Property="Content" Value="Cancel"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="CancelRequested">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                            <Setter Property="Content" Value="Approve Cancel"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
