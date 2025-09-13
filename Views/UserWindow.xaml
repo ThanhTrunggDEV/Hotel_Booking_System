@@ -579,7 +579,7 @@
                                                         </Border>
 
                                                         <Grid Grid.Column="1" Width="32" Height="32">
-                                                            <Image Source="{Binding CurrentUser.AvatarUrl, FallbackValue=\Resources\avatar_default.png}"
+                                                            <Image Source="{Binding DataContext.CurrentUser.AvatarUrl, RelativeSource={RelativeSource AncestorType=Window}, FallbackValue=/Resources/avatar_default.png}"
                        Stretch="UniformToFill">
                                                                 <Image.Clip>
                                                                     <EllipseGeometry Center="16,16" RadiusX="16" RadiusY="16"/>
