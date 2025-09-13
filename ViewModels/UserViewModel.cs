@@ -47,7 +47,6 @@ namespace Hotel_Booking_System.ViewModels
         private string _showChatButton = "Visible";
         private Hotel _currentHotel;
         private User _currentUser;
-        private string _loadingVisibility = "Collapsed";
         private string _errorVisibility = "Collapsed";
         private string _errorMessage = string.Empty;
         private string _requestHotelName = "";
@@ -136,7 +135,6 @@ namespace Hotel_Booking_System.ViewModels
             set;
         }
 
-        public string LoadingVisibility { get => _loadingVisibility; set => Set(ref _loadingVisibility, value); }
         public string ErrorVisibility { get => _errorVisibility; set => Set(ref _errorVisibility, value); }
         public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
         public ObservableCollection<AIChat> Chats { get; set; } = new();
@@ -470,7 +468,6 @@ namespace Hotel_Booking_System.ViewModels
             if (string.IsNullOrWhiteSpace(message) || CurrentUser == null)
                 return;
 
-            LoadingVisibility = "Visible";
             ErrorVisibility = "Collapsed";
             ErrorMessage = string.Empty;
 
@@ -498,10 +495,6 @@ namespace Hotel_Booking_System.ViewModels
                 ErrorMessage = ex.Message;
                 ErrorVisibility = "Visible";
                 Chats.Remove(chat);
-            }
-            finally
-            {
-                LoadingVisibility = "Collapsed";
             }
         }
 

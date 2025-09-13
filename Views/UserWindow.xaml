@@ -628,7 +628,6 @@
 
                                 <StackPanel Grid.Row="2" Margin="15,10">
                                     <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Visibility="{Binding ErrorVisibility}" Margin="0,0,0,5"/>
-                                    <TextBlock Text="Loading..." Foreground="Gray" Visibility="{Binding LoadingVisibility}" Margin="0,0,0,5"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
