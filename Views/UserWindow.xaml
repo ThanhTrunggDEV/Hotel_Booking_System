@@ -320,7 +320,7 @@
                                                                         Width="80"
                                                                         Height="35"
                         Command="{Binding DataContext.BookRoomCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        CommandParameter="{Binding}" IsEnabled="{Binding IsAvailable}"/>
+                        CommandParameter="{Binding}"/>
                                                             </Grid>
                                                         </StackPanel>
                                                     </Grid>

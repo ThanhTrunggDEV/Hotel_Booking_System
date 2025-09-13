@@ -634,12 +634,6 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private void BookRoom(Room room)
         {
-            if (!room.IsAvailable)
-            {
-                MessageBox.Show(room.NotAvailableMessage ?? "Room not available.", "Not Available", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
             var hotel = Hotels.FirstOrDefault(h => h.HotelID == room.HotelID);
             bool res = _navigationService.OpenBookingDialog(room, CurrentUser, hotel);
 
