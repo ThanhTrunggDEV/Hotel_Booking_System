@@ -98,7 +98,7 @@ namespace Hotel_Booking_System.Services
             
             bookingWindow.DataContext = vm;
             bookingWindow.ShowDialog();
-            return (bool)bookingWindow.DialogResult!;
+            return bookingWindow.DialogResult == true;
             
         }
         public void CloseBookingDialog()
@@ -121,7 +121,7 @@ namespace Hotel_Booking_System.Services
 
             reviewWindow.DataContext = vm;
             reviewWindow.ShowDialog();
-            return (bool)reviewWindow.DialogResult!;
+            return reviewWindow.DialogResult == true;
         }
 
 
@@ -141,7 +141,7 @@ namespace Hotel_Booking_System.Services
             vm.TotalPayment = amount;
             paymentWindow.DataContext = vm;
             paymentWindow.ShowDialog();
-            return (bool)paymentWindow.DialogResult!;
+            return paymentWindow.DialogResult == true;
         }
         public void ClosePaymentDialog()
         {
