@@ -31,12 +31,8 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="30,0">
-                <TextBlock Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">
-                Xin Chào,
-                </TextBlock>
-                <TextBlock Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">
-                Trung
-                </TextBlock>
+                <TextBlock Text="Xin Chào," Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding CurrentUser.FullName}" Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom"/>
 
                 <Button Content="Logout" Style="{StaticResource PrimaryButton}" Width="100"
                    Background="#FFFF5722" Margin="5,0,0,0"/>

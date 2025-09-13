@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -28,6 +21,12 @@ namespace Hotel_Booking_System.Views
             InitializeComponent();
             _viewModel = App.Provider.GetRequiredService<IHotelAdminViewModel>();
             DataContext = _viewModel;
+         private readonly IHotelAdminViewModel  _hotelAdminViewModel = App.Provider.GetRequiredService<IHotelAdminViewModel>();
+        public HotelAdminWindow()
+        {
+            InitializeComponent();
+            DataContext = _hotelAdminViewModel;
+            Loaded += async (s, e) => await _hotelAdminViewModel.LoadReviewsAsync();
         }
     }
 }
