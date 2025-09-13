@@ -144,6 +144,8 @@ namespace Hotel_Booking_System.Services
                     MaxPrice = 300,
                     Description = "A cozy sample hotel",
                     Rating = 4,
+                    IsApproved = true,
+                    IsVisible = true,
                     Amenities = Amenities.ToList()
                 };
                 Hotels.Add(hotel);

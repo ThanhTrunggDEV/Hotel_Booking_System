@@ -128,6 +128,35 @@
                             </StackPanel>
                         </Border>
 
+                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                            <StackPanel Margin="25">
+                                <TextBlock Text="Pending Hotels" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                                <DataGrid Height="200" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingHotels}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Hotel ID" Width="100" Binding="{Binding HotelID}"/>
+                                        <DataGridTextColumn Header="Hotel Name" Width="200" Binding="{Binding HotelName}"/>
+                                        <DataGridTextColumn Header="City" Width="150" Binding="{Binding City}"/>
+                                        <DataGridTemplateColumn Header="Actions" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Button Content="✅ Approve" Style="{StaticResource SecondaryButton}"
+                                                                Background="#FF4CAF50" Width="55" Height="25" Margin="2" FontSize="10"
+                                                                Command="{Binding DataContext.ApproveHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding HotelID}"/>
+                                                        <Button Content="❌ Reject" Style="{StaticResource SecondaryButton}"
+                                                                Background="#FFFF5722" Width="50" Height="25" Margin="2" FontSize="10"
+                                                                Command="{Binding DataContext.RejectHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding HotelID}"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
                                 <TextBlock Text="System Reports and Analytics" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
