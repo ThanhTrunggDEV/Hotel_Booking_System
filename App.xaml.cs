@@ -52,6 +52,7 @@ namespace Hotel_Booking_System
                 .AddTransient<SignUpWindow>()
                 .AddTransient<SuperAdminWindow>()
                 .AddTransient<ReviewDialog>()
+                .AddTransient<PaymentDialog>()
                 .AddTransient<HotelAdminWindow>()
                 .AddScoped<IHotelRepository, HotelRepository>()
                 .AddSingleton<IBookingRepository, BookingRepository>()

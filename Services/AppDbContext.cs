@@ -92,7 +92,7 @@ namespace Hotel_Booking_System.Services
                 var superAdmin = new User
                 {
                     FullName = "Super Admin",
-                    Email = "superadmin@example.com",
+                    Email = "superadmin@gmail.com",
                     Password = authentication.HashPassword("123456"),
                     Role = "SuperAdmin",
                     DateOfBirth = DateTime.Now
@@ -101,7 +101,7 @@ namespace Hotel_Booking_System.Services
                 var hotelAdmin = new User
                 {
                     FullName = "Hotel Admin",
-                    Email = "hoteladmin@example.com",
+                    Email = "hoteladmin@gmail.com",
                     Password = authentication.HashPassword("123456"),
                     Role = "HotelAdmin",
                     DateOfBirth = DateTime.Now
@@ -110,7 +110,7 @@ namespace Hotel_Booking_System.Services
                 var customer = new User
                 {
                     FullName = "John Doe",
-                    Email = "customer@example.com",
+                    Email = "customer@gmail.com",
                     Password = authentication.HashPassword("123456"),
                     Role = "User",
                     DateOfBirth = DateTime.Now
@@ -120,8 +120,8 @@ namespace Hotel_Booking_System.Services
                 SaveChanges();
             }
 
-            var admin = Users.First(u => u.Email == "hoteladmin@example.com");
-            var customerUser = Users.First(u => u.Email == "customer@example.com");
+            var admin = Users.First(u => u.Email == "hoteladmin@gmail.com");
+            var customerUser = Users.First(u => u.Email == "customer@gmail.com");
 
             if (!Amenities.Any())
             {
