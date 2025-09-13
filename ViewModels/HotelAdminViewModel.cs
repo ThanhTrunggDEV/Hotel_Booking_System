@@ -31,12 +31,12 @@ namespace Hotel_Booking_System.ViewModels
             get => _currentHotel;
             set
             {
-                if (Set(ref _currentHotel, value))
-                {
+                Set(ref _currentHotel, value);
+                
                     LoadRooms();
                     LoadBookings();
                     LoadReviews();
-                }
+                
             }
         }
 
