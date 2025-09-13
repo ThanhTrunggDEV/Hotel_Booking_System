@@ -449,8 +449,8 @@
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <TextBlock Text="⭐" Foreground="Gold" FontSize="16"/>
-                                                        <TextBlock Text="{Binding Rating}" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"/>
-                                                        
+                                                        <TextBlock Text="{Binding AverageRating, StringFormat={}{0:F1}}" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"/>
+
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">

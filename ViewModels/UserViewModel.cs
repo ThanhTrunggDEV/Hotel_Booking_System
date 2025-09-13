@@ -171,7 +171,9 @@ namespace Hotel_Booking_System.ViewModels
 
           //  SeedData();
 
-            Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
+            var hotelList = _hotelRepository.GetAllAsync().Result;
+            CalculateAverageRatings(hotelList);
+            Hotels = new ObservableCollection<Hotel>(hotelList);
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
 
 
@@ -206,7 +208,7 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (SortType == "Rating: High to Low")
             {
-                var sorted = Hotels.OrderByDescending(h => h.Rating).ToList();
+                var sorted = Hotels.OrderByDescending(h => h.AverageRating).ToList();
                 Hotels.Clear();
                 foreach (var hotel in sorted)
                 {
@@ -215,7 +217,7 @@ namespace Hotel_Booking_System.ViewModels
             }
             else if (SortType == "Rating: Low to High")
             {
-                var sorted = Hotels.OrderBy(h => h.Rating).ToList();
+                var sorted = Hotels.OrderBy(h => h.AverageRating).ToList();
                 Hotels.Clear();
                 foreach (var hotel in sorted)
                 {
@@ -258,7 +260,22 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            
+
+        }
+
+        private void CalculateAverageRatings(IEnumerable<Hotel> hotels)
+        {
+            var reviewList = _reviewRepository.GetAllAsync().Result;
+            var averages = reviewList
+                .GroupBy(r => r.HotelID)
+                .ToDictionary(g => g.Key, g => g.Average(r => r.Rating));
+
+            foreach (var hotel in hotels)
+            {
+                hotel.AverageRating = averages.TryGetValue(hotel.HotelID, out var avg)
+                    ? Math.Round(avg, 1)
+                    : 0;
+            }
         }
 
         private void SortRooms()
@@ -321,6 +338,7 @@ namespace Hotel_Booking_System.ViewModels
 
 
                 List<Hotel> hotels = _hotelRepository.GetAllAsync().Result;
+                CalculateAverageRatings(hotels);
 
 
 
@@ -342,7 +360,7 @@ namespace Hotel_Booking_System.ViewModels
                 if (twoStar == true) starFilters.Add(2);
                 if (oneStar == true) starFilters.Add(1);
                 if (starFilters.Count > 0)
-                    hotels = hotels.Where(h => starFilters.Contains(h.Rating)).ToList();
+                    hotels = hotels.Where(h => starFilters.Contains((int)Math.Round(h.AverageRating))).ToList();
 
                 if (freeWifi == true)
                     hotels = hotels.Where(h => h.Amenities.Any(a => a.AmenityName == "Free WiFi")).ToList();
@@ -403,6 +421,7 @@ namespace Hotel_Booking_System.ViewModels
         {
             Hotels.Clear();
             var allHotels = _hotelRepository.GetAllAsync().Result;
+            CalculateAverageRatings(allHotels);
             foreach (var hotel in allHotels)
             {
                 Hotels.Add(hotel);
