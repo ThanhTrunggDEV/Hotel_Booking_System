@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Hotel_Booking_System.DomainModels;
 
@@ -6,7 +5,6 @@ namespace Hotel_Booking_System.Interfaces
 {
     interface ISuperAdminViewModel
     {
-        User CurrentUser { get; set; }
         int TotalHotels { get; set; }
         int TotalUsers { get; set; }
         int PendingRequests { get; set; }
@@ -17,3 +15,4 @@ namespace Hotel_Booking_System.Interfaces
         IRelayCommand UpdateInfoCommand { get; }
     }
 }
+

@@ -851,7 +851,7 @@ Margin="50" Padding="0">
             </TabItem>
 
 
-            <TabItem Header="Admin Bookings &amp; Requests">
+            <TabItem x:Name="AdminBookingsRequestsTab" Header="Admin Bookings &amp; Requests">
                 <Grid Margin="30,20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
