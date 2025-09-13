@@ -85,39 +85,160 @@ namespace Hotel_Booking_System.Services
         {
             Database.EnsureCreated();
 
+            var authentication = new AuthenticationSerivce();
+
             if (!Users.Any())
             {
                 var superAdmin = new User
                 {
                     FullName = "Super Admin",
                     Email = "superadmin@example.com",
-                    Password = "123456",
+                    Password = authentication.HashPassword("123456"),
                     Role = "SuperAdmin",
                     DateOfBirth = DateTime.Now
                 };
 
-                var requester = new User
+                var hotelAdmin = new User
                 {
                     FullName = "Hotel Admin",
                     Email = "hoteladmin@example.com",
-                    Password = "123456",
+                    Password = authentication.HashPassword("123456"),
+                    Role = "HotelAdmin",
+                    DateOfBirth = DateTime.Now
+                };
+
+                var customer = new User
+                {
+                    FullName = "John Doe",
+                    Email = "customer@example.com",
+                    Password = authentication.HashPassword("123456"),
                     Role = "User",
                     DateOfBirth = DateTime.Now
                 };
 
-                Users.AddRange(superAdmin, requester);
+                Users.AddRange(superAdmin, hotelAdmin, customer);
                 SaveChanges();
+            }
 
+            var admin = Users.First(u => u.Email == "hoteladmin@example.com");
+            var customerUser = Users.First(u => u.Email == "customer@example.com");
+
+            if (!Amenities.Any())
+            {
+                var wifi = new Amenity { AmenityName = "Free WiFi" };
+                var pool = new Amenity { AmenityName = "Pool" };
+                Amenities.AddRange(wifi, pool);
+                SaveChanges();
+            }
+
+            if (!Hotels.Any())
+            {
+                var hotel = new Hotel
+                {
+                    UserID = admin.UserID,
+                    HotelName = "Sample Hotel",
+                    Address = "123 Sample Street",
+                    City = "Sample City",
+                    HotelImage = "https://example.com/hotel.jpg",
+                    MinPrice = 100,
+                    MaxPrice = 300,
+                    Description = "A cozy sample hotel",
+                    Rating = 4,
+                    Amenities = Amenities.ToList()
+                };
+                Hotels.Add(hotel);
+                SaveChanges();
+            }
+
+            var hotelEntity = Hotels.First();
+
+            if (!Rooms.Any())
+            {
+                var room = new Room
+                {
+                    HotelID = hotelEntity.HotelID,
+                    RoomNumber = "101",
+                    RoomImage = "https://example.com/room.jpg",
+                    RoomType = "Single",
+                    Capacity = 1,
+                    PricePerNight = 100,
+                    Status = "Available"
+                };
+                Rooms.Add(room);
+                SaveChanges();
+            }
+
+            var roomEntity = Rooms.First();
+
+            if (!Bookings.Any())
+            {
+                var booking = new Booking
+                {
+                    HotelID = hotelEntity.HotelID,
+                    RoomID = roomEntity.RoomID,
+                    UserID = customerUser.UserID,
+                    CheckInDate = DateTime.Today,
+                    CheckOutDate = DateTime.Today.AddDays(2),
+                    Status = "Confirmed"
+                };
+                Bookings.Add(booking);
+                SaveChanges();
+            }
+
+            var bookingEntity = Bookings.First();
+
+            if (!Payments.Any())
+            {
+                var payment = new Payment
+                {
+                    BookingID = bookingEntity.BookingID,
+                    TotalPayment = 200,
+                    Method = "CreditCard",
+                    PaymentDate = DateTime.Today
+                };
+                Payments.Add(payment);
+                SaveChanges();
+            }
+
+            if (!Reviews.Any())
+            {
+                var review = new Review
+                {
+                    UserID = customerUser.UserID,
+                    HotelID = hotelEntity.HotelID,
+                    RoomID = roomEntity.RoomID,
+                    Rating = 5,
+                    Comment = "Great stay!",
+                    CreatedAt = DateTime.Now
+                };
+                Reviews.Add(review);
+                SaveChanges();
+            }
+
+            if (!AIChats.Any())
+            {
+                var chat = new AIChat
+                {
+                    UserID = customerUser.UserID,
+                    Message = "Hello",
+                    Response = "Welcome to our service",
+                    CreatedAt = DateTime.Now
+                };
+                AIChats.Add(chat);
+                SaveChanges();
+            }
+
+            if (!HotelAdminRequests.Any())
+            {
                 HotelAdminRequests.Add(new HotelAdminRequest
                 {
-                    UserID = requester.UserID,
+                    UserID = admin.UserID,
                     HotelName = "Sample Hotel",
                     HotelAddress = "123 Sample Street",
                     Reason = "Initial request",
                     Status = "Pending",
                     CreatedAt = DateTime.Now
                 });
-
                 SaveChanges();
             }
         }
