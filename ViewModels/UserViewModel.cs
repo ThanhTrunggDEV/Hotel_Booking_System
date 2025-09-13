@@ -171,7 +171,8 @@ namespace Hotel_Booking_System.ViewModels
 
           //  SeedData();
 
-            var hotelList = _hotelRepository.GetAllAsync().Result;
+            var hotelList = _hotelRepository.GetAllAsync().Result
+                .Where(h => h.IsApproved && h.IsVisible).ToList();
             CalculateAverageRatings(hotelList);
             Hotels = new ObservableCollection<Hotel>(hotelList);
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
@@ -355,7 +356,8 @@ namespace Hotel_Booking_System.ViewModels
                 bool? gym = searchParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
 
 
-                List<Hotel> hotels = _hotelRepository.GetAllAsync().Result;
+                List<Hotel> hotels = _hotelRepository.GetAllAsync().Result
+                    .Where(h => h.IsApproved && h.IsVisible).ToList();
                 CalculateAverageRatings(hotels);
 
 
@@ -438,7 +440,8 @@ namespace Hotel_Booking_System.ViewModels
         private void ClearSearch()
         {
             Hotels.Clear();
-            var allHotels = _hotelRepository.GetAllAsync().Result;
+            var allHotels = _hotelRepository.GetAllAsync().Result
+                .Where(h => h.IsApproved && h.IsVisible).ToList();
             CalculateAverageRatings(allHotels);
             foreach (var hotel in allHotels)
             {

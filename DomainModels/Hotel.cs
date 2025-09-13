@@ -21,6 +21,8 @@ namespace Hotel_Booking_System.DomainModels
         public double MaxPrice { get; set; }
         public string Description { get; set; }
         public int Rating { get; set; }
+        public bool IsApproved { get; set; }
+        public bool IsVisible { get; set; } = true;
 
         [NotMapped]
         public double AverageRating { get; set; }
