@@ -18,5 +18,6 @@ namespace Hotel_Booking_System.DomainModels
         public int Capacity { get; set; }
         public double PricePerNight {  get; set; }
         public string Status { get; set; }
+
     }
 }

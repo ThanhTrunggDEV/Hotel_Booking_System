@@ -133,44 +133,59 @@ namespace Hotel_Booking_System.Services
 
             if (!Hotels.Any())
             {
-                var hotel = new Hotel
+                var hotels = new List<Hotel>();
+                for (int i = 1; i <= 5; i++)
                 {
-                    UserID = admin.UserID,
-                    HotelName = "Sample Hotel",
-                    Address = "123 Sample Street",
-                    City = "Sample City",
-                    HotelImage = "https://example.com/hotel.jpg",
-                    MinPrice = 100,
-                    MaxPrice = 300,
-                    Description = "A cozy sample hotel",
-                    Rating = 4,
-                    IsApproved = true,
-                    IsVisible = true,
-                    Amenities = Amenities.ToList()
-                };
-                Hotels.Add(hotel);
+                    hotels.Add(new Hotel
+                    {
+                        UserID = admin.UserID,
+                        HotelName = $"Sample Hotel {i}",
+                        Address = $"{i} Sample Street",
+                        City = "Sample City",
+                        HotelImage = "https://example.com/hotel.jpg",
+                        Description = "A cozy sample hotel",
+                        Rating = 4,
+                        IsApproved = true,
+                        IsVisible = true,
+                        Amenities = Amenities.ToList()
+                    });
+                }
+                Hotels.AddRange(hotels);
                 SaveChanges();
             }
 
-            var hotelEntity = Hotels.First();
+            var hotelsList = Hotels.ToList();
 
             if (!Rooms.Any())
             {
-                var room = new Room
+                var random = new Random();
+                foreach (var hotel in hotelsList)
                 {
-                    HotelID = hotelEntity.HotelID,
-                    RoomNumber = "101",
-                    RoomImage = "https://example.com/room.jpg",
-                    RoomType = "Single",
-                    Capacity = 1,
-                    PricePerNight = 100,
-                    Status = "Available"
-                };
-                Rooms.Add(room);
+                    int roomCount = random.Next(3, 11);
+                    var prices = new List<double>();
+                    for (int i = 1; i <= roomCount; i++)
+                    {
+                        double price = random.Next(50, 301);
+                        prices.Add(price);
+                        Rooms.Add(new Room
+                        {
+                            HotelID = hotel.HotelID,
+                            RoomNumber = $"{100 + i}",
+                            RoomImage = "https://example.com/room.jpg",
+                            RoomType = "Standard",
+                            Capacity = random.Next(1, 5),
+                            PricePerNight = price,
+                            Status = "Available"
+                        });
+                    }
+                    hotel.MinPrice = prices.Min();
+                    hotel.MaxPrice = prices.Max();
+                }
                 SaveChanges();
             }
 
-            var roomEntity = Rooms.First();
+            var hotelEntity = hotelsList.First();
+            var roomEntity = Rooms.First(r => r.HotelID == hotelEntity.HotelID);
 
             if (!Bookings.Any())
             {
@@ -209,6 +224,7 @@ namespace Hotel_Booking_System.Services
                     UserID = customerUser.UserID,
                     HotelID = hotelEntity.HotelID,
                     RoomID = roomEntity.RoomID,
+                    BookingID = bookingEntity.BookingID,
                     Rating = 5,
                     Comment = "Great stay!",
                     CreatedAt = DateTime.Now

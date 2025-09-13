@@ -1,11 +1,15 @@
 <Window x:Class="Hotel_Booking_System.Views.ReviewDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ReviewDialog" Height="300" Width="400"
+        Title="ReviewDialog" Height="350" Width="450"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        AllowsTransparency="True">
-    <Border CornerRadius="20" Background="White" Padding="20" SnapsToDevicePixels="True">
+        AllowsTransparency="True"
+        Background="Transparent">
+    <Border CornerRadius="15" Background="White" Padding="30" SnapsToDevicePixels="True">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
+        </Border.Effect>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -14,19 +18,25 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Add Review" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+            <TextBlock Text="Leave a Review" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,25"/>
 
             <StackPanel Grid.Row="1" Margin="0,5">
-                <TextBlock Text="Rating (1-5)" FontSize="12" Foreground="#7F8C8D"/>
-                <TextBox Text="{Binding Rating}" Height="32" BorderBrush="#BDC3C7" BorderThickness="1"/>
+                <TextBlock Text="Rating" FontSize="12" Foreground="#7F8C8D"/>
+                <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Rating, Mode=TwoWay}" Height="32" BorderBrush="#BDC3C7" BorderThickness="1">
+                    <ComboBoxItem Content="1"/>
+                    <ComboBoxItem Content="2"/>
+                    <ComboBoxItem Content="3"/>
+                    <ComboBoxItem Content="4"/>
+                    <ComboBoxItem Content="5"/>
+                </ComboBox>
             </StackPanel>
 
             <StackPanel Grid.Row="2" Margin="0,5">
                 <TextBlock Text="Comment" FontSize="12" Foreground="#7F8C8D"/>
-                <TextBox Text="{Binding Comment}" Height="80" BorderBrush="#BDC3C7" BorderThickness="1" AcceptsReturn="True"/>
+                <TextBox Text="{Binding Comment}" Height="100" BorderBrush="#BDC3C7" BorderThickness="1" AcceptsReturn="True"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,25,0,0">
                 <Button Content="Cancel" Width="90" Height="36" x:Name="btnCancel"
                         Background="#ECF0F1" Foreground="#2C3E50" BorderBrush="{x:Null}" Margin="0,0,10,0"/>
                 <Button Content="Submit" Width="100" Height="36" x:Name="btnSubmit"

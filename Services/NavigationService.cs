@@ -89,7 +89,6 @@ namespace Hotel_Booking_System.Services
                 bookingWindow.DialogResult = false;
                 bookingWindow.Close();
             };
-            bookingWindow.btnBook.Click += (s,e) => bookingWindow.DialogResult = true;
 
             var vm = App.Provider!.GetRequiredService<IBookingViewModel>();
             vm.SelectedRoom = room;
@@ -103,7 +102,12 @@ namespace Hotel_Booking_System.Services
         }
         public void CloseBookingDialog()
         {
-            CloseCurrent();
+            var bookingWindow = Application.Current.Windows.OfType<BookingDialog>().SingleOrDefault();
+            if (bookingWindow != null)
+            {
+                bookingWindow.DialogResult = true;
+                bookingWindow.Close();
+            }
         }
         public bool OpenReviewDialog(Booking booking)
         {

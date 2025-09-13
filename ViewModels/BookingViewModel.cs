@@ -20,6 +20,8 @@ namespace Hotel_Booking_System.ViewModels
         private DateTime _checkOutDate = DateTime.Now;
         private int _numberOfGuests;
         private double _totalPayment;
+        private string _notificationMessage;
+        private string _notificationVisibility = "Collapsed";
 
         public BookingViewModel(IBookingRepository bookingRepository, IRoomRepository roomRepository, INavigationService navigationService)
         {
@@ -61,6 +63,18 @@ namespace Hotel_Booking_System.ViewModels
         public User CurrentUser { get ; set ; }
         public Hotel Hotel { get ; set ; }
 
+        public string NotificationMessage
+        {
+            get => _notificationMessage;
+            set => Set(ref _notificationMessage, value);
+        }
+
+        public string NotificationVisibility
+        {
+            get => _notificationVisibility;
+            set => Set(ref _notificationVisibility, value);
+        }
+
         private void CalculateTotalPayment()
         {
             if (SelectedRoom == null)
@@ -83,6 +97,36 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (SelectedRoom == null || CurrentUser == null)
                 return;
+
+            NotificationMessage = string.Empty;
+            NotificationVisibility = "Collapsed";
+
+            // Validate booking details before proceeding
+            if (CheckOutDate <= CheckInDate)
+            {
+                ShowNotification("Check-out date must be later than check-in date.");
+                return;
+            }
+
+            if (CheckInDate.Date < DateTime.Today)
+            {
+                ShowNotification("Check-in date cannot be in the past.");
+                return;
+            }
+
+            if (NumberOfGuests > SelectedRoom.Capacity)
+            {
+                ShowNotification("Number of guests exceeds room capacity.");
+                return;
+            }
+
+            var existing = (await _bookingRepository.GetAllAsync())
+                .Where(b => b.RoomID == SelectedRoom.RoomID && b.Status != "Cancelled");
+            if (existing.Any(b => CheckInDate < b.CheckOutDate && CheckOutDate > b.CheckInDate))
+            {
+                ShowNotification("Selected dates are not available for this room.");
+                return;
+            }
             var booking = new Booking
             {
                 UserID = CurrentUser.UserID,
@@ -99,7 +143,17 @@ namespace Hotel_Booking_System.ViewModels
             await _bookingRepository.AddAsync(booking);
             await _bookingRepository.SaveAsync();
 
+            _navigationService.CloseBookingDialog();
             _navigationService.OpenPaymentDialog(booking.BookingID, TotalPayment);
+        }
+
+        private async void ShowNotification(string message)
+        {
+            NotificationMessage = message;
+            NotificationVisibility = "Visible";
+            await Task.Delay(TimeSpan.FromSeconds(5));
+            NotificationVisibility = "Collapsed";
+            NotificationMessage = string.Empty;
         }
     }
 }
