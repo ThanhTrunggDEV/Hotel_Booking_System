@@ -69,7 +69,7 @@ namespace Hotel_Booking_System.Services
 
             // 3. Prompt = system + context + user message
             var prompt = $@"
-                        You are an AI assistant for a hotel booking system.
+                        You are an AI assistant for NTT hotel booking system.
                         Always answer based only on the given database information.
                         If the user asks something outside the data, politely say you don't know.
 
