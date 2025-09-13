@@ -206,7 +206,7 @@ namespace Hotel_Booking_System.ViewModels
 
         private void SortHotels()
         {
-            if (SortType == "Rating: High to Low")
+            if (SortType == "User Rating: High to Low")
             {
                 var sorted = Hotels.OrderByDescending(h => h.AverageRating).ToList();
                 Hotels.Clear();
@@ -215,9 +215,27 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            else if (SortType == "Rating: Low to High")
+            else if (SortType == "User Rating: Low to High")
             {
                 var sorted = Hotels.OrderBy(h => h.AverageRating).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
+            else if (SortType == "Hotel Rating: High to Low")
+            {
+                var sorted = Hotels.OrderByDescending(h => h.Rating).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
+            else if (SortType == "Hotel Rating: Low to High")
+            {
+                var sorted = Hotels.OrderBy(h => h.Rating).ToList();
                 Hotels.Clear();
                 foreach (var hotel in sorted)
                 {

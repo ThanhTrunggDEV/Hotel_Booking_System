@@ -361,8 +361,10 @@
                                         <ComboBoxItem Content="Price: High to Low"/>
                                         <ComboBoxItem Content="Name: A to Z"/>
                                         <ComboBoxItem Content="Name: Z to A"/>
-                                        <ComboBoxItem Content="Rating: Low to High"/>
-                                        <ComboBoxItem Content="Rating: High to Low"/>
+                                        <ComboBoxItem Content="Hotel Rating: Low to High"/>
+                                        <ComboBoxItem Content="Hotel Rating: High to Low"/>
+                                        <ComboBoxItem Content="User Rating: Low to High"/>
+                                        <ComboBoxItem Content="User Rating: High to Low"/>
                                     </ComboBox>
 
                                 </StackPanel>
@@ -449,8 +451,9 @@
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                                         <TextBlock Text="⭐" Foreground="Gold" FontSize="16"/>
+                                                        <TextBlock Text="{Binding Rating}" Margin="5,0,15,0" FontWeight="Bold" FontSize="14"/>
+                                                        <TextBlock Text="👤" FontSize="16"/>
                                                         <TextBlock Text="{Binding AverageRating, StringFormat={}{0:F1}}" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"/>
-
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
