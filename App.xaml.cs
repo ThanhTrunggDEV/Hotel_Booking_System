@@ -73,6 +73,7 @@ namespace Hotel_Booking_System
                 .AddScoped<ILoginViewModel, LoginViewModel>()
                 .AddScoped<IBookingViewModel, BookingViewModel>()
                 .AddScoped<IForgotPasswordViewModel, ForgotPasswordViewModel>()
+                .AddScoped<IReviewViewModel, ReviewViewModel>()
                 .AddScoped<ISignUpViewModel, SignUpViewModel>()
                 .AddScoped<IAdminViewModel, AdminViewModel>()
                 .AddScoped<ISuperAdminViewModel, SuperAdminViewModel>()
