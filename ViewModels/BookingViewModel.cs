@@ -85,6 +85,25 @@ namespace Hotel_Booking_System.ViewModels
             if (SelectedRoom == null || CurrentUser == null)
                 return;
 
+            // Validate booking details before proceeding
+            if (CheckOutDate <= CheckInDate)
+            {
+                MessageBox.Show("Check-out date must be later than check-in date.", "Invalid Dates", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (CheckInDate.Date < DateTime.Today)
+            {
+                MessageBox.Show("Check-in date cannot be in the past.", "Invalid Dates", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (NumberOfGuests > SelectedRoom.Capacity)
+            {
+                MessageBox.Show("Number of guests exceeds room capacity.", "Guest Limit", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             var existing = (await _bookingRepository.GetAllAsync())
                 .Where(b => b.RoomID == SelectedRoom.RoomID && b.Status != "Cancelled");
             if (existing.Any(b => CheckInDate < b.CheckOutDate && CheckOutDate > b.CheckInDate))
