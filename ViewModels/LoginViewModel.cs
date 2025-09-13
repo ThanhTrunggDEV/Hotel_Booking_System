@@ -105,23 +105,48 @@ namespace Hotel_Booking_System.ViewModels
                 dataSave.Password = Password;
                 dataSave.RememberMe = true;
             }
-            using (FileStream stream = File.Open("data.json", FileMode.OpenOrCreate))
+            using (FileStream stream = File.Open("data.json", FileMode.Create))
             {
                 await JsonSerializer.SerializeAsync<AutoSave>(stream, dataSave);
-                
+
             }
         }
         private async Task LoadCredential()
         {
             try
             {
-                using (FileStream stream = File.Open("data.json", FileMode.OpenOrCreate))
+                if (!File.Exists("data.json"))
                 {
-                    AutoSave? data = new();
-                    data = await JsonSerializer.DeserializeAsync<AutoSave>(stream);
-                    Email = data.Email ??= "";
-                    Password = data.Password ??= "";
-                    IsSavedCredentials = data.RememberMe;
+                    Email = "";
+                    Password = "";
+                    IsSavedCredentials = false;
+                    return;
+                }
+
+                using (FileStream stream = File.Open("data.json", FileMode.Open))
+                {
+                    if (stream.Length > 0)
+                    {
+                        AutoSave? data = await JsonSerializer.DeserializeAsync<AutoSave>(stream);
+                        if (data != null)
+                        {
+                            Email = data.Email ?? "";
+                            Password = data.Password ?? "";
+                            IsSavedCredentials = data.RememberMe;
+                        }
+                        else
+                        {
+                            Email = "";
+                            Password = "";
+                            IsSavedCredentials = false;
+                        }
+                    }
+                    else
+                    {
+                        Email = "";
+                        Password = "";
+                        IsSavedCredentials = false;
+                    }
                 }
             }
             catch
