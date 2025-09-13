@@ -559,7 +559,8 @@
                                             <Style TargetType="ListBoxItem">
                                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                                 <Setter Property="Focusable" Value="False"/>
-                                            </Style>
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </Style>
                                         </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
