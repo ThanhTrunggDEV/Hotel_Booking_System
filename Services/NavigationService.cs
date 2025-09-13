@@ -143,6 +143,22 @@ namespace Hotel_Booking_System.Services
             paymentWindow.ShowDialog();
             return paymentWindow.DialogResult == true;
         }
+
+        public bool OpenModifyDialog(Booking booking)
+        {
+            var modifyWindow = App.Provider!.GetRequiredService<ModifyBookingDialog>();
+
+            modifyWindow.btnCancel.Click += (s, e) =>
+            {
+                modifyWindow.DialogResult = false;
+                modifyWindow.Close();
+            };
+            modifyWindow.btnSave.Click += (s, e) => modifyWindow.DialogResult = true;
+
+            modifyWindow.DataContext = booking;
+            modifyWindow.ShowDialog();
+            return modifyWindow.DialogResult == true;
+        }
         public void ClosePaymentDialog()
         {
             CloseCurrent();

@@ -514,19 +514,42 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private void ReviewBooking(Booking booking)
         {
+            if (booking == null)
+                return;
+
+            // Only allow review after checkout date
+            if (DateTime.Now < booking.CheckOutDate)
+            {
+                MessageBox.Show("You can only review after your stay has completed.", "Review not available", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             bool res = _navigationService.OpenReviewDialog(booking);
             if (res)
             {
                 LoadReviewsForHotel(booking.HotelID);
             }
         }
-        
+
+        [RelayCommand]
         private async Task CancelBooking(Booking booking)
         {
             if (booking == null)
                 return;
 
-            booking.Status = "Cancelled";
+            if (booking.Status == "Confirmed")
+            {
+                // Send cancellation request to hotel admin
+                booking.Status = "CancelRequested";
+                MessageBox.Show("Cancellation request sent to hotel admin.", "Request sent", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (booking.Status == "Pending")
+            {
+                // Cancel immediately if booking has not been confirmed yet
+                booking.Status = "Cancelled";
+                MessageBox.Show("Booking cancelled successfully.", "Cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
             await _bookingRepository.UpdateAsync(booking);
             FilterBookingsByUser(CurrentUser.UserID);
         }
@@ -537,8 +560,27 @@ namespace Hotel_Booking_System.ViewModels
             if (booking == null)
                 return;
 
-            booking.Status = "Modified";
-            await _bookingRepository.UpdateAsync(booking);
+            if (booking.Status == "Confirmed")
+            {
+                bool res = _navigationService.OpenModifyDialog(booking);
+                if (res)
+                {
+                    // After modification a confirmed booking becomes pending again for admin approval
+                    booking.Status = "Pending";
+                    MessageBox.Show("Modification request sent to hotel admin.", "Request sent", MessageBoxButton.OK, MessageBoxImage.Information);
+                    await _bookingRepository.UpdateAsync(booking);
+                }
+            }
+            else if (booking.Status == "Pending")
+            {
+                bool res = _navigationService.OpenModifyDialog(booking);
+                if (res)
+                {
+                    // Pending bookings can be modified directly
+                    await _bookingRepository.UpdateAsync(booking);
+                }
+            }
+
             FilterBookingsByUser(CurrentUser.UserID);
         }
         

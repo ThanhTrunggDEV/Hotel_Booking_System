@@ -171,6 +171,34 @@ namespace Hotel_Booking_System.ViewModels
             await _roomRepository.SaveAsync();
             LoadRooms();
         }
+
+        [RelayCommand]
+        private async Task ConfirmBooking(Booking? booking)
+        {
+            if (booking == null)
+                return;
+
+            if (booking.Status == "Pending")
+            {
+                booking.Status = "Confirmed";
+                await _bookingRepository.UpdateAsync(booking);
+                LoadBookings();
+            }
+        }
+
+        [RelayCommand]
+        private async Task CancelBooking(Booking? booking)
+        {
+            if (booking == null)
+                return;
+
+            if (booking.Status == "Pending" || booking.Status == "CancelRequested")
+            {
+                booking.Status = "Cancelled";
+                await _bookingRepository.UpdateAsync(booking);
+                LoadBookings();
+            }
+        }
     }
 }
 

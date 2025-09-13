@@ -55,5 +55,6 @@ namespace Hotel_Booking_System.Interfaces
     {
         void NavigateToHotel();
         bool OpenReviewDialog(Booking booking);
+        bool OpenModifyDialog(Booking booking);
     }
 }
