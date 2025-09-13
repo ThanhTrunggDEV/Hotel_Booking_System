@@ -31,7 +31,7 @@ namespace Hotel_Booking_System.ViewModels
 
 
 
-        public string Passoword { get; set; }
+        public string Password { get; set; }
         public string PasswordConfirmed { get; set; }
 
         [RelayCommand(CanExecute = nameof(CanSendOTP))]
@@ -70,7 +70,7 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private async Task CreateAccount(object para)
         {
-            if(Passoword != PasswordConfirmed)
+            if (Password != PasswordConfirmed)
             {
                 MessageBox.Show("Mật khẩu không khớp vui lòng kiểm tra lại");
                 return;
@@ -85,7 +85,7 @@ namespace Hotel_Booking_System.ViewModels
             }
             try
             {
-                string hashedPassword = _authentication.HashPassword(Passoword);
+                string hashedPassword = _authentication.HashPassword(Password);
                 data.Item1.Password = hashedPassword;
                 data.Item1.Role = "User";
 
