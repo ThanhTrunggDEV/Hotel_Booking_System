@@ -53,6 +53,7 @@ namespace Hotel_Booking_System.Interfaces
     }
     public interface INavigationService : INavigationToSuperAdmin, INavigationToSignUp, INavigationToUser, INavitionToLogin, NavigationToForgotPassword, IOpenBookingDialog, ICloseBookingDialog, IOpenPaymentDialog, IClosePaymentDialog
     {
+        void NavigateToHotel();
         bool OpenReviewDialog(Booking booking);
     }
 }

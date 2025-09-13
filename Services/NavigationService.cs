@@ -147,5 +147,16 @@ namespace Hotel_Booking_System.Services
         {
             CloseCurrent();
         }
+
+        public void NavigateToHotel()
+        {
+            var newWindow = App.Provider!.GetRequiredService<HotelAdminWindow>();
+
+
+            Application.Current.MainWindow = newWindow;
+
+            CloseCurrent();
+            newWindow.Show();
+        }
     }
 }
