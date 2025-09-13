@@ -566,14 +566,12 @@ namespace Hotel_Booking_System.ViewModels
                 if (res)
                 {
                     // After modification a confirmed booking becomes pending again for admin approval
-                    booking.Status = "Pending";
+                    booking.Status = "ModifyRequested";
                     MessageBox.Show("Modification request sent to hotel admin.", "Request sent", MessageBoxButton.OK, MessageBoxImage.Information);
                     await _bookingRepository.UpdateAsync(booking);
                 }
 
-                booking.Status = "ModifyRequested";
-                MessageBox.Show("Modification request sent to hotel admin.", "Request sent", MessageBoxButton.OK, MessageBoxImage.Information);
-                await _bookingRepository.UpdateAsync(booking);
+                
             }
             else if (booking.Status == "Pending")
             {
@@ -581,7 +579,6 @@ namespace Hotel_Booking_System.ViewModels
                 if (res)
                 {
                     // Pending bookings can be modified directly
-                    booking.Status = "Modified";
                     await _bookingRepository.UpdateAsync(booking);
                 }
             }
