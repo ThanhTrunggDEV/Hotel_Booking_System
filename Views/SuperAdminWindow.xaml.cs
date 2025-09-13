@@ -27,6 +27,7 @@ namespace Hotel_Booking_System.Views
             Loaded += async (s, e) =>
             {
                 await _paymentViewModel.LoadPaymentsAsync();
+                await _superAdminViewModel.LoadDataAsync();
             };
         }
        

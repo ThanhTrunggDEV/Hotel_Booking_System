@@ -68,16 +68,14 @@ namespace Hotel_Booking_System.ViewModels
             _navigationService = navigationService;
 
             WeakReferenceMessenger.Default.Register<SuperAdminViewModel, MessageService>(this, (recipient, message) =>
-             {
-                  recipient._userEmail = message.Value;
-                 GetCurrentUser();
-                 
-             });
-            LoadDataAsync();
+            {
+                recipient._userEmail = message.Value;
+                GetCurrentUser();
 
+            });
         }
 
-        public async void LoadDataAsync()
+        public async Task LoadDataAsync()
         {
             try
             {
@@ -85,9 +83,9 @@ namespace Hotel_Booking_System.ViewModels
                 TotalHotels = hotels.Count();
                 var users = await _userRepository.GetAllAsync();
                 TotalUsers = users.Count();
-                var requests = _hotelAdminRequestRepository.GetAllAsync().Result.Where(r => r.Status == "Pending").ToList();
+                var requests = (await _hotelAdminRequestRepository.GetAllAsync()).Where(r => r.Status == "Pending").ToList();
                 PendingRequests = requests.Count();
-                
+
                 foreach (var request in requests)
                 {
                     if (!PendingRequest.Any(r => r.RequestID == request.RequestID))
