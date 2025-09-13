@@ -91,6 +91,7 @@ namespace Hotel_Booking_System
                               .AddScoped<ISignUpViewModel, SignUpViewModel>()
                               .AddScoped<IAdminViewModel, AdminViewModel>()
                               .AddScoped<IUserViewModel, UserViewModel>()
+                              .AddScoped<IHotelAdminViewModel, HotelAdminViewModel>()
                               .AddScoped<IAdminViewModel, AdminViewModel>()
                               .BuildServiceProvider();
         }
