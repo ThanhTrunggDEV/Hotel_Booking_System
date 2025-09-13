@@ -1,3 +1,9 @@
+
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Input;
+
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
@@ -10,8 +16,35 @@ using Hotel_Manager.FrameWorks;
 
 namespace Hotel_Booking_System.ViewModels
 {
-    public class HotelAdminViewModel : Bindable, IHotelAdminViewModel
+
+    public partial class HotelAdminViewModel : Bindable, IHotelAdminViewModel
     {
+        private readonly IRoomRepository _roomRepository;
+        private readonly IReviewRepository _reviewRepository;
+
+        public ObservableCollection<Room> Rooms { get; } = new();
+        public ObservableCollection<Review> Reviews { get; } = new();
+
+        public HotelAdminViewModel(IRoomRepository roomRepository, IReviewRepository reviewRepository)
+        {
+            _roomRepository = roomRepository;
+            _reviewRepository = reviewRepository;
+            LoadRooms();
+            LoadReviews();
+        }
+
+        private async void LoadRooms()
+        {
+            var rooms = await _roomRepository.GetAllAsync();
+            Rooms.Clear();
+            foreach (var room in rooms)
+            {
+                Rooms.Add(room);
+            }
+        }
+
+     
+
         private readonly IReviewRepository _reviewRepository;
         private readonly IUserRepository _userRepository;
         private string _userEmail = string.Empty;
@@ -66,9 +99,42 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
+        [RelayCommand]
+        private async Task AddRoom()
+        {
+            var room = new Room
+            {
+                RoomID = Guid.NewGuid().ToString(),
+                Status = "Available"
+            };
+            await _roomRepository.AddAsync(room);
+            await _roomRepository.SaveAsync();
+            LoadRooms();
+        }
+
+        [RelayCommand]
+        private async Task EditRoom(Room? room)
+        {
+            if (room == null)
+                return;
+
+            await _roomRepository.UpdateAsync(room);
+            await _roomRepository.SaveAsync();
+            LoadRooms();
+        }
+
+        [RelayCommand]
+        private async Task RemoveRoom(Room? room)
+        {
+            if (room == null)
+                return;
+
+            await _roomRepository.DeleteAsync(room.RoomID);
+            await _roomRepository.SaveAsync();
+            LoadRooms();
  
 
-
+                }
            
   
          private async void LoadCurrentUser()
@@ -101,14 +167,6 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
-        private void LoadReviews()
-        {
-            var reviews = _reviewRepository.GetAllAsync().Result;
-            Reviews.Clear();
-            foreach (var review in reviews)
-            {
-                Reviews.Add(review);
-            }
-        }
+       
     }
 }
