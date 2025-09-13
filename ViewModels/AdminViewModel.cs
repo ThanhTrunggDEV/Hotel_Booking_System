@@ -19,12 +19,7 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IUserRepository _userRepository;
         public ObservableCollection<HotelAdminRequest> Requests { get; set; } = new ObservableCollection<HotelAdminRequest>();
 
-        public AdminViewModel(IBookingRepository bookingRepository)
-        {
-            _bookingRepository = bookingRepository;
-            LoadBookings();
-        }
-
+    
         private void LoadBookings()
         {
             var all = _bookingRepository.GetAllAsync().Result;
@@ -36,10 +31,12 @@ namespace Hotel_Booking_System.ViewModels
          }
           
 
-        public AdminViewModel(IHotelAdminRequestRepository requestRepository, IUserRepository userRepository)
+        public AdminViewModel(IHotelAdminRequestRepository requestRepository, IUserRepository userRepository, IBookingRepository bookingRepository)
         {
             _requestRepository = requestRepository;
             _userRepository = userRepository;
+            _bookingRepository = bookingRepository;
+            LoadBookings();
             LoadRequests();
         }
 

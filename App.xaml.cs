@@ -81,7 +81,7 @@ namespace Hotel_Booking_System
 
                                .AddScoped<IRoomRepository, RoomRepository>()
                               .AddScoped<IHotelAdminRequestRepository, HotelAdminRequestRepository>()
-
+                              .AddScoped<IPaymentViewModel, PaymentViewModel>()
                               .AddScoped<INavigationService, NavigationService>()
                                .AddScoped<IAuthentication, AuthenticationSerivce>()
 

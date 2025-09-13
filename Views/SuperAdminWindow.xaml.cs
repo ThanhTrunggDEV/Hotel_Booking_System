@@ -8,8 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Hotel_Booking_System.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+
 
 namespace Hotel_Booking_System.Views
 {

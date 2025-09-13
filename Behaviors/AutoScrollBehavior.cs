@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace Hotel_Booking_System.Behaviors
 {
@@ -35,7 +36,16 @@ namespace Hotel_Booking_System.Behaviors
                         {
                             if (listBox.Items.Count > 0)
                             {
-                                listBox.ScrollIntoView(listBox.Items[listBox.Items.Count - 1]);
+                                var lastItem = listBox.Items[listBox.Items.Count - 1];
+
+                                listBox.Dispatcher.BeginInvoke(
+                                    new System.Action(() =>
+                                    {
+                                        listBox.UpdateLayout(); 
+                                        listBox.ScrollIntoView(lastItem);
+                                    }),
+                                    DispatcherPriority.Render 
+                                );
                             }
                         };
                     }

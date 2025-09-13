@@ -167,7 +167,20 @@ namespace Hotel_Booking_System.ViewModels
 
             FilteredRooms = new ObservableCollection<Room>();
 
+            //_userRepository.AddAsync(new User
+            //{
+            //    UserID = Guid.NewGuid().ToString(),
+            //    FullName = "NTT",
+            //    DateOfBirth = DateTime.Now,
+            //    Email = "admin@gmail.com",
+            //    Password = authentication.HashPassword("123"),
+            //    Gender = "Male",
+            //    Role = "SuperAdmin",
+            //    Phone = "0971632201"
+            //});
+            //_userRepository.SaveAsync();
         }
+        
 
         private void FilterChatsByUser(string userId)
         {

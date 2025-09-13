@@ -51,13 +51,21 @@ namespace Hotel_Booking_System.ViewModels
                 await SaveCredentials();
                 
             }
-            else if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "Admin")
+            else if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "SuperAdmin")
             {
                 WeakReferenceMessenger.Default.Send(new MessageService(email));
                 _navigationService.NavigateToSuperAdmin();
                 await SaveCredentials();
 
             }
+            else if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "HotelAdmin")
+            {
+                WeakReferenceMessenger.Default.Send(new MessageService(email));
+                //_navigationService.NavigateToHotel();
+                await SaveCredentials();
+
+            }
+           
             else
             {
                 MessageBox.Show("Sai tài khoản hoặc mật khẩu", "Đăng nhập thất bại", MessageBoxButton.OK, MessageBoxImage.Warning);
