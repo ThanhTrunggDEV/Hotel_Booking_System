@@ -1,3 +1,4 @@
+﻿using System.Text;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Mscc.GenerativeAI;
@@ -9,10 +10,16 @@ namespace Hotel_Booking_System.Services
         private readonly IAIChatRepository _repository;
         private readonly GeminiOptions _options;
         private readonly GenerativeModel _generativeModel;
+        private readonly IHotelRepository _hotelRepository;
+        private readonly IRoomRepository _roomRepository;
+        private readonly IBookingRepository _bookingRepository;
 
-        public AIChatService(IAIChatRepository repository, GeminiOptions options)
+        public AIChatService(IAIChatRepository repository, GeminiOptions options, IBookingRepository bookingRepository, IHotelRepository hotelRepository, IRoomRepository roomRepository)
         {
             _repository = repository;
+            _hotelRepository = hotelRepository;
+            _roomRepository = roomRepository;
+            _bookingRepository = bookingRepository;
             _options = options;
 
             var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")
@@ -27,16 +34,53 @@ namespace Hotel_Booking_System.Services
             _generativeModel = googleAI.GenerativeModel(model: modelName);
         }
 
-        public async Task<AIChat> SendAsync(string userId, string message, string? model = null)
+        public async Task<AIChat> SendAsync(string userId, string message)
         {
             if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException("User ID is required", nameof(userId));
             if (string.IsNullOrWhiteSpace(message))
                 throw new ArgumentException("Message is required", nameof(message));
 
-            var result = await _generativeModel.GenerateContent(message);
+            // 1. Lấy data từ DB
+            var hotels = await _hotelRepository.GetAllAsync();
+            var rooms = await _repository.GetAllAsync();
+            var bookings = await _repository.GetByUserId(userId);
+
+            // 2. Build context text
+            var context = new StringBuilder();
+            context.AppendLine("Here is the current hotel database snapshot:");
+            context.AppendLine("\nHotels:");
+            foreach (var h in hotels)
+            {
+                context.AppendLine($"- {h.HotelID}, {h.HotelName}, Hotel Rating: {h.Rating}");
+            }
+
+            context.AppendLine("\nRooms:");
+            foreach (var r in rooms)
+            {
+                context.AppendLine($"- Room {r.RoomNumber}: {r.Type}, {r.View}, Price: {r.Price}, Available: {r.IsAvailable}");
+            }
+
+            context.AppendLine("\nBookings:");
+            foreach (var b in bookings.Take(10)) // limit tránh prompt quá dài
+            {
+                context.AppendLine($"- Booking {b.BookingId}: User {b.UserId}, Room {b.RoomId}, From {b.CheckIn} To {b.CheckOut}");
+            }
+
+            // 3. Prompt = system + context + user message
+            var prompt = $@"
+                        You are an AI assistant for a hotel booking system.
+                        Always answer based only on the given database information.
+                        If the user asks something outside the data, politely say you don't know.
+
+                      Database context: {context}
+                      User question: {message}";
+
+            // 4. Gọi AI
+            var result = await _generativeModel.GenerateContent(prompt);
             var response = result.Text ?? string.Empty;
 
+            // 5. Save chat log
             var chat = new AIChat
             {
                 ChatID = Guid.NewGuid().ToString(),
@@ -51,5 +95,6 @@ namespace Hotel_Booking_System.Services
 
             return chat;
         }
+
     }
 }
