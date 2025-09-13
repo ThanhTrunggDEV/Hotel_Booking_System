@@ -1,5 +1,9 @@
 using System.Windows;
-using Hotel_Booking_System.Interfaces;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hotel_Booking_System.Views
@@ -9,10 +13,12 @@ namespace Hotel_Booking_System.Views
     /// </summary>
     public partial class HotelAdminWindow : Window
     {
+         private readonly IHotelAdminViewModel  _hotelAdminViewModel = App.Provider.GetRequiredService<IHotelAdminViewModel>();
         public HotelAdminWindow()
         {
             InitializeComponent();
-            DataContext = App.Provider.GetRequiredService<IHotelAdminViewModel>();
+            DataContext = _hotelAdminViewModel;
+            Loaded += async (s, e) => await _hotelAdminViewModel.LoadReviewsAsync();
         }
     }
 }
