@@ -3,11 +3,11 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.Services;
 using Hotel_Manager.FrameWorks;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -19,7 +19,14 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IUserRepository _userRepository;
         public ObservableCollection<HotelAdminRequest> Requests { get; set; } = new ObservableCollection<HotelAdminRequest>();
 
-    
+        private string _userEmail = string.Empty;
+        private User _currentUser = new();
+        public User CurrentUser
+        {
+            get => _currentUser;
+            set => Set(ref _currentUser, value);
+        }
+
         private void LoadBookings()
         {
             var all = _bookingRepository.GetAllAsync().Result;
@@ -38,6 +45,12 @@ namespace Hotel_Booking_System.ViewModels
             _bookingRepository = bookingRepository;
             LoadBookings();
             LoadRequests();
+
+            WeakReferenceMessenger.Default.Register<AdminViewModel, MessageService>(this, (recipient, message) =>
+            {
+                recipient._userEmail = message.Value;
+                recipient.LoadCurrentUser();
+            });
         }
 
         private async void LoadRequests()
@@ -94,6 +107,11 @@ namespace Hotel_Booking_System.ViewModels
             request.Status = "Rejected";
             await _requestRepository.UpdateAsync(request);
             LoadRequests();
+        }
+
+        private async void LoadCurrentUser()
+        {
+            CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
         }
     }
 }

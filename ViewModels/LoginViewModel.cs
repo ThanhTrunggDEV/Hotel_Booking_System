@@ -53,15 +53,15 @@ namespace Hotel_Booking_System.ViewModels
             }
             else if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "SuperAdmin")
             {
-                WeakReferenceMessenger.Default.Send(new MessageService(email));
                 _navigationService.NavigateToSuperAdmin();
+                WeakReferenceMessenger.Default.Send(new MessageService(email));
                 await SaveCredentials();
 
             }
             else if (user != null && user.Email == email && _authenticationService.VerifyPassword(Password, user.Password) && user.Role == "HotelAdmin")
             {
-                WeakReferenceMessenger.Default.Send(new MessageService(email));
                 //_navigationService.NavigateToHotel();
+                WeakReferenceMessenger.Default.Send(new MessageService(email));
                 await SaveCredentials();
 
             }
