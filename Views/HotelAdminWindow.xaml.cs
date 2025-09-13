@@ -11,9 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Collections.ObjectModel;
-using Hotel_Booking_System.DomainModels;
-using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hotel_Booking_System.Views
@@ -23,15 +21,13 @@ namespace Hotel_Booking_System.Views
     /// </summary>
     public partial class HotelAdminWindow : Window
     {
-        private readonly IReviewRepository _reviewRepository;
-        public ObservableCollection<Review> Reviews { get; set; }
+        public HotelAdminViewModel ViewModel { get; }
 
         public HotelAdminWindow()
         {
             InitializeComponent();
-            _reviewRepository = App.Provider.GetRequiredService<IReviewRepository>();
-            Reviews = new ObservableCollection<Review>(_reviewRepository.GetAllAsync().Result);
-            DataContext = this;
+            ViewModel = App.Provider.GetRequiredService<HotelAdminViewModel>();
+            DataContext = ViewModel;
         }
     }
 }
