@@ -644,6 +644,29 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
         [RelayCommand]
+        private void ShowBookedDates(Room room)
+        {
+            if (room == null)
+                return;
+
+            var bookings = _bookingRepository.GetAllAsync().Result;
+            var roomBookings = bookings
+                .Where(b => b.RoomID == room.RoomID && b.Status != "Cancelled")
+                .OrderBy(b => b.CheckInDate)
+                .ToList();
+
+            if (roomBookings.Any())
+            {
+                var message = string.Join("\n", roomBookings.Select(b =>
+                    $"{b.CheckInDate:dd/MM/yyyy} - {b.CheckOutDate:dd/MM/yyyy}"));
+                MessageBox.Show(message, "Booked Dates", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("No bookings for this room yet.", "Booked Dates", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        [RelayCommand]
         private void ReviewBooking(Booking booking)
         {
             if (booking == null)
