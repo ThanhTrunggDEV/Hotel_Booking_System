@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace Hotel_Booking_System.Behaviors
@@ -29,16 +30,36 @@ namespace Hotel_Booking_System.Behaviors
         {
             if (d is ListBox listBox && (bool)e.NewValue)
             {
+                ScrollViewer? scrollViewer = null;
+                bool autoScroll = true;
+
+                void EnsureScrollViewer()
+                {
+                    if (scrollViewer != null)
+                        return;
+
+                    scrollViewer = FindDescendant<ScrollViewer>(listBox);
+                    if (scrollViewer != null)
+                    {
+                        scrollViewer.ScrollChanged += (s, ev) =>
+                        {
+                            autoScroll = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 1;
+                        };
+                    }
+                }
+
                 void ScrollToEnd()
                 {
-                    if (listBox.Items.Count == 0)
+                    if (!autoScroll || listBox.Items.Count == 0)
                         return;
 
                     var lastItem = listBox.Items[listBox.Items.Count - 1];
                     listBox.Dispatcher.BeginInvoke(new System.Action(() =>
                     {
+                        EnsureScrollViewer();
                         listBox.UpdateLayout();
                         listBox.ScrollIntoView(lastItem);
+                        scrollViewer?.ScrollToEnd();
                     }), DispatcherPriority.Render);
                 }
 
@@ -52,6 +73,7 @@ namespace Hotel_Booking_System.Behaviors
 
                 listBox.Loaded += (s, ev) =>
                 {
+                    EnsureScrollViewer();
                     foreach (var item in listBox.Items)
                     {
                         AttachPropertyChanged(item);
@@ -74,6 +96,21 @@ namespace Hotel_Booking_System.Behaviors
                     };
                 }
             }
+        }
+
+        private static T? FindDescendant<T>(DependencyObject root) where T : DependencyObject
+        {
+            if (root is T target)
+                return target;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+            {
+                var child = VisualTreeHelper.GetChild(root, i);
+                var result = FindDescendant<T>(child);
+                if (result != null)
+                    return result;
+            }
+            return null;
         }
     }
 }

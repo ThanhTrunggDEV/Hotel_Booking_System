@@ -554,10 +554,11 @@
                                     </StackPanel>
                                 </Border>
 
-                                <ListBox Grid.Row="1" Margin="15" bh:ListBoxExtensions.AutoScroll="True" IsEnabled="False" ItemsSource="{Binding Chats}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox Grid.Row="1" Margin="15" bh:ListBoxExtensions.AutoScroll="True" ItemsSource="{Binding Chats}" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                         <ListBox.ItemContainerStyle>
                                             <Style TargetType="ListBoxItem">
                                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                <Setter Property="Focusable" Value="False"/>
                                             </Style>
                                         </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
