@@ -49,6 +49,7 @@ namespace Hotel_Booking_System
                 .AddTransient<ForgotPasswordWindow>()
                 .AddTransient<UserWindow>()
                 .AddTransient<BookingDialog>()
+                .AddTransient<ModifyBookingDialog>()
                 .AddTransient<SignUpWindow>()
                 .AddTransient<SuperAdminWindow>()
                 .AddTransient<ReviewDialog>()

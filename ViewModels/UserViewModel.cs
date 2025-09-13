@@ -560,8 +560,22 @@ namespace Hotel_Booking_System.ViewModels
             if (booking == null)
                 return;
 
-            booking.Status = "Modified";
-            await _bookingRepository.UpdateAsync(booking);
+            if (booking.Status == "Confirmed")
+            {
+                booking.Status = "ModifyRequested";
+                MessageBox.Show("Modification request sent to hotel admin.", "Request sent", MessageBoxButton.OK, MessageBoxImage.Information);
+                await _bookingRepository.UpdateAsync(booking);
+            }
+            else if (booking.Status == "Pending")
+            {
+                bool res = _navigationService.OpenModifyDialog(booking);
+                if (res)
+                {
+                    booking.Status = "Modified";
+                    await _bookingRepository.UpdateAsync(booking);
+                }
+            }
+
             FilterBookingsByUser(CurrentUser.UserID);
         }
         
