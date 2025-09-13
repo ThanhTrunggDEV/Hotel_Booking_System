@@ -16,12 +16,19 @@ namespace Hotel_Booking_System.Views
     {
         private readonly IPaymentViewModel _paymentViewModel = App.Provider.GetRequiredService<IPaymentViewModel>();
         private readonly IAdminViewModel _adminViewModel = App.Provider.GetRequiredService<IAdminViewModel>();
+        private readonly ISuperAdminViewModel _superAdminViewModel = App.Provider.GetRequiredService<ISuperAdminViewModel>();
+
         public SuperAdminWindow()
         {
             InitializeComponent();
+            DataContext = _superAdminViewModel;
             PaymentSummaryTab.DataContext = _paymentViewModel;
-            Loaded += async (s, e) => await _paymentViewModel.LoadPaymentsAsync();
-            DataContext = _adminViewModel;
+            AdminBookingsRequestsTab.DataContext = _adminViewModel;
+            Loaded += async (s, e) =>
+            {
+                await _paymentViewModel.LoadPaymentsAsync();
+                await _superAdminViewModel.LoadDataAsync();
+            };
         }
        
      

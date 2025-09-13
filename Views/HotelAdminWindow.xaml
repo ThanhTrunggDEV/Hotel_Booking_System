@@ -31,12 +31,8 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="30,0">
-                <TextBlock Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">
-                Xin Chào,
-                </TextBlock>
-                <TextBlock Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">
-                Trung
-                </TextBlock>
+                <TextBlock Text="Xin Chào," Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding CurrentUser.FullName}" Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom"/>
 
                 <Button Content="Logout" Style="{StaticResource PrimaryButton}" Width="100"
                    Background="#FFFF5722" Margin="5,0,0,0"/>
@@ -156,11 +152,13 @@
                             <StackPanel Margin="25">
                                 <Grid Margin="0,0,0,20">
                                     <TextBlock Text="Room Management" FontSize="18" FontWeight="Bold"/>
-                                    <Button Content="➕ Add New Room" Style="{StaticResource PrimaryButton}" 
-                                       Background="#FF4CAF50" HorizontalAlignment="Right"/>
+                                    <Button Content="➕ Add New Room" Style="{StaticResource PrimaryButton}"
+                                       Background="#FF4CAF50" HorizontalAlignment="Right"
+                                       Command="{Binding AddRoomCommand}"/>
                                 </Grid>
 
-                                <DataGrid Height="300" AutoGenerateColumns="False" CanUserAddRows="False">
+                                <DataGrid Height="300" AutoGenerateColumns="False" CanUserAddRows="False"
+                                          ItemsSource="{Binding Rooms}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Room #" Width="80" Binding="{Binding RoomNumber}"/>
                                         <DataGridTextColumn Header="Type" Width="120" Binding="{Binding RoomType}"/>
@@ -172,10 +170,14 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Button Content="Edit" Style="{StaticResource SecondaryButton}" 
-                                                           Width="30" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="Remove" Style="{StaticResource SecondaryButton}" 
-                                                           Background="#FFFF5722" Width="30" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="Edit" Style="{StaticResource SecondaryButton}"
+                                                           Width="30" Height="25" Margin="2" FontSize="10"
+                                                           Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                           CommandParameter="{Binding}"/>
+                                                        <Button Content="Remove" Style="{StaticResource SecondaryButton}"
+                                                           Background="#FFFF5722" Width="30" Height="25" Margin="2" FontSize="10"
+                                                           Command="{Binding DataContext.RemoveRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                           CommandParameter="{Binding}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>

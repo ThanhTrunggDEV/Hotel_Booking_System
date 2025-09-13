@@ -30,12 +30,8 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="30,0">
-                <TextBlock Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">
-                    Xin Chào,
-                </TextBlock>
-                <TextBlock Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom">
-                    Trung
-                </TextBlock>
+                <TextBlock Text="Xin Chào," Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding CurrentUser.FullName}" Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom"/>
 
                 <Button Content="Logout" Style="{StaticResource PrimaryButton}" Width="100"
                        Background="#FFFF5722" Margin="5,0,0,0"/>
@@ -102,9 +98,9 @@
                             <StackPanel Margin="25">
                                 <TextBlock Text="Pending Hotel Admin Requests" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
 
-                                <DataGrid Height="200" AutoGenerateColumns="False" CanUserAddRows="False">
+                                <DataGrid Height="200" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingRequest}">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Request ID" Width="100" Binding="{Binding RequestId}"/>
+                                        <DataGridTextColumn Header="Request ID" Width="100" Binding="{Binding RequestID}"/>
                                         <DataGridTextColumn Header="Applicant Name" Width="150" Binding="{Binding ApplicantName}"/>
                                         <DataGridTextColumn Header="Hotel Name" Width="200" Binding="{Binding HotelName}"/>
                                         <DataGridTextColumn Header="Location" Width="150" Binding="{Binding Location}"/>
@@ -115,10 +111,14 @@
                                                     <StackPanel Orientation="Horizontal">
                                                         <Button Content="👁️ View" Style="{StaticResource SecondaryButton}" 
                                                                Width="45" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="✅ Approve" Style="{StaticResource SecondaryButton}" 
-                                                               Background="#FF4CAF50" Width="55" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="❌ Reject" Style="{StaticResource SecondaryButton}" 
-                                                               Background="#FFFF5722" Width="50" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="✅ Approve" Style="{StaticResource SecondaryButton}"
+                                                               Background="#FF4CAF50" Width="55" Height="25" Margin="2" FontSize="10"
+                                                               Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                               CommandParameter="{Binding RequestID}"/>
+                                                        <Button Content="❌ Reject" Style="{StaticResource SecondaryButton}"
+                                                               Background="#FFFF5722" Width="50" Height="25" Margin="2" FontSize="10"
+                                                               Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                               CommandParameter="{Binding RequestID}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
@@ -847,7 +847,7 @@ Margin="50" Padding="0">
             </TabItem>
 
 
-            <TabItem Header="Admin Bookings &amp; Requests">
+            <TabItem x:Name="AdminBookingsRequestsTab" Header="Admin Bookings &amp; Requests">
                 <Grid Margin="30,20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

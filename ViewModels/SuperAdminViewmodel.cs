@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
@@ -17,7 +18,7 @@ using Microsoft.Win32;
 
 namespace Hotel_Booking_System.ViewModels
 {
-    public class SuperAdminViewModel : Bindable, ISuperAdminViewModel
+    public partial class SuperAdminViewModel : Bindable, ISuperAdminViewModel
     {
         private string _userEmail;
         private IRoomRepository _roomRepository;
@@ -107,6 +108,40 @@ namespace Hotel_Booking_System.ViewModels
             {
                 CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
             }).Wait();
+        }
+
+        [RelayCommand]
+        private async Task ApproveRequest(string id)
+        {
+            var request = await _hotelAdminRequestRepository.GetByIdAsync(id);
+            if (request == null) return;
+            request.Status = "Approved";
+            await _hotelAdminRequestRepository.UpdateAsync(request);
+            var user = await _userRepository.GetByIdAsync(request.UserID);
+            if (user != null)
+            {
+                user.Role = "HotelAdmin";
+                await _userRepository.UpdateAsync(user);
+            }
+            PendingRequest.Remove(request);
+            PendingRequests = PendingRequest.Count;
+        }
+
+        [RelayCommand]
+        private async Task RejectRequest(string id)
+        {
+            var request = await _hotelAdminRequestRepository.GetByIdAsync(id);
+            if (request == null) return;
+            request.Status = "Rejected";
+            await _hotelAdminRequestRepository.UpdateAsync(request);
+            PendingRequest.Remove(request);
+            PendingRequests = PendingRequest.Count;
+        }
+
+        [RelayCommand]
+        private void UpdateInfo()
+        {
+            _userRepository.UpdateAsync(CurrentUser);
         }
     }
 }
