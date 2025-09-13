@@ -71,6 +71,7 @@ namespace Hotel_Booking_System.ViewModels
             await _bookingRepository.UpdateAsync(booking);
             LoadBookings();
         }
+        [RelayCommand]
         private async Task ApproveRequest(string id)
         {
             var request = await _requestRepository.GetByIdAsync(id);
