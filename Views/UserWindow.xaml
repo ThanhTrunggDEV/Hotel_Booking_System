@@ -554,7 +554,7 @@
                                     </StackPanel>
                                 </Border>
 
-                                <ListBox Grid.Row="1" Margin="15" bh:ListBoxExtensions.AutoScroll="True" ItemsSource="{Binding Chats}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox Grid.Row="1" Margin="15" bh:ListBoxExtensions.AutoScroll="True" ItemsSource="{Binding Chats}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="False">
                                         <ListBox.ItemContainerStyle>
                                             <Style TargetType="ListBoxItem">
                                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
