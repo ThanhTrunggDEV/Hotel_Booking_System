@@ -209,6 +209,7 @@ namespace Hotel_Booking_System.Services
                     UserID = customerUser.UserID,
                     HotelID = hotelEntity.HotelID,
                     RoomID = roomEntity.RoomID,
+                    BookingID = bookingEntity.BookingID,
                     Rating = 5,
                     Comment = "Great stay!",
                     CreatedAt = DateTime.Now

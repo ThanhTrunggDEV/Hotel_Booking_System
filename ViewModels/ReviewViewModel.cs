@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
@@ -45,11 +47,20 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
+            var existingReviews = await _reviewRepository.GetAllAsync();
+            if (existingReviews.Any(r => r.BookingID == Booking.BookingID))
+            {
+                MessageBox.Show("You have already submitted a review for this booking.",
+                                "Review Exists", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             var review = new Review
             {
                 UserID = Booking.UserID,
                 HotelID = Booking.HotelID,
                 RoomID = Booking.RoomID,
+                BookingID = Booking.BookingID,
                 Rating = Rating,
                 Comment = Comment,
                 CreatedAt = DateTime.UtcNow

@@ -648,6 +648,13 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
+            var reviews = _reviewRepository.GetAllAsync().Result;
+            if (reviews.Any(r => r.BookingID == booking.BookingID))
+            {
+                MessageBox.Show("You have already reviewed this booking.", "Review Exists", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             bool res = _navigationService.OpenReviewDialog(booking);
             if (res)
             {
