@@ -102,9 +102,9 @@
                             <StackPanel Margin="25">
                                 <TextBlock Text="Pending Hotel Admin Requests" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
 
-                                <DataGrid Height="200" AutoGenerateColumns="False" CanUserAddRows="False">
+                                <DataGrid Height="200" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingRequest}">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Request ID" Width="100" Binding="{Binding RequestId}"/>
+                                        <DataGridTextColumn Header="Request ID" Width="100" Binding="{Binding RequestID}"/>
                                         <DataGridTextColumn Header="Applicant Name" Width="150" Binding="{Binding ApplicantName}"/>
                                         <DataGridTextColumn Header="Hotel Name" Width="200" Binding="{Binding HotelName}"/>
                                         <DataGridTextColumn Header="Location" Width="150" Binding="{Binding Location}"/>
@@ -115,10 +115,14 @@
                                                     <StackPanel Orientation="Horizontal">
                                                         <Button Content="👁️ View" Style="{StaticResource SecondaryButton}" 
                                                                Width="45" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="✅ Approve" Style="{StaticResource SecondaryButton}" 
-                                                               Background="#FF4CAF50" Width="55" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="❌ Reject" Style="{StaticResource SecondaryButton}" 
-                                                               Background="#FFFF5722" Width="50" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="✅ Approve" Style="{StaticResource SecondaryButton}"
+                                                               Background="#FF4CAF50" Width="55" Height="25" Margin="2" FontSize="10"
+                                                               Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                               CommandParameter="{Binding RequestID}"/>
+                                                        <Button Content="❌ Reject" Style="{StaticResource SecondaryButton}"
+                                                               Background="#FFFF5722" Width="50" Height="25" Margin="2" FontSize="10"
+                                                               Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                               CommandParameter="{Binding RequestID}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
