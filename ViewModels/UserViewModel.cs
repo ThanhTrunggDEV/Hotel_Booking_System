@@ -764,6 +764,12 @@ namespace Hotel_Booking_System.ViewModels
             var hotelReviews = reviewList.Where(r => r.HotelID == hotelId).ToList();
             foreach (var review in hotelReviews)
             {
+                var user = _userRepository.GetByIdAsync(review.UserID).Result;
+                if (user != null)
+                {
+                    review.ReviewerName = user.FullName;
+                    review.ReviewerAvatarUrl = user.AvatarUrl;
+                }
                 Reviews.Add(review);
             }
         }
