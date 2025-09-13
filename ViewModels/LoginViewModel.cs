@@ -34,9 +34,11 @@ namespace Hotel_Booking_System.ViewModels
             _authenticationService = authenticationService;
             _userRepository = userRepository;
             _navigationService = navigationService;
+        }
 
-
-            LoadCredential().Wait();
+        public async Task InitializeAsync()
+        {
+            await LoadCredential();
         }
         [RelayCommand]
         private async Task Login(string email)
@@ -113,33 +115,24 @@ namespace Hotel_Booking_System.ViewModels
         }
         private async Task LoadCredential()
         {
-            try
+            if (!File.Exists("data.json"))
             {
-                if (!File.Exists("data.json"))
-                {
-                    Email = "";
-                    Password = "";
-                    IsSavedCredentials = false;
-                    return;
-                }
+                Email = "";
+                Password = "";
+                IsSavedCredentials = false;
+                return;
+            }
 
-                using (FileStream stream = File.Open("data.json", FileMode.Open))
+            using (FileStream stream = File.Open("data.json", FileMode.Open))
+            {
+                if (stream.Length > 0)
                 {
-                    if (stream.Length > 0)
+                    AutoSave? data = await JsonSerializer.DeserializeAsync<AutoSave>(stream);
+                    if (data != null)
                     {
-                        AutoSave? data = await JsonSerializer.DeserializeAsync<AutoSave>(stream);
-                        if (data != null)
-                        {
-                            Email = data.Email ?? "";
-                            Password = data.Password ?? "";
-                            IsSavedCredentials = data.RememberMe;
-                        }
-                        else
-                        {
-                            Email = "";
-                            Password = "";
-                            IsSavedCredentials = false;
-                        }
+                        Email = data.Email ?? "";
+                        Password = data.Password ?? "";
+                        IsSavedCredentials = data.RememberMe;
                     }
                     else
                     {
@@ -148,12 +141,13 @@ namespace Hotel_Booking_System.ViewModels
                         IsSavedCredentials = false;
                     }
                 }
+                else
+                {
+                    Email = "";
+                    Password = "";
+                    IsSavedCredentials = false;
+                }
             }
-            catch
-            {
-                MessageBox.Show("Không load được tài khoản mật khẩu đã lưu");
-            }
-            
         }
 
 
