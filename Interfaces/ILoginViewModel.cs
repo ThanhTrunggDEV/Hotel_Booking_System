@@ -13,5 +13,6 @@ namespace Hotel_Booking_System.Interfaces
         string Password { get; set; }
         string Email { get; set; }
         bool IsSavedCredentials { get; set; }
+        Task InitializeAsync();
     }
 }
