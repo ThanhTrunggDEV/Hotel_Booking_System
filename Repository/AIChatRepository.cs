@@ -44,6 +44,8 @@ namespace Hotel_Booking_System.Repository
             return await _context.AIChats.FirstOrDefaultAsync(c => c.ChatID == id);
         }
 
+        public Task<List<AIChat>> GetByUserId(string userId) => _context.AIChats.Where(ai => ai.UserID == userId).ToListAsync();
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();

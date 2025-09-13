@@ -578,7 +578,7 @@
                                             <DataTemplate>
                                                 <StackPanel>
                                                    
-                                                    <Grid Margin="0,5">
+                                                    <Grid VerticalAlignment="Top" Margin="0,5">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
@@ -608,7 +608,7 @@
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
 
-                                                        <Grid Grid.Column="0" Width="32" Height="32" Margin="0,0,8,0">
+                                                        <Grid VerticalAlignment="Top" Grid.Column="0" Width="32" Height="32" Margin="0,0,8,0">
                                                             <Ellipse Fill="#FF2196F3"/>
                                                             <Image Source="/Resources/Chatbotlogo.png" Width="20" Height="20"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>

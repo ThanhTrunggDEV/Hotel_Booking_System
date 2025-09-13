@@ -125,7 +125,7 @@ namespace Hotel_Booking_System.ViewModels
         public string LoadingVisibility { get => _loadingVisibility; set => Set(ref _loadingVisibility, value); }
         public string ErrorVisibility { get => _errorVisibility; set => Set(ref _errorVisibility, value); }
         public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
-        public ObservableCollection<AIChat> Chats { get; set; } = new ObservableCollection<AIChat>();
+        public ObservableCollection<AIChat> Chats { get; set; } = new();
         public ObservableCollection<Review> Reviews { get; set; } = new ObservableCollection<Review>();
          public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
 
@@ -144,6 +144,7 @@ namespace Hotel_Booking_System.ViewModels
             _hotelRepository = hotelRepository;
             _roomRepository = roomRepository;
             _userRepository = userRepository;
+            _aiChatRepository = aIChatRepository;
             _reviewRepository = reviewRepository;
 
             WeakReferenceMessenger.Default.Register<UserViewModel, MessageService>(
@@ -152,6 +153,7 @@ namespace Hotel_Booking_System.ViewModels
      {
          recipient.userMail = message.Value;
          GetCurrentUser();
+         FilterChatsByUser(CurrentUser.UserID);
          FilterBookingsByUser(CurrentUser.UserID);
      });
 
@@ -160,7 +162,6 @@ namespace Hotel_Booking_System.ViewModels
 
             Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
-            
 
 
 
@@ -168,6 +169,14 @@ namespace Hotel_Booking_System.ViewModels
 
         }
 
+        private void FilterChatsByUser(string userId)
+        {
+            var data = _aiChatRepository.GetByUserId(userId).Result;
+            foreach(var chat in data)
+            {
+                Chats.Add(chat);
+            }
+        }
 
         private void SortHotels()
         {
