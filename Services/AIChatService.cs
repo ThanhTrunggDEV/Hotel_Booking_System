@@ -43,8 +43,8 @@ namespace Hotel_Booking_System.Services
 
             // 1. Lấy data từ DB
             var hotels = await _hotelRepository.GetAllAsync();
-            var rooms = await _repository.GetAllAsync();
-            var bookings = await _repository.GetByUserId(userId);
+            var rooms = await _roomRepository.GetAllAsync();
+            var bookings = await _bookingRepository.GetBookingByUserId(userId);
 
             // 2. Build context text
             var context = new StringBuilder();
@@ -52,19 +52,19 @@ namespace Hotel_Booking_System.Services
             context.AppendLine("\nHotels:");
             foreach (var h in hotels)
             {
-                context.AppendLine($"- {h.HotelID}, {h.HotelName}, Hotel Rating: {h.Rating}");
+                context.AppendLine($"- {h.HotelID}, {h.HotelName}, Location: {h.Address}, {h.City}, Price Range: {h.MinPrice}-{h.MaxPrice}, Hotel Rating: {h.Rating}");
             }
 
             context.AppendLine("\nRooms:");
             foreach (var r in rooms)
             {
-                context.AppendLine($"- Room {r.RoomNumber}: {r.Type}, {r.View}, Price: {r.Price}, Available: {r.IsAvailable}");
+                context.AppendLine($"- Room {r.RoomNumber}: {r.RoomType}, Capacity: {r.Capacity}, Price per night: {r.PricePerNight}, Status: {r.Status}");
             }
 
             context.AppendLine("\nBookings:");
-            foreach (var b in bookings.Take(10)) // limit tránh prompt quá dài
+            foreach (var b in bookings.Where(b => b != null).Take(10)) // limit tránh prompt quá dài
             {
-                context.AppendLine($"- Booking {b.BookingId}: User {b.UserId}, Room {b.RoomId}, From {b.CheckIn} To {b.CheckOut}");
+                context.AppendLine($"- Booking {b!.BookingID}: User {b.UserID}, Room {b.RoomID}, From {b.CheckInDate} To {b.CheckOutDate}, Status: {b.Status}");
             }
 
             // 3. Prompt = system + context + user message
