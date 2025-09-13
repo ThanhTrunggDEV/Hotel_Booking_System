@@ -554,12 +554,13 @@
                                     </StackPanel>
                                 </Border>
 
-                                <ScrollViewer Grid.Row="1" Margin="15" VerticalScrollBarVisibility="Auto">
-                                    <ListBox bh:ListBoxExtensions.AutoScroll="True" IsEnabled="False" ItemsSource="{Binding Chats}">
+                                <ListBox Grid.Row="1" Margin="15" bh:ListBoxExtensions.AutoScroll="True" ItemsSource="{Binding Chats}" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                         <ListBox.ItemContainerStyle>
                                             <Style TargetType="ListBoxItem">
                                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                            </Style>
+                                                <Setter Property="Focusable" Value="False"/>
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </Style>
                                         </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
@@ -603,20 +604,30 @@
 
                                                         <Border Grid.Column="1" HorizontalAlignment="Left" Background="#FFE8F5E8"
                     CornerRadius="12" Margin="0,0,0,0" Padding="12">
-                                                            <TextBlock Text="{Binding Response}" TextWrapping="Wrap" FontSize="12"
-                           MaxWidth="220"/>
+                                                            <Grid>
+                                                                <TextBlock x:Name="ResponseText" Text="{Binding Response}" TextWrapping="Wrap" FontSize="12" MaxWidth="220"/>
+                                                                <TextBlock x:Name="TypingText" Text="{Binding TypingIndicator}" FontSize="12" MaxWidth="220" Visibility="Collapsed"/>
+                                                            </Grid>
                                                         </Border>
                                                     </Grid>
                                                 </StackPanel>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding IsTyping}" Value="True">
+                                                        <Setter TargetName="ResponseText" Property="Visibility" Value="Collapsed"/>
+                                                        <Setter TargetName="TypingText" Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsTyping}" Value="False">
+                                                        <Setter TargetName="ResponseText" Property="Visibility" Value="Visible"/>
+                                                        <Setter TargetName="TypingText" Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
                                             </DataTemplate>
 
                                         </ListBox.ItemTemplate>
-                                    </ListBox>
-                                </ScrollViewer>
+                                </ListBox>
 
                                 <StackPanel Grid.Row="2" Margin="15,10">
                                     <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Visibility="{Binding ErrorVisibility}" Margin="0,0,0,5"/>
-                                    <TextBlock Text="Loading..." Foreground="Gray" Visibility="{Binding LoadingVisibility}" Margin="0,0,0,5"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -624,14 +635,18 @@
                                         </Grid.ColumnDefinitions>
 
                                         <TextBox Grid.Column="0" x:Name="txtChatInput"
-                                Style="{StaticResource ModernTextBox}"/>
+                                                Style="{StaticResource ModernTextBox}"
+                                                Text="{Binding ChatInput, UpdateSourceTrigger=PropertyChanged}">
+                                            <TextBox.InputBindings>
+                                                <KeyBinding Key="Enter" Command="{Binding SendCommand}" />
+                                            </TextBox.InputBindings>
+                                        </TextBox>
 
                                         <Button Grid.Column="1" Content="➤"
-                               Style="{StaticResource PrimaryButton}"
-                                Command="{Binding SendCommand}"
-                                CommandParameter="{Binding ElementName=txtChatInput, Path=Text}"
-                               Width="40" Height="35" Margin="8,0,0,0"
-                               FontWeight="Bold"/>
+                                               Style="{StaticResource PrimaryButton}"
+                                               Command="{Binding SendCommand}"
+                                               Width="40" Height="35" Margin="8,0,0,0"
+                                               FontWeight="Bold"/>
                                     </Grid>
                                 </StackPanel>
                             </Grid>
