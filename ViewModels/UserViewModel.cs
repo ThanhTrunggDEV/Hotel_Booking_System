@@ -53,6 +53,7 @@ namespace Hotel_Booking_System.ViewModels
         private string _requestHotelAddress = "";
         private string _requestReason = "";
         private string _selectedModel;
+        private string _chatInput = string.Empty;
 
         private DispatcherTimer _typingTimer;
 
@@ -137,6 +138,7 @@ namespace Hotel_Booking_System.ViewModels
 
         public string ErrorVisibility { get => _errorVisibility; set => Set(ref _errorVisibility, value); }
         public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
+        public string ChatInput { get => _chatInput; set => Set(ref _chatInput, value); }
         public ObservableCollection<AIChat> Chats { get; set; } = new();
         public ObservableCollection<Review> Reviews { get; set; } = new ObservableCollection<Review>();
          public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
@@ -463,11 +465,13 @@ namespace Hotel_Booking_System.ViewModels
             ShowChatBox = "Visible";
         }
         [RelayCommand]
-        private async Task Send(string message)
+        private async Task Send()
         {
+            var message = ChatInput;
             if (string.IsNullOrWhiteSpace(message) || CurrentUser == null)
                 return;
 
+            ChatInput = string.Empty;
             ErrorVisibility = "Collapsed";
             ErrorMessage = string.Empty;
 

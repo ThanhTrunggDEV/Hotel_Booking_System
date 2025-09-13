@@ -635,14 +635,18 @@
                                         </Grid.ColumnDefinitions>
 
                                         <TextBox Grid.Column="0" x:Name="txtChatInput"
-                                Style="{StaticResource ModernTextBox}"/>
+                                                Style="{StaticResource ModernTextBox}"
+                                                Text="{Binding ChatInput, UpdateSourceTrigger=PropertyChanged}">
+                                            <TextBox.InputBindings>
+                                                <KeyBinding Key="Enter" Command="{Binding SendCommand}" />
+                                            </TextBox.InputBindings>
+                                        </TextBox>
 
                                         <Button Grid.Column="1" Content="➤"
-                               Style="{StaticResource PrimaryButton}"
-                                Command="{Binding SendCommand}"
-                                CommandParameter="{Binding ElementName=txtChatInput, Path=Text}"
-                               Width="40" Height="35" Margin="8,0,0,0"
-                               FontWeight="Bold"/>
+                                               Style="{StaticResource PrimaryButton}"
+                                               Command="{Binding SendCommand}"
+                                               Width="40" Height="35" Margin="8,0,0,0"
+                                               FontWeight="Bold"/>
                                     </Grid>
                                 </StackPanel>
                             </Grid>
