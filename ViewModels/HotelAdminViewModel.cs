@@ -1,93 +1,38 @@
-
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
+
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Messaging;
+
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
-using System.Linq;
-using Hotel_Booking_System.DomainModels;
-using Hotel_Booking_System.Interfaces;
 using Hotel_Manager.FrameWorks;
 
 namespace Hotel_Booking_System.ViewModels
 {
-    /// <summary>
-    /// View model used by the <see cref="Views.HotelAdminWindow"/>.  It exposes
-    /// a command allowing the administrator to persist changes to the hotel
-    /// information.  The command performs some very light validation before
-    /// delegating to <see cref="IHotelRepository"/> for persistence.
-    /// </summary>
-    public partial class HotelAdminViewModel : Bindable
-    {
-        private readonly IHotelRepository _hotelRepository;
-        private readonly IReviewRepository _reviewRepository;
-
-        public ObservableCollection<Review> Reviews { get; } = new();
-
-        private Hotel _hotel = new();
-        public Hotel Hotel
-        {
-            get => _hotel;
-            set => Set(ref _hotel, value);
-        }
-
-        public HotelAdminViewModel(IHotelRepository hotelRepository,
-                                   IReviewRepository reviewRepository)
-        {
-            _hotelRepository = hotelRepository;
-            _reviewRepository = reviewRepository;
-            LoadReviews();
-        }
-
-        private async void LoadReviews()
-
     public partial class HotelAdminViewModel : Bindable, IHotelAdminViewModel
     {
-        private readonly IRoomRepository _roomRepository;
-        private readonly IReviewRepository _reviewRepository;
-
-        public ObservableCollection<Room> Rooms { get; } = new();
-        public ObservableCollection<Review> Reviews { get; } = new();
-
-        public HotelAdminViewModel(IRoomRepository roomRepository, IReviewRepository reviewRepository)
-        {
-            _roomRepository = roomRepository;
-            _reviewRepository = reviewRepository;
-            LoadRooms();
-            LoadReviews();
-        }
-
-        private async void LoadRooms()
-        {
-            var rooms = await _roomRepository.GetAllAsync();
-            Rooms.Clear();
-            foreach (var room in rooms)
-            {
-                Rooms.Add(room);
-            }
-        }
-
-     
-
         private readonly IReviewRepository _reviewRepository;
         private readonly IUserRepository _userRepository;
-        private string _userEmail = string.Empty;
-        private User _currentUser = new();
         private readonly IRoomRepository _roomRepository;
         private readonly IHotelRepository _hotelRepository;
         private readonly IBookingRepository _bookingRepository;
 
+        private string _userEmail = string.Empty;
+        private User _currentUser = new();
         private Hotel? _currentHotel;
-        public Hotel? CurrentHotel { get => _currentHotel; set => Set(ref _currentHotel, value); }
+
+        public Hotel? CurrentHotel
+        {
+            get => _currentHotel;
+            set => Set(ref _currentHotel, value);
+        }
 
         public ObservableCollection<Room> Rooms { get; } = new();
         public ObservableCollection<Booking> Bookings { get; } = new();
-        public ObservableCollection<Review> Reviews { get; } = new();
-
         public ObservableCollection<Review> Reviews { get; } = new();
 
         public User CurrentUser
@@ -96,13 +41,16 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _currentUser, value);
         }
 
-        public HotelAdminViewModel(IReviewRepository reviewRepository, IUserRepository userRepository,            IRoomRepository roomRepository,
+        public HotelAdminViewModel(
+            IReviewRepository reviewRepository,
+            IUserRepository userRepository,
+            IRoomRepository roomRepository,
             IHotelRepository hotelRepository,
             IBookingRepository bookingRepository)
         {
             _reviewRepository = reviewRepository;
             _userRepository = userRepository;
-                        _roomRepository = roomRepository;
+            _roomRepository = roomRepository;
             _hotelRepository = hotelRepository;
             _bookingRepository = bookingRepository;
 
@@ -111,10 +59,47 @@ namespace Hotel_Booking_System.ViewModels
                 recipient._userEmail = message.Value;
                 recipient.LoadCurrentUser();
             });
-             LoadHotel();
+
+            LoadHotel();
             LoadRooms();
             LoadBookings();
             LoadReviews();
+        }
+
+        private async void LoadCurrentUser()
+        {
+            CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
+        }
+
+        private void LoadHotel()
+        {
+            var hotels = _hotelRepository.GetAllAsync().Result;
+            CurrentHotel = hotels.FirstOrDefault();
+        }
+
+        private void LoadRooms()
+        {
+            var rooms = _roomRepository.GetAllAsync().Result;
+            Rooms.Clear();
+            foreach (var room in rooms)
+            {
+                Rooms.Add(room);
+            }
+        }
+
+        private void LoadBookings()
+        {
+            var bookings = _bookingRepository.GetAllAsync().Result;
+            Bookings.Clear();
+            foreach (var booking in bookings)
+            {
+                Bookings.Add(booking);
+            }
+        }
+
+        private async void LoadReviews()
+        {
+            await LoadReviewsAsync();
         }
 
         public async Task LoadReviewsAsync()
@@ -127,34 +112,30 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
-        /// <summary>
-        /// Command invoked from the UI when the admin wants to store the
-        /// current hotel information.
-        /// </summary>
         [RelayCommand]
         private async Task UpdateHotelInfo()
         {
-            // Basic validation – ensure required fields are populated.
-            if (string.IsNullOrWhiteSpace(Hotel.HotelName) ||
-                string.IsNullOrWhiteSpace(Hotel.Address) ||
-                Hotel.Rating < 1 || Hotel.Rating > 5)
+            if (CurrentHotel == null)
+                return;
+
+            if (string.IsNullOrWhiteSpace(CurrentHotel.HotelName) ||
+                string.IsNullOrWhiteSpace(CurrentHotel.Address) ||
+                CurrentHotel.Rating < 1 || CurrentHotel.Rating > 5)
             {
                 return;
             }
 
-            if (string.IsNullOrEmpty(Hotel.HotelID))
+            if (string.IsNullOrEmpty(CurrentHotel.HotelID))
             {
-                Hotel.HotelID = Guid.NewGuid().ToString();
-                await _hotelRepository.AddAsync(Hotel);
+                CurrentHotel.HotelID = Guid.NewGuid().ToString();
+                await _hotelRepository.AddAsync(CurrentHotel);
                 await _hotelRepository.SaveAsync();
             }
             else
             {
-                await _hotelRepository.UpdateAsync(Hotel);
+                await _hotelRepository.UpdateAsync(CurrentHotel);
             }
         }
-    }
-}
 
         [RelayCommand]
         private async Task AddRoom()
@@ -189,42 +170,7 @@ namespace Hotel_Booking_System.ViewModels
             await _roomRepository.DeleteAsync(room.RoomID);
             await _roomRepository.SaveAsync();
             LoadRooms();
- 
-
-                }
-           
-  
-         private async void LoadCurrentUser()
-        {
-            CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
-         }
-        private void LoadHotel()
-        {
-            var hotels = _hotelRepository.GetAllAsync().Result;
-            CurrentHotel = hotels.FirstOrDefault();
         }
-
-        private void LoadRooms()
-        {
-            var rooms = _roomRepository.GetAllAsync().Result;
-            Rooms.Clear();
-            foreach (var room in rooms)
-            {
-                Rooms.Add(room);
-            }
-        }
-
-        private void LoadBookings()
-        {
-            var bookings = _bookingRepository.GetAllAsync().Result;
-            Bookings.Clear();
-            foreach (var booking in bookings)
-            {
-                Bookings.Add(booking);
-            }
-        }
-
-       
     }
 }
 
