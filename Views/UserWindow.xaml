@@ -324,9 +324,13 @@
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
                                                 <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Padding="0,10">
-                                                    <StackPanel>
-                                                        <TextBlock Text="{Binding Rating, StringFormat='Rating: {0}'}" FontWeight="Bold"/>
-                                                        <TextBlock Text="{Binding Comment}" TextWrapping="Wrap"/>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Image Source="{Binding ReviewerAvatarUrl}" Width="40" Height="40" Margin="0,0,10,0"/>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding ReviewerName}" FontWeight="Bold"/>
+                                                            <TextBlock Text="{Binding Rating, StringFormat='Rating: {0}'}"/>
+                                                            <TextBlock Text="{Binding Comment}" TextWrapping="Wrap"/>
+                                                        </StackPanel>
                                                     </StackPanel>
                                                 </Border>
                                             </DataTemplate>
