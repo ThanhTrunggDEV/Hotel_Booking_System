@@ -141,7 +141,8 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <Button Content="Update Hotel Info" Width="170" Style="{StaticResource PrimaryButton}" 
+                                <Button Content="Update Hotel Info" Width="170" Style="{StaticResource PrimaryButton}"
+                                        Command="{Binding UpdateHotelInfoCommand}"
                                    HorizontalAlignment="Left"/>
                             </StackPanel>
                         </Border>
