@@ -175,12 +175,20 @@
                                         <TextBlock Text="Capacity" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <TextBox x:Name="txtRoomCapacity" Width="80" Height="30" Margin="0,0,0,20"/>
 
+                                        <TextBlock Text="Check-in Date" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <DatePicker x:Name="dpRoomCheckIn" Width="150" Height="30" Margin="0,0,0,20"/>
+
+                                        <TextBlock Text="Check-out Date" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <DatePicker x:Name="dpRoomCheckOut" Width="150" Height="30" Margin="0,0,0,20"/>
+
                                         <Button Content="Clear Filters" Command="{Binding ClearRoomFiltersCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
                                         <Button Command="{Binding FilterRoomsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
                                             <Button.CommandParameter>
                                                 <MultiBinding Converter="{StaticResource FilterRoomConverter}">
                                                     <Binding ElementName="txtRoomPrice" Path="Text"/>
                                                     <Binding ElementName="txtRoomCapacity" Path="Text"/>
+                                                    <Binding ElementName="dpRoomCheckIn" Path="SelectedDate"/>
+                                                    <Binding ElementName="dpRoomCheckOut" Path="SelectedDate"/>
                                                 </MultiBinding>
                                             </Button.CommandParameter>
                                         </Button>
@@ -288,9 +296,12 @@
 
                                                             <Border CornerRadius="12" Padding="8,3" HorizontalAlignment="Left"
                     Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}">
-                                                                <TextBlock Text="{Binding Status}" 
+                                                                <TextBlock Text="{Binding Status}"
                            FontSize="11" Foreground="White" FontWeight="SemiBold"/>
                                                             </Border>
+
+                                                            <TextBlock Text="{Binding NotAvailableMessage}" Foreground="Red" FontSize="11" Margin="0,5,0,0"
+                                                                       Visibility="{Binding NotAvailableMessage, Converter={StaticResource NullToVisibilityConverter}}"/>
 
                                                             <Grid Margin="0,15,0,0">
                                                                 <Grid.ColumnDefinitions>
@@ -309,7 +320,7 @@
                                                                         Width="80"
                                                                         Height="35"
                         Command="{Binding DataContext.BookRoomCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        CommandParameter="{Binding}"/>
+                        CommandParameter="{Binding}" IsEnabled="{Binding IsAvailable}"/>
                                                             </Grid>
                                                         </StackPanel>
                                                     </Grid>
