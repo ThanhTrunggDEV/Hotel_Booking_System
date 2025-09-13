@@ -36,9 +36,9 @@ namespace Hotel_Booking_System.ViewModels
             _navigationService = navigationService;
 
 
-            LoadCredential();
+            LoadCredential().Wait();
         }
-        [RelayCommand(CanExecute = nameof(CanLogin))]
+        [RelayCommand]
         private async Task Login(string email)
         {
             var user = await _userRepository.GetByEmailAsync(email);
@@ -72,7 +72,7 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
-        private bool CanLogin(string email) => !string.IsNullOrWhiteSpace(email) && !string.IsNullOrWhiteSpace(Password);
+        private bool CanLogin() => !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
 
         [RelayCommand]
         private void ForgotPassword()
@@ -113,14 +113,22 @@ namespace Hotel_Booking_System.ViewModels
         }
         private async Task LoadCredential()
         {
-            using (FileStream stream = File.Open("data.json",FileMode.OpenOrCreate))
+            try
             {
-                AutoSave? data = new();
-                data = await JsonSerializer.DeserializeAsync<AutoSave>(stream);
-                Email = data.Email ??= "";
-                Password = data.Password ??= "";
-                IsSavedCredentials = data.RememberMe;
+                using (FileStream stream = File.Open("data.json", FileMode.OpenOrCreate))
+                {
+                    AutoSave? data = new();
+                    data = await JsonSerializer.DeserializeAsync<AutoSave>(stream);
+                    Email = data.Email ??= "";
+                    Password = data.Password ??= "";
+                    IsSavedCredentials = data.RememberMe;
+                }
             }
+            catch
+            {
+                MessageBox.Show("Không load được tài khoản mật khẩu đã lưu");
+            }
+            
         }
 
 

@@ -71,12 +71,13 @@ namespace Hotel_Booking_System.ViewModels
              {
                   recipient._userEmail = message.Value;
                  GetCurrentUser();
+                 
              });
+            LoadDataAsync();
 
-           
         }
 
-        public async Task LoadDataAsync()
+        public async void LoadDataAsync()
         {
             try
             {

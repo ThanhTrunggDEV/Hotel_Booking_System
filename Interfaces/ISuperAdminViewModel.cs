@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using Hotel_Booking_System.DomainModels;
 
@@ -10,9 +11,6 @@ namespace Hotel_Booking_System.Interfaces
         int PendingRequests { get; set; }
         ObservableCollection<HotelAdminRequest> PendingRequest { get; set; }
 
-        IAsyncRelayCommand<string> ApproveRequestCommand { get; }
-        IAsyncRelayCommand<string> RejectRequestCommand { get; }
-        IRelayCommand UpdateInfoCommand { get; }
     }
 }
 
