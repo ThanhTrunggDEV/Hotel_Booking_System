@@ -8,10 +8,10 @@ namespace Hotel_Booking_System.Interfaces
 {
     interface IForgotPasswordViewModel
     {
-        public string StepOneStatus { get; set; }
-        public string StepTwoStatus { get; set; }
-        public string StepThreeStatus { get; set; }
-        public string NewPassword { get; set; }
-        public string NewPasswordConfirm { get; set; }
+        string StepOneStatus { get; set; }
+        string StepTwoStatus { get; set; }
+        string StepThreeStatus { get; set; }
+        string NewPassword { get; set; }
+        string NewPasswordConfirm { get; set; }
     }
 }

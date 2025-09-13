@@ -8,7 +8,7 @@ namespace Hotel_Booking_System.Interfaces
 {
     interface ISignUpViewModel
     {
-        public string Passoword { get; set; }
-        public string PasswordConfirmed { get; set; }
+        string Password { get; set; }
+        string PasswordConfirmed { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace Hotel_Booking_System.Views
             InitializeComponent();
             DataContext = _signupViewModel;
             txtConfirmedPassword.PasswordChanged += (s, e) => { _signupViewModel.PasswordConfirmed = txtConfirmedPassword.Password; };
-            txtPassword.PasswordChanged += (s, e) => { _signupViewModel.Passoword = txtPassword.Password; };
+            txtPassword.PasswordChanged += (s, e) => { _signupViewModel.Password = txtPassword.Password; };
             
         }
     }
