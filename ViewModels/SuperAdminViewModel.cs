@@ -67,10 +67,10 @@ namespace Hotel_Booking_System.ViewModels
             _userRepository = userRepository;
             _navigationService = navigationService;
 
-            WeakReferenceMessenger.Default.Register<SuperAdminViewModel, MessageService>(this, (recipient, message) =>
+            WeakReferenceMessenger.Default.Register<SuperAdminViewModel, MessageService>(this, async (recipient, message) =>
             {
                 recipient._userEmail = message.Value;
-                GetCurrentUser();
+                await recipient.GetCurrentUserAsync();
 
             });
         }
@@ -101,12 +101,9 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
-        private void GetCurrentUser()
+        private async Task GetCurrentUserAsync()
         {
-            Task.Run(async () =>
-            {
-                CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
-            }).Wait();
+            CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
         }
 
         [RelayCommand]
