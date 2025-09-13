@@ -135,9 +135,9 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         [RelayCommand]
-        private void UpdateInfo()
+        private async Task UpdateInfo()
         {
-            _userRepository.UpdateAsync(CurrentUser);
+            await _userRepository.UpdateAsync(CurrentUser);
         }
     }
 }
