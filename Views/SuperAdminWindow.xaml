@@ -113,11 +113,11 @@
                                                                Width="45" Height="25" Margin="2" FontSize="10"/>
                                                         <Button Content="✅ Approve" Style="{StaticResource SecondaryButton}"
                                                                Background="#FF4CAF50" Width="55" Height="25" Margin="2" FontSize="10"
-                                                               Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                               Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                CommandParameter="{Binding RequestID}"/>
                                                         <Button Content="❌ Reject" Style="{StaticResource SecondaryButton}"
                                                                Background="#FFFF5722" Width="50" Height="25" Margin="2" FontSize="10"
-                                                               Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                               Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                CommandParameter="{Binding RequestID}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
@@ -701,8 +701,8 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Content="Approve" Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding RequestID}" Margin="2"/>
-                                            <Button Content="Reject" Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding RequestID}" Margin="2"/>
+                                            <Button Content="Approve" Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding RequestID}" Margin="2"/>
+                                            <Button Content="Reject" Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding RequestID}" Margin="2"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

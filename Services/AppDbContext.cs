@@ -81,6 +81,47 @@ namespace Hotel_Booking_System.Services
 
         }
 
+        public void SeedData()
+        {
+            Database.EnsureCreated();
+
+            if (!Users.Any())
+            {
+                var superAdmin = new User
+                {
+                    FullName = "Super Admin",
+                    Email = "superadmin@example.com",
+                    Password = "123456",
+                    Role = "SuperAdmin",
+                    DateOfBirth = DateTime.Now
+                };
+
+                var requester = new User
+                {
+                    FullName = "Hotel Admin",
+                    Email = "hoteladmin@example.com",
+                    Password = "123456",
+                    Role = "User",
+                    DateOfBirth = DateTime.Now
+                };
+
+                Users.AddRange(superAdmin, requester);
+                SaveChanges();
+
+                HotelAdminRequests.Add(new HotelAdminRequest
+                {
+                    UserID = requester.UserID,
+                    HotelName = "Sample Hotel",
+                    HotelAddress = "123 Sample Street",
+                    Reason = "Initial request",
+                    Status = "Pending",
+                    CreatedAt = DateTime.Now
+                });
+
+                SaveChanges();
+            }
+        }
+
 
     }
 }
