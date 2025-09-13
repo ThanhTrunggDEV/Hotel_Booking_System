@@ -603,11 +603,23 @@
 
                                                         <Border Grid.Column="1" HorizontalAlignment="Left" Background="#FFE8F5E8"
                     CornerRadius="12" Margin="0,0,0,0" Padding="12">
-                                                            <TextBlock Text="{Binding Response}" TextWrapping="Wrap" FontSize="12"
-                           MaxWidth="220"/>
+                                                            <Grid>
+                                                                <TextBlock x:Name="ResponseText" Text="{Binding Response}" TextWrapping="Wrap" FontSize="12" MaxWidth="220"/>
+                                                                <TextBlock x:Name="TypingText" Text="{Binding TypingIndicator}" FontSize="12" MaxWidth="220" Visibility="Collapsed"/>
+                                                            </Grid>
                                                         </Border>
                                                     </Grid>
                                                 </StackPanel>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding IsTyping}" Value="True">
+                                                        <Setter TargetName="ResponseText" Property="Visibility" Value="Collapsed"/>
+                                                        <Setter TargetName="TypingText" Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsTyping}" Value="False">
+                                                        <Setter TargetName="ResponseText" Property="Visibility" Value="Visible"/>
+                                                        <Setter TargetName="TypingText" Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
                                             </DataTemplate>
 
                                         </ListBox.ItemTemplate>

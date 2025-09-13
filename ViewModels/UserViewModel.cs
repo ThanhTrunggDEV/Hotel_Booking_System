@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
 using static System.Net.WebRequestMethods;
 
 namespace Hotel_Booking_System.ViewModels
@@ -53,6 +54,8 @@ namespace Hotel_Booking_System.ViewModels
         private string _requestHotelAddress = "";
         private string _requestReason = "";
         private string _selectedModel;
+
+        private DispatcherTimer _typingTimer;
 
 
 
@@ -470,21 +473,73 @@ namespace Hotel_Booking_System.ViewModels
             LoadingVisibility = "Visible";
             ErrorVisibility = "Collapsed";
             ErrorMessage = string.Empty;
+
+            var chat = new AIChat
+            {
+                ChatID = Guid.NewGuid().ToString(),
+                UserID = CurrentUser.UserID,
+                Message = message,
+                CreatedAt = DateTime.Now,
+                IsTyping = true
+            };
+            Chats.Add(chat);
+            StartTypingIndicator(chat);
+
             try
             {
-                var chat = await _aiChatService.SendAsync(CurrentUser.UserID, message);
-    
-
-                Chats.Add(chat);
+                var responseChat = await _aiChatService.SendAsync(CurrentUser.UserID, message);
+                StopTypingIndicator(chat);
+                chat.ChatID = responseChat.ChatID;
+                chat.CreatedAt = responseChat.CreatedAt;
+                await TypeOutResponse(chat, responseChat.Response);
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
                 ErrorVisibility = "Visible";
+                Chats.Remove(chat);
             }
             finally
             {
                 LoadingVisibility = "Collapsed";
+            }
+        }
+
+        private void StartTypingIndicator(AIChat chat)
+        {
+            chat.TypingIndicator = string.Empty;
+            int dotCount = 0;
+            _typingTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(400)
+            };
+            _typingTimer.Tick += (s, e) =>
+            {
+                dotCount = (dotCount + 1) % 4;
+                chat.TypingIndicator = new string('.', dotCount);
+            };
+            _typingTimer.Start();
+        }
+
+        private void StopTypingIndicator(AIChat chat)
+        {
+            if (_typingTimer != null)
+            {
+                _typingTimer.Stop();
+                _typingTimer = null;
+            }
+            chat.IsTyping = false;
+            chat.TypingIndicator = string.Empty;
+        }
+
+        private async Task TypeOutResponse(AIChat chat, string response)
+        {
+            chat.IsTyping = false;
+            chat.Response = string.Empty;
+            foreach (var c in response)
+            {
+                chat.Response += c;
+                await Task.Delay(30);
             }
         }
 
