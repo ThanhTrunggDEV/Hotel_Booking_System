@@ -27,6 +27,11 @@ namespace Hotel_Booking_System
         {
             base.OnStartup(e);
             Env.Load();
+            using (var scope = Provider?.CreateScope())
+            {
+                var context = scope?.ServiceProvider.GetRequiredService<AppDbContext>();
+                context?.SeedData();
+            }
         }
         private static IServiceProvider? provider;
         public static IServiceProvider? Provider { get => provider ??= ConfigDI(); }
@@ -44,9 +49,11 @@ namespace Hotel_Booking_System
                 .AddTransient<ForgotPasswordWindow>()
                 .AddTransient<UserWindow>()
                 .AddTransient<BookingDialog>()
+                .AddTransient<ModifyBookingDialog>()
                 .AddTransient<SignUpWindow>()
                 .AddTransient<SuperAdminWindow>()
                 .AddTransient<ReviewDialog>()
+                .AddTransient<PaymentDialog>()
                 .AddTransient<HotelAdminWindow>()
                 .AddScoped<IHotelRepository, HotelRepository>()
                 .AddSingleton<IBookingRepository, BookingRepository>()
@@ -66,6 +73,7 @@ namespace Hotel_Booking_System
                 .AddScoped<ILoginViewModel, LoginViewModel>()
                 .AddScoped<IBookingViewModel, BookingViewModel>()
                 .AddScoped<IForgotPasswordViewModel, ForgotPasswordViewModel>()
+                .AddScoped<IReviewViewModel, ReviewViewModel>()
                 .AddScoped<ISignUpViewModel, SignUpViewModel>()
                 .AddScoped<IAdminViewModel, AdminViewModel>()
                 .AddScoped<ISuperAdminViewModel, SuperAdminViewModel>()

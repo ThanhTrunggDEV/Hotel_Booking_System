@@ -99,7 +99,6 @@ namespace Hotel_Booking_System.ViewModels
             await _bookingRepository.AddAsync(booking);
             await _bookingRepository.SaveAsync();
 
-            _navigationService.CloseBookingDialog();
             _navigationService.OpenPaymentDialog(booking.BookingID, TotalPayment);
         }
     }

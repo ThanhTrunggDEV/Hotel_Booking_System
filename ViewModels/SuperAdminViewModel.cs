@@ -59,6 +59,7 @@ namespace Hotel_Booking_System.ViewModels
         public ObservableCollection<HotelAdminRequest> PendingRequest { get; set; } = new();
         public ObservableCollection<User> Users { get; set; }
         public ObservableCollection<Hotel> Hotels { get; set; }
+        public ObservableCollection<Hotel> PendingHotels { get; set; } = new();
         public SuperAdminViewModel(IRoomRepository roomRepository, IHotelAdminRequestRepository hotelAdminRequestRepository, IHotelRepository hotelRepository, IUserRepository userRepository, INavigationService navigationService)
         {
             _roomRepository = roomRepository;
@@ -80,7 +81,16 @@ namespace Hotel_Booking_System.ViewModels
             try
             {
                 var hotels = await _hotelRepository.GetAllAsync();
-                TotalHotels = hotels.Count();
+                TotalHotels = hotels.Count(h => h.IsApproved);
+                var unapproved = hotels.Where(h => !h.IsApproved).ToList();
+                PendingHotels.Clear();
+                foreach (var hotel in unapproved)
+                {
+                    if (!PendingHotels.Any(h => h.HotelID == hotel.HotelID))
+                    {
+                        PendingHotels.Add(hotel);
+                    }
+                }
                 var users = await _userRepository.GetAllAsync();
                 TotalUsers = users.Count();
                 var requests = (await _hotelAdminRequestRepository.GetAllAsync()).Where(r => r.Status == "Pending").ToList();
@@ -138,6 +148,33 @@ namespace Hotel_Booking_System.ViewModels
         private async Task UpdateInfo()
         {
             await _userRepository.UpdateAsync(CurrentUser);
+        }
+
+        [RelayCommand]
+        private async Task ApproveHotel(string id)
+        {
+            var hotel = await _hotelRepository.GetByIdAsync(id);
+            if (hotel == null) return;
+            hotel.IsApproved = true;
+            await _hotelRepository.UpdateAsync(hotel);
+            var pending = PendingHotels.FirstOrDefault(h => h.HotelID == id);
+            if (pending != null)
+            {
+                PendingHotels.Remove(pending);
+            }
+            TotalHotels++;
+        }
+
+        [RelayCommand]
+        private async Task RejectHotel(string id)
+        {
+            await _hotelRepository.DeleteAsync(id);
+            await _hotelRepository.SaveAsync();
+            var pending = PendingHotels.FirstOrDefault(h => h.HotelID == id);
+            if (pending != null)
+            {
+                PendingHotels.Remove(pending);
+            }
         }
     }
 }

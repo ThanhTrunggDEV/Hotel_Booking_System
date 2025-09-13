@@ -98,7 +98,7 @@ namespace Hotel_Booking_System.Services
             
             bookingWindow.DataContext = vm;
             bookingWindow.ShowDialog();
-            return (bool)bookingWindow.DialogResult!;
+            return bookingWindow.DialogResult == true;
             
         }
         public void CloseBookingDialog()
@@ -121,7 +121,7 @@ namespace Hotel_Booking_System.Services
 
             reviewWindow.DataContext = vm;
             reviewWindow.ShowDialog();
-            return (bool)reviewWindow.DialogResult!;
+            return reviewWindow.DialogResult == true;
         }
 
 
@@ -141,7 +141,23 @@ namespace Hotel_Booking_System.Services
             vm.TotalPayment = amount;
             paymentWindow.DataContext = vm;
             paymentWindow.ShowDialog();
-            return (bool)paymentWindow.DialogResult!;
+            return paymentWindow.DialogResult == true;
+        }
+
+        public bool OpenModifyDialog(Booking booking)
+        {
+            var modifyWindow = App.Provider!.GetRequiredService<ModifyBookingDialog>();
+
+            modifyWindow.btnCancel.Click += (s, e) =>
+            {
+                modifyWindow.DialogResult = false;
+                modifyWindow.Close();
+            };
+            modifyWindow.btnSave.Click += (s, e) => modifyWindow.DialogResult = true;
+
+            modifyWindow.DataContext = booking;
+            modifyWindow.ShowDialog();
+            return modifyWindow.DialogResult == true;
         }
         public void ClosePaymentDialog()
         {

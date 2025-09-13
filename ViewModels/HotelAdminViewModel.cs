@@ -25,10 +25,19 @@ namespace Hotel_Booking_System.ViewModels
         private User _currentUser = new();
         private Hotel? _currentHotel;
 
+        public ObservableCollection<Hotel> Hotels { get; } = new();
         public Hotel? CurrentHotel
         {
             get => _currentHotel;
-            set => Set(ref _currentHotel, value);
+            set
+            {
+                Set(ref _currentHotel, value);
+                
+                    LoadRooms();
+                    LoadBookings();
+                    LoadReviews();
+                
+            }
         }
 
         public ObservableCollection<Room> Rooms { get; } = new();
@@ -59,27 +68,36 @@ namespace Hotel_Booking_System.ViewModels
                 recipient._userEmail = message.Value;
                 recipient.LoadCurrentUser();
             });
-
-            LoadHotel();
-            LoadRooms();
-            LoadBookings();
-            LoadReviews();
         }
 
         private async void LoadCurrentUser()
         {
             CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
+            LoadHotels();
         }
 
-        private void LoadHotel()
+        private async void LoadHotels()
         {
-            var hotels = _hotelRepository.GetAllAsync().Result;
-            CurrentHotel = hotels.FirstOrDefault();
+            if (string.IsNullOrEmpty(CurrentUser.UserID))
+                return;
+
+            var hotels = await _hotelRepository.GetAllAsync();
+            Hotels.Clear();
+            foreach (var hotel in hotels.Where(h => h.UserID == CurrentUser.UserID && h.IsApproved))
+            {
+                Hotels.Add(hotel);
+            }
+
+            CurrentHotel = Hotels.FirstOrDefault();
         }
 
         private void LoadRooms()
         {
-            var rooms = _roomRepository.GetAllAsync().Result;
+            if (CurrentHotel == null)
+                return;
+
+            var rooms = _roomRepository.GetAllAsync().Result
+                .Where(r => r.HotelID == CurrentHotel.HotelID);
             Rooms.Clear();
             foreach (var room in rooms)
             {
@@ -89,7 +107,11 @@ namespace Hotel_Booking_System.ViewModels
 
         private void LoadBookings()
         {
-            var bookings = _bookingRepository.GetAllAsync().Result;
+            if (CurrentHotel == null)
+                return;
+
+            var bookings = _bookingRepository.GetAllAsync().Result
+                .Where(b => b.HotelID == CurrentHotel.HotelID);
             Bookings.Clear();
             foreach (var booking in bookings)
             {
@@ -104,12 +126,21 @@ namespace Hotel_Booking_System.ViewModels
 
         public async Task LoadReviewsAsync()
         {
+            if (CurrentHotel == null)
+                return;
+
             var reviews = await _reviewRepository.GetAllAsync();
             Reviews.Clear();
-            foreach (var review in reviews)
+            foreach (var review in reviews.Where(r => r.HotelID == CurrentHotel.HotelID))
             {
                 Reviews.Add(review);
             }
+        }
+
+        [RelayCommand]
+        private void NewHotel()
+        {
+            CurrentHotel = new Hotel();
         }
 
         [RelayCommand]
@@ -128,8 +159,12 @@ namespace Hotel_Booking_System.ViewModels
             if (string.IsNullOrEmpty(CurrentHotel.HotelID))
             {
                 CurrentHotel.HotelID = Guid.NewGuid().ToString();
+                CurrentHotel.UserID = CurrentUser.UserID;
+                CurrentHotel.IsApproved = false;
+                CurrentHotel.IsVisible = true;
                 await _hotelRepository.AddAsync(CurrentHotel);
                 await _hotelRepository.SaveAsync();
+                LoadHotels();
             }
             else
             {
@@ -140,9 +175,13 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private async Task AddRoom()
         {
+            if (CurrentHotel == null)
+                return;
+
             var room = new Room
             {
                 RoomID = Guid.NewGuid().ToString(),
+                HotelID = CurrentHotel.HotelID,
                 Status = "Available"
             };
             await _roomRepository.AddAsync(room);
@@ -170,6 +209,34 @@ namespace Hotel_Booking_System.ViewModels
             await _roomRepository.DeleteAsync(room.RoomID);
             await _roomRepository.SaveAsync();
             LoadRooms();
+        }
+
+        [RelayCommand]
+        private async Task ConfirmBooking(Booking? booking)
+        {
+            if (booking == null)
+                return;
+
+            if (booking.Status == "Pending")
+            {
+                booking.Status = "Confirmed";
+                await _bookingRepository.UpdateAsync(booking);
+                LoadBookings();
+            }
+        }
+
+        [RelayCommand]
+        private async Task CancelBooking(Booking? booking)
+        {
+            if (booking == null)
+                return;
+
+            if (booking.Status == "Pending" || booking.Status == "CancelRequested")
+            {
+                booking.Status = "Cancelled";
+                await _bookingRepository.UpdateAsync(booking);
+                LoadBookings();
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
 using static System.Net.WebRequestMethods;
 
 namespace Hotel_Booking_System.ViewModels
@@ -38,6 +39,7 @@ namespace Hotel_Booking_System.ViewModels
         private string _showSearchRoom = "Collapsed";
         private string _showSearchHotel = "Visible";
         private string _sortType = "Default";
+        private string _roomSortType = "Default";
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
         private string _showRegisterForm = "Collapsed";
@@ -45,13 +47,17 @@ namespace Hotel_Booking_System.ViewModels
         private string _showChatButton = "Visible";
         private Hotel _currentHotel;
         private User _currentUser;
-        private string _loadingVisibility = "Collapsed";
         private string _errorVisibility = "Collapsed";
         private string _errorMessage = string.Empty;
         private string _requestHotelName = "";
         private string _requestHotelAddress = "";
         private string _requestReason = "";
         private string _selectedModel;
+        private string _chatInput = string.Empty;
+        private string _membershipLevel = "Bronze";
+        private string _hasBookings = "Collapsed";
+
+        private DispatcherTimer _typingTimer;
 
 
 
@@ -60,13 +66,25 @@ namespace Hotel_Booking_System.ViewModels
         public double TotalSpent { get => _totalSpent; set => Set(ref _totalSpent, value); }
 
         public int TotalBookings { get => _totalBookings; set => Set(ref _totalBookings, value); }
+        public string MembershipLevel { get => _membershipLevel; set => Set(ref _membershipLevel, value); }
+        public string HasBookings { get => _hasBookings; set => Set(ref _hasBookings, value); }
 
-        public string SortType { 
-            get => _sortType; 
-            set 
+        public string SortType {
+            get => _sortType;
+            set
             {
                 Set(ref _sortType, value);
                 SortHotels();
+            }
+        }
+
+        public string RoomSortType
+        {
+            get => _roomSortType;
+            set
+            {
+                Set(ref _roomSortType, value);
+                SortRooms();
             }
         }
         public User CurrentUser { get => _currentUser; set => Set(ref _currentUser, value); }
@@ -122,9 +140,9 @@ namespace Hotel_Booking_System.ViewModels
             set;
         }
 
-        public string LoadingVisibility { get => _loadingVisibility; set => Set(ref _loadingVisibility, value); }
         public string ErrorVisibility { get => _errorVisibility; set => Set(ref _errorVisibility, value); }
         public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
+        public string ChatInput { get => _chatInput; set => Set(ref _chatInput, value); }
         public ObservableCollection<AIChat> Chats { get; set; } = new();
         public ObservableCollection<Review> Reviews { get; set; } = new ObservableCollection<Review>();
          public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
@@ -160,7 +178,10 @@ namespace Hotel_Booking_System.ViewModels
 
           //  SeedData();
 
-            Hotels = new ObservableCollection<Hotel>(_hotelRepository.GetAllAsync().Result);
+            var hotelList = _hotelRepository.GetAllAsync().Result
+                .Where(h => h.IsApproved && h.IsVisible).ToList();
+            CalculateAverageRatings(hotelList);
+            Hotels = new ObservableCollection<Hotel>(hotelList);
             Rooms = new ObservableCollection<Room>(_roomRepository.GetAllAsync().Result);
 
 
@@ -193,7 +214,25 @@ namespace Hotel_Booking_System.ViewModels
 
         private void SortHotels()
         {
-            if (SortType == "Rating: High to Low")
+            if (SortType == "User Rating: High to Low")
+            {
+                var sorted = Hotels.OrderByDescending(h => h.AverageRating).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
+            else if (SortType == "User Rating: Low to High")
+            {
+                var sorted = Hotels.OrderBy(h => h.AverageRating).ToList();
+                Hotels.Clear();
+                foreach (var hotel in sorted)
+                {
+                    Hotels.Add(hotel);
+                }
+            }
+            else if (SortType == "Hotel Rating: High to Low")
             {
                 var sorted = Hotels.OrderByDescending(h => h.Rating).ToList();
                 Hotels.Clear();
@@ -202,7 +241,7 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            else if (SortType == "Rating: Low to High")
+            else if (SortType == "Hotel Rating: Low to High")
             {
                 var sorted = Hotels.OrderBy(h => h.Rating).ToList();
                 Hotels.Clear();
@@ -247,7 +286,53 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            
+
+        }
+
+        private void CalculateAverageRatings(IEnumerable<Hotel> hotels)
+        {
+            var reviewList = _reviewRepository.GetAllAsync().Result;
+            var averages = reviewList
+                .GroupBy(r => r.HotelID)
+                .ToDictionary(g => g.Key, g => g.Average(r => r.Rating));
+
+            foreach (var hotel in hotels)
+            {
+                hotel.AverageRating = averages.TryGetValue(hotel.HotelID, out var avg)
+                    ? Math.Round(avg, 1)
+                    : 0;
+            }
+        }
+
+        private void SortRooms()
+        {
+            List<Room> sorted;
+            if (RoomSortType == "Price: Low to High")
+            {
+                sorted = FilteredRooms.OrderBy(r => r.PricePerNight).ToList();
+            }
+            else if (RoomSortType == "Price: High to Low")
+            {
+                sorted = FilteredRooms.OrderByDescending(r => r.PricePerNight).ToList();
+            }
+            else if (RoomSortType == "Capacity: Low to High")
+            {
+                sorted = FilteredRooms.OrderBy(r => r.Capacity).ToList();
+            }
+            else if (RoomSortType == "Capacity: High to Low")
+            {
+                sorted = FilteredRooms.OrderByDescending(r => r.Capacity).ToList();
+            }
+            else
+            {
+                return;
+            }
+
+            FilteredRooms.Clear();
+            foreach (var room in sorted)
+            {
+                FilteredRooms.Add(room);
+            }
         }
         private void GetCurrentUser()
         {
@@ -278,7 +363,9 @@ namespace Hotel_Booking_System.ViewModels
                 bool? gym = searchParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
 
 
-                List<Hotel> hotels = _hotelRepository.GetAllAsync().Result;
+                List<Hotel> hotels = _hotelRepository.GetAllAsync().Result
+                    .Where(h => h.IsApproved && h.IsVisible).ToList();
+                CalculateAverageRatings(hotels);
 
 
 
@@ -300,7 +387,7 @@ namespace Hotel_Booking_System.ViewModels
                 if (twoStar == true) starFilters.Add(2);
                 if (oneStar == true) starFilters.Add(1);
                 if (starFilters.Count > 0)
-                    hotels = hotels.Where(h => starFilters.Contains(h.Rating)).ToList();
+                    hotels = hotels.Where(h => starFilters.Contains((int)Math.Round(h.AverageRating))).ToList();
 
                 if (freeWifi == true)
                     hotels = hotels.Where(h => h.Amenities.Any(a => a.AmenityName == "Free WiFi")).ToList();
@@ -332,34 +419,20 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (parameter is Dictionary<string, object?> filterParams && CurrentHotel != null)
             {
-                double? minPrice = filterParams.TryGetValue("MinPrice", out var min) && min is double dmin ? dmin : null;
-                double? maxPrice = filterParams.TryGetValue("MaxPrice", out var max) && max is double dmax ? dmax : null;
+                double? price = filterParams.TryGetValue("Price", out var p) && p is double dp ? dp : null;
                 int? capacity = filterParams.TryGetValue("Capacity", out var cap) && cap is int icap ? icap : null;
-                bool? freeWifi = filterParams.TryGetValue("FreeWifi", out var wifi) ? wifi as bool? : null;
-                bool? swimmingPool = filterParams.TryGetValue("SwimmingPool", out var pool) ? pool as bool? : null;
-                bool? freeParking = filterParams.TryGetValue("FreeParking", out var parking) ? parking as bool? : null;
-                bool? restaurant = filterParams.TryGetValue("Restaurant", out var rest) ? rest as bool? : null;
-                bool? gym = filterParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
 
                 var rooms = Rooms.Where(r => r.HotelID == CurrentHotel.HotelID).ToList();
 
-                if (minPrice.HasValue)
-                    rooms = rooms.Where(r => r.PricePerNight >= minPrice.Value).ToList();
-                if (maxPrice.HasValue)
-                    rooms = rooms.Where(r => r.PricePerNight <= maxPrice.Value).ToList();
+                if (price.HasValue)
+                    rooms = rooms.Where(r => r.PricePerNight <= price.Value).ToList();
                 if (capacity.HasValue)
                     rooms = rooms.Where(r => r.Capacity >= capacity.Value).ToList();
-
-                var amenities = CurrentHotel.Amenities.Select(a => a.AmenityName).ToList();
-                if (freeWifi == true && !amenities.Contains("Free WiFi")) rooms = new List<Room>();
-                if (swimmingPool == true && !amenities.Contains("Swimming Pool")) rooms = new List<Room>();
-                if (freeParking == true && !amenities.Contains("Free Parking")) rooms = new List<Room>();
-                if (restaurant == true && !amenities.Contains("Restaurant")) rooms = new List<Room>();
-                if (gym == true && !amenities.Contains("Gym")) rooms = new List<Room>();
 
                 FilteredRooms.Clear();
                 foreach (var room in rooms)
                     FilteredRooms.Add(room);
+                SortRooms();
             }
         }
 
@@ -374,7 +447,9 @@ namespace Hotel_Booking_System.ViewModels
         private void ClearSearch()
         {
             Hotels.Clear();
-            var allHotels = _hotelRepository.GetAllAsync().Result;
+            var allHotels = _hotelRepository.GetAllAsync().Result
+                .Where(h => h.IsApproved && h.IsVisible).ToList();
+            CalculateAverageRatings(allHotels);
             foreach (var hotel in allHotels)
             {
                 Hotels.Add(hotel);
@@ -394,29 +469,78 @@ namespace Hotel_Booking_System.ViewModels
             ShowChatBox = "Visible";
         }
         [RelayCommand]
-        private async Task Send(string message)
+        private async Task Send()
         {
+            var message = ChatInput;
             if (string.IsNullOrWhiteSpace(message) || CurrentUser == null)
                 return;
 
-            LoadingVisibility = "Visible";
+            ChatInput = string.Empty;
             ErrorVisibility = "Collapsed";
             ErrorMessage = string.Empty;
+
+            var chat = new AIChat
+            {
+                ChatID = Guid.NewGuid().ToString(),
+                UserID = CurrentUser.UserID,
+                Message = message,
+                CreatedAt = DateTime.Now,
+                IsTyping = true
+            };
+            Chats.Add(chat);
+            StartTypingIndicator(chat);
+
             try
             {
-                var chat = await _aiChatService.SendAsync(CurrentUser.UserID, message);
-    
-
-                Chats.Add(chat);
+                var responseChat = await _aiChatService.SendAsync(CurrentUser.UserID, message);
+                StopTypingIndicator(chat);
+                chat.ChatID = responseChat.ChatID;
+                chat.CreatedAt = responseChat.CreatedAt;
+                await TypeOutResponse(chat, responseChat.Response);
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
                 ErrorVisibility = "Visible";
+                Chats.Remove(chat);
             }
-            finally
+        }
+
+        private void StartTypingIndicator(AIChat chat)
+        {
+            chat.TypingIndicator = string.Empty;
+            int dotCount = 0;
+            _typingTimer = new DispatcherTimer
             {
-                LoadingVisibility = "Collapsed";
+                Interval = TimeSpan.FromMilliseconds(400)
+            };
+            _typingTimer.Tick += (s, e) =>
+            {
+                dotCount = (dotCount + 1) % 4;
+                chat.TypingIndicator = new string('.', dotCount);
+            };
+            _typingTimer.Start();
+        }
+
+        private void StopTypingIndicator(AIChat chat)
+        {
+            if (_typingTimer != null)
+            {
+                _typingTimer.Stop();
+                _typingTimer = null;
+            }
+            chat.IsTyping = false;
+            chat.TypingIndicator = string.Empty;
+        }
+
+        private async Task TypeOutResponse(AIChat chat, string response)
+        {
+            chat.IsTyping = false;
+            chat.Response = string.Empty;
+            foreach (var c in response)
+            {
+                chat.Response += c;
+                await Task.Delay(30);
             }
         }
 
@@ -514,19 +638,42 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private void ReviewBooking(Booking booking)
         {
+            if (booking == null)
+                return;
+
+            // Only allow review after checkout date
+            if (DateTime.Now < booking.CheckOutDate)
+            {
+                MessageBox.Show("You can only review after your stay has completed.", "Review not available", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             bool res = _navigationService.OpenReviewDialog(booking);
             if (res)
             {
                 LoadReviewsForHotel(booking.HotelID);
             }
         }
-        
+
+        [RelayCommand]
         private async Task CancelBooking(Booking booking)
         {
             if (booking == null)
                 return;
 
-            booking.Status = "Cancelled";
+            if (booking.Status == "Confirmed")
+            {
+                // Send cancellation request to hotel admin
+                booking.Status = "CancelRequested";
+                MessageBox.Show("Cancellation request sent to hotel admin.", "Request sent", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (booking.Status == "Pending")
+            {
+                // Cancel immediately if booking has not been confirmed yet
+                booking.Status = "Cancelled";
+                MessageBox.Show("Booking cancelled successfully.", "Cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
             await _bookingRepository.UpdateAsync(booking);
             FilterBookingsByUser(CurrentUser.UserID);
         }
@@ -537,8 +684,29 @@ namespace Hotel_Booking_System.ViewModels
             if (booking == null)
                 return;
 
-            booking.Status = "Modified";
-            await _bookingRepository.UpdateAsync(booking);
+            if (booking.Status == "Confirmed")
+            {
+                bool res = _navigationService.OpenModifyDialog(booking);
+                if (res)
+                {
+                    // After modification a confirmed booking becomes pending again for admin approval
+                    booking.Status = "ModifyRequested";
+                    MessageBox.Show("Modification request sent to hotel admin.", "Request sent", MessageBoxButton.OK, MessageBoxImage.Information);
+                    await _bookingRepository.UpdateAsync(booking);
+                }
+
+                
+            }
+            else if (booking.Status == "Pending")
+            {
+                bool res = _navigationService.OpenModifyDialog(booking);
+                if (res)
+                {
+                    // Pending bookings can be modified directly
+                    await _bookingRepository.UpdateAsync(booking);
+                }
+            }
+
             FilterBookingsByUser(CurrentUser.UserID);
         }
         
@@ -561,6 +729,16 @@ namespace Hotel_Booking_System.ViewModels
 
             TotalSpent = totalSpent;
             TotalBookings = Bookings.Count;
+            HasBookings = Bookings.Count == 0 ? "Visible" : "Collapsed";
+            MembershipLevel = GetMembershipLevel(totalSpent);
+        }
+
+        private string GetMembershipLevel(double totalSpent)
+        {
+            if (totalSpent >= 10000) return "Platinum";
+            if (totalSpent >= 5000) return "Gold";
+            if (totalSpent >= 1000) return "Silver";
+            return "Bronze";
         }
         private void FilterRoomsByHotel(string hotelId)
         {
@@ -570,6 +748,7 @@ namespace Hotel_Booking_System.ViewModels
             {
                 FilteredRooms.Add(room);
             }
+            SortRooms();
         }
         private void LoadReviewsForHotel(string hotelId)
         {
