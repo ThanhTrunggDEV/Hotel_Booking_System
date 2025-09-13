@@ -54,6 +54,8 @@ namespace Hotel_Booking_System.ViewModels
         private string _requestReason = "";
         private string _selectedModel;
         private string _chatInput = string.Empty;
+        private string _membershipLevel = "Bronze";
+        private string _hasBookings = "Collapsed";
 
         private DispatcherTimer _typingTimer;
 
@@ -64,6 +66,8 @@ namespace Hotel_Booking_System.ViewModels
         public double TotalSpent { get => _totalSpent; set => Set(ref _totalSpent, value); }
 
         public int TotalBookings { get => _totalBookings; set => Set(ref _totalBookings, value); }
+        public string MembershipLevel { get => _membershipLevel; set => Set(ref _membershipLevel, value); }
+        public string HasBookings { get => _hasBookings; set => Set(ref _hasBookings, value); }
 
         public string SortType {
             get => _sortType;
@@ -725,6 +729,16 @@ namespace Hotel_Booking_System.ViewModels
 
             TotalSpent = totalSpent;
             TotalBookings = Bookings.Count;
+            HasBookings = Bookings.Count == 0 ? "Visible" : "Collapsed";
+            MembershipLevel = GetMembershipLevel(totalSpent);
+        }
+
+        private string GetMembershipLevel(double totalSpent)
+        {
+            if (totalSpent >= 10000) return "Platinum";
+            if (totalSpent >= 5000) return "Gold";
+            if (totalSpent >= 1000) return "Silver";
+            return "Bronze";
         }
         private void FilterRoomsByHotel(string hotelId)
         {
