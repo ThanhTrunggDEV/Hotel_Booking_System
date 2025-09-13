@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Manager.FrameWorks;
+using System.Windows;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -83,6 +84,14 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (SelectedRoom == null || CurrentUser == null)
                 return;
+
+            var existing = (await _bookingRepository.GetAllAsync())
+                .Where(b => b.RoomID == SelectedRoom.RoomID && b.Status != "Cancelled");
+            if (existing.Any(b => CheckInDate < b.CheckOutDate && CheckOutDate > b.CheckInDate))
+            {
+                MessageBox.Show("Selected dates are not available for this room.", "Unavailable", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             var booking = new Booking
             {
                 UserID = CurrentUser.UserID,

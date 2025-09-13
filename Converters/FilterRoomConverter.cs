@@ -17,10 +17,20 @@ namespace Hotel_Booking_System.Converters
             if (int.TryParse(values[1]?.ToString(), out var cap))
                 capacity = cap;
 
+            DateTime? checkIn = null;
+            if (DateTime.TryParse(values[2]?.ToString(), out var ci))
+                checkIn = ci;
+
+            DateTime? checkOut = null;
+            if (DateTime.TryParse(values[3]?.ToString(), out var co))
+                checkOut = co;
+
             var filterDict = new Dictionary<string, object?>
             {
                 { "Price", price },
-                { "Capacity", capacity }
+                { "Capacity", capacity },
+                { "CheckIn", checkIn },
+                { "CheckOut", checkOut }
             };
 
             return filterDict;

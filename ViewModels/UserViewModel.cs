@@ -421,6 +421,8 @@ namespace Hotel_Booking_System.ViewModels
             {
                 double? price = filterParams.TryGetValue("Price", out var p) && p is double dp ? dp : null;
                 int? capacity = filterParams.TryGetValue("Capacity", out var cap) && cap is int icap ? icap : null;
+                DateTime? checkIn = filterParams.TryGetValue("CheckIn", out var ci) && ci is DateTime dci ? dci : null;
+                DateTime? checkOut = filterParams.TryGetValue("CheckOut", out var co) && co is DateTime dco ? dco : null;
 
                 var rooms = Rooms.Where(r => r.HotelID == CurrentHotel.HotelID).ToList();
 
@@ -428,6 +430,12 @@ namespace Hotel_Booking_System.ViewModels
                     rooms = rooms.Where(r => r.PricePerNight <= price.Value).ToList();
                 if (capacity.HasValue)
                     rooms = rooms.Where(r => r.Capacity >= capacity.Value).ToList();
+
+                var bookings = _bookingRepository.GetAllAsync().Result;
+                foreach (var room in rooms)
+                {
+                    EvaluateRoomAvailability(room, bookings, checkIn, checkOut);
+                }
 
                 FilteredRooms.Clear();
                 foreach (var room in rooms)
@@ -636,6 +644,29 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
         [RelayCommand]
+        private void ShowBookedDates(Room room)
+        {
+            if (room == null)
+                return;
+
+            var bookings = _bookingRepository.GetAllAsync().Result;
+            var roomBookings = bookings
+                .Where(b => b.RoomID == room.RoomID && b.Status != "Cancelled")
+                .OrderBy(b => b.CheckInDate)
+                .ToList();
+
+            if (roomBookings.Any())
+            {
+                var message = string.Join("\n", roomBookings.Select(b =>
+                    $"{b.CheckInDate:dd/MM/yyyy} - {b.CheckOutDate:dd/MM/yyyy}"));
+                MessageBox.Show(message, "Booked Dates", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("No bookings for this room yet.", "Booked Dates", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        [RelayCommand]
         private void ReviewBooking(Booking booking)
         {
             if (booking == null)
@@ -751,11 +782,30 @@ namespace Hotel_Booking_System.ViewModels
         {
             FilteredRooms.Clear();
             var hotelRooms = Rooms.Where(r => r.HotelID == hotelId).ToList();
+            var bookings = _bookingRepository.GetAllAsync().Result;
             foreach (var room in hotelRooms)
             {
+                EvaluateRoomAvailability(room, bookings, null, null);
                 FilteredRooms.Add(room);
             }
             SortRooms();
+        }
+
+        private void EvaluateRoomAvailability(Room room, List<Booking> bookings, DateTime? checkIn, DateTime? checkOut)
+        {
+            var roomBookings = bookings.Where(b => b.RoomID == room.RoomID && b.Status != "Cancelled");
+            bool available = true;
+
+            if (checkIn.HasValue && checkOut.HasValue)
+            {
+                available = !roomBookings.Any(b => checkIn < b.CheckOutDate && checkOut > b.CheckInDate);
+            }
+            else
+            {
+                available = !roomBookings.Any(b => b.CheckOutDate > DateTime.Now);
+            }
+
+            room.Status = available ? "Available" : "Booked";
         }
         private void LoadReviewsForHotel(string hotelId)
         {

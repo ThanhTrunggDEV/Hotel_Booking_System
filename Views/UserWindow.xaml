@@ -175,12 +175,20 @@
                                         <TextBlock Text="Capacity" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <TextBox x:Name="txtRoomCapacity" Width="80" Height="30" Margin="0,0,0,20"/>
 
+                                        <TextBlock Text="Check-in Date" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <DatePicker x:Name="dpRoomCheckIn" Width="150" Height="30" Margin="0,0,0,20"/>
+
+                                        <TextBlock Text="Check-out Date" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <DatePicker x:Name="dpRoomCheckOut" Width="150" Height="30" Margin="0,0,0,20"/>
+
                                         <Button Content="Clear Filters" Command="{Binding ClearRoomFiltersCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
                                         <Button Command="{Binding FilterRoomsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
                                             <Button.CommandParameter>
                                                 <MultiBinding Converter="{StaticResource FilterRoomConverter}">
                                                     <Binding ElementName="txtRoomPrice" Path="Text"/>
                                                     <Binding ElementName="txtRoomCapacity" Path="Text"/>
+                                                    <Binding ElementName="dpRoomCheckIn" Path="SelectedDate"/>
+                                                    <Binding ElementName="dpRoomCheckOut" Path="SelectedDate"/>
                                                 </MultiBinding>
                                             </Button.CommandParameter>
                                         </Button>
@@ -286,15 +294,10 @@
                                                             <TextBlock Text="{Binding Capacity, StringFormat=Capacity: {0} people}"
                        FontSize="12" Foreground="#666" Margin="0,0,0,10"/>
 
-                                                            <Border CornerRadius="12" Padding="8,3" HorizontalAlignment="Left"
-                    Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}">
-                                                                <TextBlock Text="{Binding Status}" 
-                           FontSize="11" Foreground="White" FontWeight="SemiBold"/>
-                                                            </Border>
-
                                                             <Grid Margin="0,15,0,0">
                                                                 <Grid.ColumnDefinitions>
                                                                     <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="Auto"/>
                                                                     <ColumnDefinition Width="Auto"/>
                                                                 </Grid.ColumnDefinitions>
 
@@ -304,7 +307,15 @@
                                FontSize="20" FontWeight="Bold" Foreground="#2E7D32"/>
                                                                 </StackPanel>
 
-                                                                <Button Grid.Column="1" Content="Book"
+                                                                <Button Grid.Column="1" Content="Booked Dates"
+                                                                        Style="{StaticResource SecondaryButton}"
+                                                                        Width="110"
+                                                                        Height="35"
+                                                                        Margin="0,0,10,0"
+                        Command="{Binding DataContext.ShowBookedDatesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="{Binding}"/>
+
+                                                                <Button Grid.Column="2" Content="Book"
                                                                         Style="{StaticResource PrimaryButton}"
                                                                         Width="80"
                                                                         Height="35"
