@@ -1,12 +1,15 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace Hotel_Booking_System.Behaviors
 {
+    /// <summary>
+    /// Provides an attached property that keeps a <see cref="ListBox"/>
+    /// scrolled to the bottom while the user is viewing the latest messages.
+    /// Scrolling is suppressed once the user scrolls away from the bottom so
+    /// manual navigation feels natural.
+    /// </summary>
     public static class ListBoxExtensions
     {
         public static readonly DependencyProperty AutoScrollProperty =
@@ -28,74 +31,31 @@ namespace Hotel_Booking_System.Behaviors
 
         private static void OnAutoScrollChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is ListBox listBox && (bool)e.NewValue)
+            if (d is not ListBox listBox || (bool)e.NewValue == false)
+                return;
+
+            listBox.Loaded += (_, _) =>
             {
-                ScrollViewer? scrollViewer = null;
+                var scrollViewer = FindDescendant<ScrollViewer>(listBox);
+                if (scrollViewer == null)
+                    return;
+
                 bool autoScroll = true;
 
-                void EnsureScrollViewer()
+                scrollViewer.ScrollChanged += (_, args) =>
                 {
-                    if (scrollViewer != null)
-                        return;
-
-                    scrollViewer = FindDescendant<ScrollViewer>(listBox);
-                    if (scrollViewer != null)
+                    if (args.ExtentHeightChange == 0)
                     {
-                        scrollViewer.ScrollChanged += (s, ev) =>
-                        {
-                            autoScroll = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 1;
-                        };
+                        // user-initiated scroll: track if we are at the bottom
+                        autoScroll = scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight;
                     }
-                }
-
-                void ScrollToEnd()
-                {
-                    if (!autoScroll || listBox.Items.Count == 0)
-                        return;
-
-                    var lastItem = listBox.Items[listBox.Items.Count - 1];
-                    listBox.Dispatcher.BeginInvoke(new System.Action(() =>
+                    else if (autoScroll)
                     {
-                        EnsureScrollViewer();
-                        listBox.UpdateLayout();
-                        listBox.ScrollIntoView(lastItem);
-                        scrollViewer?.ScrollToEnd();
-                    }), DispatcherPriority.Render);
-                }
-
-                void AttachPropertyChanged(object item)
-                {
-                    if (item is INotifyPropertyChanged npc)
-                    {
-                        npc.PropertyChanged += (sender, args) => ScrollToEnd();
+                        // content changed while we were at the bottom
+                        scrollViewer.ScrollToEnd();
                     }
-                }
-
-                listBox.Loaded += (s, ev) =>
-                {
-                    EnsureScrollViewer();
-                    foreach (var item in listBox.Items)
-                    {
-                        AttachPropertyChanged(item);
-                    }
-                    ScrollToEnd();
                 };
-
-                if (listBox.ItemsSource is INotifyCollectionChanged collection)
-                {
-                    collection.CollectionChanged += (s, ev) =>
-                    {
-                        if (ev.NewItems != null)
-                        {
-                            foreach (var item in ev.NewItems)
-                            {
-                                AttachPropertyChanged(item);
-                            }
-                        }
-                        ScrollToEnd();
-                    };
-                }
-            }
+            };
         }
 
         private static T? FindDescendant<T>(DependencyObject root) where T : DependencyObject
@@ -110,7 +70,9 @@ namespace Hotel_Booking_System.Behaviors
                 if (result != null)
                     return result;
             }
+
             return null;
         }
     }
 }
+
