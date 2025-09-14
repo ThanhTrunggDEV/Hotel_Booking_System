@@ -33,6 +33,9 @@ namespace Hotel_Booking_System.Converters
             bool? freeParking = values[10] as bool?;
             bool? restaurant = values[11] as bool?;
             bool? gym = values[12] as bool?;
+            double? userRating = null;
+            if (values.Length > 13 && double.TryParse(values[13]?.ToString(), out var ur))
+                userRating = ur;
 
             var filterDict = new Dictionary<string, object?>
             {
@@ -48,7 +51,8 @@ namespace Hotel_Booking_System.Converters
                 { "SwimmingPool", swimmingPool },
                 { "FreeParking", freeParking },
                 { "Restaurant", restaurant },
-                { "Gym", gym }
+                { "Gym", gym },
+                { "UserRating", userRating }
             };
 
             return filterDict;
