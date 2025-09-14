@@ -682,6 +682,10 @@
                     <StackPanel>
                         <TextBlock Text="My Bookings" Style="{StaticResource HeaderTextStyle}" Margin="0,0,0,20"/>
 
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox Width="150" ItemsSource="{Binding BookingStatusOptions}" SelectedItem="{Binding SelectedBookingStatus}" Style="{StaticResource ModernComboBox}"/>
+                        </StackPanel>
 
                         <ItemsControl x:Name="BookingsItemsControl" ItemsSource="{Binding Bookings}">
                             <ItemsControl.ItemTemplate>

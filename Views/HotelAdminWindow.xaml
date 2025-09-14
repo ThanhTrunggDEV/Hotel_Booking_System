@@ -256,7 +256,7 @@
                                                                             <Setter Property="Visibility" Value="Visible"/>
                                                                             <Setter Property="Content" Value="Cancel"/>
                                                                         </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="CancelRequested">
+                                                                        <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
                                                                             <Setter Property="Visibility" Value="Visible"/>
                                                                             <Setter Property="Content" Value="Approve Cancel"/>
                                                                         </DataTrigger>

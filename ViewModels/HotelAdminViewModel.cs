@@ -231,7 +231,7 @@ namespace Hotel_Booking_System.ViewModels
             if (booking == null)
                 return;
 
-            if (booking.Status == "Pending" || booking.Status == "CancelRequested")
+            if (booking.Status == "Pending" || booking.Status == "CancelledRequested")
             {
                 booking.Status = "Cancelled";
                 await _bookingRepository.UpdateAsync(booking);
