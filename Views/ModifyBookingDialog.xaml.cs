@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using System.Windows.Threading;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ namespace Hotel_Booking_System.Views
     public partial class ModifyBookingDialog : Window
     {
         private readonly IRoomRepository _roomRepository = App.Provider!.GetRequiredService<IRoomRepository>();
+        private DispatcherTimer? _notificationTimer;
 
         public ModifyBookingDialog()
         {
@@ -65,6 +67,19 @@ namespace Hotel_Booking_System.Views
         {
             txtNotification.Text = message;
             txtNotification.Visibility = Visibility.Visible;
+
+            _notificationTimer?.Stop();
+            _notificationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _notificationTimer.Tick += (s, e) =>
+            {
+                txtNotification.Visibility = Visibility.Collapsed;
+                txtNotification.Text = string.Empty;
+                _notificationTimer.Stop();
+            };
+            _notificationTimer.Start();
         }
     }
 }
