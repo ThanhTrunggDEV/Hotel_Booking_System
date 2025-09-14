@@ -6,7 +6,7 @@ namespace Hotel_Booking_System.Interfaces
 {
 
        
-    interface IHotelAdminViewModel
+    public interface IHotelAdminViewModel
     {
         ObservableCollection<Hotel> Hotels { get; }
         Hotel? CurrentHotel { get; set; }
@@ -14,6 +14,7 @@ namespace Hotel_Booking_System.Interfaces
         ObservableCollection<Booking> Bookings { get; }
         ObservableCollection<Review> Reviews { get; }
         User CurrentUser { get; set; }
+
         Task LoadReviewsAsync();
     }
 }
