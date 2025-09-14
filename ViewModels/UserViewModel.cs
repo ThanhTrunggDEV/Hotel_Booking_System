@@ -59,7 +59,11 @@ namespace Hotel_Booking_System.ViewModels
 
         private DispatcherTimer _typingTimer;
 
-
+        private string _currentPassword = string.Empty;
+        private string _newPassword = string.Empty;
+        private string _confirmPassword = string.Empty;
+        private string _notificationMessage = string.Empty;
+        private DispatcherTimer? _notificationTimer;
 
         public string ShowSearchRoom { get => _showSearchRoom; set => Set(ref _showSearchRoom, value); }
         public string ShowSearchHotel { get => _showSearchHotel; set => Set(ref _showSearchHotel, value); }
@@ -68,6 +72,10 @@ namespace Hotel_Booking_System.ViewModels
         public int TotalBookings { get => _totalBookings; set => Set(ref _totalBookings, value); }
         public string MembershipLevel { get => _membershipLevel; set => Set(ref _membershipLevel, value); }
         public string HasBookings { get => _hasBookings; set => Set(ref _hasBookings, value); }
+        public string CurrentPassword { get => _currentPassword; set => Set(ref _currentPassword, value); }
+        public string NewPassword { get => _newPassword; set => Set(ref _newPassword, value); }
+        public string ConfirmPassword { get => _confirmPassword; set => Set(ref _confirmPassword, value); }
+        public string NotificationMessage { get => _notificationMessage; set => Set(ref _notificationMessage, value); }
 
         public string SortType {
             get => _sortType;
@@ -639,12 +647,60 @@ namespace Hotel_Booking_System.ViewModels
         private void UpdateInfo()
         {
             _userRepository.UpdateAsync(CurrentUser);
-           
+
+        }
+        [RelayCommand]
+        private async Task ChangePassword()
+        {
+            if (CurrentUser == null)
+                return;
+
+            if (!_authenticationSerivce.VerifyPassword(CurrentPassword, CurrentUser.Password))
+            {
+                ShowNotification("Current password is incorrect.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(NewPassword) || NewPassword.Length < 6)
+            {
+                ShowNotification("New password must be at least 6 characters.");
+                return;
+            }
+
+            if (NewPassword != ConfirmPassword)
+            {
+                ShowNotification("New password and confirmation do not match.");
+                return;
+            }
+
+            CurrentUser.Password = _authenticationSerivce.HashPassword(NewPassword);
+            await _userRepository.UpdateAsync(CurrentUser);
+
+            ShowNotification("Password changed successfully.");
+            CurrentPassword = string.Empty;
+            NewPassword = string.Empty;
+            ConfirmPassword = string.Empty;
+        }
+
+        private void ShowNotification(string message)
+        {
+            NotificationMessage = message;
+            _notificationTimer?.Stop();
+            _notificationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _notificationTimer.Tick += (s, e) =>
+            {
+                NotificationMessage = string.Empty;
+                _notificationTimer.Stop();
+            };
+            _notificationTimer.Start();
         }
         [RelayCommand]
         private void Logout()
         {
-            
+
             _navigationService.NavigateToLogin();
         }
         [RelayCommand]

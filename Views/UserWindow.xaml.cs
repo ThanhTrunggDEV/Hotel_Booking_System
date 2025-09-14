@@ -25,8 +25,19 @@ namespace Hotel_Booking_System.Views
             InitializeComponent();
             DataContext = _userViewModel;
 
-           
-            
+            txtCurrentPassword.PasswordChanged += (s, e) =>
+            {
+                (_userViewModel as dynamic).CurrentPassword = txtCurrentPassword.Password;
+            };
+            txtNewPassword.PasswordChanged += (s, e) =>
+            {
+                (_userViewModel as dynamic).NewPassword = txtNewPassword.Password;
+            };
+            txtConfirmPassword.PasswordChanged += (s, e) =>
+            {
+                (_userViewModel as dynamic).ConfirmPassword = txtConfirmPassword.Password;
+            };
+
         }
 
         

@@ -886,6 +886,7 @@
                             <Border Style="{StaticResource CardStyle}">
                                 <StackPanel Margin="25">
                                     <TextBlock Text="Change Password" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                                    <TextBlock Text="{Binding NotificationMessage}" Foreground="Red" FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -933,7 +934,7 @@
                                     </Grid>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                                        <Button Content="Change Password" Width="150" Style="{StaticResource PrimaryButton}" 
+                                        <Button Command="{Binding ChangePasswordCommand}" Content="Change Password" Width="150" Style="{StaticResource PrimaryButton}"
                                     Background="#FFFF5722" Margin="0,0,10,0"/>
                                         <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"/>
                                     </StackPanel>
