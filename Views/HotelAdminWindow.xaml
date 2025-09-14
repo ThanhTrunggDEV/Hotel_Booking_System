@@ -93,6 +93,12 @@
                                             Command="{Binding NewHotelCommand}"/>
                                 </StackPanel>
 
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                    <Image Source="{Binding CurrentHotel.HotelImage}" Width="150" Height="100"/>
+                                    <Button Content="Upload Image" Style="{StaticResource PrimaryButton}" Margin="10,0,0,0"
+                                            Command="{Binding UploadHotelImageCommand}"/>
+                                </StackPanel>
+
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>

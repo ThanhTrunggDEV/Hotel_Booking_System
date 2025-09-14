@@ -9,7 +9,10 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
+using Hotel_Booking_System.Views;
 using Hotel_Manager.FrameWorks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -195,9 +198,45 @@ namespace Hotel_Booking_System.ViewModels
             if (room == null)
                 return;
 
-            await _roomRepository.UpdateAsync(room);
-            await _roomRepository.SaveAsync();
-            LoadRooms();
+            var dialog = App.Provider!.GetRequiredService<EditRoomDialog>();
+            var copy = new Room
+            {
+                RoomID = room.RoomID,
+                HotelID = room.HotelID,
+                RoomNumber = room.RoomNumber,
+                RoomType = room.RoomType,
+                Capacity = room.Capacity,
+                PricePerNight = room.PricePerNight,
+                RoomImage = room.RoomImage,
+                Status = room.Status
+            };
+            dialog.DataContext = copy;
+            if (dialog.ShowDialog() == true)
+            {
+                room.RoomNumber = copy.RoomNumber;
+                room.RoomType = copy.RoomType;
+                room.Capacity = copy.Capacity;
+                room.PricePerNight = copy.PricePerNight;
+                room.RoomImage = copy.RoomImage;
+                await _roomRepository.UpdateAsync(room);
+                LoadRooms();
+            }
+        }
+
+        [RelayCommand]
+        private async Task UploadHotelImage()
+        {
+            if (CurrentHotel == null)
+                return;
+
+            FileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                CurrentHotel.HotelImage = await UploadImageService.UploadAsync(openFileDialog.FileName);
+                await _hotelRepository.UpdateAsync(CurrentHotel);
+                LoadHotels();
+            }
         }
 
         [RelayCommand]
