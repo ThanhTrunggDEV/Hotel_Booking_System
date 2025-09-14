@@ -220,7 +220,7 @@
                                 <DataGrid Height="400" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bookings}">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Booking ID" Width="120" Binding="{Binding BookingID}"/>
-                                        <DataGridTextColumn Header="Guest Name" Width="150" Binding="{Binding UserID}"/>
+                                        <DataGridTextColumn Header="Guest Name" Width="150" Binding="{Binding GuestName}"/>
                                         <DataGridTextColumn Header="Room" Width="80" Binding="{Binding RoomID}"/>
                                         <DataGridTextColumn Header="Check-in" Width="100" Binding="{Binding CheckInDate}"/>
                                         <DataGridTextColumn Header="Check-out" Width="100" Binding="{Binding CheckOutDate}"/>

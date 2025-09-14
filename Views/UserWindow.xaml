@@ -729,7 +729,7 @@
                                                 
                                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
                                                     <TextBlock Text="Guest" FontSize="12" Foreground="#666"/>
-                                                    <TextBlock Text="{Binding CurrentUser.FullName, FallbackValue='Guest'}" 
+                                                    <TextBlock Text="{Binding GuestName, FallbackValue='Guest'}"
                                FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
 
                                                     <TextBlock Text="Room" FontSize="12" Foreground="#666"/>
@@ -774,7 +774,6 @@
                         Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
                                                 <Button Content="Review" Width="100" Style="{StaticResource SecondaryButton}"
                         Command="{Binding DataContext.ReviewBookingCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                                <Button Content="Request changes" Width="120" Style="{StaticResource SecondaryButton}"/>
                                                 <Button Content="Edit" Width="120" Style="{StaticResource SecondaryButton}"
                         Command="{Binding DataContext.EditBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
                                             </StackPanel>
