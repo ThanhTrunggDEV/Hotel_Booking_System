@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -31,14 +32,16 @@ namespace Hotel_Booking_System.ViewModels
         private string stepThreeStatus = "Hidden";
 
         private string OTP = "";
-        
+        private string notificationMessage = "";
+        private DispatcherTimer? _notificationTimer;
 
-        public string StepOneStatus { get => stepOneStatus; set => Set(ref stepOneStatus, value); } 
-        public string StepTwoStatus { get => stepTwoStatus; set => Set(ref stepTwoStatus, value); } 
-        public string StepThreeStatus { get => stepThreeStatus; set => Set(ref stepThreeStatus, value); } 
+        public string StepOneStatus { get => stepOneStatus; set => Set(ref stepOneStatus, value); }
+        public string StepTwoStatus { get => stepTwoStatus; set => Set(ref stepTwoStatus, value); }
+        public string StepThreeStatus { get => stepThreeStatus; set => Set(ref stepThreeStatus, value); }
 
         public string NewPassword { get; set; }
         public string NewPasswordConfirm { get; set; }
+        public string NotificationMessage { get => notificationMessage; set => Set(ref notificationMessage, value); }
 
         private User? CurrentUser;
 
@@ -48,7 +51,7 @@ namespace Hotel_Booking_System.ViewModels
             CurrentUser = await _userRepository.GetByEmailAsync(userEmail); 
             if(CurrentUser == null)
             {
-                MessageBox.Show("Email Chưa Đăng Ký Vui Lòng Kiểm Tra Lại");
+                ShowNotification("Email Chưa Đăng Ký Vui Lòng Kiểm Tra Lại");
                 return;
             }
             
@@ -72,7 +75,7 @@ namespace Hotel_Booking_System.ViewModels
             }
             else
             {
-                MessageBox.Show("Sai OTP vui lòng kiểm tra lại");
+                ShowNotification("Sai OTP vui lòng kiểm tra lại");
             }
             
         }
@@ -88,7 +91,7 @@ namespace Hotel_Booking_System.ViewModels
             }
             else
             {
-                MessageBox.Show("Mật khẩu không khớp hoặc quá ngắn vui  lòng kiểm tra lại");
+                ShowNotification("Mật khẩu không khớp hoặc quá ngắn vui  lòng kiểm tra lại");
             }
         }
         [RelayCommand]
@@ -101,6 +104,22 @@ namespace Hotel_Booking_System.ViewModels
         {
             StepTwoStatus = "Hidden";
             StepOneStatus = "Visible";
+        }
+
+        private void ShowNotification(string message)
+        {
+            NotificationMessage = message;
+            _notificationTimer?.Stop();
+            _notificationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _notificationTimer.Tick += (s, e) =>
+            {
+                NotificationMessage = string.Empty;
+                _notificationTimer.Stop();
+            };
+            _notificationTimer.Start();
         }
     }
 }

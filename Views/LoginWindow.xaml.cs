@@ -35,7 +35,7 @@ namespace Hotel_Booking_System.Views
                 }
                 catch
                 {
-                    MessageBox.Show("Không load được tài khoản mật khẩu đã lưu");
+                    ( _loginViewModel as dynamic).ShowNotification("Không load được tài khoản mật khẩu đã lưu");
                 }
                 txtPassword.Password = _loginViewModel.Password;
             };
