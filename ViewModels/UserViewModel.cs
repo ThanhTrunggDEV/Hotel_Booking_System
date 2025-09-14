@@ -128,7 +128,30 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _showRooms, value);
         }
 
-        public ObservableCollection<Booking> Bookings { get; set; } = new ObservableCollection<Booking>();
+        public ObservableCollection<Booking> AllBookings { get; set; } = new();
+        public ObservableCollection<Booking> Bookings { get; set; } = new();
+
+        public ObservableCollection<string> BookingStatusOptions { get; } = new()
+        {
+            "All",
+            "Pending",
+            "Confirmed",
+            "Cancelled",
+            "CancelledRequested",
+            "ModifyRequested",
+            "Done"
+        };
+
+        private string _selectedBookingStatus = "All";
+        public string SelectedBookingStatus
+        {
+            get => _selectedBookingStatus;
+            set
+            {
+                Set(ref _selectedBookingStatus, value);
+                ApplyBookingFilter();
+            }
+        }
 
         public ObservableCollection<Hotel> Hotels
         {
@@ -778,7 +801,7 @@ namespace Hotel_Booking_System.ViewModels
             if (booking.Status == "Confirmed")
             {
                 // Send cancellation request to hotel admin
-                booking.Status = "CancelRequested";
+                booking.Status = "CancelledRequested";
                 MessageBox.Show("Cancellation request sent to hotel admin.", "Request sent", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (booking.Status == "Pending")
@@ -827,13 +850,14 @@ namespace Hotel_Booking_System.ViewModels
         private void FilterBookingsByUser(string userId)
         {
             var bookingList = _bookingRepository.GetBookingByUserId(userId).Result;
+            UpdateCompletedBookings(bookingList);
             var payments = _paymentRepository.GetAllAsync().Result;
-            Bookings.Clear();
+            AllBookings.Clear();
             double totalSpent = 0;
             var userBookings = bookingList.Where(b => b.UserID == userId).ToList();
             foreach (var booking in userBookings)
             {
-                Bookings.Add(booking);
+                AllBookings.Add(booking);
                 var payment = payments.FirstOrDefault(p => p.BookingID == booking.BookingID);
                 if (payment != null)
                 {
@@ -842,9 +866,41 @@ namespace Hotel_Booking_System.ViewModels
             }
 
             TotalSpent = totalSpent;
-            TotalBookings = Bookings.Count;
-            HasBookings = Bookings.Count == 0 ? "Visible" : "Collapsed";
+            TotalBookings = AllBookings.Count;
             MembershipLevel = GetMembershipLevel(totalSpent);
+            ApplyBookingFilter();
+        }
+
+        private void ApplyBookingFilter()
+        {
+            Bookings.Clear();
+            IEnumerable<Booking> filtered = AllBookings;
+            if (SelectedBookingStatus != "All")
+            {
+                filtered = filtered.Where(b => b.Status == SelectedBookingStatus);
+            }
+
+            foreach (var booking in filtered)
+            {
+                Bookings.Add(booking);
+            }
+
+            HasBookings = Bookings.Count == 0 ? "Visible" : "Collapsed";
+        }
+
+        private void UpdateCompletedBookings(IEnumerable<Booking> bookings)
+        {
+            foreach (var booking in bookings)
+            {
+                if (booking.CheckOutDate.Date < DateTime.Today &&
+                    booking.Status != "Cancelled" &&
+                    booking.Status != "CancelledRequested" &&
+                    booking.Status != "Done")
+                {
+                    booking.Status = "Done";
+                    _bookingRepository.UpdateAsync(booking).Wait();
+                }
+            }
         }
 
         private string GetMembershipLevel(double totalSpent)

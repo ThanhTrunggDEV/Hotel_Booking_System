@@ -44,7 +44,7 @@
         
             <StackPanel Grid.Row="2" Margin="0,5">
                 <TextBlock Text="Customer Name" FontSize="12" Foreground="#7F8C8D"/>
-                <TextBox Text="{Binding CurrentUser.FullName}" 
+                <TextBox Text="{Binding GuestName, UpdateSourceTrigger=PropertyChanged}"
                          Height="32" BorderBrush="#BDC3C7" BorderThickness="1"
                          Padding="8"/>
             </StackPanel>

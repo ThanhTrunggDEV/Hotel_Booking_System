@@ -194,6 +194,8 @@ namespace Hotel_Booking_System.Services
                     HotelID = hotelEntity.HotelID,
                     RoomID = roomEntity.RoomID,
                     UserID = customerUser.UserID,
+                    GuestName = customerUser.FullName,
+                    NumberOfGuests = 1,
                     CheckInDate = DateTime.Today,
                     CheckOutDate = DateTime.Today.AddDays(2),
                     Status = "Confirmed"
