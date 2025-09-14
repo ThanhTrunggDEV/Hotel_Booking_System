@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -24,9 +25,13 @@ namespace Hotel_Booking_System.ViewModels
         private string email = "";
         private string password = "";
         private bool isSavedCredentials = false;
+        private string notificationMessage = "";
+        private DispatcherTimer? _notificationTimer;
+
         public string Password { get => password; set => Set( ref password, value); }
         public string Email { get => email; set => Set( ref email, value ); }
         public bool IsSavedCredentials { get => isSavedCredentials; set => Set(ref isSavedCredentials, value); }
+        public string NotificationMessage { get => notificationMessage; set => Set(ref notificationMessage, value); }
 
         
         public LoginViewModel(INavigationService navigationService, IAuthentication authenticationService, IUserRepository userRepository)
@@ -70,7 +75,7 @@ namespace Hotel_Booking_System.ViewModels
            
             else
             {
-                MessageBox.Show("Sai tài khoản hoặc mật khẩu", "Đăng nhập thất bại", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowNotification("Sai tài khoản hoặc mật khẩu");
             }
         }
 
@@ -83,8 +88,24 @@ namespace Hotel_Booking_System.ViewModels
         }
         [RelayCommand]
         private void SignUp()
+            {
+                _navigationService.NavigateToSignUp();
+        }
+
+        public void ShowNotification(string message)
         {
-            _navigationService.NavigateToSignUp();
+            NotificationMessage = message;
+            _notificationTimer?.Stop();
+            _notificationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _notificationTimer.Tick += (s, e) =>
+            {
+                NotificationMessage = string.Empty;
+                _notificationTimer.Stop();
+            };
+            _notificationTimer.Start();
         }
         class AutoSave
         {

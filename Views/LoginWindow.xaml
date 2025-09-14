@@ -45,11 +45,17 @@
                                            HorizontalAlignment="Center" 
                                            Margin="0,0,0,10"/>
 
-                                <TextBlock Text="Chào mừng bạn trở lại!" 
-                                           FontSize="15" 
-                                           Foreground="#7F8C8D" 
-                                           HorizontalAlignment="Center" 
+                                <TextBlock Text="Chào mừng bạn trở lại!"
+                                           FontSize="15"
+                                           Foreground="#7F8C8D"
+                                           HorizontalAlignment="Center"
                                            Margin="0,0,0,40"/>
+
+                                <TextBlock Text="{Binding NotificationMessage}"
+                                           Foreground="Red"
+                                           FontSize="14"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,20"/>
 
                                 <TextBlock Text="Email" 
                                            Foreground="#2C3E50" 
@@ -83,7 +89,7 @@
                                             HorizontalAlignment="Right"/>
                                 </Grid>
 
-                                <Button Content="ĐĂNG NHẬP" 
+                                <Button Content="ĐĂNG NHẬP"
                                         Style="{StaticResource PrimaryButton}"
                                         Command="{Binding LoginCommand}"
                                         CommandParameter="{Binding ElementName=txtEmail, Path=Text}"

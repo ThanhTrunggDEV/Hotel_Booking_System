@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -20,6 +21,8 @@ namespace Hotel_Booking_System.ViewModels
 
         private string OTP = "";
         private bool _isOTPSent = false;
+        private string notificationMessage = "";
+        private DispatcherTimer? _notificationTimer;
 
         public SignUpViewModel(IUserRepository userRepository, INavigationService navigationService, IAuthentication authentication)
         {
@@ -33,19 +36,20 @@ namespace Hotel_Booking_System.ViewModels
 
         public string Password { get; set; }
         public string PasswordConfirmed { get; set; }
+        public string NotificationMessage { get => notificationMessage; set => Set(ref notificationMessage, value); }
 
         [RelayCommand(CanExecute = nameof(CanSendOTP))]
         private async Task SendOTP(string userEmail)
         {
             if (!userEmail.EndsWith("@gmail.com"))
             {
-                MessageBox.Show("Email sai định dạng vui lòng kiểm tra lại");
+                ShowNotification("Email sai định dạng vui lòng kiểm tra lại");
                 return;
             }
             var isExisted = await _userRepository.GetByEmailAsync(userEmail);
             if (isExisted != null)
             {
-                MessageBox.Show("Email đã được đăng ký vui lòng kiểm tra lại");
+                ShowNotification("Email đã được đăng ký vui lòng kiểm tra lại");
                 return;
             }
             OTP = new Random().Next(100000, 999999).ToString();
@@ -72,7 +76,7 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (Password != PasswordConfirmed)
             {
-                MessageBox.Show("Mật khẩu không khớp vui lòng kiểm tra lại");
+                ShowNotification("Mật khẩu không khớp vui lòng kiểm tra lại");
                 return;
             }
 
@@ -80,7 +84,7 @@ namespace Hotel_Booking_System.ViewModels
 
             if (data!.Item2 != OTP)
             {
-                MessageBox.Show("OTP không khớp vui lòng kiểm tra lại");
+                ShowNotification("OTP không khớp vui lòng kiểm tra lại");
                 return;
             }
             try
@@ -91,11 +95,11 @@ namespace Hotel_Booking_System.ViewModels
 
                 await _userRepository.AddAsync(data.Item1);
                 await _userRepository.SaveAsync();
-                MessageBox.Show("Tạo tài khoản thành công");
+                ShowNotification("Tạo tài khoản thành công");
             }
             catch
             {
-                MessageBox.Show("Tạo thật bại");
+                ShowNotification("Tạo thật bại");
             }
 
         }
@@ -103,6 +107,22 @@ namespace Hotel_Booking_System.ViewModels
         private void BackToLogin()
         {
             _navigationService.NavigateToLogin();
+        }
+
+        private void ShowNotification(string message)
+        {
+            NotificationMessage = message;
+            _notificationTimer?.Stop();
+            _notificationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _notificationTimer.Tick += (s, e) =>
+            {
+                NotificationMessage = string.Empty;
+                _notificationTimer.Stop();
+            };
+            _notificationTimer.Start();
         }
 
     }
