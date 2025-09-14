@@ -432,9 +432,25 @@ namespace Hotel_Booking_System.ViewModels
                     rooms = rooms.Where(r => r.Capacity >= capacity.Value).ToList();
 
                 var bookings = _bookingRepository.GetAllAsync().Result;
-                foreach (var room in rooms)
+
+                if (checkIn.HasValue && checkOut.HasValue)
                 {
-                    EvaluateRoomAvailability(room, bookings, checkIn, checkOut);
+                    rooms = rooms
+                        .Where(r => !bookings.Any(b => b.RoomID == r.RoomID && b.Status != "Cancelled" &&
+                                                       checkIn < b.CheckOutDate && checkOut > b.CheckInDate))
+                        .ToList();
+
+                    foreach (var room in rooms)
+                    {
+                        EvaluateRoomAvailability(room, bookings, checkIn, checkOut);
+                    }
+                }
+                else
+                {
+                    foreach (var room in rooms)
+                    {
+                        EvaluateRoomAvailability(room, bookings, null, null);
+                    }
                 }
 
                 FilteredRooms.Clear();
