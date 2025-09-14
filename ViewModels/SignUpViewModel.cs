@@ -2,6 +2,7 @@
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
+using Hotel_Manager.FrameWorks;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +14,7 @@ using System.Windows.Threading;
 
 namespace Hotel_Booking_System.ViewModels
 {
-    partial class SignUpViewModel : ISignUpViewModel
+    partial class SignUpViewModel : Bindable, ISignUpViewModel
     {
         private readonly IUserRepository _userRepository;
         private readonly INavigationService _navigationService;

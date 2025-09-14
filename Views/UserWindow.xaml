@@ -272,7 +272,7 @@
                                       
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Width="260" Height="340" CornerRadius="20" Margin="12" Padding="0"
+                                                <Border Width="300" Height="340" CornerRadius="20" Margin="12" Padding="0"
         Background="White" Style="{StaticResource RoomCardStyle}">
                                                     <Grid>
                                                         <Grid.RowDefinitions>
