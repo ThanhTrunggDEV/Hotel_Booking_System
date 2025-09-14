@@ -130,6 +130,11 @@
                                             </StackPanel>
                                         </Border>
 
+                                        <TextBlock Text="User Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <TextBox x:Name="txtUserRating" Width="80" Height="30" HorizontalAlignment="Left"/>
+                                        </Border>
+
                                         <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
                                             <StackPanel>
@@ -157,6 +162,7 @@
                                                     <Binding ElementName="cbFreeParking" Path="IsChecked"/>
                                                     <Binding ElementName="cbRestaurant" Path="IsChecked"/>
                                                     <Binding ElementName="cbGym" Path="IsChecked"/>
+                                                    <Binding ElementName="txtUserRating" Path="Text"/>
                                                 </MultiBinding>
                                             </Button.CommandParameter>
                                         </Button>

@@ -369,6 +369,7 @@ namespace Hotel_Booking_System.ViewModels
                 bool? freeParking = searchParams.TryGetValue("FreeParking", out var parking) ? parking as bool? : null;
                 bool? restaurant = searchParams.TryGetValue("Restaurant", out var rest) ? rest as bool? : null;
                 bool? gym = searchParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
+                double? userRating = searchParams.TryGetValue("UserRating", out var ur) && ur is double dur ? dur : null;
 
 
                 List<Hotel> hotels = _hotelRepository.GetAllAsync().Result
@@ -395,7 +396,10 @@ namespace Hotel_Booking_System.ViewModels
                 if (twoStar == true) starFilters.Add(2);
                 if (oneStar == true) starFilters.Add(1);
                 if (starFilters.Count > 0)
-                    hotels = hotels.Where(h => starFilters.Contains((int)Math.Round(h.AverageRating))).ToList();
+                    hotels = hotels.Where(h => starFilters.Contains(h.Rating)).ToList();
+
+                if (userRating.HasValue)
+                    hotels = hotels.Where(h => h.AverageRating >= userRating.Value).ToList();
 
                 if (freeWifi == true)
                     hotels = hotels.Where(h => h.Amenities.Any(a => a.AmenityName == "Free WiFi")).ToList();
