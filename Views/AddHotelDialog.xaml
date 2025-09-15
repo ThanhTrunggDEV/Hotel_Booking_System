@@ -1,0 +1,21 @@
+<Window x:Class="Hotel_Booking_System.Views.AddHotelDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Hotel" Height="450" Width="400" WindowStartupLocation="CenterOwner">
+    <StackPanel Margin="20">
+        <TextBlock Text="Hotel Name"/>
+        <TextBox Text="{Binding HotelName}" Margin="0,0,0,10"/>
+        <TextBlock Text="Address"/>
+        <TextBox Text="{Binding Address}" Margin="0,0,0,10"/>
+        <TextBlock Text="City"/>
+        <TextBox Text="{Binding City}" Margin="0,0,0,10"/>
+        <TextBlock Text="Description"/>
+        <TextBox Text="{Binding Description}" Margin="0,0,0,10" Height="80" TextWrapping="Wrap" AcceptsReturn="True"/>
+        <TextBlock Text="Rating (1-5)"/>
+        <TextBox Text="{Binding Rating}" Margin="0,0,0,20"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnSave" Content="Save" Width="80" Margin="5" Click="Save_Click"/>
+            <Button x:Name="btnCancel" Content="Cancel" Width="80" Margin="5" Click="Cancel_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
