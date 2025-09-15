@@ -192,16 +192,20 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (CurrentHotel == null)
                 return;
-
+            var dialog = App.Provider!.GetRequiredService<AddRoomDialog>();
             var room = new Room
             {
                 RoomID = Guid.NewGuid().ToString(),
                 HotelID = CurrentHotel.HotelID,
                 Status = "Available"
             };
-            await _roomRepository.AddAsync(room);
-            await _roomRepository.SaveAsync();
-            LoadRooms();
+            dialog.DataContext = room;
+            if (dialog.ShowDialog() == true)
+            {
+                await _roomRepository.AddAsync(room);
+                await _roomRepository.SaveAsync();
+                LoadRooms();
+            }
         }
 
         [RelayCommand]
