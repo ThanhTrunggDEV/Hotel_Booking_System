@@ -221,17 +221,22 @@ namespace Hotel_Booking_System.Services
 
             if (!Reviews.Any())
             {
-                var review = new Review
+                var random = new Random();
+                var reviews = new List<Review>();
+                for (int i = 1; i <= 25; i++)
                 {
-                    UserID = customerUser.UserID,
-                    HotelID = hotelEntity.HotelID,
-                    RoomID = roomEntity.RoomID,
-                    BookingID = bookingEntity.BookingID,
-                    Rating = 5,
-                    Comment = "Great stay!",
-                    CreatedAt = DateTime.Now
-                };
-                Reviews.Add(review);
+                    reviews.Add(new Review
+                    {
+                        UserID = customerUser.UserID,
+                        HotelID = hotelEntity.HotelID,
+                        RoomID = roomEntity.RoomID,
+                        BookingID = bookingEntity.BookingID,
+                        Rating = random.Next(1, 6),
+                        Comment = $"Sample review {i}",
+                        CreatedAt = DateTime.Now.AddDays(-i)
+                    });
+                }
+                Reviews.AddRange(reviews);
                 SaveChanges();
             }
 
