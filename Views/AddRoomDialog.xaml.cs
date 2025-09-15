@@ -5,9 +5,9 @@ using Hotel_Booking_System.DomainModels;
 
 namespace Hotel_Booking_System.Views
 {
-    public partial class EditRoomDialog : Window
+    public partial class AddRoomDialog : Window
     {
-        public EditRoomDialog()
+        public AddRoomDialog()
         {
             InitializeComponent();
         }
