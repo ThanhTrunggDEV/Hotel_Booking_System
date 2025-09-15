@@ -141,9 +141,21 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         [RelayCommand]
-        private void NewHotel()
+        private async Task NewHotel()
         {
-            CurrentHotel = new Hotel();
+            var dialog = App.Provider!.GetRequiredService<AddHotelDialog>();
+            var hotel = new Hotel();
+            dialog.DataContext = hotel;
+            if (dialog.ShowDialog() == true)
+            {
+                hotel.HotelID = Guid.NewGuid().ToString();
+                hotel.UserID = CurrentUser.UserID;
+                hotel.IsApproved = false;
+                hotel.IsVisible = true;
+                await _hotelRepository.AddAsync(hotel);
+                await _hotelRepository.SaveAsync();
+                LoadHotels();
+            }
         }
 
         [RelayCommand]
