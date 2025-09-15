@@ -14,14 +14,16 @@ namespace Hotel_Booking_System.Views
 
         private async void UploadImage_Click(object sender, RoutedEventArgs e)
         {
-            FileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg";
-            if (openFileDialog.ShowDialog() == true)
+            FileDialog openFileDialog = new OpenFileDialog
             {
-                if (DataContext is Room room)
-                {
-                    room.RoomImage = await UploadImageService.UploadAsync(openFileDialog.FileName);
-                }
+                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg"
+            };
+
+            if (openFileDialog.ShowDialog() == true && DataContext is Room room)
+            {
+                room.RoomImage = openFileDialog.FileName;
+                var uploadedPath = await UploadImageService.UploadAsync(openFileDialog.FileName);
+                room.RoomImage = uploadedPath;
             }
         }
 
