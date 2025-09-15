@@ -15,6 +15,21 @@ namespace Hotel_Booking_System.Interfaces
         ObservableCollection<Review> Reviews { get; }
         User CurrentUser { get; set; }
 
+        int TotalReviews { get; }
+        double AverageRating { get; }
+
+        int FiveStarCount { get; }
+        int FourStarCount { get; }
+        int ThreeStarCount { get; }
+        int TwoStarCount { get; }
+        int OneStarCount { get; }
+
+        double FiveStarRatio { get; }
+        double FourStarRatio { get; }
+        double ThreeStarRatio { get; }
+        double TwoStarRatio { get; }
+        double OneStarRatio { get; }
+
         Task LoadReviewsAsync();
     }
 }
