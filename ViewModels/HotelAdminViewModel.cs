@@ -208,11 +208,7 @@ namespace Hotel_Booking_System.ViewModels
             TwoStarCount = Reviews.Count(r => r.Rating == 2);
             OneStarCount = Reviews.Count(r => r.Rating == 1);
 
-            OnPropertyChanged(nameof(FiveStarRatio));
-            OnPropertyChanged(nameof(FourStarRatio));
-            OnPropertyChanged(nameof(ThreeStarRatio));
-            OnPropertyChanged(nameof(TwoStarRatio));
-            OnPropertyChanged(nameof(OneStarRatio));
+           
         }
 
         [RelayCommand]
