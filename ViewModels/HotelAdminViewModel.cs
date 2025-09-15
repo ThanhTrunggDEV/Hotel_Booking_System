@@ -53,6 +53,61 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _currentUser, value);
         }
 
+        private int _totalReviews;
+        public int TotalReviews
+        {
+            get => _totalReviews;
+            private set => Set(ref _totalReviews, value);
+        }
+
+        private double _averageRating;
+        public double AverageRating
+        {
+            get => _averageRating;
+            private set => Set(ref _averageRating, value);
+        }
+
+        private int _fiveStarCount;
+        public int FiveStarCount
+        {
+            get => _fiveStarCount;
+            private set => Set(ref _fiveStarCount, value);
+        }
+
+        private int _fourStarCount;
+        public int FourStarCount
+        {
+            get => _fourStarCount;
+            private set => Set(ref _fourStarCount, value);
+        }
+
+        private int _threeStarCount;
+        public int ThreeStarCount
+        {
+            get => _threeStarCount;
+            private set => Set(ref _threeStarCount, value);
+        }
+
+        private int _twoStarCount;
+        public int TwoStarCount
+        {
+            get => _twoStarCount;
+            private set => Set(ref _twoStarCount, value);
+        }
+
+        private int _oneStarCount;
+        public int OneStarCount
+        {
+            get => _oneStarCount;
+            private set => Set(ref _oneStarCount, value);
+        }
+
+        public double FiveStarRatio => TotalReviews > 0 ? (double)FiveStarCount / TotalReviews * 100 : 0;
+        public double FourStarRatio => TotalReviews > 0 ? (double)FourStarCount / TotalReviews * 100 : 0;
+        public double ThreeStarRatio => TotalReviews > 0 ? (double)ThreeStarCount / TotalReviews * 100 : 0;
+        public double TwoStarRatio => TotalReviews > 0 ? (double)TwoStarCount / TotalReviews * 100 : 0;
+        public double OneStarRatio => TotalReviews > 0 ? (double)OneStarCount / TotalReviews * 100 : 0;
+
         public HotelAdminViewModel(
             IReviewRepository reviewRepository,
             IUserRepository userRepository,
@@ -138,6 +193,26 @@ namespace Hotel_Booking_System.ViewModels
             {
                 Reviews.Add(review);
             }
+
+            CalculateReviewStatistics();
+        }
+
+        private void CalculateReviewStatistics()
+        {
+            TotalReviews = Reviews.Count;
+            AverageRating = TotalReviews > 0 ? Reviews.Average(r => r.Rating) : 0;
+
+            FiveStarCount = Reviews.Count(r => r.Rating == 5);
+            FourStarCount = Reviews.Count(r => r.Rating == 4);
+            ThreeStarCount = Reviews.Count(r => r.Rating == 3);
+            TwoStarCount = Reviews.Count(r => r.Rating == 2);
+            OneStarCount = Reviews.Count(r => r.Rating == 1);
+
+            OnPropertyChanged(nameof(FiveStarRatio));
+            OnPropertyChanged(nameof(FourStarRatio));
+            OnPropertyChanged(nameof(ThreeStarRatio));
+            OnPropertyChanged(nameof(TwoStarRatio));
+            OnPropertyChanged(nameof(OneStarRatio));
         }
 
         [RelayCommand]
