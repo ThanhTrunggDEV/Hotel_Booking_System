@@ -301,9 +301,31 @@ namespace Hotel_Booking_System.ViewModels
                 return;
 
             var reviews = await _reviewRepository.GetAllAsync();
+            var relevantReviews = reviews
+                .Where(r => r.HotelID == CurrentHotel.HotelID)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToList();
+
+            var userIds = relevantReviews
+                .Select(r => r.UserID)
+                .Where(id => !string.IsNullOrEmpty(id))
+                .ToHashSet();
+
+            var users = await _userRepository.GetAllAsync();
+            var userLookup = users
+                .Where(u => userIds.Contains(u.UserID))
+                .ToDictionary(u => u.UserID, u => u);
+
             Reviews.Clear();
-            foreach (var review in reviews.Where(r => r.HotelID == CurrentHotel.HotelID))
+            foreach (var review in relevantReviews)
             {
+                if (userLookup.TryGetValue(review.UserID, out var user))
+                {
+                    review.ReviewerName = user.FullName;
+                    review.ReviewerAvatarUrl = user.AvatarUrl;
+                }
+
+                review.AdminReplyDraft = string.Empty;
                 Reviews.Add(review);
             }
 
@@ -322,6 +344,37 @@ namespace Hotel_Booking_System.ViewModels
             OneStarCount = Reviews.Count(r => r.Rating == 1);
 
 
+        }
+
+        [RelayCommand]
+        private async Task ReplyToReview(Review? review)
+        {
+            if (review == null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(review.AdminReply))
+            {
+                return;
+            }
+
+            var reply = review.AdminReplyDraft?.Trim();
+            if (string.IsNullOrWhiteSpace(reply))
+            {
+                return;
+            }
+
+            review.AdminReply = reply;
+            review.AdminReplyDraft = string.Empty;
+
+            await _reviewRepository.UpdateAsync(review);
+
+            var index = Reviews.IndexOf(review);
+            if (index >= 0)
+            {
+                Reviews[index] = review;
+            }
         }
 
         private void UpdateBookingStatusFilters()

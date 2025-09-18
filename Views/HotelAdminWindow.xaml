@@ -349,14 +349,133 @@
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
                                 <TextBlock Text="Recent Reviews" FontSize="16" FontWeight="Bold" Margin="0,0,0,15"/>
-                                <ListView x:Name="lvAdminReviews" ItemsSource="{Binding Reviews}" BorderThickness="0" Background="Transparent">
+                                <ListView x:Name="lvAdminReviews"
+                                          ItemsSource="{Binding Reviews}"
+                                          BorderThickness="0"
+                                          Background="Transparent"
+                                          ScrollViewer.VerticalScrollBarVisibility="Auto">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
-                                            <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Padding="0,0,0,15" Margin="0,0,0,15">
-                                                <StackPanel>
-                                                    <TextBlock Text="{Binding Rating, StringFormat='Rating: {0}'}" FontWeight="Bold"/>
-                                                    <TextBlock Text="{Binding Comment}" TextWrapping="Wrap"/>
-                                                </StackPanel>
+                                            <Border BorderBrush="#FFE0E0E0"
+                                                    BorderThickness="0,0,0,1"
+                                                    Padding="0,0,0,20"
+                                                    Margin="0,0,0,15">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Width="48"
+                                                            Height="48"
+                                                            CornerRadius="24"
+                                                            Background="#FFE0E0E0"
+                                                            ClipToBounds="True"
+                                                            Margin="0,4,20,0">
+                                                        <Image Source="{Binding ReviewerAvatarUrl}"
+                                                               Stretch="UniformToFill"/>
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding ReviewerName}"
+                                                                       FontWeight="Bold"
+                                                                       FontSize="14"/>
+                                                            <TextBlock Grid.Column="1"
+                                                                       Text="{Binding CreatedAt, StringFormat='{}{0:MMM dd, yyyy}'}"
+                                                                       FontSize="12"
+                                                                       Foreground="#FF757575"
+                                                                       HorizontalAlignment="Right"/>
+                                                        </Grid>
+
+                                                        <TextBlock Text="{Binding Rating, StringFormat='{}{0}/5 ⭐'}"
+                                                                   Foreground="#FFFF9800"
+                                                                   FontWeight="SemiBold"
+                                                                   Margin="0,4,0,0"/>
+
+                                                        <TextBlock Text="{Binding Comment}"
+                                                                   TextWrapping="Wrap"
+                                                                   Margin="0,6,0,0"/>
+
+                                                        <Border Background="#FFF1F8E9"
+                                                                BorderBrush="#FFE0E0E0"
+                                                                BorderThickness="1"
+                                                                CornerRadius="6"
+                                                                Padding="10"
+                                                                Margin="0,12,0,0">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding AdminReply}" Value="">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding AdminReply}" Value="{x:Null}">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <StackPanel>
+                                                                <TextBlock Text="Your reply"
+                                                                           FontWeight="Bold"
+                                                                           FontSize="12"
+                                                                           Foreground="#FF33691E"/>
+                                                                <TextBlock Text="{Binding AdminReply}"
+                                                                           TextWrapping="Wrap"
+                                                                           Margin="0,4,0,0"/>
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <StackPanel Margin="0,12,0,0">
+                                                            <StackPanel.Style>
+                                                                <Style TargetType="StackPanel">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding AdminReply}" Value="">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding AdminReply}" Value="{x:Null}">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </StackPanel.Style>
+                                                            <TextBlock Text="Reply to this review"
+                                                                       FontWeight="SemiBold"
+                                                                       FontSize="12"
+                                                                       Margin="0,0,0,6"/>
+                                                            <TextBox Text="{Binding AdminReplyDraft, UpdateSourceTrigger=PropertyChanged}"
+                                                                     AcceptsReturn="True"
+                                                                     Height="60"
+                                                                     TextWrapping="Wrap"
+                                                                     Style="{StaticResource ModernTextBox}"/>
+                                                            <Button Content="Send reply"
+                                                                    Width="120"
+                                                                    Margin="0,10,0,0"
+                                                                    Command="{Binding DataContext.ReplyToReviewCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                    CommandParameter="{Binding}">
+                                                                <Button.Style>
+                                                                    <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+                                                                        <Setter Property="IsEnabled" Value="True"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding AdminReplyDraft}" Value="">
+                                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding AdminReplyDraft}" Value="{x:Null}">
+                                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                            </Button>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Grid>
                                             </Border>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>

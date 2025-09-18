@@ -943,7 +943,10 @@ namespace Hotel_Booking_System.ViewModels
         {
             Reviews.Clear();
             var reviewList = _reviewRepository.GetAllAsync().Result;
-            var hotelReviews = reviewList.Where(r => r.HotelID == hotelId).ToList();
+            var hotelReviews = reviewList
+                .Where(r => r.HotelID == hotelId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToList();
             foreach (var review in hotelReviews)
             {
                 var user = _userRepository.GetByIdAsync(review.UserID).Result;
@@ -952,6 +955,7 @@ namespace Hotel_Booking_System.ViewModels
                     review.ReviewerName = user.FullName;
                     review.ReviewerAvatarUrl = user.AvatarUrl;
                 }
+                review.AdminReplyDraft = string.Empty;
                 Reviews.Add(review);
             }
         }

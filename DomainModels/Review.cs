@@ -19,11 +19,15 @@ namespace Hotel_Booking_System.DomainModels
         public int Rating { get; set; }
         public string Comment { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string? AdminReply { get; set; }
 
         [NotMapped]
         public string ReviewerName { get; set; } = string.Empty;
 
         [NotMapped]
         public string ReviewerAvatarUrl { get; set; } = string.Empty;
+
+        [NotMapped]
+        public string AdminReplyDraft { get; set; } = string.Empty;
     }
 }

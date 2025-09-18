@@ -338,20 +338,84 @@
                                     </ListView>
 
                                     <ListView Grid.Row="2" Grid.Column="1" Margin="4,0,20,20" ItemsSource="{Binding Reviews}" Background="Transparent" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Padding="0,10">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Image Source="{Binding ReviewerAvatarUrl}" Width="40" Height="40" Margin="0,0,10,0"/>
-                                                        <StackPanel>
-                                                            <TextBlock Text="{Binding ReviewerName}" FontWeight="Bold"/>
-                                                            <TextBlock Text="{Binding Rating, StringFormat='Rating: {0}'}"/>
-                                                            <TextBlock Text="{Binding Comment}" TextWrapping="Wrap"/>
-                                                        </StackPanel>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#FFE0E0E0"
+                                                    BorderThickness="0,0,0,1"
+                                                    Padding="0,12"
+                                                    Margin="0,0,0,8">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Width="44"
+                                                            Height="44"
+                                                            CornerRadius="22"
+                                                            Background="#FFE0E0E0"
+                                                            ClipToBounds="True"
+                                                            Margin="0,0,12,0">
+                                                        <Image Source="{Binding ReviewerAvatarUrl}"
+                                                               Stretch="UniformToFill"/>
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding ReviewerName}"
+                                                                       FontWeight="Bold"
+                                                                       FontSize="14"/>
+                                                            <TextBlock Grid.Column="1"
+                                                                       Text="{Binding CreatedAt, StringFormat='{}{0:MMM dd, yyyy}'}"
+                                                                       FontSize="12"
+                                                                       Foreground="#FF757575"
+                                                                       HorizontalAlignment="Right"/>
+                                                        </Grid>
+                                                        <TextBlock Text="{Binding Rating, StringFormat='{}{0}/5 ⭐'}"
+                                                                   Foreground="#FFFF9800"
+                                                                   FontWeight="SemiBold"
+                                                                   Margin="0,4,0,0"/>
+                                                        <TextBlock Text="{Binding Comment}"
+                                                                   TextWrapping="Wrap"
+                                                                   Margin="0,6,0,0"/>
+                                                        <Border Background="#FFF3E5F5"
+                                                                BorderBrush="#FFE0E0E0"
+                                                                BorderThickness="1"
+                                                                CornerRadius="6"
+                                                                Padding="10"
+                                                                Margin="0,10,0,0">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding AdminReply}" Value="">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding AdminReply}" Value="{x:Null}">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <StackPanel>
+                                                                <TextBlock Text="Hotel response"
+                                                                           FontWeight="Bold"
+                                                                           FontSize="12"
+                                                                           Foreground="#FF6A1B9A"/>
+                                                                <TextBlock Text="{Binding AdminReply}"
+                                                                           TextWrapping="Wrap"
+                                                                           Margin="0,4,0,0"/>
+                                                            </StackPanel>
+                                                        </Border>
                                                     </StackPanel>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
                                     </ListView>
                                 </Grid>
                             </Border>
