@@ -16,5 +16,10 @@ namespace Hotel_Manager.FrameWorks
             prop = value;
             PropertyChanged?.Invoke(this, new(propertyName));
         }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new(propertyName));
+        }
     }
 }
