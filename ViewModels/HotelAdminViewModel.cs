@@ -219,7 +219,18 @@ namespace Hotel_Booking_System.ViewModels
         public int TotalReviews
         {
             get => _totalReviews;
-            private set => Set(ref _totalReviews, value);
+            private set
+            {
+                if (_totalReviews == value)
+                    return;
+
+                Set(ref _totalReviews, value);
+                OnPropertyChanged(nameof(FiveStarRatio));
+                OnPropertyChanged(nameof(FourStarRatio));
+                OnPropertyChanged(nameof(ThreeStarRatio));
+                OnPropertyChanged(nameof(TwoStarRatio));
+                OnPropertyChanged(nameof(OneStarRatio));
+            }
         }
 
         private double _averageRating;
@@ -233,35 +244,70 @@ namespace Hotel_Booking_System.ViewModels
         public int FiveStarCount
         {
             get => _fiveStarCount;
-            private set => Set(ref _fiveStarCount, value);
+            private set
+            {
+                if (_fiveStarCount == value)
+                    return;
+
+                Set(ref _fiveStarCount, value);
+                OnPropertyChanged(nameof(FiveStarRatio));
+            }
         }
 
         private int _fourStarCount;
         public int FourStarCount
         {
             get => _fourStarCount;
-            private set => Set(ref _fourStarCount, value);
+            private set
+            {
+                if (_fourStarCount == value)
+                    return;
+
+                Set(ref _fourStarCount, value);
+                OnPropertyChanged(nameof(FourStarRatio));
+            }
         }
 
         private int _threeStarCount;
         public int ThreeStarCount
         {
             get => _threeStarCount;
-            private set => Set(ref _threeStarCount, value);
+            private set
+            {
+                if (_threeStarCount == value)
+                    return;
+
+                Set(ref _threeStarCount, value);
+                OnPropertyChanged(nameof(ThreeStarRatio));
+            }
         }
 
         private int _twoStarCount;
         public int TwoStarCount
         {
             get => _twoStarCount;
-            private set => Set(ref _twoStarCount, value);
+            private set
+            {
+                if (_twoStarCount == value)
+                    return;
+
+                Set(ref _twoStarCount, value);
+                OnPropertyChanged(nameof(TwoStarRatio));
+            }
         }
 
         private int _oneStarCount;
         public int OneStarCount
         {
             get => _oneStarCount;
-            private set => Set(ref _oneStarCount, value);
+            private set
+            {
+                if (_oneStarCount == value)
+                    return;
+
+                Set(ref _oneStarCount, value);
+                OnPropertyChanged(nameof(OneStarRatio));
+            }
         }
 
         public double FiveStarRatio => TotalReviews > 0 ? (double)FiveStarCount / TotalReviews * 100 : 0;
