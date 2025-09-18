@@ -88,14 +88,14 @@
                             <StackPanel Margin="25">
                                 <TextBlock Text="Hotel Information" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                                    <ComboBox ItemsSource="{Binding Hotels}" SelectedItem="{Binding CurrentHotel}" DisplayMemberPath="HotelName" Width="200"/>
-                                    <Button Content="Add Hotel" Style="{StaticResource PrimaryButton}" Margin="10,0,0,0"
+                                    <ComboBox Style="{StaticResource ModernComboBox}" ItemsSource="{Binding Hotels}" SelectedItem="{Binding CurrentHotel}" DisplayMemberPath="HotelName" Width="200"/>
+                                    <Button Content="Add Hotel" Style="{StaticResource PrimaryButton}" Width="100" Margin="10,0,0,0"
                                             Command="{Binding NewHotelCommand}"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                                     <Image Source="{Binding CurrentHotel.HotelImage}" Width="150" Height="100"/>
-                                    <Button Content="Upload Image" Style="{StaticResource PrimaryButton}" Margin="10,0,0,0"
+                                    <Button Content="Upload Image" Style="{StaticResource PrimaryButton}" Width="120" Margin="10,0,0,0"
                                             Command="{Binding UploadHotelImageCommand}"/>
                                 </StackPanel>
 
@@ -114,27 +114,29 @@
 
                                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,15,15">
                                         <TextBlock Text="Hotel Name" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="Luxury Downtown Hotel" Style="{StaticResource ModernTextBox}"/>
+                                        <TextBox Text="{Binding CurrentHotel.HotelName}" Style="{StaticResource ModernTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="0" Grid.Column="1" Margin="15,0,0,15">
                                         <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <ComboBox Height="40" FontSize="14">
+                                        <ComboBox Style="{StaticResource ModernComboBox}"  FontSize="14">
                                             <ComboBoxItem Content="⭐⭐⭐⭐⭐ 5 Stars" IsSelected="True"/>
                                             <ComboBoxItem Content="⭐⭐⭐⭐ 4 Stars"/>
                                             <ComboBoxItem Content="⭐⭐⭐ 3 Stars"/>
+                                            <ComboBoxItem Content="⭐⭐ 2 Stars"/>
+                                            <ComboBoxItem Content="⭐ 1 Stars"/>
                                         </ComboBox>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Address" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="" 
+                                        <TextBox Text="{Binding CurrentHotel.Address}" 
                                             Style="{StaticResource ModernTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="" 
+                                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding CurrentHotel.Description}" 
                                             Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                                     </StackPanel>
 
@@ -177,10 +179,9 @@
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Room #" Width="80" Binding="{Binding RoomNumber}"/>
                                         <DataGridTextColumn Header="Type" Width="120" Binding="{Binding RoomType}"/>
-                                        <DataGridTextColumn Header="Price/Night" Width="100" Binding="{Binding Price}"/>
+                                        <DataGridTextColumn Header="Price/Night" Width="100" Binding="{Binding PricePerNight}"/>
                                         <DataGridTextColumn Header="Status" Width="100" Binding="{Binding Status}"/>
-                                        <DataGridTextColumn Header="Guest" Width="150" Binding="{Binding CurrentGuest}"/>
-                                        <DataGridTextColumn Header="Check-out" Width="100" Binding="{Binding CheckOut}"/>
+                                        <DataGridTextColumn Header="Capacity" Width="100" Binding="{Binding Capacity}"/>
                                         <DataGridTemplateColumn Header="Actions" Width="150">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
