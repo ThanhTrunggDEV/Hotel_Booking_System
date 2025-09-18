@@ -76,13 +76,6 @@
                                     <TextBlock Text="Pending" Foreground="White" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
-
-                            <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FFFF5722">
-                                <StackPanel Margin="20" HorizontalAlignment="Center">
-                                    <TextBlock Text="$12,450" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Revenue Today" Foreground="White" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
                         </Grid>
 
 
