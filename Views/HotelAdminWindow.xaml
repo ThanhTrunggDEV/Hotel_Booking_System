@@ -485,6 +485,234 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
+
+            <TabItem Style="{StaticResource TabItemStyle}" Header="👤 Profile" Visibility="Visible">
+                <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
+                    <Grid MaxWidth="1000">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="300"/>
+                        </Grid.ColumnDefinitions>
+
+
+                        <StackPanel Grid.Column="0" Margin="0,0,30,0">
+
+
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                                <StackPanel Margin="25">
+                                    <TextBlock Text="Personal Information" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+
+                                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                            <TextBlock Text="User ID" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding CurrentUser.UserID}" 
+                                         Style="{StaticResource ModernTextBox}"
+                                         IsReadOnly="True"
+                                                     BorderThickness="0"
+                                         Background="#FFF5F5F5"
+                                         Foreground="#FF666666"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                            <TextBlock Text="Full Name" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding CurrentUser.FullName}" Style="{StaticResource ModernTextBox}"/>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                            <TextBlock Text="Email Address" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox IsReadOnly="True" Text="{Binding CurrentUser.Email}" Style="{StaticResource ModernTextBox}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,15">
+                                            <TextBlock Text="Phone Number" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding CurrentUser.Phone}" Style="{StaticResource ModernTextBox}"/>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,0,0,15">
+                                            <TextBlock Text="Gender" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <ComboBox SelectedValue="{Binding CurrentUser.Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+          SelectedValuePath="Content" Style="{StaticResource ModernComboBox}">
+                                                <ComboBoxItem Content="Male" />
+                                                <ComboBoxItem Content="Female" />
+                                                <ComboBoxItem Content="Other" />
+
+                                            </ComboBox>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,10,15">
+                                            <TextBlock Text="Date of Birth" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <DatePicker SelectedDate="{Binding CurrentUser.DateOfBirth}" Style="{StaticResource ModernDatePicker}"/>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="4" Grid.Column="1" Margin="10,0,0,15">
+                                            <TextBlock Text="Role" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding CurrentUser.Role}" 
+                                         Style="{StaticResource ModernTextBox}"
+                                         IsReadOnly="True"
+                                         Background="#FFF5F5F5"
+                                         Foreground="#FF666666"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                                        <Button Command="{Binding UpdateInfoCommand}" Content="Update Profile" Width="150" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+
+                            <Border Style="{StaticResource CardStyle}">
+                                <StackPanel Margin="25">
+                                    <TextBlock Text="Change Password" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                                    <TextBlock Text="{Binding NotificationMessage}" Foreground="Red" FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+
+                                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                            <TextBlock Text="Current Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <PasswordBox x:Name="txtCurrentPassword" 
+                                           Style="{StaticResource ModernPasswordBox}"
+                                           />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,15">
+                                            <TextBlock Text="New Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <PasswordBox x:Name="txtNewPassword" 
+                                           Style="{StaticResource ModernPasswordBox}"
+                                           />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,15">
+                                            <TextBlock Text="Confirm New Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <PasswordBox x:Name="txtConfirmPassword" 
+                                           Style="{StaticResource ModernPasswordBox}"
+                                           />
+                                        </StackPanel>
+
+
+                                        <Border Grid.Row="2" Grid.ColumnSpan="2" Background="#FFF3E5F5" CornerRadius="8" Padding="12" Margin="0,0,0,15">
+                                            <StackPanel>
+                                                <TextBlock Text="Password Requirements:" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,5"/>
+                                                <TextBlock Text="• At least 8 characters long" FontSize="11" Margin="0,2"/>
+                                                <TextBlock Text="• Contains uppercase and lowercase letters" FontSize="11" Margin="0,2"/>
+                                                <TextBlock Text="• Contains at least one number" FontSize="11" Margin="0,2"/>
+                                                <TextBlock Text="• Contains at least one special character" FontSize="11" Margin="0,2"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                                        <Button Command="{Binding ChangePasswordCommand}" Content="Change Password" Width="150" Style="{StaticResource PrimaryButton}"
+                                    Background="#FFFF5722" Margin="0,0,10,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+
+                        <StackPanel Grid.Column="1">
+                            <Border Style="{StaticResource CardStyle}">
+                                <StackPanel Margin="25" HorizontalAlignment="Center">
+
+                                    <Grid Width="100" Height="100">
+                                        <Image Source="{Binding CurrentUser.AvatarUrl, FallbackValue=\Resources\avatar_default.png}"
+           Stretch="UniformToFill">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="50,50" RadiusX="50" RadiusY="50"/>
+                                            </Image.Clip>
+                                        </Image>
+                                        <Ellipse Stroke="#FFE0E0E0" StrokeThickness="3"/>
+                                    </Grid>
+
+
+                                    <TextBlock Text="{Binding CurrentUser.FullName}" FontSize="18" FontWeight="Bold" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <Border 
+                                CornerRadius="12" Padding="8,4" HorizontalAlignment="Center" Margin="0,0,0,20">
+                                        <TextBlock Text="{Binding CurrentUser.Role}" FontSize="12" Foreground="White" 
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    </Border>
+
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Margin="0,5">
+                                            <TextBlock Text="{Binding TotalBookings, FallbackValue=0}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="Bookings" FontSize="10" Foreground="#FF666666" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Margin="0,5">
+                                            <TextBlock Text="{Binding TotalSpent, StringFormat='${0:F0}',FallbackValue=0}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="Spent" FontSize="10" Foreground="#FF666666" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+
+
+                                        <Border Grid.Row="2" Grid.ColumnSpan="2" Background="#FFFFF3E0" CornerRadius="8" 
+                                    Padding="10,8" Margin="0,15,0,0" HorizontalAlignment="Stretch">
+                                            <StackPanel HorizontalAlignment="Center">
+                                                <TextBlock Text="🏆 Membership Level" FontSize="10" Foreground="#FF666666" 
+                                               HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{Binding MembershipLevel}" FontSize="14" FontWeight="Bold" 
+                                               Foreground="#FFFF9800" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
+                                    <StackPanel Margin="0,20,0,0">
+                                        <Button Content="Upload Avatar" Width="150" Height="35"
+                                                Command="{Binding UploadImageCommand}"
+                                    Style="{StaticResource SecondaryButton}" Margin="0,0,0,8"/>
+
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                    </Grid>
+
+
+
+                </ScrollViewer>
+
+            </TabItem>
+
         </TabControl>
     </Grid>
 </Window>
