@@ -20,6 +20,22 @@ namespace Hotel_Booking_System.Views
         {
             InitializeComponent();
             DataContext = _hotelAdminViewModel;
+
+            txtCurrentPassword.PasswordChanged += (s, e) =>
+            {
+                (_hotelAdminViewModel as dynamic).CurrentPassword = txtCurrentPassword.Password;
+            };
+
+            txtNewPassword.PasswordChanged += (s, e) =>
+            {
+                (_hotelAdminViewModel as dynamic).NewPassword = txtNewPassword.Password;
+            };
+
+            txtConfirmPassword.PasswordChanged += (s, e) =>
+            {
+                (_hotelAdminViewModel as dynamic).ConfirmPassword = txtConfirmPassword.Password;
+            };
+
             Loaded += async (s, e) => await _hotelAdminViewModel.LoadReviewsAsync();
         }
     }

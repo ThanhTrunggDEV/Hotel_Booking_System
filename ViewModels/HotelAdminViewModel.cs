@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -24,6 +25,9 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IRoomRepository _roomRepository;
         private readonly IHotelRepository _hotelRepository;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IPaymentRepository _paymentRepository;
+        private readonly INavigationService _navigationService;
+        private readonly IAuthentication _authenticationService;
 
         private string _userEmail = string.Empty;
         private User _currentUser = new();
@@ -35,6 +39,15 @@ namespace Hotel_Booking_System.ViewModels
         private bool _hasFreeParking;
         private bool _hasRestaurant;
         private bool _hasGym;
+
+        private string _currentPassword = string.Empty;
+        private string _newPassword = string.Empty;
+        private string _confirmPassword = string.Empty;
+        private string _notificationMessage = string.Empty;
+        private double _totalSpent;
+        private int _totalBookings;
+        private string _membershipLevel = "Bronze";
+        private DispatcherTimer? _notificationTimer;
 
         public ObservableCollection<Hotel> Hotels { get; } = new();
         public Hotel? CurrentHotel
@@ -67,6 +80,48 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
         public ObservableCollection<Review> Reviews { get; } = new();
+
+        public string CurrentPassword
+        {
+            get => _currentPassword;
+            set => Set(ref _currentPassword, value);
+        }
+
+        public string NewPassword
+        {
+            get => _newPassword;
+            set => Set(ref _newPassword, value);
+        }
+
+        public string ConfirmPassword
+        {
+            get => _confirmPassword;
+            set => Set(ref _confirmPassword, value);
+        }
+
+        public string NotificationMessage
+        {
+            get => _notificationMessage;
+            private set => Set(ref _notificationMessage, value);
+        }
+
+        public double TotalSpent
+        {
+            get => _totalSpent;
+            private set => Set(ref _totalSpent, value);
+        }
+
+        public int TotalBookings
+        {
+            get => _totalBookings;
+            private set => Set(ref _totalBookings, value);
+        }
+
+        public string MembershipLevel
+        {
+            get => _membershipLevel;
+            private set => Set(ref _membershipLevel, value);
+        }
 
         public bool HasFreeWifi
         {
@@ -214,13 +269,19 @@ namespace Hotel_Booking_System.ViewModels
             IUserRepository userRepository,
             IRoomRepository roomRepository,
             IHotelRepository hotelRepository,
-            IBookingRepository bookingRepository)
+            IBookingRepository bookingRepository,
+            IPaymentRepository paymentRepository,
+            INavigationService navigationService,
+            IAuthentication authenticationService)
         {
             _reviewRepository = reviewRepository;
             _userRepository = userRepository;
             _roomRepository = roomRepository;
             _hotelRepository = hotelRepository;
             _bookingRepository = bookingRepository;
+            _paymentRepository = paymentRepository;
+            _navigationService = navigationService;
+            _authenticationService = authenticationService;
 
             WeakReferenceMessenger.Default.Register<HotelAdminViewModel, MessageService>(this, (recipient, message) =>
             {
@@ -248,6 +309,7 @@ namespace Hotel_Booking_System.ViewModels
             }
 
             CurrentHotel = Hotels.FirstOrDefault();
+            UpdateProfileStatistics();
         }
 
         private void LoadRooms()
@@ -422,6 +484,73 @@ namespace Hotel_Booking_System.ViewModels
             {
                 Bookings.Add(booking);
             }
+
+            UpdateProfileStatistics();
+        }
+
+        private void UpdateProfileStatistics()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
+            {
+                TotalBookings = 0;
+                TotalSpent = 0;
+                MembershipLevel = "Bronze";
+                return;
+            }
+
+            var adminHotels = Hotels
+                .Where(h => h.UserID == CurrentUser.UserID)
+                .Select(h => h.HotelID)
+                .Where(id => !string.IsNullOrEmpty(id))
+                .ToHashSet();
+
+            if (adminHotels.Count == 0)
+            {
+                TotalBookings = 0;
+                TotalSpent = 0;
+                MembershipLevel = "Bronze";
+                return;
+            }
+
+            var bookings = _bookingRepository.GetAllAsync().Result
+                .Where(b => !string.IsNullOrEmpty(b.HotelID) && adminHotels.Contains(b.HotelID))
+                .ToList();
+
+            var payments = _paymentRepository.GetAllAsync().Result;
+
+            double totalRevenue = 0;
+            foreach (var booking in bookings)
+            {
+                var payment = payments.FirstOrDefault(p => p.BookingID == booking.BookingID);
+                if (payment != null)
+                {
+                    totalRevenue += payment.TotalPayment;
+                }
+            }
+
+            TotalBookings = bookings.Count;
+            TotalSpent = totalRevenue;
+            MembershipLevel = CalculateMembershipLevel(totalRevenue);
+        }
+
+        private static string CalculateMembershipLevel(double totalRevenue)
+        {
+            if (totalRevenue >= 20000)
+            {
+                return "Platinum";
+            }
+
+            if (totalRevenue >= 10000)
+            {
+                return "Gold";
+            }
+
+            if (totalRevenue >= 5000)
+            {
+                return "Silver";
+            }
+
+            return "Bronze";
         }
 
         private void SyncAmenitiesFromHotel()
@@ -497,6 +626,109 @@ namespace Hotel_Booking_System.ViewModels
             {
                 CurrentHotel.Amenities.Remove(existing);
             }
+        }
+
+        private void ShowNotification(string message)
+        {
+            NotificationMessage = message;
+            _notificationTimer?.Stop();
+            _notificationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _notificationTimer.Tick += (s, e) =>
+            {
+                NotificationMessage = string.Empty;
+                _notificationTimer?.Stop();
+            };
+            _notificationTimer.Start();
+        }
+
+        private static bool IsPasswordValid(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+            {
+                return false;
+            }
+
+            bool hasUpper = password.Any(char.IsUpper);
+            bool hasLower = password.Any(char.IsLower);
+            bool hasDigit = password.Any(char.IsDigit);
+            bool hasSpecial = password.Any(c => !char.IsLetterOrDigit(c));
+
+            return hasUpper && hasLower && hasDigit && hasSpecial;
+        }
+
+        [RelayCommand]
+        private async Task UploadImage()
+        {
+            FileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
+                {
+                    return;
+                }
+
+                CurrentUser.AvatarUrl = await UploadImageService.UploadAsync(openFileDialog.FileName);
+                await _userRepository.UpdateAsync(CurrentUser);
+                ShowNotification("Profile image updated successfully.");
+            }
+        }
+
+        [RelayCommand]
+        private async Task UpdateInfo()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
+            {
+                return;
+            }
+
+            await _userRepository.UpdateAsync(CurrentUser);
+            ShowNotification("Profile updated successfully.");
+        }
+
+        [RelayCommand]
+        private async Task ChangePassword()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
+            {
+                return;
+            }
+
+            if (!_authenticationService.VerifyPassword(CurrentPassword, CurrentUser.Password))
+            {
+                ShowNotification("Current password is incorrect.");
+                return;
+            }
+
+            if (!IsPasswordValid(NewPassword))
+            {
+                ShowNotification("New password does not meet requirements.");
+                return;
+            }
+
+            if (!string.Equals(NewPassword, ConfirmPassword, StringComparison.Ordinal))
+            {
+                ShowNotification("New password and confirmation do not match.");
+                return;
+            }
+
+            CurrentUser.Password = _authenticationService.HashPassword(NewPassword);
+            await _userRepository.UpdateAsync(CurrentUser);
+
+            ShowNotification("Password changed successfully.");
+            CurrentPassword = string.Empty;
+            NewPassword = string.Empty;
+            ConfirmPassword = string.Empty;
+        }
+
+        [RelayCommand]
+        private void Logout()
+        {
+            _navigationService.NavigateToLogin();
         }
 
         [RelayCommand]
