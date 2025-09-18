@@ -59,7 +59,11 @@ namespace Hotel_Booking_System.ViewModels
 
         private DispatcherTimer _typingTimer;
 
-
+        private string _currentPassword = string.Empty;
+        private string _newPassword = string.Empty;
+        private string _confirmPassword = string.Empty;
+        private string _notificationMessage = string.Empty;
+        private DispatcherTimer? _notificationTimer;
 
         public string ShowSearchRoom { get => _showSearchRoom; set => Set(ref _showSearchRoom, value); }
         public string ShowSearchHotel { get => _showSearchHotel; set => Set(ref _showSearchHotel, value); }
@@ -68,6 +72,10 @@ namespace Hotel_Booking_System.ViewModels
         public int TotalBookings { get => _totalBookings; set => Set(ref _totalBookings, value); }
         public string MembershipLevel { get => _membershipLevel; set => Set(ref _membershipLevel, value); }
         public string HasBookings { get => _hasBookings; set => Set(ref _hasBookings, value); }
+        public string CurrentPassword { get => _currentPassword; set => Set(ref _currentPassword, value); }
+        public string NewPassword { get => _newPassword; set => Set(ref _newPassword, value); }
+        public string ConfirmPassword { get => _confirmPassword; set => Set(ref _confirmPassword, value); }
+        public string NotificationMessage { get => _notificationMessage; set => Set(ref _notificationMessage, value); }
 
         public string SortType {
             get => _sortType;
@@ -120,7 +128,30 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _showRooms, value);
         }
 
-        public ObservableCollection<Booking> Bookings { get; set; } = new ObservableCollection<Booking>();
+        public ObservableCollection<Booking> AllBookings { get; set; } = new();
+        public ObservableCollection<Booking> Bookings { get; set; } = new();
+
+        public ObservableCollection<string> BookingStatusOptions { get; } = new()
+        {
+            "All",
+            "Pending",
+            "Confirmed",
+            "Cancelled",
+            "CancelledRequested",
+            "ModifyRequested",
+            "Done"
+        };
+
+        private string _selectedBookingStatus = "All";
+        public string SelectedBookingStatus
+        {
+            get => _selectedBookingStatus;
+            set
+            {
+                Set(ref _selectedBookingStatus, value);
+                ApplyBookingFilter();
+            }
+        }
 
         public ObservableCollection<Hotel> Hotels
         {
@@ -361,6 +392,7 @@ namespace Hotel_Booking_System.ViewModels
                 bool? freeParking = searchParams.TryGetValue("FreeParking", out var parking) ? parking as bool? : null;
                 bool? restaurant = searchParams.TryGetValue("Restaurant", out var rest) ? rest as bool? : null;
                 bool? gym = searchParams.TryGetValue("Gym", out var gymVal) ? gymVal as bool? : null;
+                double? userRating = searchParams.TryGetValue("UserRating", out var ur) && ur is double dur ? dur : null;
 
 
                 List<Hotel> hotels = _hotelRepository.GetAllAsync().Result
@@ -387,7 +419,10 @@ namespace Hotel_Booking_System.ViewModels
                 if (twoStar == true) starFilters.Add(2);
                 if (oneStar == true) starFilters.Add(1);
                 if (starFilters.Count > 0)
-                    hotels = hotels.Where(h => starFilters.Contains((int)Math.Round(h.AverageRating))).ToList();
+                    hotels = hotels.Where(h => starFilters.Contains(h.Rating)).ToList();
+
+                if (userRating.HasValue)
+                    hotels = hotels.Where(h => h.AverageRating >= userRating.Value).ToList();
 
                 if (freeWifi == true)
                     hotels = hotels.Where(h => h.Amenities.Any(a => a.AmenityName == "Free WiFi")).ToList();
@@ -432,9 +467,25 @@ namespace Hotel_Booking_System.ViewModels
                     rooms = rooms.Where(r => r.Capacity >= capacity.Value).ToList();
 
                 var bookings = _bookingRepository.GetAllAsync().Result;
-                foreach (var room in rooms)
+
+                if (checkIn.HasValue && checkOut.HasValue)
                 {
-                    EvaluateRoomAvailability(room, bookings, checkIn, checkOut);
+                    rooms = rooms
+                        .Where(r => !bookings.Any(b => b.RoomID == r.RoomID && b.Status != "Cancelled" &&
+                                                       checkIn < b.CheckOutDate && checkOut > b.CheckInDate))
+                        .ToList();
+
+                    foreach (var room in rooms)
+                    {
+                        EvaluateRoomAvailability(room, bookings, checkIn, checkOut);
+                    }
+                }
+                else
+                {
+                    foreach (var room in rooms)
+                    {
+                        EvaluateRoomAvailability(room, bookings, null, null);
+                    }
                 }
 
                 FilteredRooms.Clear();
@@ -623,12 +674,60 @@ namespace Hotel_Booking_System.ViewModels
         private void UpdateInfo()
         {
             _userRepository.UpdateAsync(CurrentUser);
-           
+
+        }
+        [RelayCommand]
+        private async Task ChangePassword()
+        {
+            if (CurrentUser == null)
+                return;
+
+            if (!_authenticationSerivce.VerifyPassword(CurrentPassword, CurrentUser.Password))
+            {
+                ShowNotification("Current password is incorrect.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(NewPassword) || NewPassword.Length < 6)
+            {
+                ShowNotification("New password must be at least 6 characters.");
+                return;
+            }
+
+            if (NewPassword != ConfirmPassword)
+            {
+                ShowNotification("New password and confirmation do not match.");
+                return;
+            }
+
+            CurrentUser.Password = _authenticationSerivce.HashPassword(NewPassword);
+            await _userRepository.UpdateAsync(CurrentUser);
+
+            ShowNotification("Password changed successfully.");
+            CurrentPassword = string.Empty;
+            NewPassword = string.Empty;
+            ConfirmPassword = string.Empty;
+        }
+
+        private void ShowNotification(string message)
+        {
+            NotificationMessage = message;
+            _notificationTimer?.Stop();
+            _notificationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _notificationTimer.Tick += (s, e) =>
+            {
+                NotificationMessage = string.Empty;
+                _notificationTimer.Stop();
+            };
+            _notificationTimer.Start();
         }
         [RelayCommand]
         private void Logout()
         {
-            
+
             _navigationService.NavigateToLogin();
         }
         [RelayCommand]
@@ -702,7 +801,7 @@ namespace Hotel_Booking_System.ViewModels
             if (booking.Status == "Confirmed")
             {
                 // Send cancellation request to hotel admin
-                booking.Status = "CancelRequested";
+                booking.Status = "CancelledRequested";
                 MessageBox.Show("Cancellation request sent to hotel admin.", "Request sent", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (booking.Status == "Pending")
@@ -751,13 +850,14 @@ namespace Hotel_Booking_System.ViewModels
         private void FilterBookingsByUser(string userId)
         {
             var bookingList = _bookingRepository.GetBookingByUserId(userId).Result;
+            UpdateCompletedBookings(bookingList);
             var payments = _paymentRepository.GetAllAsync().Result;
-            Bookings.Clear();
+            AllBookings.Clear();
             double totalSpent = 0;
             var userBookings = bookingList.Where(b => b.UserID == userId).ToList();
             foreach (var booking in userBookings)
             {
-                Bookings.Add(booking);
+                AllBookings.Add(booking);
                 var payment = payments.FirstOrDefault(p => p.BookingID == booking.BookingID);
                 if (payment != null)
                 {
@@ -766,9 +866,41 @@ namespace Hotel_Booking_System.ViewModels
             }
 
             TotalSpent = totalSpent;
-            TotalBookings = Bookings.Count;
-            HasBookings = Bookings.Count == 0 ? "Visible" : "Collapsed";
+            TotalBookings = AllBookings.Count;
             MembershipLevel = GetMembershipLevel(totalSpent);
+            ApplyBookingFilter();
+        }
+
+        private void ApplyBookingFilter()
+        {
+            Bookings.Clear();
+            IEnumerable<Booking> filtered = AllBookings;
+            if (SelectedBookingStatus != "All")
+            {
+                filtered = filtered.Where(b => b.Status == SelectedBookingStatus);
+            }
+
+            foreach (var booking in filtered)
+            {
+                Bookings.Add(booking);
+            }
+
+            HasBookings = Bookings.Count == 0 ? "Visible" : "Collapsed";
+        }
+
+        private void UpdateCompletedBookings(IEnumerable<Booking> bookings)
+        {
+            foreach (var booking in bookings)
+            {
+                if (booking.CheckOutDate.Date < DateTime.Today &&
+                    booking.Status != "Cancelled" &&
+                    booking.Status != "CancelledRequested" &&
+                    booking.Status != "Done")
+                {
+                    booking.Status = "Done";
+                    _bookingRepository.UpdateAsync(booking).Wait();
+                }
+            }
         }
 
         private string GetMembershipLevel(double totalSpent)
@@ -811,7 +943,10 @@ namespace Hotel_Booking_System.ViewModels
         {
             Reviews.Clear();
             var reviewList = _reviewRepository.GetAllAsync().Result;
-            var hotelReviews = reviewList.Where(r => r.HotelID == hotelId).ToList();
+            var hotelReviews = reviewList
+                .Where(r => r.HotelID == hotelId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToList();
             foreach (var review in hotelReviews)
             {
                 var user = _userRepository.GetByIdAsync(review.UserID).Result;
@@ -820,6 +955,7 @@ namespace Hotel_Booking_System.ViewModels
                     review.ReviewerName = user.FullName;
                     review.ReviewerAvatarUrl = user.AvatarUrl;
                 }
+                review.AdminReplyDraft = string.Empty;
                 Reviews.Add(review);
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,6 +85,7 @@ namespace Hotel_Booking_System.Services
         public void SeedData()
         {
             Database.EnsureCreated();
+            EnsureReviewReplyColumn();
 
             var authentication = new AuthenticationSerivce();
 
@@ -194,6 +196,8 @@ namespace Hotel_Booking_System.Services
                     HotelID = hotelEntity.HotelID,
                     RoomID = roomEntity.RoomID,
                     UserID = customerUser.UserID,
+                    GuestName = customerUser.FullName,
+                    NumberOfGuests = 1,
                     CheckInDate = DateTime.Today,
                     CheckOutDate = DateTime.Today.AddDays(2),
                     Status = "Confirmed"
@@ -219,17 +223,22 @@ namespace Hotel_Booking_System.Services
 
             if (!Reviews.Any())
             {
-                var review = new Review
+                var random = new Random();
+                var reviews = new List<Review>();
+                for (int i = 1; i <= 25; i++)
                 {
-                    UserID = customerUser.UserID,
-                    HotelID = hotelEntity.HotelID,
-                    RoomID = roomEntity.RoomID,
-                    BookingID = bookingEntity.BookingID,
-                    Rating = 5,
-                    Comment = "Great stay!",
-                    CreatedAt = DateTime.Now
-                };
-                Reviews.Add(review);
+                    reviews.Add(new Review
+                    {
+                        UserID = customerUser.UserID,
+                        HotelID = hotelEntity.HotelID,
+                        RoomID = roomEntity.RoomID,
+                        BookingID = bookingEntity.BookingID,
+                        Rating = random.Next(1, 6),
+                        Comment = $"Sample review {i}",
+                        CreatedAt = DateTime.Now.AddDays(-i)
+                    });
+                }
+                Reviews.AddRange(reviews);
                 SaveChanges();
             }
 
@@ -258,6 +267,50 @@ namespace Hotel_Booking_System.Services
                     CreatedAt = DateTime.Now
                 });
                 SaveChanges();
+            }
+        }
+
+        private void EnsureReviewReplyColumn()
+        {
+            var connection = Database.GetDbConnection();
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                using var command = connection.CreateCommand();
+                command.CommandText = "PRAGMA table_info('Reviews');";
+                using var reader = command.ExecuteReader();
+
+                var hasColumn = false;
+                while (reader.Read())
+                {
+                    if (reader.FieldCount > 1)
+                    {
+                        var columnName = reader.GetString(1);
+                        if (string.Equals(columnName, "AdminReply", StringComparison.OrdinalIgnoreCase))
+                        {
+                            hasColumn = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!hasColumn)
+                {
+                    using var alter = connection.CreateCommand();
+                    alter.CommandText = "ALTER TABLE Reviews ADD COLUMN AdminReply TEXT";
+                    alter.ExecuteNonQuery();
+                }
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
             }
         }
 

@@ -19,6 +19,7 @@ namespace Hotel_Booking_System.ViewModels
         private DateTime _checkInDate = DateTime.Now;
         private DateTime _checkOutDate = DateTime.Now;
         private int _numberOfGuests;
+        private string _guestName = string.Empty;
         private double _totalPayment;
         private string _notificationMessage;
         private string _notificationVisibility = "Collapsed";
@@ -40,6 +41,12 @@ namespace Hotel_Booking_System.ViewModels
         {
             get => _numberOfGuests;
             set => Set(ref _numberOfGuests, value);
+        }
+
+        public string GuestName
+        {
+            get => _guestName;
+            set => Set(ref _guestName, value);
         }
         public DateTime CheckInDate
         {
@@ -102,6 +109,18 @@ namespace Hotel_Booking_System.ViewModels
             NotificationVisibility = "Collapsed";
 
             // Validate booking details before proceeding
+            if (string.IsNullOrWhiteSpace(GuestName))
+            {
+                ShowNotification("Customer name is required.");
+                return;
+            }
+
+            if (NumberOfGuests <= 0)
+            {
+                ShowNotification("Number of guests must be at least 1.");
+                return;
+            }
+
             if (CheckOutDate <= CheckInDate)
             {
                 ShowNotification("Check-out date must be later than check-in date.");
@@ -131,6 +150,8 @@ namespace Hotel_Booking_System.ViewModels
             {
                 UserID = CurrentUser.UserID,
                 RoomID = SelectedRoom.RoomID,
+                GuestName = GuestName,
+                NumberOfGuests = NumberOfGuests,
                 CheckInDate = CheckInDate,
                 CheckOutDate = CheckOutDate,
                 Status = "Pending",

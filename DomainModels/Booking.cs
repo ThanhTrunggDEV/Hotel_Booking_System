@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,8 +15,13 @@ namespace Hotel_Booking_System.DomainModels
         public string HotelID { get; set; } = "";
         public string RoomID { get; set; } = "";
         public string UserID { get; set; } = "";
+        public string GuestName { get; set; } = "";
+        public int NumberOfGuests { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
         public string Status { get; set; } = "";
+
+        [NotMapped]
+        public string RoomNumber { get; set; } = string.Empty;
     }
 }

@@ -94,6 +94,7 @@ namespace Hotel_Booking_System.Services
             vm.SelectedRoom = room;
             vm.CurrentUser = currentUser;
             vm.Hotel = hotel;
+            vm.GuestName = currentUser.FullName;
             
             bookingWindow.DataContext = vm;
             bookingWindow.ShowDialog();
@@ -157,7 +158,6 @@ namespace Hotel_Booking_System.Services
                 modifyWindow.DialogResult = false;
                 modifyWindow.Close();
             };
-            modifyWindow.btnSave.Click += (s, e) => modifyWindow.DialogResult = true;
 
             modifyWindow.DataContext = booking;
             modifyWindow.ShowDialog();

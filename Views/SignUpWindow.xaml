@@ -44,11 +44,17 @@
                                                HorizontalAlignment="Center" 
                                                Margin="0,0,0,10"/>
 
-                                    <TextBlock Text="Điền đầy đủ thông tin để tạo tài khoản" 
-                                               FontSize="15" 
-                                               Foreground="#7F8C8D" 
-                                               HorizontalAlignment="Center" 
+                                    <TextBlock Text="Điền đầy đủ thông tin để tạo tài khoản"
+                                               FontSize="15"
+                                               Foreground="#7F8C8D"
+                                               HorizontalAlignment="Center"
                                                Margin="0,0,0,40"/>
+
+                                    <TextBlock Text="{Binding NotificationMessage}"
+                                               Foreground="Red"
+                                               FontSize="14"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,0,0,20"/>
 
 
                                     <TextBlock Text="Thông tin cá nhân" 

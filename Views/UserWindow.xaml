@@ -130,6 +130,11 @@
                                             </StackPanel>
                                         </Border>
 
+                                        <TextBlock Text="User Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <TextBox x:Name="txtUserRating" Width="80" Height="30" HorizontalAlignment="Left"/>
+                                        </Border>
+
                                         <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
                                             <StackPanel>
@@ -157,6 +162,7 @@
                                                     <Binding ElementName="cbFreeParking" Path="IsChecked"/>
                                                     <Binding ElementName="cbRestaurant" Path="IsChecked"/>
                                                     <Binding ElementName="cbGym" Path="IsChecked"/>
+                                                    <Binding ElementName="txtUserRating" Path="Text"/>
                                                 </MultiBinding>
                                             </Button.CommandParameter>
                                         </Button>
@@ -272,7 +278,7 @@
                                       
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Width="260" Height="340" CornerRadius="20" Margin="12" Padding="0"
+                                                <Border Width="300" Height="340" CornerRadius="20" Margin="12" Padding="0"
         Background="White" Style="{StaticResource RoomCardStyle}">
                                                     <Grid>
                                                         <Grid.RowDefinitions>
@@ -331,21 +337,91 @@
                                         </ListView.ItemTemplate>
                                     </ListView>
 
-                                    <ListView Grid.Row="2" Grid.Column="1" Margin="4,0,20,20" ItemsSource="{Binding Reviews}" Background="Transparent" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1" Padding="0,10">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Image Source="{Binding ReviewerAvatarUrl}" Width="40" Height="40" Margin="0,0,10,0"/>
-                                                        <StackPanel>
-                                                            <TextBlock Text="{Binding ReviewerName}" FontWeight="Bold"/>
-                                                            <TextBlock Text="{Binding Rating, StringFormat='Rating: {0}'}"/>
-                                                            <TextBlock Text="{Binding Comment}" TextWrapping="Wrap"/>
-                                                        </StackPanel>
+                                    <ListView Grid.Row="2" Grid.Column="1"
+                                              Margin="4,0,20,20"
+                                              ItemsSource="{Binding Reviews}"
+                                              Background="Transparent"
+                                              BorderThickness="0"
+                                              MaxHeight="420"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#FFE0E0E0"
+                                                    BorderThickness="0,0,0,1"
+                                                    Padding="0,12"
+                                                    Margin="0,0,0,8">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Width="44"
+                                                            Height="44"
+                                                            CornerRadius="22"
+                                                            Background="#FFE0E0E0"
+                                                            ClipToBounds="True"
+                                                            Margin="0,0,12,0">
+                                                        <Image Source="{Binding ReviewerAvatarUrl}"
+                                                               Stretch="UniformToFill"/>
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding ReviewerName}"
+                                                                       FontWeight="Bold"
+                                                                       FontSize="14"/>
+                                                            <TextBlock Grid.Column="1"
+                                                                       Text="{Binding CreatedAt, StringFormat='{}{0:MMM dd, yyyy}'}"
+                                                                       FontSize="12"
+                                                                       Foreground="#FF757575"
+                                                                       HorizontalAlignment="Right"/>
+                                                        </Grid>
+                                                        <TextBlock Text="{Binding Rating, StringFormat='{}{0}/5 ⭐'}"
+                                                                   Foreground="#FFFF9800"
+                                                                   FontWeight="SemiBold"
+                                                                   Margin="0,4,0,0"/>
+                                                        <TextBlock Text="{Binding Comment}"
+                                                                   TextWrapping="Wrap"
+                                                                   Margin="0,6,0,0"/>
+                                                        <Border Background="#FFF3E5F5"
+                                                                BorderBrush="#FFE0E0E0"
+                                                                BorderThickness="1"
+                                                                CornerRadius="6"
+                                                                Padding="10"
+                                                                Margin="0,10,0,0">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding AdminReply}" Value="">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding AdminReply}" Value="{x:Null}">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <StackPanel>
+                                                                <TextBlock Text="Hotel response"
+                                                                           FontWeight="Bold"
+                                                                           FontSize="12"
+                                                                           Foreground="#FF6A1B9A"/>
+                                                                <TextBlock Text="{Binding AdminReply}"
+                                                                           TextWrapping="Wrap"
+                                                                           Margin="0,4,0,0"/>
+                                                            </StackPanel>
+                                                        </Border>
                                                     </StackPanel>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
                                     </ListView>
                                 </Grid>
                             </Border>
@@ -676,6 +752,10 @@
                     <StackPanel>
                         <TextBlock Text="My Bookings" Style="{StaticResource HeaderTextStyle}" Margin="0,0,0,20"/>
 
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox Width="150" ItemsSource="{Binding BookingStatusOptions}" SelectedItem="{Binding SelectedBookingStatus}" Style="{StaticResource ModernComboBox}"/>
+                        </StackPanel>
 
                         <ItemsControl x:Name="BookingsItemsControl" ItemsSource="{Binding Bookings}">
                             <ItemsControl.ItemTemplate>
@@ -719,7 +799,7 @@
                                                 
                                                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
                                                     <TextBlock Text="Guest" FontSize="12" Foreground="#666"/>
-                                                    <TextBlock Text="{Binding CurrentUser.FullName, FallbackValue='Guest'}" 
+                                                    <TextBlock Text="{Binding GuestName, FallbackValue='Guest'}"
                                FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
 
                                                     <TextBlock Text="Room" FontSize="12" Foreground="#666"/>
@@ -764,7 +844,6 @@
                         Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
                                                 <Button Content="Review" Width="100" Style="{StaticResource SecondaryButton}"
                         Command="{Binding DataContext.ReviewBookingCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                                <Button Content="Request changes" Width="120" Style="{StaticResource SecondaryButton}"/>
                                                 <Button Content="Edit" Width="120" Style="{StaticResource SecondaryButton}"
                         Command="{Binding DataContext.EditBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
                                             </StackPanel>
@@ -886,6 +965,7 @@
                             <Border Style="{StaticResource CardStyle}">
                                 <StackPanel Margin="25">
                                     <TextBlock Text="Change Password" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                                    <TextBlock Text="{Binding NotificationMessage}" Foreground="Red" FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -933,7 +1013,7 @@
                                     </Grid>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                                        <Button Content="Change Password" Width="150" Style="{StaticResource PrimaryButton}" 
+                                        <Button Command="{Binding ChangePasswordCommand}" Content="Change Password" Width="150" Style="{StaticResource PrimaryButton}"
                                     Background="#FFFF5722" Margin="0,0,10,0"/>
                                         <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"/>
                                     </StackPanel>
