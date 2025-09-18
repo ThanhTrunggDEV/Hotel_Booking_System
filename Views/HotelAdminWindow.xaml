@@ -119,12 +119,14 @@
 
                                     <StackPanel Grid.Row="0" Grid.Column="1" Margin="15,0,0,15">
                                         <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <ComboBox Style="{StaticResource ModernComboBox}"  FontSize="14">
-                                            <ComboBoxItem Content="⭐⭐⭐⭐⭐ 5 Stars" IsSelected="True"/>
-                                            <ComboBoxItem Content="⭐⭐⭐⭐ 4 Stars"/>
-                                            <ComboBoxItem Content="⭐⭐⭐ 3 Stars"/>
-                                            <ComboBoxItem Content="⭐⭐ 2 Stars"/>
-                                            <ComboBoxItem Content="⭐ 1 Stars"/>
+                                        <ComboBox Style="{StaticResource ModernComboBox}" FontSize="14"
+                                                  SelectedValuePath="Tag"
+                                                  SelectedValue="{Binding CurrentHotel.Rating, Mode=TwoWay}">
+                                            <ComboBoxItem Tag="5" Content="⭐⭐⭐⭐⭐ 5 Stars"/>
+                                            <ComboBoxItem Tag="4" Content="⭐⭐⭐⭐ 4 Stars"/>
+                                            <ComboBoxItem Tag="3" Content="⭐⭐⭐ 3 Stars"/>
+                                            <ComboBoxItem Tag="2" Content="⭐⭐ 2 Stars"/>
+                                            <ComboBoxItem Tag="1" Content="⭐ 1 Stars"/>
                                         </ComboBox>
                                     </StackPanel>
 
