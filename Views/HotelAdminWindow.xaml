@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Hotel_Booking_System.Views"
         mc:Ignorable="d"
             Title="Multi-Hotel Booking System" Height="900" Width="1400"
+        WindowState="Maximized"
     WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
 
     <Grid Background="#FFF8F9FA">

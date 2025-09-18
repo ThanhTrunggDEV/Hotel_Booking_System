@@ -63,10 +63,7 @@ namespace Hotel_Booking_System.ViewModels
             get => _selectedBookingStatusFilter;
             set
             {
-                if (Set(ref _selectedBookingStatusFilter, value))
-                {
                     ApplyBookingFilter();
-                }
             }
         }
         public ObservableCollection<Review> Reviews { get; } = new();
