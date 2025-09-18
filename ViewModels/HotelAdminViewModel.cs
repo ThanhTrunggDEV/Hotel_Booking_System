@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,6 +28,13 @@ namespace Hotel_Booking_System.ViewModels
         private string _userEmail = string.Empty;
         private User _currentUser = new();
         private Hotel? _currentHotel;
+        private bool _isSyncingAmenities;
+
+        private bool _hasFreeWifi;
+        private bool _hasSwimmingPool;
+        private bool _hasFreeParking;
+        private bool _hasRestaurant;
+        private bool _hasGym;
 
         public ObservableCollection<Hotel> Hotels { get; } = new();
         public Hotel? CurrentHotel
@@ -35,17 +43,97 @@ namespace Hotel_Booking_System.ViewModels
             set
             {
                 Set(ref _currentHotel, value);
-                
-                    LoadRooms();
-                    LoadBookings();
-                    LoadReviews();
-                
+
+                SyncAmenitiesFromHotel();
+                LoadRooms();
+                LoadBookings();
+                LoadReviews();
             }
         }
 
         public ObservableCollection<Room> Rooms { get; } = new();
         public ObservableCollection<Booking> Bookings { get; } = new();
         public ObservableCollection<Review> Reviews { get; } = new();
+
+        public bool HasFreeWifi
+        {
+            get => _hasFreeWifi;
+            set
+            {
+                if (_hasFreeWifi == value)
+                    return;
+
+                Set(ref _hasFreeWifi, value);
+                if (!_isSyncingAmenities)
+                {
+                    UpdateHotelAmenity("Free WiFi", value);
+                }
+            }
+        }
+
+        public bool HasSwimmingPool
+        {
+            get => _hasSwimmingPool;
+            set
+            {
+                if (_hasSwimmingPool == value)
+                    return;
+
+                Set(ref _hasSwimmingPool, value);
+                if (!_isSyncingAmenities)
+                {
+                    UpdateHotelAmenity("Swimming Pool", value, "Pool");
+                }
+            }
+        }
+
+        public bool HasFreeParking
+        {
+            get => _hasFreeParking;
+            set
+            {
+                if (_hasFreeParking == value)
+                    return;
+
+                Set(ref _hasFreeParking, value);
+                if (!_isSyncingAmenities)
+                {
+                    UpdateHotelAmenity("Free Parking", value);
+                }
+            }
+        }
+
+        public bool HasRestaurant
+        {
+            get => _hasRestaurant;
+            set
+            {
+                if (_hasRestaurant == value)
+                    return;
+
+                Set(ref _hasRestaurant, value);
+                if (!_isSyncingAmenities)
+                {
+                    UpdateHotelAmenity("Restaurant", value);
+                }
+            }
+        }
+
+        public bool HasGym
+        {
+            get => _hasGym;
+            set
+            {
+                if (_hasGym == value)
+                    return;
+
+                Set(ref _hasGym, value);
+                if (!_isSyncingAmenities)
+                {
+                    UpdateHotelAmenity("Gym", value, "Fitness Center");
+                }
+            }
+        }
 
         public User CurrentUser
         {
@@ -209,6 +297,81 @@ namespace Hotel_Booking_System.ViewModels
             OneStarCount = Reviews.Count(r => r.Rating == 1);
 
            
+        }
+
+        private void SyncAmenitiesFromHotel()
+        {
+            _isSyncingAmenities = true;
+            HasFreeWifi = IsAmenitySelected("Free WiFi");
+            HasSwimmingPool = IsAmenitySelected("Swimming Pool", "Pool");
+            HasFreeParking = IsAmenitySelected("Free Parking");
+            HasRestaurant = IsAmenitySelected("Restaurant");
+            HasGym = IsAmenitySelected("Gym", "Fitness Center");
+            _isSyncingAmenities = false;
+        }
+
+        private bool IsAmenitySelected(string amenityName, params string[] aliases)
+        {
+            if (CurrentHotel?.Amenities == null)
+            {
+                return false;
+            }
+
+            return CurrentHotel.Amenities.Any(a => MatchesAmenityName(a.AmenityName, amenityName, aliases));
+        }
+
+        private static bool MatchesAmenityName(string? value, string amenityName, params string[] aliases)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            if (string.Equals(value, amenityName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            foreach (var alias in aliases)
+            {
+                if (string.Equals(value, alias, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void UpdateHotelAmenity(string amenityName, bool isSelected, params string[] aliases)
+        {
+            if (CurrentHotel == null)
+            {
+                return;
+            }
+
+            CurrentHotel.Amenities ??= new List<Amenity>();
+
+            var existing = CurrentHotel.Amenities.FirstOrDefault(a => MatchesAmenityName(a.AmenityName, amenityName, aliases));
+
+            if (isSelected)
+            {
+                if (existing == null)
+                {
+                    CurrentHotel.Amenities.Add(new Amenity
+                    {
+                        AmenityName = amenityName
+                    });
+                }
+                else
+                {
+                    existing.AmenityName = amenityName;
+                }
+            }
+            else if (existing != null)
+            {
+                CurrentHotel.Amenities.Remove(existing);
+            }
         }
 
         [RelayCommand]
