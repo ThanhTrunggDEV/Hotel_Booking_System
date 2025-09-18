@@ -145,14 +145,16 @@
                                     <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <WrapPanel>
-                                            <CheckBox Content="🌐 Free WiFi" IsChecked="True" Margin="0,0,15,5"/>
-                                            <CheckBox Content="🏊 Swimming Pool" IsChecked="True" Margin="0,0,15,5"/>
-                                            <CheckBox Content="🚗 Free Parking" IsChecked="True" Margin="0,0,15,5"/>
-                                            <CheckBox Content="💪 Fitness Center" IsChecked="True" Margin="0,0,15,5"/>
-                                            <CheckBox Content="🍽️ Restaurant" IsChecked="True" Margin="0,0,15,5"/>
-                                            <CheckBox Content="🛎️ Room Service" IsChecked="True" Margin="0,0,15,5"/>
-                                            <CheckBox Content="🅿️ Valet Parking" Margin="0,0,15,5"/>
-                                            <CheckBox Content="🏪 Business Center" Margin="0,0,15,5"/>
+                                            <CheckBox Content="🌐 Free WiFi" Margin="0,0,15,5"
+                                                      IsChecked="{Binding HasFreeWifi, Mode=TwoWay}"/>
+                                            <CheckBox Content="🏊 Swimming Pool" Margin="0,0,15,5"
+                                                      IsChecked="{Binding HasSwimmingPool, Mode=TwoWay}"/>
+                                            <CheckBox Content="🚗 Free Parking" Margin="0,0,15,5"
+                                                      IsChecked="{Binding HasFreeParking, Mode=TwoWay}"/>
+                                            <CheckBox Content="🍽️ Restaurant" Margin="0,0,15,5"
+                                                      IsChecked="{Binding HasRestaurant, Mode=TwoWay}"/>
+                                            <CheckBox Content="🏋️ Gym" Margin="0,0,15,5"
+                                                      IsChecked="{Binding HasGym, Mode=TwoWay}"/>
                                         </WrapPanel>
                                     </StackPanel>
                                                                     <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,15">

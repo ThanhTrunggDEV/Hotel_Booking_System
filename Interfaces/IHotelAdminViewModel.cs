@@ -15,6 +15,12 @@ namespace Hotel_Booking_System.Interfaces
         ObservableCollection<Review> Reviews { get; }
         User CurrentUser { get; set; }
 
+        bool HasFreeWifi { get; set; }
+        bool HasSwimmingPool { get; set; }
+        bool HasFreeParking { get; set; }
+        bool HasRestaurant { get; set; }
+        bool HasGym { get; set; }
+
         int TotalReviews { get; }
         double AverageRating { get; }
 
