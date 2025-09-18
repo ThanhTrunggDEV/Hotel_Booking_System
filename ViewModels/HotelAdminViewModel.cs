@@ -51,8 +51,21 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
+        private readonly List<Booking> _allBookings = new();
+
         public ObservableCollection<Room> Rooms { get; } = new();
         public ObservableCollection<Booking> Bookings { get; } = new();
+        public ObservableCollection<string> BookingStatusFilters { get; } = new();
+
+        private string _selectedBookingStatusFilter = "All";
+        public string SelectedBookingStatusFilter
+        {
+            get => _selectedBookingStatusFilter;
+            set
+            {
+                    ApplyBookingFilter();
+            }
+        }
         public ObservableCollection<Review> Reviews { get; } = new();
 
         public bool HasFreeWifi
@@ -256,13 +269,25 @@ namespace Hotel_Booking_System.ViewModels
             if (CurrentHotel == null)
                 return;
 
+            var roomNumbers = _roomRepository.GetAllAsync().Result
+                .Where(r => r.HotelID == CurrentHotel.HotelID)
+                .ToDictionary(r => r.RoomID, r => r.RoomNumber);
+
             var bookings = _bookingRepository.GetAllAsync().Result
-                .Where(b => b.HotelID == CurrentHotel.HotelID);
-            Bookings.Clear();
+                .Where(b => b.HotelID == CurrentHotel.HotelID)
+                .ToList();
+
+            _allBookings.Clear();
             foreach (var booking in bookings)
             {
-                Bookings.Add(booking);
+                booking.RoomNumber = roomNumbers.TryGetValue(booking.RoomID, out var number)
+                    ? number
+                    : booking.RoomID;
+                _allBookings.Add(booking);
             }
+
+            UpdateBookingStatusFilters();
+            ApplyBookingFilter();
         }
 
         private async void LoadReviews()
@@ -296,7 +321,54 @@ namespace Hotel_Booking_System.ViewModels
             TwoStarCount = Reviews.Count(r => r.Rating == 2);
             OneStarCount = Reviews.Count(r => r.Rating == 1);
 
-           
+
+        }
+
+        private void UpdateBookingStatusFilters()
+        {
+            var statuses = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var booking in _allBookings)
+            {
+                if (!string.IsNullOrWhiteSpace(booking.Status))
+                {
+                    statuses.Add(booking.Status);
+                }
+            }
+
+            var orderedStatuses = new List<string> { "All" };
+            orderedStatuses.AddRange(statuses.OrderBy(status => status));
+
+            BookingStatusFilters.Clear();
+            foreach (var status in orderedStatuses)
+            {
+                BookingStatusFilters.Add(status);
+            }
+
+            if (!BookingStatusFilters.Contains(SelectedBookingStatusFilter))
+            {
+                SelectedBookingStatusFilter = "All";
+            }
+        }
+
+        private void ApplyBookingFilter()
+        {
+            if (Bookings == null)
+            {
+                return;
+            }
+
+            Bookings.Clear();
+
+            IEnumerable<Booking> filtered = _allBookings;
+            if (!string.IsNullOrWhiteSpace(SelectedBookingStatusFilter) && SelectedBookingStatusFilter != "All")
+            {
+                filtered = filtered.Where(b => string.Equals(b.Status, SelectedBookingStatusFilter, StringComparison.OrdinalIgnoreCase));
+            }
+
+            foreach (var booking in filtered)
+            {
+                Bookings.Add(booking);
+            }
         }
 
         private void SyncAmenitiesFromHotel()

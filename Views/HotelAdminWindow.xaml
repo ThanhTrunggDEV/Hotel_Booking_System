@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Hotel_Booking_System.Views"
         mc:Ignorable="d"
             Title="Multi-Hotel Booking System" Height="900" Width="1400"
+        WindowState="Maximized"
     WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
 
     <Grid Background="#FFF8F9FA">
@@ -216,12 +217,12 @@
                         <TextBlock Text="Booking Management" Style="{StaticResource HeaderTextStyle}"/>
 
                         <Grid Margin="0,0,0,20">
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="All Bookings" Width="100" Style="{StaticResource PrimaryButton}"/>
-                                <Button Content="Pending" Width="100" Background="#FFFF9800" Style="{StaticResource PrimaryButton}"/>
-                                <Button Content="Confirmed" Width="100" Background="#FF4CAF50" Style="{StaticResource PrimaryButton}"/>
-                                <Button Content="Check-in" Width="100" Background="#FF2196F3" Style="{StaticResource PrimaryButton}"/>
-                                <Button Content="Cancelled" Width="100" Background="#FFFF5722" Style="{StaticResource PrimaryButton}"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="Filter by Status:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <ComboBox Width="200"
+                                          Style="{StaticResource ModernComboBox}"
+                                          ItemsSource="{Binding BookingStatusFilters}"
+                                          SelectedItem="{Binding SelectedBookingStatusFilter}"/>
                             </StackPanel>
                         </Grid>
 
@@ -232,7 +233,7 @@
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Booking ID" Width="200" Binding="{Binding BookingID}"/>
                                         <DataGridTextColumn Header="Guest Name" Width="150" Binding="{Binding GuestName}"/>
-                                        <DataGridTextColumn Header="Room" Width="100" Binding="{Binding RoomId}"/>
+                                        <DataGridTextColumn Header="Room" Width="100" Binding="{Binding RoomNumber}"/>
                                         <DataGridTextColumn Header="Check-in" Width="150" Binding="{Binding CheckInDate}"/>
                                         <DataGridTextColumn Header="Check-out" Width="150" Binding="{Binding CheckOutDate}"/>
                                         <DataGridTextColumn Header="Status" Width="120" Binding="{Binding Status}"/>
