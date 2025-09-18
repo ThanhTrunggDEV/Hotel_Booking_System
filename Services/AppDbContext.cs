@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,6 +85,7 @@ namespace Hotel_Booking_System.Services
         public void SeedData()
         {
             Database.EnsureCreated();
+            EnsureReviewReplyColumn();
 
             var authentication = new AuthenticationSerivce();
 
@@ -265,6 +267,50 @@ namespace Hotel_Booking_System.Services
                     CreatedAt = DateTime.Now
                 });
                 SaveChanges();
+            }
+        }
+
+        private void EnsureReviewReplyColumn()
+        {
+            var connection = Database.GetDbConnection();
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                using var command = connection.CreateCommand();
+                command.CommandText = "PRAGMA table_info('Reviews');";
+                using var reader = command.ExecuteReader();
+
+                var hasColumn = false;
+                while (reader.Read())
+                {
+                    if (reader.FieldCount > 1)
+                    {
+                        var columnName = reader.GetString(1);
+                        if (string.Equals(columnName, "AdminReply", StringComparison.OrdinalIgnoreCase))
+                        {
+                            hasColumn = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!hasColumn)
+                {
+                    using var alter = connection.CreateCommand();
+                    alter.CommandText = "ALTER TABLE Reviews ADD COLUMN AdminReply TEXT";
+                    alter.ExecuteNonQuery();
+                }
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
             }
         }
 
