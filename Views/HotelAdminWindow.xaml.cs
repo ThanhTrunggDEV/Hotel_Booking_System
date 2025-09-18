@@ -1,10 +1,5 @@
 using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Hotel_Booking_System.Interfaces;
+using Hotel_Booking_System.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hotel_Booking_System.Views
@@ -14,7 +9,7 @@ namespace Hotel_Booking_System.Views
     /// </summary>
     public partial class HotelAdminWindow : Window
     {
-        private readonly IHotelAdminViewModel _hotelAdminViewModel = App.Provider.GetRequiredService<IHotelAdminViewModel>();
+        private readonly HotelAdminViewModel _hotelAdminViewModel = App.Provider.GetRequiredService<HotelAdminViewModel>();
 
         public HotelAdminWindow()
         {
@@ -23,17 +18,17 @@ namespace Hotel_Booking_System.Views
 
             txtCurrentPassword.PasswordChanged += (s, e) =>
             {
-                (_hotelAdminViewModel as dynamic).CurrentPassword = txtCurrentPassword.Password;
+                _hotelAdminViewModel.CurrentPassword = txtCurrentPassword.Password;
             };
 
             txtNewPassword.PasswordChanged += (s, e) =>
             {
-                (_hotelAdminViewModel as dynamic).NewPassword = txtNewPassword.Password;
+                _hotelAdminViewModel.NewPassword = txtNewPassword.Password;
             };
 
             txtConfirmPassword.PasswordChanged += (s, e) =>
             {
-                (_hotelAdminViewModel as dynamic).ConfirmPassword = txtConfirmPassword.Password;
+                _hotelAdminViewModel.ConfirmPassword = txtConfirmPassword.Password;
             };
 
             Loaded += async (s, e) => await _hotelAdminViewModel.LoadReviewsAsync();

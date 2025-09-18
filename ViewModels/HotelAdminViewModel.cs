@@ -76,7 +76,13 @@ namespace Hotel_Booking_System.ViewModels
             get => _selectedBookingStatusFilter;
             set
             {
-                    ApplyBookingFilter();
+                if (_selectedBookingStatusFilter == value)
+                {
+                    return;
+                }
+
+                Set(ref _selectedBookingStatusFilter, value);
+                ApplyBookingFilter();
             }
         }
         public ObservableCollection<Review> Reviews { get; } = new();
@@ -674,6 +680,11 @@ namespace Hotel_Booking_System.ViewModels
 
                 CurrentUser.AvatarUrl = await UploadImageService.UploadAsync(openFileDialog.FileName);
                 await _userRepository.UpdateAsync(CurrentUser);
+                if (!string.IsNullOrEmpty(CurrentUser.UserID))
+                {
+                    CurrentUser = await _userRepository.GetByIdAsync(CurrentUser.UserID) ?? CurrentUser;
+                }
+
                 ShowNotification("Profile image updated successfully.");
             }
         }
@@ -687,6 +698,7 @@ namespace Hotel_Booking_System.ViewModels
             }
 
             await _userRepository.UpdateAsync(CurrentUser);
+            CurrentUser = await _userRepository.GetByIdAsync(CurrentUser.UserID) ?? CurrentUser;
             ShowNotification("Profile updated successfully.");
         }
 
@@ -718,6 +730,7 @@ namespace Hotel_Booking_System.ViewModels
 
             CurrentUser.Password = _authenticationService.HashPassword(NewPassword);
             await _userRepository.UpdateAsync(CurrentUser);
+            CurrentUser = await _userRepository.GetByIdAsync(CurrentUser.UserID) ?? CurrentUser;
 
             ShowNotification("Password changed successfully.");
             CurrentPassword = string.Empty;
