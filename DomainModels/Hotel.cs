@@ -11,15 +11,15 @@ namespace Hotel_Booking_System.DomainModels
     public class Hotel
     {
         [Key]
-        public string HotelID { get; set; }
-        public string UserID { get; set; }
-        public string HotelName { get; set; }
-        public string Address { get; set; }
-        public string City { get; set; }
-        public string HotelImage { get; set; }
+        public string HotelID { get; set; } = null!;
+        public string UserID { get; set; } = string.Empty;
+        public string HotelName { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string HotelImage { get; set; } = string.Empty;
         public double MinPrice { get; set; }
         public double MaxPrice { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         public int Rating { get; set; }
         public bool IsApproved { get; set; }
         public bool IsVisible { get; set; } = true;

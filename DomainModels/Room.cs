@@ -11,9 +11,9 @@ namespace Hotel_Booking_System.DomainModels
     public class Room : INotifyPropertyChanged
     {
         [Key]
-        public string RoomID { get; set; }
-        public string HotelID { get; set; } = "";
-        public string RoomNumber { get; set; } = "";
+        public string RoomID { get; set; } = null!;
+        public string HotelID { get; set; } = string.Empty;
+        public string RoomNumber { get; set; } = string.Empty;
 
         private string _roomImage = string.Empty;
         public string RoomImage
@@ -29,10 +29,10 @@ namespace Hotel_Booking_System.DomainModels
             }
         }
 
-        public string RoomType { get; set; } = "";
+        public string RoomType { get; set; } = string.Empty;
         public int Capacity { get; set; }
         public double PricePerNight { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
     }

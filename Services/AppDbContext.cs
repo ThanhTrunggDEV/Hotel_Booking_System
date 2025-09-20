@@ -188,21 +188,58 @@ namespace Hotel_Booking_System.Services
 
             var hotelEntity = hotelsList.First();
             var roomEntity = Rooms.First(r => r.HotelID == hotelEntity.HotelID);
+            var hotelRooms = Rooms.Where(r => r.HotelID == hotelEntity.HotelID).ToList();
+            if (hotelRooms.Count == 0)
+            {
+                hotelRooms.Add(roomEntity);
+            }
+
+            var paymentSeedData = new List<(Booking booking, double total, DateTime paymentDate, string method)>();
 
             if (!Bookings.Any())
             {
-                var booking = new Booking
+                var random = new Random();
+                var referenceMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                var newBookings = new List<Booking>();
+
+                for (int i = 0; i < 18; i++)
                 {
-                    HotelID = hotelEntity.HotelID,
-                    RoomID = roomEntity.RoomID,
-                    UserID = customerUser.UserID,
-                    GuestName = customerUser.FullName,
-                    NumberOfGuests = 1,
-                    CheckInDate = DateTime.Today,
-                    CheckOutDate = DateTime.Today.AddDays(2),
-                    Status = "Confirmed"
-                };
-                Bookings.Add(booking);
+                    var monthStart = referenceMonth.AddMonths(-i);
+                    var room = hotelRooms[random.Next(hotelRooms.Count)];
+                    var nights = random.Next(2, 6);
+                    var latestStart = Math.Max(1, DateTime.DaysInMonth(monthStart.Year, monthStart.Month) - nights - 1);
+                    var checkIn = monthStart.AddDays(random.Next(0, latestStart));
+                    var checkOut = checkIn.AddDays(nights);
+                    var guests = Math.Min(room.Capacity, random.Next(1, room.Capacity + 1));
+
+                    var booking = new Booking
+                    {
+                        HotelID = hotelEntity.HotelID,
+                        RoomID = room.RoomID,
+                        UserID = customerUser.UserID,
+                        GuestName = customerUser.FullName,
+                        NumberOfGuests = guests == 0 ? 1 : guests,
+                        CheckInDate = checkIn,
+                        CheckOutDate = checkOut,
+                        Status = "Completed"
+                    };
+
+                    newBookings.Add(booking);
+
+                    var method = random.Next(0, 3) switch
+                    {
+                        0 => "CreditCard",
+                        1 => "BankTransfer",
+                        _ => "Cash"
+                    };
+                    var occupancyFactor = 0.85 + (random.NextDouble() * 0.35);
+                    var total = room.PricePerNight * nights * occupancyFactor;
+                    var paymentDate = checkOut.AddDays(random.Next(0, 3));
+
+                    paymentSeedData.Add((booking, total, paymentDate, method));
+                }
+
+                Bookings.AddRange(newBookings);
                 SaveChanges();
             }
 
@@ -210,14 +247,42 @@ namespace Hotel_Booking_System.Services
 
             if (!Payments.Any())
             {
-                var payment = new Payment
+                if (paymentSeedData.Count == 0)
                 {
-                    BookingID = bookingEntity.BookingID,
-                    TotalPayment = 200,
-                    Method = "CreditCard",
-                    PaymentDate = DateTime.Today
-                };
-                Payments.Add(payment);
+                    var random = new Random();
+                    var roomLookup = Rooms.ToDictionary(r => r.RoomID, r => r);
+
+                    foreach (var booking in Bookings.Where(b => b.HotelID == hotelEntity.HotelID))
+                    {
+                        var nights = Math.Max(1, (booking.CheckOutDate - booking.CheckInDate).Days);
+                        if (!roomLookup.TryGetValue(booking.RoomID, out var room))
+                        {
+                            room = roomEntity;
+                        }
+
+                        var method = random.Next(0, 3) switch
+                        {
+                            0 => "CreditCard",
+                            1 => "BankTransfer",
+                            _ => "Cash"
+                        };
+
+                        var total = room.PricePerNight * nights;
+                        var paymentDate = booking.CheckOutDate.AddDays(random.Next(0, 3));
+
+                        paymentSeedData.Add((booking, total, paymentDate, method));
+                    }
+                }
+
+                var payments = paymentSeedData.Select(data => new Payment
+                {
+                    BookingID = data.booking.BookingID,
+                    TotalPayment = Math.Round(data.total, 2),
+                    Method = data.method,
+                    PaymentDate = data.paymentDate
+                }).ToList();
+
+                Payments.AddRange(payments);
                 SaveChanges();
             }
 

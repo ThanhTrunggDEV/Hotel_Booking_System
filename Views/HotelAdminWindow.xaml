@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel_Booking_System.Views"
-        xmlns:lvc="http://schemas.livecharts.com/wpf"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
             Title="Multi-Hotel Booking System" Height="900" Width="1400"
         WindowState="Maximized"
@@ -302,13 +302,11 @@
                                               DisplayMemberPath="DisplayName"/>
                                 </StackPanel>
 
-                                <lvc:CartesianChart Margin="0,20,0,16"
-                                                    Series="{Binding RevenueSeries}"
-                                                    XAxes="{Binding RevenueXAxes}"
-                                                    YAxes="{Binding RevenueYAxes}"
-                                                    ZoomMode="X"
-                                                    AnimationsSpeed="0:0:0.6"
-                                                    LegendPosition="Hidden"/>
+                                <oxy:PlotView Margin="0,20,0,16"
+                                              Height="360"
+                                              MinHeight="280"
+                                              Model="{Binding RevenuePlotModel}"
+                                              Background="Transparent"/>
 
                                 <TextBlock Text="{Binding RevenueSummary}"
                                            FontSize="16"

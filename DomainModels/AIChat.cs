@@ -12,11 +12,11 @@ namespace Hotel_Booking_System.DomainModels
     public class AIChat : Bindable
     {
         [Key]
-        public string ChatID {  get; set; }
-        public string UserID { get; set; }
-        public string Message { get; set; }
+        public string ChatID {  get; set; } = null!;
+        public string UserID { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
 
-        private string _response;
+        private string _response = string.Empty;
         public string Response
         {
             get => _response;
