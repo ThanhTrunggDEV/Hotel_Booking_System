@@ -15,10 +15,9 @@ using Hotel_Booking_System.Views;
 using Hotel_Manager.FrameWorks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
-using LiveChartsCore;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
-using SkiaSharp;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -135,20 +134,11 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
-        public ObservableCollection<ISeries> RevenueSeries { get; } = new();
-
-        private Axis[] _revenueXAxes = Array.Empty<Axis>();
-        public Axis[] RevenueXAxes
+        private PlotModel _revenuePlotModel = CreateEmptyRevenuePlotModel();
+        public PlotModel RevenuePlotModel
         {
-            get => _revenueXAxes;
-            private set => Set(ref _revenueXAxes, value);
-        }
-
-        private Axis[] _revenueYAxes = Array.Empty<Axis>();
-        public Axis[] RevenueYAxes
-        {
-            get => _revenueYAxes;
-            private set => Set(ref _revenueYAxes, value);
+            get => _revenuePlotModel;
+            private set => Set(ref _revenuePlotModel, value);
         }
 
         private string _revenueSummary = "Chưa có dữ liệu doanh thu.";
@@ -427,29 +417,6 @@ namespace Hotel_Booking_System.ViewModels
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo tháng", Range = RevenueRange.Monthly });
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo năm", Range = RevenueRange.Yearly });
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Tổng", Range = RevenueRange.Cumulative });
-
-            RevenueXAxes = new[]
-            {
-                new Axis
-                {
-                    Labels = Array.Empty<string>(),
-                    TextSize = 14
-                }
-            };
-
-            RevenueYAxes = new[]
-            {
-                new Axis
-                {
-                    Labeler = value => value.ToString("N0") + " ₫",
-                    MinLimit = 0,
-                    TextSize = 14,
-                    SeparatorsPaint = new SolidColorPaint(SKColors.LightGray)
-                    {
-                        StrokeThickness = 1
-                    }
-                }
-            };
 
             WeakReferenceMessenger.Default.Register<HotelAdminViewModel, MessageService>(this, (recipient, message) =>
             {
@@ -879,78 +846,19 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (SelectedRevenueFilter == null)
             {
-                RevenueSeries.Clear();
-                RevenueXAxes = new[]
-                {
-                    new Axis
-                    {
-                        Labels = Array.Empty<string>(),
-                        TextSize = 14
-                    }
-                };
+                RevenuePlotModel = CreateEmptyRevenuePlotModel();
                 RevenueSummary = "Chưa có dữ liệu doanh thu.";
                 return;
             }
 
-            if (!_revenueData.TryGetValue(SelectedRevenueFilter.Range, out var data))
+            if (!_revenueData.TryGetValue(SelectedRevenueFilter.Range, out var data) || data.Count == 0)
             {
-                data = new List<RevenueDataPoint>();
-            }
-
-            if (data.Count == 0)
-            {
-                RevenueSeries.Clear();
-                RevenueSeries.Add(new LineSeries<double>
-                {
-                    Values = new double[] { 0 },
-                    GeometrySize = 0,
-                    Fill = null,
-                    Stroke = new SolidColorPaint(SKColors.LightGray)
-                    {
-                        StrokeThickness = 2
-                    }
-                });
-
-                RevenueXAxes = new[]
-                {
-                    new Axis
-                    {
-                        Labels = new[] { "Không có dữ liệu" },
-                        TextSize = 14
-                    }
-                };
-
+                RevenuePlotModel = CreateEmptyRevenuePlotModel();
                 RevenueSummary = "Chưa có dữ liệu doanh thu.";
                 return;
             }
 
-            var labels = data.Select(d => d.Label).ToArray();
-            var values = data.Select(d => d.Amount).ToArray();
-
-            RevenueSeries.Clear();
-            RevenueSeries.Add(new LineSeries<double>
-            {
-                Values = values,
-                Fill = null,
-                LineSmoothness = 0.4,
-                GeometrySize = 10,
-                Stroke = new SolidColorPaint(SKColors.DeepSkyBlue)
-                {
-                    StrokeThickness = 3
-                },
-                GeometryStroke = new SolidColorPaint(SKColors.DeepSkyBlue),
-                GeometryFill = new SolidColorPaint(SKColors.White)
-            });
-
-            RevenueXAxes = new[]
-            {
-                new Axis
-                {
-                    Labels = labels,
-                    LabelsRotation = -45,
-                    TextSize = 14
-                }
-            };
+            RevenuePlotModel = CreateRevenuePlotModel(data);
 
             var firstDate = data.First().Timestamp;
             var lastDate = data.Last().Timestamp;
@@ -1013,6 +921,108 @@ namespace Hotel_Booking_System.ViewModels
 
             YearlyRevenueTotal = yearlyTotal;
             MaxYearlyRevenue = yearlyMax;
+        }
+
+        private static PlotModel CreateRevenuePlotModel(IReadOnlyList<RevenueDataPoint> data)
+        {
+            var model = new PlotModel
+            {
+                Background = OxyColors.Transparent,
+                TextColor = OxyColor.FromRgb(66, 66, 66),
+                PlotAreaBorderColor = OxyColor.FromAColor(0, 0, 0, 0)
+            };
+
+            var xAxis = new CategoryAxis
+            {
+                Position = AxisPosition.Bottom,
+                Angle = -45,
+                GapWidth = 0.3,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                MinorStep = 1
+            };
+
+            foreach (var label in data.Select(d => d.Label))
+            {
+                xAxis.Labels.Add(label);
+            }
+
+            var yAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                MinimumPadding = 0,
+                MaximumPadding = 0.1,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                MajorGridlineStyle = LineStyle.Solid,
+                MajorGridlineColor = OxyColor.FromAColor(40, 158, 158, 158),
+                MinorGridlineStyle = LineStyle.None,
+                StringFormat = "N0"
+            };
+
+            var series = new LineSeries
+            {
+                StrokeThickness = 2.5,
+                Color = OxyColor.FromRgb(0, 150, 255),
+                MarkerType = MarkerType.Circle,
+                MarkerSize = 4,
+                MarkerStroke = OxyColors.White,
+                MarkerFill = OxyColor.FromRgb(0, 150, 255),
+                CanTrackerInterpolatePoints = false
+            };
+
+            for (var i = 0; i < data.Count; i++)
+            {
+                series.Points.Add(new DataPoint(i, data[i].Amount));
+            }
+
+            model.Axes.Add(xAxis);
+            model.Axes.Add(yAxis);
+            model.Series.Add(series);
+
+            return model;
+        }
+
+        private static PlotModel CreateEmptyRevenuePlotModel()
+        {
+            var model = new PlotModel
+            {
+                Background = OxyColors.Transparent,
+                PlotAreaBorderColor = OxyColors.Transparent,
+                TextColor = OxyColor.FromRgb(158, 158, 158)
+            };
+
+            var xAxis = new CategoryAxis
+            {
+                Position = AxisPosition.Bottom,
+                IsZoomEnabled = false,
+                IsPanEnabled = false
+            };
+            xAxis.Labels.Add("Không có dữ liệu");
+
+            var yAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Minimum = 0,
+                Maximum = 1,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                MajorGridlineStyle = LineStyle.None,
+                MinorGridlineStyle = LineStyle.None
+            };
+
+            var placeholderSeries = new LineSeries
+            {
+                Color = OxyColor.FromRgb(189, 189, 189),
+                StrokeThickness = 2
+            };
+            placeholderSeries.Points.Add(new DataPoint(0, 0));
+
+            model.Axes.Add(xAxis);
+            model.Axes.Add(yAxis);
+            model.Series.Add(placeholderSeries);
+
+            return model;
         }
 
         private void SyncAmenitiesFromHotel()

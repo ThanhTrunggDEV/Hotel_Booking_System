@@ -15,14 +15,10 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
-    <PackageReference Include="LiveChartsCore" Version="2.5.0" />
-    <PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.5.0" />
-    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.5.0" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
     <PackageReference Include="Mscc.GenerativeAI" Version="2.8.9" />
-    <PackageReference Include="SkiaSharp" Version="2.88.7" />
-    <PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.7" />
   </ItemGroup>
 
   <ItemGroup>
