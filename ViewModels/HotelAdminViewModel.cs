@@ -73,6 +73,51 @@ namespace Hotel_Booking_System.ViewModels
         public ObservableCollection<Room> Rooms { get; } = new();
         public ObservableCollection<Booking> Bookings { get; } = new();
         public ObservableCollection<string> BookingStatusFilters { get; } = new();
+        public ObservableCollection<RevenueDataPoint> WeeklyRevenue { get; } = new();
+        public ObservableCollection<RevenueDataPoint> MonthlyRevenue { get; } = new();
+        public ObservableCollection<RevenueDataPoint> YearlyRevenue { get; } = new();
+
+        private double _maxWeeklyRevenue;
+        public double MaxWeeklyRevenue
+        {
+            get => _maxWeeklyRevenue;
+            private set => Set(ref _maxWeeklyRevenue, value);
+        }
+
+        private double _maxMonthlyRevenue;
+        public double MaxMonthlyRevenue
+        {
+            get => _maxMonthlyRevenue;
+            private set => Set(ref _maxMonthlyRevenue, value);
+        }
+
+        private double _maxYearlyRevenue;
+        public double MaxYearlyRevenue
+        {
+            get => _maxYearlyRevenue;
+            private set => Set(ref _maxYearlyRevenue, value);
+        }
+
+        private double _weeklyRevenueTotal;
+        public double WeeklyRevenueTotal
+        {
+            get => _weeklyRevenueTotal;
+            private set => Set(ref _weeklyRevenueTotal, value);
+        }
+
+        private double _monthlyRevenueTotal;
+        public double MonthlyRevenueTotal
+        {
+            get => _monthlyRevenueTotal;
+            private set => Set(ref _monthlyRevenueTotal, value);
+        }
+
+        private double _yearlyRevenueTotal;
+        public double YearlyRevenueTotal
+        {
+            get => _yearlyRevenueTotal;
+            private set => Set(ref _yearlyRevenueTotal, value);
+        }
 
         private readonly Dictionary<RevenueRange, List<RevenueDataPoint>> _revenueData = new();
         private List<Payment> _currentHotelPayments = new();
@@ -692,6 +737,7 @@ namespace Hotel_Booking_System.ViewModels
                 if (bookingIds.Count > 0)
                 {
                     _currentHotelPayments = _paymentRepository.GetAllAsync().Result
+
                         .Where(p => !string.IsNullOrWhiteSpace(p.BookingID) && bookingIds.Contains(p.BookingID))
                         .ToList();
                 }
@@ -723,6 +769,7 @@ namespace Hotel_Booking_System.ViewModels
             for (int i = 0; i < 14; i++)
             {
                 var currentDate = startDate.AddDays(i).Date;
+
                 var amount = payments
                     .Where(p => p.PaymentDate.Date == currentDate)
                     .Sum(p => p.TotalPayment);
@@ -939,6 +986,20 @@ namespace Hotel_Booking_System.ViewModels
             }
 
             RevenueSummary = $"Tổng doanh thu {modeDescription}{rangeDescription}: {total:N0} ₫";
+
+                yearlyTotal += amount;
+                yearlyMax = Math.Max(yearlyMax, amount);
+
+                YearlyRevenue.Add(new RevenueDataPoint
+                {
+                    Label = currentYearStart.Year.ToString(),
+                    Amount = amount
+                });
+            }
+
+            YearlyRevenueTotal = yearlyTotal;
+            MaxYearlyRevenue = yearlyMax;
+
         }
 
         private void SyncAmenitiesFromHotel()
