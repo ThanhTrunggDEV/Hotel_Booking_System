@@ -929,7 +929,7 @@ namespace Hotel_Booking_System.ViewModels
             {
                 Background = OxyColors.Transparent,
                 TextColor = OxyColor.FromRgb(66, 66, 66),
-                PlotAreaBorderColor = OxyColor.FromAColor(0, 0, 0, 0)
+                PlotAreaBorderColor = OxyColor.FromArgb(0, 0, 0, 0)
             };
 
             var xAxis = new CategoryAxis
@@ -955,7 +955,7 @@ namespace Hotel_Booking_System.ViewModels
                 IsZoomEnabled = false,
                 IsPanEnabled = false,
                 MajorGridlineStyle = LineStyle.Solid,
-                MajorGridlineColor = OxyColor.FromAColor(40, 158, 158, 158),
+                MajorGridlineColor = OxyColor.FromArgb(40, 158, 158, 158),
                 MinorGridlineStyle = LineStyle.None,
                 StringFormat = "N0"
             };
