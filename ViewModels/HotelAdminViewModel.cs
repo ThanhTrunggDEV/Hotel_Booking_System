@@ -846,19 +846,25 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (SelectedRevenueFilter == null)
             {
-                RevenuePlotModel = CreateEmptyRevenuePlotModel();
+                var emptyModel = CreateEmptyRevenuePlotModel();
+                emptyModel.InvalidatePlot(true);
+                RevenuePlotModel = emptyModel;
                 RevenueSummary = "Chưa có dữ liệu doanh thu.";
                 return;
             }
 
             if (!_revenueData.TryGetValue(SelectedRevenueFilter.Range, out var data) || data.Count == 0)
             {
-                RevenuePlotModel = CreateEmptyRevenuePlotModel();
+                var emptyModel = CreateEmptyRevenuePlotModel();
+                emptyModel.InvalidatePlot(true);
+                RevenuePlotModel = emptyModel;
                 RevenueSummary = "Chưa có dữ liệu doanh thu.";
                 return;
             }
 
-            RevenuePlotModel = CreateRevenuePlotModel(data);
+            var model = CreateRevenuePlotModel(data);
+            model.InvalidatePlot(true);
+            RevenuePlotModel = model;
 
             var firstDate = data.First().Timestamp;
             var lastDate = data.Last().Timestamp;

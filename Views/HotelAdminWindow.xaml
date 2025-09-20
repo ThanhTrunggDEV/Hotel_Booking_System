@@ -303,6 +303,8 @@
                                 </StackPanel>
 
                                 <oxy:PlotView Margin="0,20,0,16"
+                                              Height="360"
+                                              MinHeight="280"
                                               Model="{Binding RevenuePlotModel}"
                                               Background="Transparent"/>
 
