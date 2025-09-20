@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel_Booking_System.Views"
+        xmlns:lvc="http://schemas.livecharts.com/wpf"
         mc:Ignorable="d"
             Title="Multi-Hotel Booking System" Height="900" Width="1400"
         WindowState="Maximized"
@@ -282,7 +283,43 @@
                 </ScrollViewer>
             </TabItem>
 
-            
+
+            <TabItem Style="{StaticResource TabItemStyle}" x:Name="RevenueTab" Header="💰 Doanh thu" Visibility="Visible">
+                <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Tổng quan doanh thu" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Text="Chọn khoảng thời gian để theo dõi đường doanh thu và xu hướng kinh doanh của khách sạn." Margin="0,8,0,20" Foreground="#FF666666"/>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel Margin="25">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="Hiển thị:" VerticalAlignment="Center" Foreground="#FF424242" FontWeight="SemiBold"/>
+                                    <ComboBox Width="220"
+                                              Margin="12,0,0,0"
+                                              Style="{StaticResource ModernComboBox}"
+                                              ItemsSource="{Binding RevenueFilterOptions}"
+                                              SelectedItem="{Binding SelectedRevenueFilter}"
+                                              DisplayMemberPath="DisplayName"/>
+                                </StackPanel>
+
+                                <lvc:CartesianChart Margin="0,20,0,16"
+                                                    Series="{Binding RevenueSeries}"
+                                                    XAxes="{Binding RevenueXAxes}"
+                                                    YAxes="{Binding RevenueYAxes}"
+                                                    ZoomMode="X"
+                                                    AnimationsSpeed="0:0:0.6"
+                                                    LegendPosition="Hidden"/>
+
+                                <TextBlock Text="{Binding RevenueSummary}"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FF424242"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
             <TabItem Style="{StaticResource TabItemStyle}" x:Name="ReviewsTab" Header="⭐ Reviews" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
