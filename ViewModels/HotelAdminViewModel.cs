@@ -460,8 +460,12 @@ namespace Hotel_Booking_System.ViewModels
 
         private async void LoadCurrentUser()
         {
-            CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
-            LoadHotels();
+            var user = await _userRepository.GetByEmailAsync(_userEmail);
+            if (user != null)
+            {
+                CurrentUser = user;
+                LoadHotels();
+            }
         }
 
         private async void LoadHotels()
@@ -750,6 +754,8 @@ namespace Hotel_Booking_System.ViewModels
             _revenueData[RevenueRange.Yearly] = BuildYearlyRevenue(_currentHotelPayments, today);
             _revenueData[RevenueRange.Cumulative] = BuildCumulativeRevenue(_currentHotelPayments, today);
 
+            UpdateYearlyRevenueOverview();
+
             if (SelectedRevenueFilter == null)
             {
                 SelectedRevenueFilter = RevenueFilterOptions.FirstOrDefault();
@@ -933,17 +939,7 @@ namespace Hotel_Booking_System.ViewModels
                     StrokeThickness = 3
                 },
                 GeometryStroke = new SolidColorPaint(SKColors.DeepSkyBlue),
-                GeometryFill = new SolidColorPaint(SKColors.White),
-                TooltipLabelFormatter = chartPoint =>
-                {
-                    var index = (int)Math.Round(chartPoint.SecondaryValue);
-                    if (index >= 0 && index < labels.Length)
-                    {
-                        return $"{labels[index]}: {chartPoint.PrimaryValue:N0} ₫";
-                    }
-
-                    return $"{chartPoint.PrimaryValue:N0} ₫";
-                }
+                GeometryFill = new SolidColorPaint(SKColors.White)
             });
 
             RevenueXAxes = new[]
@@ -986,20 +982,37 @@ namespace Hotel_Booking_System.ViewModels
             }
 
             RevenueSummary = $"Tổng doanh thu {modeDescription}{rangeDescription}: {total:N0} ₫";
+        }
 
-                yearlyTotal += amount;
-                yearlyMax = Math.Max(yearlyMax, amount);
+        private void UpdateYearlyRevenueOverview()
+        {
+            YearlyRevenue.Clear();
 
+            if (!_revenueData.TryGetValue(RevenueRange.Yearly, out var yearlyData) || yearlyData.Count == 0)
+            {
+                YearlyRevenueTotal = 0;
+                MaxYearlyRevenue = 0;
+                return;
+            }
+
+            double yearlyTotal = 0;
+            double yearlyMax = 0;
+
+            foreach (var dataPoint in yearlyData)
+            {
                 YearlyRevenue.Add(new RevenueDataPoint
                 {
-                    Label = currentYearStart.Year.ToString(),
-                    Amount = amount
+                    Label = dataPoint.Label,
+                    Amount = dataPoint.Amount,
+                    Timestamp = dataPoint.Timestamp
                 });
+
+                yearlyTotal += dataPoint.Amount;
+                yearlyMax = Math.Max(yearlyMax, dataPoint.Amount);
             }
 
             YearlyRevenueTotal = yearlyTotal;
             MaxYearlyRevenue = yearlyMax;
-
         }
 
         private void SyncAmenitiesFromHotel()

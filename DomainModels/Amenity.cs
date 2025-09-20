@@ -10,8 +10,8 @@ namespace Hotel_Booking_System.DomainModels
     public class Amenity
     {
         [Key]
-        public string AmenityID { get; set; }
-        public string AmenityName { get; set; } = "";
+        public string AmenityID { get; set; } = string.Empty;
+        public string AmenityName { get; set; } = string.Empty;
 
         public ICollection<Hotel> Hotels { get; set; } = new List<Hotel>();
     }

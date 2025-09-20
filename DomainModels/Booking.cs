@@ -11,15 +11,15 @@ namespace Hotel_Booking_System.DomainModels
     public class Booking
     {
         [Key]
-        public string BookingID { get; set; }
-        public string HotelID { get; set; } = "";
-        public string RoomID { get; set; } = "";
-        public string UserID { get; set; } = "";
-        public string GuestName { get; set; } = "";
+        public string BookingID { get; set; } = string.Empty;
+        public string HotelID { get; set; } = string.Empty;
+        public string RoomID { get; set; } = string.Empty;
+        public string UserID { get; set; } = string.Empty;
+        public string GuestName { get; set; } = string.Empty;
         public int NumberOfGuests { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
-        public string Status { get; set; } = "";
+        public string Status { get; set; } = string.Empty;
 
         [NotMapped]
         public string RoomNumber { get; set; } = string.Empty;

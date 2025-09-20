@@ -27,14 +27,12 @@ namespace Hotel_Booking_System
         {
             base.OnStartup(e);
             Env.Load();
-            using (var scope = Provider?.CreateScope())
-            {
-                var context = scope?.ServiceProvider.GetRequiredService<AppDbContext>();
-                context?.SeedData();
-            }
+            using var scope = Provider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            context.SeedData();
         }
         private static IServiceProvider? provider;
-        public static IServiceProvider? Provider { get => provider ??= ConfigDI(); }
+        public static IServiceProvider Provider => provider ??= ConfigDI();
         private static IServiceProvider ConfigDI()
         {
             var geminiOptions = new GeminiOptions

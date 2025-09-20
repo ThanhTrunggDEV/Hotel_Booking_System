@@ -12,13 +12,13 @@ namespace Hotel_Booking_System.DomainModels
     public class Review : INotifyPropertyChanged
     {
         [Key]
-        public string ReviewID { get; set; }
-        public string UserID { get; set; }
-        public string HotelID { get; set; }
-        public string RoomID { get; set; }
-        public string BookingID { get; set; }
+        public string ReviewID { get; set; } = string.Empty;
+        public string UserID { get; set; } = string.Empty;
+        public string HotelID { get; set; } = string.Empty;
+        public string RoomID { get; set; } = string.Empty;
+        public string BookingID { get; set; } = string.Empty;
         public int Rating { get; set; }
-        public string Comment { get; set; }
+        public string Comment { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
 
         private string? _adminReply;
