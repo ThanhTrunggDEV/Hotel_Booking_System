@@ -69,6 +69,51 @@ namespace Hotel_Booking_System.ViewModels
         public ObservableCollection<Room> Rooms { get; } = new();
         public ObservableCollection<Booking> Bookings { get; } = new();
         public ObservableCollection<string> BookingStatusFilters { get; } = new();
+        public ObservableCollection<RevenueDataPoint> WeeklyRevenue { get; } = new();
+        public ObservableCollection<RevenueDataPoint> MonthlyRevenue { get; } = new();
+        public ObservableCollection<RevenueDataPoint> YearlyRevenue { get; } = new();
+
+        private double _maxWeeklyRevenue;
+        public double MaxWeeklyRevenue
+        {
+            get => _maxWeeklyRevenue;
+            private set => Set(ref _maxWeeklyRevenue, value);
+        }
+
+        private double _maxMonthlyRevenue;
+        public double MaxMonthlyRevenue
+        {
+            get => _maxMonthlyRevenue;
+            private set => Set(ref _maxMonthlyRevenue, value);
+        }
+
+        private double _maxYearlyRevenue;
+        public double MaxYearlyRevenue
+        {
+            get => _maxYearlyRevenue;
+            private set => Set(ref _maxYearlyRevenue, value);
+        }
+
+        private double _weeklyRevenueTotal;
+        public double WeeklyRevenueTotal
+        {
+            get => _weeklyRevenueTotal;
+            private set => Set(ref _weeklyRevenueTotal, value);
+        }
+
+        private double _monthlyRevenueTotal;
+        public double MonthlyRevenueTotal
+        {
+            get => _monthlyRevenueTotal;
+            private set => Set(ref _monthlyRevenueTotal, value);
+        }
+
+        private double _yearlyRevenueTotal;
+        public double YearlyRevenueTotal
+        {
+            get => _yearlyRevenueTotal;
+            private set => Set(ref _yearlyRevenueTotal, value);
+        }
 
         private string _selectedBookingStatusFilter = "All";
         public string SelectedBookingStatusFilter
@@ -402,6 +447,7 @@ namespace Hotel_Booking_System.ViewModels
 
             UpdateBookingStatusFilters();
             ApplyBookingFilter();
+            UpdateRevenueAnalytics(bookings);
         }
 
         private async void LoadReviews()
@@ -603,6 +649,118 @@ namespace Hotel_Booking_System.ViewModels
             }
 
             return "Bronze";
+        }
+
+        private void UpdateRevenueAnalytics(List<Booking> bookings)
+        {
+            WeeklyRevenue.Clear();
+            MonthlyRevenue.Clear();
+            YearlyRevenue.Clear();
+
+            var payments = new List<Payment>();
+            if (bookings != null && bookings.Count > 0)
+            {
+                var bookingIds = bookings
+                    .Select(b => b.BookingID)
+                    .Where(id => !string.IsNullOrWhiteSpace(id))
+                    .ToHashSet();
+
+                if (bookingIds.Count > 0)
+                {
+                    payments = _paymentRepository.GetAllAsync().Result
+                        .Where(p => !string.IsNullOrWhiteSpace(p.BookingID) && bookingIds.Contains(p.BookingID))
+                        .ToList();
+                }
+            }
+
+            var today = DateTime.Today;
+
+            PopulateWeeklyRevenue(payments, today);
+            PopulateMonthlyRevenue(payments, today);
+            PopulateYearlyRevenue(payments, today);
+        }
+
+        private void PopulateWeeklyRevenue(List<Payment> payments, DateTime referenceDate)
+        {
+            var weekStart = referenceDate.AddDays(-6);
+            double weeklyMax = 0;
+            double weeklyTotal = 0;
+
+            for (int i = 0; i < 7; i++)
+            {
+                var currentDate = weekStart.AddDays(i).Date;
+                var amount = payments
+                    .Where(p => p.PaymentDate.Date == currentDate)
+                    .Sum(p => p.TotalPayment);
+
+                weeklyTotal += amount;
+                weeklyMax = Math.Max(weeklyMax, amount);
+
+                WeeklyRevenue.Add(new RevenueDataPoint
+                {
+                    Label = currentDate.ToString("dd/MM"),
+                    Amount = amount
+                });
+            }
+
+            WeeklyRevenueTotal = weeklyTotal;
+            MaxWeeklyRevenue = weeklyMax;
+        }
+
+        private void PopulateMonthlyRevenue(List<Payment> payments, DateTime referenceDate)
+        {
+            var monthStart = new DateTime(referenceDate.Year, referenceDate.Month, 1).AddMonths(-5);
+            double monthlyMax = 0;
+            double monthlyTotal = 0;
+
+            for (int i = 0; i < 6; i++)
+            {
+                var currentMonthStart = monthStart.AddMonths(i);
+                var nextMonthStart = currentMonthStart.AddMonths(1);
+                var amount = payments
+                    .Where(p => p.PaymentDate >= currentMonthStart && p.PaymentDate < nextMonthStart)
+                    .Sum(p => p.TotalPayment);
+
+                monthlyTotal += amount;
+                monthlyMax = Math.Max(monthlyMax, amount);
+
+                MonthlyRevenue.Add(new RevenueDataPoint
+                {
+                    Label = currentMonthStart.ToString("MM/yyyy"),
+                    Amount = amount
+                });
+            }
+
+            MonthlyRevenueTotal = monthlyTotal;
+            MaxMonthlyRevenue = monthlyMax;
+        }
+
+        private void PopulateYearlyRevenue(List<Payment> payments, DateTime referenceDate)
+        {
+            var yearStart = new DateTime(referenceDate.Year - 4, 1, 1);
+            double yearlyMax = 0;
+            double yearlyTotal = 0;
+
+            for (int i = 0; i < 5; i++)
+            {
+                var currentYearStart = yearStart.AddYears(i);
+                var nextYearStart = currentYearStart.AddYears(1);
+                var amount = payments
+                    .Where(p => p.PaymentDate >= currentYearStart && p.PaymentDate < nextYearStart)
+                    .Sum(p => p.TotalPayment);
+
+                yearlyTotal += amount;
+                yearlyMax = Math.Max(yearlyMax, amount);
+
+                YearlyRevenue.Add(new RevenueDataPoint
+                {
+                    Label = currentYearStart.Year.ToString(),
+                    Amount = amount
+                });
+            }
+
+            YearlyRevenueTotal = yearlyTotal;
+            MaxYearlyRevenue = yearlyMax;
         }
 
         private void SyncAmenitiesFromHotel()
@@ -943,6 +1101,12 @@ namespace Hotel_Booking_System.ViewModels
                 LoadBookings();
             }
         }
+    }
+
+    public class RevenueDataPoint
+    {
+        public string Label { get; set; } = string.Empty;
+        public double Amount { get; set; }
     }
 }
 
