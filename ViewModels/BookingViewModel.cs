@@ -21,7 +21,7 @@ namespace Hotel_Booking_System.ViewModels
         private int _numberOfGuests;
         private string _guestName = string.Empty;
         private double _totalPayment;
-        private string _notificationMessage;
+        private string _notificationMessage = string.Empty;
         private string _notificationVisibility = "Collapsed";
 
         public BookingViewModel(IBookingRepository bookingRepository, IRoomRepository roomRepository, INavigationService navigationService)
@@ -66,9 +66,9 @@ namespace Hotel_Booking_System.ViewModels
                 CalculateTotalPayment();
             }
         }
-        public Room SelectedRoom { get ; set ; }
-        public User CurrentUser { get ; set ; }
-        public Hotel Hotel { get ; set ; }
+        public Room? SelectedRoom { get; set; }
+        public User? CurrentUser { get; set; }
+        public Hotel? Hotel { get; set; }
 
         public string NotificationMessage
         {
@@ -102,7 +102,7 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private async Task ConfirmBooking()
         {
-            if (SelectedRoom == null || CurrentUser == null)
+            if (SelectedRoom == null || CurrentUser == null || Hotel == null)
                 return;
 
             NotificationMessage = string.Empty;

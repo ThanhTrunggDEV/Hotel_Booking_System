@@ -33,7 +33,7 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IAIChatRepository _aiChatRepository;
         private readonly IReviewRepository _reviewRepository;
 
-        private string userMail;
+        private string userMail = string.Empty;
         private int _totalBookings;
         private double _totalSpent;
         private string _showSearchRoom = "Collapsed";
@@ -45,19 +45,19 @@ namespace Hotel_Booking_System.ViewModels
         private string _showRegisterForm = "Collapsed";
         private string _showChatBox = "Collapsed";
         private string _showChatButton = "Visible";
-        private Hotel _currentHotel;
-        private User _currentUser;
+        private Hotel _currentHotel = new();
+        private User _currentUser = new();
         private string _errorVisibility = "Collapsed";
         private string _errorMessage = string.Empty;
         private string _requestHotelName = "";
         private string _requestHotelAddress = "";
         private string _requestReason = "";
-        private string _selectedModel;
+        private string _selectedModel = string.Empty;
         private string _chatInput = string.Empty;
         private string _membershipLevel = "Bronze";
         private string _hasBookings = "Collapsed";
 
-        private DispatcherTimer _typingTimer;
+        private DispatcherTimer? _typingTimer;
 
         private string _currentPassword = string.Empty;
         private string _newPassword = string.Empty;
@@ -157,19 +157,19 @@ namespace Hotel_Booking_System.ViewModels
         {
             get;
             set;
-        }
+        } = new();
 
         public ObservableCollection<Room> Rooms
         {
             get;
             set;
-        }
+        } = new();
 
         public ObservableCollection<Room> FilteredRooms
         {
             get;
             set;
-        }
+        } = new();
 
         public string ErrorVisibility { get => _errorVisibility; set => Set(ref _errorVisibility, value); }
         public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
@@ -666,7 +666,11 @@ namespace Hotel_Booking_System.ViewModels
             {
                 CurrentUser.AvatarUrl = await UploadImageService.UploadAsync(openFileDialog.FileName);
                 await _userRepository.UpdateAsync(CurrentUser);
-                CurrentUser = await _userRepository.GetByIdAsync(CurrentUser.UserID);
+                var refreshed = await _userRepository.GetByIdAsync(CurrentUser.UserID);
+                if (refreshed != null)
+                {
+                    CurrentUser = refreshed;
+                }
             }
         }
 
@@ -734,6 +738,11 @@ namespace Hotel_Booking_System.ViewModels
         private void BookRoom(Room room)
         {
             var hotel = Hotels.FirstOrDefault(h => h.HotelID == room.HotelID);
+            if (hotel == null)
+            {
+                return;
+            }
+
             bool res = _navigationService.OpenBookingDialog(room, CurrentUser, hotel);
 
             if (res)

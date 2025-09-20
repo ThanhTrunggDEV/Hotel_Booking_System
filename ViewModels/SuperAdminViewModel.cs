@@ -20,13 +20,13 @@ namespace Hotel_Booking_System.ViewModels
 {
     public partial class SuperAdminViewModel : Bindable, ISuperAdminViewModel
     {
-        private string _userEmail;
+        private string _userEmail = string.Empty;
         private IRoomRepository _roomRepository;
         private IHotelAdminRequestRepository _hotelAdminRequestRepository;
         private IHotelRepository _hotelRepository;
         private IUserRepository _userRepository;
         private INavigationService _navigationService;
-        private User _currentUser;
+        private User _currentUser = new();
         private int _totalHotels;
         private int _totalUsers;
         private int _pendingRequests;
@@ -57,8 +57,8 @@ namespace Hotel_Booking_System.ViewModels
         
 
         public ObservableCollection<HotelAdminRequest> PendingRequest { get; set; } = new();
-        public ObservableCollection<User> Users { get; set; }
-        public ObservableCollection<Hotel> Hotels { get; set; }
+        public ObservableCollection<User> Users { get; set; } = new();
+        public ObservableCollection<Hotel> Hotels { get; set; } = new();
         public ObservableCollection<Hotel> PendingHotels { get; set; } = new();
         public SuperAdminViewModel(IRoomRepository roomRepository, IHotelAdminRequestRepository hotelAdminRequestRepository, IHotelRepository hotelRepository, IUserRepository userRepository, INavigationService navigationService)
         {
@@ -113,7 +113,11 @@ namespace Hotel_Booking_System.ViewModels
 
         private async Task GetCurrentUserAsync()
         {
-            CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
+            var user = await _userRepository.GetByEmailAsync(_userEmail);
+            if (user != null)
+            {
+                CurrentUser = user;
+            }
         }
 
         [RelayCommand]
