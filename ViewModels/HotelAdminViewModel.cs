@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -413,7 +414,7 @@ namespace Hotel_Booking_System.ViewModels
             _navigationService = navigationService;
             _authenticationService = authenticationService;
 
-            RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo ngày", Range = RevenueRange.Daily });
+            RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo tuần", Range = RevenueRange.Weekly });
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo tháng", Range = RevenueRange.Monthly });
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo năm", Range = RevenueRange.Yearly });
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Tổng", Range = RevenueRange.Cumulative });
@@ -716,7 +717,7 @@ namespace Hotel_Booking_System.ViewModels
 
             var today = DateTime.Today;
 
-            _revenueData[RevenueRange.Daily] = BuildDailyRevenue(_currentHotelPayments, today);
+            _revenueData[RevenueRange.Weekly] = BuildWeeklyRevenue(_currentHotelPayments, today);
             _revenueData[RevenueRange.Monthly] = BuildMonthlyRevenue(_currentHotelPayments, today);
             _revenueData[RevenueRange.Yearly] = BuildYearlyRevenue(_currentHotelPayments, today);
             _revenueData[RevenueRange.Cumulative] = BuildCumulativeRevenue(_currentHotelPayments, today);
@@ -733,25 +734,41 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
-        private List<RevenueDataPoint> BuildDailyRevenue(List<Payment> payments, DateTime referenceDate)
+        private List<RevenueDataPoint> BuildWeeklyRevenue(List<Payment> payments, DateTime referenceDate)
         {
             payments ??= new List<Payment>();
             var result = new List<RevenueDataPoint>();
-            var startDate = referenceDate.AddDays(-13);
+            const int numberOfWeeks = 12;
 
-            for (int i = 0; i < 14; i++)
+            var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+            var currentWeekStart = referenceDate.Date;
+            while (currentWeekStart.DayOfWeek != firstDayOfWeek)
             {
-                var currentDate = startDate.AddDays(i).Date;
+                currentWeekStart = currentWeekStart.AddDays(-1);
+            }
+
+            var startWeek = currentWeekStart.AddDays(-7 * (numberOfWeeks - 1));
+
+            for (int i = 0; i < numberOfWeeks; i++)
+            {
+                var weekStart = startWeek.AddDays(i * 7);
+                var weekEndExclusive = weekStart.AddDays(7);
 
                 var amount = payments
-                    .Where(p => p.PaymentDate.Date == currentDate)
+                    .Where(p => p.PaymentDate >= weekStart && p.PaymentDate < weekEndExclusive)
                     .Sum(p => p.TotalPayment);
+
+                var weekEndInclusive = weekEndExclusive.AddDays(-1);
+                if (weekEndInclusive > referenceDate.Date)
+                {
+                    weekEndInclusive = referenceDate.Date;
+                }
 
                 result.Add(new RevenueDataPoint
                 {
-                    Label = currentDate.ToString("dd/MM"),
+                    Label = $"{weekStart:dd/MM} - {weekEndInclusive:dd/MM}",
                     Amount = amount,
-                    Timestamp = currentDate
+                    Timestamp = weekStart
                 });
             }
 
@@ -868,13 +885,18 @@ namespace Hotel_Booking_System.ViewModels
 
             var firstDate = data.First().Timestamp;
             var lastDate = data.Last().Timestamp;
+            var weeklyRangeEndDate = lastDate.AddDays(6);
+            if (weeklyRangeEndDate > DateTime.Today)
+            {
+                weeklyRangeEndDate = DateTime.Today;
+            }
             double total = SelectedRevenueFilter.Range == RevenueRange.Cumulative
                 ? data.Last().Amount
                 : data.Sum(d => d.Amount);
 
             string modeDescription = SelectedRevenueFilter.Range switch
             {
-                RevenueRange.Daily => "theo ngày",
+                RevenueRange.Weekly => "theo tuần",
                 RevenueRange.Monthly => "theo tháng",
                 RevenueRange.Yearly => "theo năm",
                 RevenueRange.Cumulative => "tích lũy",
@@ -883,7 +905,7 @@ namespace Hotel_Booking_System.ViewModels
 
             string rangeDescription = SelectedRevenueFilter.Range switch
             {
-                RevenueRange.Daily => $"({firstDate:dd/MM} - {lastDate:dd/MM})",
+                RevenueRange.Weekly => $"({firstDate:dd/MM} - {weeklyRangeEndDate:dd/MM})",
                 RevenueRange.Monthly => $"({firstDate:MM/yyyy} - {lastDate:MM/yyyy})",
                 RevenueRange.Yearly => $"({firstDate:yyyy} - {lastDate:yyyy})",
                 RevenueRange.Cumulative => $"(đến {lastDate:dd/MM/yyyy})",
@@ -895,7 +917,7 @@ namespace Hotel_Booking_System.ViewModels
                 rangeDescription = " " + rangeDescription;
             }
 
-            RevenueSummary = $"Tổng doanh thu {modeDescription}{rangeDescription}: {total:N0} ₫";
+            RevenueSummary = $"Tổng doanh thu {modeDescription}{rangeDescription}: ${total:N0}";
         }
 
         private void UpdateYearlyRevenueOverview()
@@ -1386,7 +1408,7 @@ namespace Hotel_Booking_System.ViewModels
 
     public enum RevenueRange
     {
-        Daily,
+        Weekly,
         Monthly,
         Yearly,
         Cumulative
