@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel_Booking_System.Views"
+        xmlns:lvc="http://schemas.livecharts.com/wpf"
         mc:Ignorable="d"
             Title="Multi-Hotel Booking System" Height="900" Width="1400"
         WindowState="Maximized"
@@ -287,101 +288,32 @@
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <TextBlock Text="Tổng quan doanh thu" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Text="Theo dõi doanh thu theo tuần, tháng và năm để nắm bắt xu hướng kinh doanh." Margin="0,8,0,20" Foreground="#FF666666"/>
-
-                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
-                            <StackPanel Margin="25">
-                                <TextBlock Text="Doanh thu theo tuần" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding WeeklyRevenueTotal, StringFormat='Tổng (7 ngày): {0:N0} ₫'}" Margin="0,4,0,16" Foreground="#FF424242"/>
-                                <ItemsControl ItemsSource="{Binding WeeklyRevenue}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Columns="7"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                                                <TextBlock Text="{Binding Amount, StringFormat='{}{0:N0} ₫'}" FontSize="12" HorizontalAlignment="Center" Foreground="#FF666666"/>
-                                                <Border Width="32" Height="140" Background="#FFE3F2FD" Margin="0,6,0,6" CornerRadius="12" Padding="4" SnapsToDevicePixels="True">
-                                                    <Border Background="#FF1976D2" CornerRadius="8,8,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-                                                        <Border.Height>
-                                                            <MultiBinding Converter="{StaticResource RevenueToHeightConverter}" ConverterParameter="132">
-                                                                <Binding Path="Amount"/>
-                                                                <Binding Path="DataContext.MaxWeeklyRevenue" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
-                                                            </MultiBinding>
-                                                        </Border.Height>
-                                                    </Border>
-                                                </Border>
-                                                <TextBlock Text="{Binding Label}" FontSize="12" HorizontalAlignment="Center" Foreground="#FF424242"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
-                            <StackPanel Margin="25">
-                                <TextBlock Text="Doanh thu theo tháng" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding MonthlyRevenueTotal, StringFormat='Tổng (6 tháng): {0:N0} ₫'}" Margin="0,4,0,16" Foreground="#FF424242"/>
-                                <ItemsControl ItemsSource="{Binding MonthlyRevenue}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Columns="6"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                                                <TextBlock Text="{Binding Amount, StringFormat='{}{0:N0} ₫'}" FontSize="12" HorizontalAlignment="Center" Foreground="#FF666666"/>
-                                                <Border Width="36" Height="160" Background="#FFFFF3E0" Margin="0,6,0,6" CornerRadius="12" Padding="4" SnapsToDevicePixels="True">
-                                                    <Border Background="#FFFF9800" CornerRadius="8,8,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-                                                        <Border.Height>
-                                                            <MultiBinding Converter="{StaticResource RevenueToHeightConverter}" ConverterParameter="152">
-                                                                <Binding Path="Amount"/>
-                                                                <Binding Path="DataContext.MaxMonthlyRevenue" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
-                                                            </MultiBinding>
-                                                        </Border.Height>
-                                                    </Border>
-                                                </Border>
-                                                <TextBlock Text="{Binding Label}" FontSize="12" HorizontalAlignment="Center" Foreground="#FF424242"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
+                        <TextBlock Text="Chọn khoảng thời gian để theo dõi đường doanh thu và xu hướng kinh doanh của khách sạn." Margin="0,8,0,20" Foreground="#FF666666"/>
 
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
-                                <TextBlock Text="Doanh thu theo năm" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding YearlyRevenueTotal, StringFormat='Tổng (5 năm): {0:N0} ₫'}" Margin="0,4,0,16" Foreground="#FF424242"/>
-                                <ItemsControl ItemsSource="{Binding YearlyRevenue}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Columns="5"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Margin="5" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                                                <TextBlock Text="{Binding Amount, StringFormat='{}{0:N0} ₫'}" FontSize="12" HorizontalAlignment="Center" Foreground="#FF666666"/>
-                                                <Border Width="40" Height="160" Background="#FFE8F5E9" Margin="0,6,0,6" CornerRadius="12" Padding="4" SnapsToDevicePixels="True">
-                                                    <Border Background="#FF2E7D32" CornerRadius="8,8,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
-                                                        <Border.Height>
-                                                            <MultiBinding Converter="{StaticResource RevenueToHeightConverter}" ConverterParameter="152">
-                                                                <Binding Path="Amount"/>
-                                                                <Binding Path="DataContext.MaxYearlyRevenue" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
-                                                            </MultiBinding>
-                                                        </Border.Height>
-                                                    </Border>
-                                                </Border>
-                                                <TextBlock Text="{Binding Label}" FontSize="12" HorizontalAlignment="Center" Foreground="#FF424242"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="Hiển thị:" VerticalAlignment="Center" Foreground="#FF424242" FontWeight="SemiBold"/>
+                                    <ComboBox Width="220"
+                                              Margin="12,0,0,0"
+                                              Style="{StaticResource ModernComboBox}"
+                                              ItemsSource="{Binding RevenueFilterOptions}"
+                                              SelectedItem="{Binding SelectedRevenueFilter}"
+                                              DisplayMemberPath="DisplayName"/>
+                                </StackPanel>
+
+                                <lvc:CartesianChart Margin="0,20,0,16"
+                                                    Series="{Binding RevenueSeries}"
+                                                    XAxes="{Binding RevenueXAxes}"
+                                                    YAxes="{Binding RevenueYAxes}"
+                                                    ZoomMode="X"
+                                                    AnimationsSpeed="0:0:0.6"
+                                                    LegendPosition="Hidden"/>
+
+                                <TextBlock Text="{Binding RevenueSummary}"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FF424242"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
