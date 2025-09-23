@@ -212,8 +212,6 @@
                                         Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="All"/>
                                 <Button Content="Active" Background="#FF4CAF50" Style="{StaticResource PrimaryButton}" Width="80"
                                         Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Active" Margin="10,0,0,0"/>
-                                <Button Content="Pending" Background="#FFFF9800" Style="{StaticResource PrimaryButton}" Width="80"
-                                        Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Pending" Margin="10,0,0,0"/>
                                 <Button Content="Suspended" Background="#FFFF5722" Style="{StaticResource PrimaryButton}" Width="100"
                                         Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Suspended" Margin="10,0,0,0"/>
                                 <ComboBox Style="{StaticResource ModernComboBox}" Width="160" Margin="10,0,0,0"
