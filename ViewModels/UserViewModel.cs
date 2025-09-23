@@ -38,8 +38,8 @@ namespace Hotel_Booking_System.ViewModels
         private double _totalSpent;
         private string _showSearchRoom = "Collapsed";
         private string _showSearchHotel = "Visible";
-        private string _sortType = "Default";
-        private string _roomSortType = "Default";
+        private string _sortType = "Mặc định";
+        private string _roomSortType = "Mặc định";
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
         private string _showRegisterForm = "Collapsed";
@@ -245,7 +245,7 @@ namespace Hotel_Booking_System.ViewModels
 
         private void SortHotels()
         {
-            if (SortType == "User Rating: High to Low")
+            if (SortType == "Đánh giá người dùng: Cao đến Thấp")
             {
                 var sorted = Hotels.OrderByDescending(h => h.AverageRating).ToList();
                 Hotels.Clear();
@@ -254,7 +254,7 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            else if (SortType == "User Rating: Low to High")
+            else if (SortType == "Đánh giá người dùng: Thấp đến Cao")
             {
                 var sorted = Hotels.OrderBy(h => h.AverageRating).ToList();
                 Hotels.Clear();
@@ -263,7 +263,7 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            else if (SortType == "Hotel Rating: High to Low")
+            else if (SortType == "Xếp hạng khách sạn: Cao đến Thấp")
             {
                 var sorted = Hotels.OrderByDescending(h => h.Rating).ToList();
                 Hotels.Clear();
@@ -272,7 +272,7 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            else if (SortType == "Hotel Rating: Low to High")
+            else if (SortType == "Xếp hạng khách sạn: Thấp đến Cao")
             {
                 var sorted = Hotels.OrderBy(h => h.Rating).ToList();
                 Hotels.Clear();
@@ -281,7 +281,7 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            else if (SortType == "Name: A to Z")
+            else if (SortType == "Tên: A đến Z")
             {
                 var sorted = Hotels.OrderBy(h => h.HotelName).ToList();
                 Hotels.Clear();
@@ -290,7 +290,7 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            else if(SortType == "Price: Low to High")
+            else if(SortType == "Giá: Thấp đến Cao")
             {
                 var sorted = Hotels.OrderBy(h => h.MinPrice).ToList();
                 Hotels.Clear();
@@ -299,7 +299,7 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            else if (SortType == "Price: High to Low")
+            else if (SortType == "Giá: Cao đến Thấp")
             {
                 var sorted = Hotels.OrderByDescending(h => h.MaxPrice).ToList();
                 Hotels.Clear();
@@ -308,7 +308,7 @@ namespace Hotel_Booking_System.ViewModels
                     Hotels.Add(hotel);
                 }
             }
-            else if (SortType == "Name: Z to A")
+            else if (SortType == "Tên: Z đến A")
             {
                 var sorted = Hotels.OrderByDescending(h => h.HotelName).ToList();
                 Hotels.Clear();
@@ -338,19 +338,19 @@ namespace Hotel_Booking_System.ViewModels
         private void SortRooms()
         {
             List<Room> sorted;
-            if (RoomSortType == "Price: Low to High")
+            if (RoomSortType == "Giá: Thấp đến Cao")
             {
                 sorted = FilteredRooms.OrderBy(r => r.PricePerNight).ToList();
             }
-            else if (RoomSortType == "Price: High to Low")
+            else if (RoomSortType == "Giá: Cao đến Thấp")
             {
                 sorted = FilteredRooms.OrderByDescending(r => r.PricePerNight).ToList();
             }
-            else if (RoomSortType == "Capacity: Low to High")
+            else if (RoomSortType == "Sức chứa: Thấp đến Cao")
             {
                 sorted = FilteredRooms.OrderBy(r => r.Capacity).ToList();
             }
-            else if (RoomSortType == "Capacity: High to Low")
+            else if (RoomSortType == "Sức chứa: Cao đến Thấp")
             {
                 sorted = FilteredRooms.OrderByDescending(r => r.Capacity).ToList();
             }
