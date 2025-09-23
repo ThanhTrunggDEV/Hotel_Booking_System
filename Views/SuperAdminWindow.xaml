@@ -535,9 +535,7 @@
                                     </Grid>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                                        <Button Command="{Binding UpdateInfoCommand}" Content="Update Profile" Width="150" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0"/>
-                                        <Button Command="{Binding RegisterCommand}" Content="Register Hotel Admin" Background="#FFFF9800" 
-                                    Style="{StaticResource PrimaryButton}" Width="200"/>
+                                        <Button Command="{Binding UpdateInfoCommand}" Content="Update Profile" Width="150" Style="{StaticResource PrimaryButton}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
@@ -593,9 +591,9 @@
                                     </Grid>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                                        <Button Content="Change Password" Width="150" Style="{StaticResource PrimaryButton}" 
+                                        <Button Command="{Binding ChangePasswordCommand}" Content="Change Password" Width="150" Style="{StaticResource PrimaryButton}"
                                     Background="#FFFF5722" Margin="0,0,10,0"/>
-                                        <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"/>
+                                        <Button x:Name="btnCancelPassword" Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}" Click="CancelPassword_Click"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
@@ -10,6 +11,7 @@ using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
 using Hotel_Manager.FrameWorks;
+using Microsoft.Win32;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -23,6 +25,7 @@ namespace Hotel_Booking_System.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IBookingRepository _bookingRepository;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IAuthentication _authenticationService;
         private User _currentUser = new();
         private int _totalHotels;
         private int _totalUsers;
@@ -38,6 +41,12 @@ namespace Hotel_Booking_System.ViewModels
         private string _selectedHotelStatus = "All";
         private string _hotelSearchTerm = string.Empty;
         private string _hotelCountText = string.Empty;
+        private int _totalBookings;
+        private double _totalSpent;
+        private string _membershipLevel = "Bronze";
+        private string _currentPassword = string.Empty;
+        private string _newPassword = string.Empty;
+        private string _confirmPassword = string.Empty;
         public int PendingRequests
         {
             get { return _pendingRequests; }
@@ -82,6 +91,42 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
+        public int TotalBookings
+        {
+            get => _totalBookings;
+            set => Set(ref _totalBookings, value);
+        }
+
+        public double TotalSpent
+        {
+            get => _totalSpent;
+            set => Set(ref _totalSpent, value);
+        }
+
+        public string MembershipLevel
+        {
+            get => _membershipLevel;
+            set => Set(ref _membershipLevel, value);
+        }
+
+        public string CurrentPassword
+        {
+            get => _currentPassword;
+            set => Set(ref _currentPassword, value);
+        }
+
+        public string NewPassword
+        {
+            get => _newPassword;
+            set => Set(ref _newPassword, value);
+        }
+
+        public string ConfirmPassword
+        {
+            get => _confirmPassword;
+            set => Set(ref _confirmPassword, value);
+        }
+
 
 
         public ObservableCollection<HotelAdminRequest> PendingRequest { get; set; } = new();
@@ -90,7 +135,7 @@ namespace Hotel_Booking_System.ViewModels
         public ObservableCollection<Hotel> PendingHotels { get; set; } = new();
         public ObservableCollection<Hotel> FilteredHotels { get; } = new();
         public ObservableCollection<string> CityOptions { get; } = new();
-        public SuperAdminViewModel(IRoomRepository roomRepository, IHotelAdminRequestRepository hotelAdminRequestRepository, IHotelRepository hotelRepository, IUserRepository userRepository, INavigationService navigationService, IBookingRepository bookingRepository, IPaymentRepository paymentRepository)
+        public SuperAdminViewModel(IRoomRepository roomRepository, IHotelAdminRequestRepository hotelAdminRequestRepository, IHotelRepository hotelRepository, IUserRepository userRepository, INavigationService navigationService, IBookingRepository bookingRepository, IPaymentRepository paymentRepository, IAuthentication authenticationService)
         {
             _roomRepository = roomRepository;
             _hotelAdminRequestRepository = hotelAdminRequestRepository;
@@ -99,6 +144,7 @@ namespace Hotel_Booking_System.ViewModels
             _navigationService = navigationService;
             _bookingRepository = bookingRepository;
             _paymentRepository = paymentRepository;
+            _authenticationService = authenticationService;
 
             CityOptions.Add("All Cities");
 
@@ -114,12 +160,23 @@ namespace Hotel_Booking_System.ViewModels
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(CurrentUser?.UserID))
+                {
+                    await GetCurrentUserAsync();
+                }
+
                 var hotels = await _hotelRepository.GetAllAsync();
                 var rooms = await _roomRepository.GetAllAsync();
                 var users = await _userRepository.GetAllAsync();
 
                 TotalHotels = hotels.Count(h => h.IsApproved);
                 TotalUsers = users.Count();
+
+                Users.Clear();
+                foreach (var user in users)
+                {
+                    Users.Add(user);
+                }
 
                 var userLookup = users.ToDictionary(u => u.UserID, u => u.FullName);
                 var roomGroups = rooms.GroupBy(r => r.HotelID)
@@ -158,6 +215,8 @@ namespace Hotel_Booking_System.ViewModels
                 MonthlyRevenue = payments
                     .Where(p => p.PaymentDate.Year == today.Year && p.PaymentDate.Month == today.Month)
                     .Sum(p => p.TotalPayment);
+
+                UpdateUserBookingStats(bookings, payments);
 
                 var requests = (await _hotelAdminRequestRepository.GetAllAsync()).Where(r => r.Status == "Pending").ToList();
                 PendingRequest.Clear();
@@ -293,9 +352,118 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         [RelayCommand]
+        private async Task UploadImage()
+        {
+            FileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
+                {
+                    MessageBox.Show("Current user information is not available.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                try
+                {
+                    CurrentUser.AvatarUrl = await UploadImageService.UploadAsync(openFileDialog.FileName);
+                    await _userRepository.UpdateAsync(CurrentUser);
+                    var refreshed = await _userRepository.GetByIdAsync(CurrentUser.UserID);
+                    if (refreshed != null)
+                    {
+                        CurrentUser = refreshed;
+                    }
+
+                    MessageBox.Show("Profile image updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to upload image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        [RelayCommand]
         private async Task UpdateInfo()
         {
-            await _userRepository.UpdateAsync(CurrentUser);
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
+            {
+                MessageBox.Show("Current user information is not available.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                await _userRepository.UpdateAsync(CurrentUser);
+                var refreshed = await _userRepository.GetByIdAsync(CurrentUser.UserID);
+                if (refreshed != null)
+                {
+                    CurrentUser = refreshed;
+                }
+
+                MessageBox.Show("Profile updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to update profile: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ChangePassword()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
+            {
+                MessageBox.Show("Current user information is not available.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!_authenticationService.VerifyPassword(CurrentPassword, CurrentUser.Password))
+            {
+                MessageBox.Show("Current password is incorrect.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (!IsPasswordValid(NewPassword))
+            {
+                MessageBox.Show("New password does not meet the security requirements.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!string.Equals(NewPassword, ConfirmPassword, StringComparison.Ordinal))
+            {
+                MessageBox.Show("New password and confirmation do not match.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                CurrentUser.Password = _authenticationService.HashPassword(NewPassword);
+                await _userRepository.UpdateAsync(CurrentUser);
+                var refreshed = await _userRepository.GetByIdAsync(CurrentUser.UserID);
+                if (refreshed != null)
+                {
+                    CurrentUser = refreshed;
+                }
+
+                MessageBox.Show("Password changed successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                ClearPasswordFields();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to change password: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private void ClearPasswordFields()
+        {
+            CurrentPassword = string.Empty;
+            NewPassword = string.Empty;
+            ConfirmPassword = string.Empty;
         }
 
         [RelayCommand]
@@ -354,6 +522,33 @@ namespace Hotel_Booking_System.ViewModels
             PendingHotelsCount = PendingHotels.Count;
             PendingRequests = PendingRequest.Count;
             PendingApprovals = PendingRequests + PendingHotelsCount;
+        }
+
+        private void UpdateUserBookingStats(IEnumerable<Booking> bookings, IEnumerable<Payment> payments)
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
+            {
+                TotalBookings = 0;
+                TotalSpent = 0;
+                MembershipLevel = "Bronze";
+                return;
+            }
+
+            var userBookings = bookings.Where(b => b.UserID == CurrentUser.UserID).ToList();
+            TotalBookings = userBookings.Count;
+
+            if (userBookings.Count == 0)
+            {
+                TotalSpent = 0;
+                MembershipLevel = "Bronze";
+                return;
+            }
+
+            var bookingIds = new HashSet<string>(userBookings.Select(b => b.BookingID));
+            var totalSpent = payments.Where(p => bookingIds.Contains(p.BookingID)).Sum(p => p.TotalPayment);
+
+            TotalSpent = totalSpent;
+            MembershipLevel = GetMembershipLevel(totalSpent);
         }
 
         private string GetHotelStatus(Hotel hotel)
@@ -456,6 +651,42 @@ namespace Hotel_Booking_System.ViewModels
         private async Task RefreshHotelsAsync()
         {
             await LoadDataAsync();
+        }
+
+        private static bool IsPasswordValid(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+            {
+                return false;
+            }
+
+            bool hasUpper = password.Any(char.IsUpper);
+            bool hasLower = password.Any(char.IsLower);
+            bool hasDigit = password.Any(char.IsDigit);
+            bool hasSpecial = password.Any(c => !char.IsLetterOrDigit(c));
+
+            return hasUpper && hasLower && hasDigit && hasSpecial;
+        }
+
+        private static bool IsValidEmail(string email)
+        {
+            try
+            {
+                _ = new MailAddress(email);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static string GetMembershipLevel(double totalSpent)
+        {
+            if (totalSpent >= 10000) return "Platinum";
+            if (totalSpent >= 5000) return "Gold";
+            if (totalSpent >= 1000) return "Silver";
+            return "Bronze";
         }
     }
 }
