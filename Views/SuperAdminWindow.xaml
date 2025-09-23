@@ -695,52 +695,6 @@
             </TabItem>
 
 
-            <TabItem x:Name="AdminBookingsRequestsTab" Header="Admin Bookings &amp; Requests">
-                <Grid Margin="30,20">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <ItemsControl ItemsSource="{Binding Bookings}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Margin="0,5">
-                                    <TextBlock Text="{Binding BookingID}" Width="150"/>
-                                    <TextBlock Text="{Binding Status}" Width="100"/>
-                                    <Button Content="Cancel" Width="75" Margin="5,0"
-                                            Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                            CommandParameter="{Binding}"/>
-                                    <Button Content="Edit" Width="75"
-                                            Command="{Binding DataContext.EditBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                            CommandParameter="{Binding}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
-                    <DataGrid Grid.Row="1" ItemsSource="{Binding Requests}" AutoGenerateColumns="False" Margin="0,10,0,0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Request ID" Binding="{Binding RequestID}" Width="*"/>
-                            <DataGridTextColumn Header="User ID" Binding="{Binding UserID}" Width="*"/>
-                            <DataGridTextColumn Header="Hotel Name" Binding="{Binding HotelName}" Width="*"/>
-                            <DataGridTextColumn Header="Reason" Binding="{Binding Reason}" Width="*"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
-                            <DataGridTemplateColumn Header="Actions" Width="200">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button Content="Approve" Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding RequestID}" Margin="2"/>
-                                            <Button Content="Reject" Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding RequestID}" Margin="2"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
-
         </TabControl>
     </Grid>
 </Window>
