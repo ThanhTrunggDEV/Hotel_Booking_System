@@ -661,20 +661,43 @@ namespace Hotel_Booking_System.ViewModels
 
             if (openFileDialog.ShowDialog() == true)
             {
-                CurrentUser.AvatarUrl = await UploadImageService.UploadAsync(openFileDialog.FileName);
+                try
+                {
+                    CurrentUser.AvatarUrl = await UploadImageService.UploadAsync(openFileDialog.FileName);
+                    await _userRepository.UpdateAsync(CurrentUser);
+                    var refreshed = await _userRepository.GetByIdAsync(CurrentUser.UserID);
+                    if (refreshed != null)
+                    {
+                        CurrentUser = refreshed;
+                    }
+
+                    ShowNotification("Profile image updated successfully.");
+                }
+                catch (Exception)
+                {
+                    ShowNotification("Failed to update profile image. Please try again.");
+                }
+            }
+        }
+
+        [RelayCommand]
+        private async Task UpdateInfo()
+        {
+            try
+            {
                 await _userRepository.UpdateAsync(CurrentUser);
                 var refreshed = await _userRepository.GetByIdAsync(CurrentUser.UserID);
                 if (refreshed != null)
                 {
                     CurrentUser = refreshed;
                 }
-            }
-        }
 
-        [RelayCommand]
-        private void UpdateInfo()
-        {
-            _userRepository.UpdateAsync(CurrentUser);
+                ShowNotification("Profile information updated successfully.");
+            }
+            catch (Exception)
+            {
+                ShowNotification("Failed to update profile information. Please try again.");
+            }
 
         }
         [RelayCommand]
