@@ -10,6 +10,10 @@ namespace Hotel_Booking_System.Interfaces
         int TotalHotels { get; set; }
         int TotalUsers { get; set; }
         int PendingRequests { get; set; }
+        int PendingHotelsCount { get; set; }
+        int PendingApprovals { get; set; }
+        int ActiveBookings { get; set; }
+        double MonthlyRevenue { get; set; }
         ObservableCollection<HotelAdminRequest> PendingRequest { get; set; }
         ObservableCollection<Hotel> PendingHotels { get; set; }
         Task LoadDataAsync();

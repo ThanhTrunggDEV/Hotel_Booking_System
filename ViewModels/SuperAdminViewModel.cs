@@ -1,35 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
 using Hotel_Manager.FrameWorks;
-using Microsoft.Win32;
 
 namespace Hotel_Booking_System.ViewModels
 {
     public partial class SuperAdminViewModel : Bindable, ISuperAdminViewModel
     {
         private string _userEmail = string.Empty;
-        private IRoomRepository _roomRepository;
-        private IHotelAdminRequestRepository _hotelAdminRequestRepository;
-        private IHotelRepository _hotelRepository;
-        private IUserRepository _userRepository;
-        private INavigationService _navigationService;
+        private readonly IRoomRepository _roomRepository;
+        private readonly IHotelAdminRequestRepository _hotelAdminRequestRepository;
+        private readonly IHotelRepository _hotelRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly INavigationService _navigationService;
+        private readonly IBookingRepository _bookingRepository;
+        private readonly IPaymentRepository _paymentRepository;
         private User _currentUser = new();
         private int _totalHotels;
         private int _totalUsers;
         private int _pendingRequests;
+        private int _pendingHotelsCount;
+        private int _pendingApprovals;
+        private int _activeBookings;
+        private double _monthlyRevenue;
         public int PendingRequests
         {
             get { return _pendingRequests; }
@@ -45,6 +46,26 @@ namespace Hotel_Booking_System.ViewModels
             get { return _totalUsers; }
             set { Set(ref _totalUsers, value); }
         }
+        public int ActiveBookings
+        {
+            get { return _activeBookings; }
+            set { Set(ref _activeBookings, value); }
+        }
+        public double MonthlyRevenue
+        {
+            get { return _monthlyRevenue; }
+            set { Set(ref _monthlyRevenue, value); }
+        }
+        public int PendingHotelsCount
+        {
+            get { return _pendingHotelsCount; }
+            set { Set(ref _pendingHotelsCount, value); }
+        }
+        public int PendingApprovals
+        {
+            get { return _pendingApprovals; }
+            set { Set(ref _pendingApprovals, value); }
+        }
         public User CurrentUser
         {
             get { return _currentUser; }
@@ -54,19 +75,21 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
 
-        
+
 
         public ObservableCollection<HotelAdminRequest> PendingRequest { get; set; } = new();
         public ObservableCollection<User> Users { get; set; } = new();
         public ObservableCollection<Hotel> Hotels { get; set; } = new();
         public ObservableCollection<Hotel> PendingHotels { get; set; } = new();
-        public SuperAdminViewModel(IRoomRepository roomRepository, IHotelAdminRequestRepository hotelAdminRequestRepository, IHotelRepository hotelRepository, IUserRepository userRepository, INavigationService navigationService)
+        public SuperAdminViewModel(IRoomRepository roomRepository, IHotelAdminRequestRepository hotelAdminRequestRepository, IHotelRepository hotelRepository, IUserRepository userRepository, INavigationService navigationService, IBookingRepository bookingRepository, IPaymentRepository paymentRepository)
         {
             _roomRepository = roomRepository;
             _hotelAdminRequestRepository = hotelAdminRequestRepository;
             _hotelRepository = hotelRepository;
             _userRepository = userRepository;
             _navigationService = navigationService;
+            _bookingRepository = bookingRepository;
+            _paymentRepository = paymentRepository;
 
             WeakReferenceMessenger.Default.Register<SuperAdminViewModel, MessageService>(this, async (recipient, message) =>
             {
@@ -93,16 +116,32 @@ namespace Hotel_Booking_System.ViewModels
                 }
                 var users = await _userRepository.GetAllAsync();
                 TotalUsers = users.Count();
+                var userLookup = users.ToDictionary(u => u.UserID, u => u.FullName);
+                var bookings = await _bookingRepository.GetAllAsync();
+                ActiveBookings = bookings.Count(b => string.Equals(b.Status, "Confirmed", StringComparison.OrdinalIgnoreCase) || string.Equals(b.Status, "Pending", StringComparison.OrdinalIgnoreCase));
+                var payments = await _paymentRepository.GetAllAsync();
+                var today = DateTime.Today;
+                MonthlyRevenue = payments
+                    .Where(p => p.PaymentDate.Year == today.Year && p.PaymentDate.Month == today.Month)
+                    .Sum(p => p.TotalPayment);
+
                 var requests = (await _hotelAdminRequestRepository.GetAllAsync()).Where(r => r.Status == "Pending").ToList();
-                PendingRequests = requests.Count();
+                PendingRequest.Clear();
 
                 foreach (var request in requests)
                 {
+                    if (userLookup.TryGetValue(request.UserID, out var applicantName))
+                    {
+                        request.ApplicantName = applicantName;
+                    }
+
                     if (!PendingRequest.Any(r => r.RequestID == request.RequestID))
                     {
                         PendingRequest.Add(request);
                     }
                 }
+
+                UpdatePendingCounts();
 
             }
             catch (Exception ex)
@@ -133,8 +172,12 @@ namespace Hotel_Booking_System.ViewModels
                 user.Role = "HotelAdmin";
                 await _userRepository.UpdateAsync(user);
             }
-            PendingRequest.Remove(request);
-            PendingRequests = PendingRequest.Count;
+            var pending = PendingRequest.FirstOrDefault(r => r.RequestID == id);
+            if (pending != null)
+            {
+                PendingRequest.Remove(pending);
+            }
+            UpdatePendingCounts();
         }
 
         [RelayCommand]
@@ -144,8 +187,12 @@ namespace Hotel_Booking_System.ViewModels
             if (request == null) return;
             request.Status = "Rejected";
             await _hotelAdminRequestRepository.UpdateAsync(request);
-            PendingRequest.Remove(request);
-            PendingRequests = PendingRequest.Count;
+            var pending = PendingRequest.FirstOrDefault(r => r.RequestID == id);
+            if (pending != null)
+            {
+                PendingRequest.Remove(pending);
+            }
+            UpdatePendingCounts();
         }
 
         [RelayCommand]
@@ -167,6 +214,7 @@ namespace Hotel_Booking_System.ViewModels
                 PendingHotels.Remove(pending);
             }
             TotalHotels++;
+            UpdatePendingCounts();
         }
 
         [RelayCommand]
@@ -179,6 +227,14 @@ namespace Hotel_Booking_System.ViewModels
             {
                 PendingHotels.Remove(pending);
             }
+            UpdatePendingCounts();
+        }
+
+        private void UpdatePendingCounts()
+        {
+            PendingHotelsCount = PendingHotels.Count;
+            PendingRequests = PendingRequest.Count;
+            PendingApprovals = PendingRequests + PendingHotelsCount;
         }
     }
 }
