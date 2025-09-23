@@ -202,25 +202,31 @@
                         <TextBlock Text="Hotel Management" Style="{StaticResource HeaderTextStyle}"/>
 
                         <Grid Margin="0,0,0,20">
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="All Hotels" Style="{StaticResource PrimaryButton}" Width="100"/>
-                                <Button Content="Active" Background="#FF4CAF50" Style="{StaticResource PrimaryButton}" Width="80"/>
-                                <Button Content="Pending" Background="#FFFF9800" Style="{StaticResource PrimaryButton}" Width="80"/>
-                                <Button Content="Suspended" Background="#FFFF5722" Style="{StaticResource PrimaryButton}" Width="100"/>
-                                <ComboBox Style="{StaticResource ModernComboBox}" Width="120" Margin="10,0,0,0">
-                                    <ComboBoxItem Content="All Cities"/>
-                                    <ComboBoxItem Content="Hà Nội"/>
-                                    <ComboBoxItem Content="TP. Hồ Chí Minh"/>
-                                    <ComboBoxItem Content="Đà Nẵng"/>
-                                    <ComboBoxItem Content="Hải Phòng"/>
-                                </ComboBox>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                <Button Content="All Hotels" Style="{StaticResource PrimaryButton}" Width="100"
+                                        Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="All"/>
+                                <Button Content="Active" Background="#FF4CAF50" Style="{StaticResource PrimaryButton}" Width="80"
+                                        Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Active" Margin="10,0,0,0"/>
+                                <Button Content="Pending" Background="#FFFF9800" Style="{StaticResource PrimaryButton}" Width="80"
+                                        Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Pending" Margin="10,0,0,0"/>
+                                <Button Content="Suspended" Background="#FFFF5722" Style="{StaticResource PrimaryButton}" Width="100"
+                                        Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Suspended" Margin="10,0,0,0"/>
+                                <ComboBox Style="{StaticResource ModernComboBox}" Width="160" Margin="10,0,0,0"
+                                          ItemsSource="{Binding CityOptions}"
+                                          SelectedItem="{Binding SelectedCity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <TextBox Text="Search hotels..." 
-                            Style="{StaticResource ModernTextBox}" Width="200" Margin="0,0,10,0"/>
-                                <Button Content="🔍 Search" Width="100" Style="{StaticResource SecondaryButton}"/>
-                                <Button Content="+ Add Hotel" Width="120" Style="{StaticResource PrimaryButton}" 
-                           Background="#FF4CAF50" Margin="10,0,0,0"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                                <TextBox Text="{Binding HotelSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource ModernTextBox}" Width="220" Margin="0,0,10,0"/>
+                                <Button Content="🔍 Search" Width="100" Style="{StaticResource SecondaryButton}"
+                                        Command="{Binding SearchHotelsCommand}"/>
+                                <Button Content="✖ Clear" Width="100" Style="{StaticResource SecondaryButton}" Margin="10,0,0,0"
+                                        Command="{Binding ClearHotelSearchCommand}"/>
                             </StackPanel>
                         </Grid>
 
@@ -234,28 +240,28 @@
 
                             <Border Grid.Column="0" Style="{StaticResource CardStyle}" Background="#FF4CAF50">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="142" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ActiveHotelsCount}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Active Hotels" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="1" Style="{StaticResource CardStyle}" Background="#FFFF9800">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="14" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding PendingHotelsCount}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Pending Approval" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="2" Style="{StaticResource CardStyle}" Background="#FFFF5722">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="8" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding SuspendedHotelsCount}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Suspended" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FF2196F3">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="4.2" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding AverageHotelRating, StringFormat=F1}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Avg Rating" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
@@ -266,18 +272,19 @@
                                 <Grid Margin="0,0,0,15">
                                     <TextBlock Text="Hotel Directory" FontSize="18" FontWeight="Bold"/>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button Content="📊 Export" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,5,0"/>
-                                        <Button Content="🔄 Refresh" Style="{StaticResource SecondaryButton}" Width="80"/>
+                                        <Button Content="🔄 Refresh" Style="{StaticResource SecondaryButton}" Width="90"
+                                                Command="{Binding RefreshHotelsAsyncCommand}"/>
                                     </StackPanel>
                                 </Grid>
 
-                                <DataGrid Height="500" AutoGenerateColumns="False" CanUserAddRows="False">
+                                <DataGrid Height="500" AutoGenerateColumns="False" CanUserAddRows="False"
+                                          ItemsSource="{Binding FilteredHotels}">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Hotel ID" Width="80" Binding="{Binding HotelId}"/>
+                                        <DataGridTextColumn Header="Hotel ID" Width="100" Binding="{Binding HotelID}"/>
                                         <DataGridTextColumn Header="Hotel Name" Width="200" Binding="{Binding HotelName}"/>
                                         <DataGridTextColumn Header="City" Width="100" Binding="{Binding City}"/>
                                         <DataGridTextColumn Header="Address" Width="250" Binding="{Binding Address}"/>
-                                        <DataGridTextColumn Header="Star Rating" Width="80" Binding="{Binding StarRating}"/>
+                                        <DataGridTextColumn Header="Star Rating" Width="80" Binding="{Binding Rating}"/>
                                         <DataGridTextColumn Header="Total Rooms" Width="90" Binding="{Binding TotalRooms}"/>
                                         <DataGridTextColumn Header="Admin" Width="120" Binding="{Binding AdminName}"/>
                                         <DataGridTemplateColumn Header="Status" Width="80">
@@ -304,7 +311,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTextColumn Header="Created Date" Width="100" Binding="{Binding CreatedDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+                                        <DataGridTextColumn Header="Created Date" Width="120" Binding="{Binding CreatedDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
                                         <DataGridTemplateColumn Header="Actions" Width="220">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -330,7 +337,7 @@
 
                                 <Grid Margin="0,15,0,0">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Showing 1-10 of 156 hotels" VerticalAlignment="Center" FontSize="12" Foreground="#FF666666"/>
+                                        <TextBlock Text="{Binding HotelCountText}" VerticalAlignment="Center" FontSize="12" Foreground="#FF666666"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Button Content="Previous" Style="{StaticResource SecondaryButton}" Width="70" Height="30" Margin="0,0,5,0"/>

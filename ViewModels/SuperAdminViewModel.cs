@@ -31,6 +31,13 @@ namespace Hotel_Booking_System.ViewModels
         private int _pendingApprovals;
         private int _activeBookings;
         private double _monthlyRevenue;
+        private int _activeHotelsCount;
+        private int _suspendedHotelsCount;
+        private double _averageHotelRating;
+        private string _selectedCity = "All Cities";
+        private string _selectedHotelStatus = "All";
+        private string _hotelSearchTerm = string.Empty;
+        private string _hotelCountText = string.Empty;
         public int PendingRequests
         {
             get { return _pendingRequests; }
@@ -81,6 +88,8 @@ namespace Hotel_Booking_System.ViewModels
         public ObservableCollection<User> Users { get; set; } = new();
         public ObservableCollection<Hotel> Hotels { get; set; } = new();
         public ObservableCollection<Hotel> PendingHotels { get; set; } = new();
+        public ObservableCollection<Hotel> FilteredHotels { get; } = new();
+        public ObservableCollection<string> CityOptions { get; } = new();
         public SuperAdminViewModel(IRoomRepository roomRepository, IHotelAdminRequestRepository hotelAdminRequestRepository, IHotelRepository hotelRepository, IUserRepository userRepository, INavigationService navigationService, IBookingRepository bookingRepository, IPaymentRepository paymentRepository)
         {
             _roomRepository = roomRepository;
@@ -90,6 +99,8 @@ namespace Hotel_Booking_System.ViewModels
             _navigationService = navigationService;
             _bookingRepository = bookingRepository;
             _paymentRepository = paymentRepository;
+
+            CityOptions.Add("All Cities");
 
             WeakReferenceMessenger.Default.Register<SuperAdminViewModel, MessageService>(this, async (recipient, message) =>
             {
@@ -104,19 +115,42 @@ namespace Hotel_Booking_System.ViewModels
             try
             {
                 var hotels = await _hotelRepository.GetAllAsync();
+                var rooms = await _roomRepository.GetAllAsync();
+                var users = await _userRepository.GetAllAsync();
+
                 TotalHotels = hotels.Count(h => h.IsApproved);
-                var unapproved = hotels.Where(h => !h.IsApproved).ToList();
+                TotalUsers = users.Count();
+
+                var userLookup = users.ToDictionary(u => u.UserID, u => u.FullName);
+                var roomGroups = rooms.GroupBy(r => r.HotelID)
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                Hotels.Clear();
                 PendingHotels.Clear();
-                foreach (var hotel in unapproved)
+
+                foreach (var hotel in hotels)
                 {
-                    if (!PendingHotels.Any(h => h.HotelID == hotel.HotelID))
+                    if (userLookup.TryGetValue(hotel.UserID, out var adminName))
+                    {
+                        hotel.AdminName = adminName;
+                    }
+
+                    hotel.TotalRooms = roomGroups.TryGetValue(hotel.HotelID, out var count) ? count : 0;
+                    hotel.Status = GetHotelStatus(hotel);
+                    hotel.CreatedDate = null;
+
+                    Hotels.Add(hotel);
+
+                    if (!hotel.IsApproved && !PendingHotels.Any(h => h.HotelID == hotel.HotelID))
                     {
                         PendingHotels.Add(hotel);
                     }
                 }
-                var users = await _userRepository.GetAllAsync();
-                TotalUsers = users.Count();
-                var userLookup = users.ToDictionary(u => u.UserID, u => u.FullName);
+
+                UpdateCityOptions();
+                UpdateHotelStats();
+                ApplyHotelFilters();
+
                 var bookings = await _bookingRepository.GetAllAsync();
                 ActiveBookings = bookings.Count(b => string.Equals(b.Status, "Confirmed", StringComparison.OrdinalIgnoreCase) || string.Equals(b.Status, "Pending", StringComparison.OrdinalIgnoreCase));
                 var payments = await _paymentRepository.GetAllAsync();
@@ -148,6 +182,69 @@ namespace Hotel_Booking_System.ViewModels
             {
                 MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        public int ActiveHotelsCount
+        {
+            get => _activeHotelsCount;
+            set => Set(ref _activeHotelsCount, value);
+        }
+
+        public int SuspendedHotelsCount
+        {
+            get => _suspendedHotelsCount;
+            set => Set(ref _suspendedHotelsCount, value);
+        }
+
+        public double AverageHotelRating
+        {
+            get => _averageHotelRating;
+            set => Set(ref _averageHotelRating, value);
+        }
+
+        public string SelectedCity
+        {
+            get => _selectedCity;
+            set
+            {
+                if (_selectedCity != value)
+                {
+                    Set(ref _selectedCity, value);
+                    ApplyHotelFilters();
+                }
+            }
+        }
+
+        public string SelectedHotelStatus
+        {
+            get => _selectedHotelStatus;
+            set
+            {
+                if (_selectedHotelStatus != value)
+                {
+                    Set(ref _selectedHotelStatus, value);
+                    ApplyHotelFilters();
+                }
+            }
+        }
+
+        public string HotelSearchTerm
+        {
+            get => _hotelSearchTerm;
+            set
+            {
+                if (_hotelSearchTerm != value)
+                {
+                    Set(ref _hotelSearchTerm, value);
+                    ApplyHotelFilters();
+                }
+            }
+        }
+
+        public string HotelCountText
+        {
+            get => _hotelCountText;
+            set => Set(ref _hotelCountText, value);
         }
 
         private async Task GetCurrentUserAsync()
@@ -213,7 +310,16 @@ namespace Hotel_Booking_System.ViewModels
             {
                 PendingHotels.Remove(pending);
             }
+            var localHotel = Hotels.FirstOrDefault(h => h.HotelID == id);
+            if (localHotel != null)
+            {
+                localHotel.IsApproved = true;
+                localHotel.Status = GetHotelStatus(localHotel);
+            }
             TotalHotels++;
+            UpdateHotelStats();
+            UpdateCityOptions();
+            ApplyHotelFilters();
             UpdatePendingCounts();
         }
 
@@ -227,6 +333,19 @@ namespace Hotel_Booking_System.ViewModels
             {
                 PendingHotels.Remove(pending);
             }
+            var localHotel = Hotels.FirstOrDefault(h => h.HotelID == id);
+            if (localHotel != null)
+            {
+                Hotels.Remove(localHotel);
+            }
+            var filteredHotel = FilteredHotels.FirstOrDefault(h => h.HotelID == id);
+            if (filteredHotel != null)
+            {
+                FilteredHotels.Remove(filteredHotel);
+            }
+            UpdateHotelStats();
+            UpdateCityOptions();
+            ApplyHotelFilters();
             UpdatePendingCounts();
         }
 
@@ -235,6 +354,108 @@ namespace Hotel_Booking_System.ViewModels
             PendingHotelsCount = PendingHotels.Count;
             PendingRequests = PendingRequest.Count;
             PendingApprovals = PendingRequests + PendingHotelsCount;
+        }
+
+        private string GetHotelStatus(Hotel hotel)
+        {
+            if (!hotel.IsApproved)
+            {
+                return "Pending";
+            }
+
+            return hotel.IsVisible ? "Active" : "Suspended";
+        }
+
+        private void UpdateCityOptions()
+        {
+            var currentSelection = SelectedCity;
+            var cities = Hotels
+                .Select(h => h.City)
+                .Where(c => !string.IsNullOrWhiteSpace(c))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(c => c)
+                .ToList();
+
+            CityOptions.Clear();
+            CityOptions.Add("All Cities");
+            foreach (var city in cities)
+            {
+                CityOptions.Add(city);
+            }
+
+            var matchingCity = CityOptions.FirstOrDefault(c => string.Equals(c, currentSelection, StringComparison.OrdinalIgnoreCase));
+
+            SelectedCity = matchingCity ?? "All Cities";
+        }
+
+        private void ApplyHotelFilters()
+        {
+            if (Hotels == null)
+            {
+                return;
+            }
+
+            IEnumerable<Hotel> filtered = Hotels;
+
+            if (!string.IsNullOrWhiteSpace(SelectedCity) && SelectedCity != "All Cities")
+            {
+                filtered = filtered.Where(h => string.Equals(h.City, SelectedCity, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(SelectedHotelStatus) && SelectedHotelStatus != "All")
+            {
+                filtered = filtered.Where(h => string.Equals(h.Status, SelectedHotelStatus, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(HotelSearchTerm))
+            {
+                filtered = filtered.Where(h =>
+                    (!string.IsNullOrWhiteSpace(h.HotelName) && h.HotelName.Contains(HotelSearchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(h.Address) && h.Address.Contains(HotelSearchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(h.City) && h.City.Contains(HotelSearchTerm, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            FilteredHotels.Clear();
+            foreach (var hotel in filtered.OrderBy(h => h.HotelName))
+            {
+                FilteredHotels.Add(hotel);
+            }
+
+            HotelCountText = FilteredHotels.Count == Hotels.Count
+                ? $"Showing {FilteredHotels.Count} of {Hotels.Count} hotels"
+                : $"Showing {FilteredHotels.Count} of {Hotels.Count} hotels (filtered)";
+        }
+
+        private void UpdateHotelStats()
+        {
+            ActiveHotelsCount = Hotels.Count(h => h.IsApproved && h.IsVisible);
+            SuspendedHotelsCount = Hotels.Count(h => h.IsApproved && !h.IsVisible);
+            PendingHotelsCount = Hotels.Count(h => !h.IsApproved);
+            AverageHotelRating = Hotels.Count > 0 ? Math.Round(Hotels.Average(h => h.Rating), 1) : 0;
+        }
+
+        [RelayCommand]
+        private void SearchHotels()
+        {
+            ApplyHotelFilters();
+        }
+
+        [RelayCommand]
+        private void ClearHotelSearch()
+        {
+            HotelSearchTerm = string.Empty;
+        }
+
+        [RelayCommand]
+        private void SetHotelStatusFilter(string status)
+        {
+            SelectedHotelStatus = status;
+        }
+
+        [RelayCommand]
+        private async Task RefreshHotelsAsync()
+        {
+            await LoadDataAsync();
         }
     }
 }

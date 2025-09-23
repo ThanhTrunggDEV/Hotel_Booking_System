@@ -27,6 +27,18 @@ namespace Hotel_Booking_System.DomainModels
         [NotMapped]
         public double AverageRating { get; set; }
 
+        [NotMapped]
+        public string AdminName { get; set; } = string.Empty;
+
+        [NotMapped]
+        public string Status { get; set; } = string.Empty;
+
+        [NotMapped]
+        public int TotalRooms { get; set; }
+
+        [NotMapped]
+        public DateTime? CreatedDate { get; set; }
+
         public ICollection<Amenity> Amenities { get; set; } = new List<Amenity>();
     }
 }
