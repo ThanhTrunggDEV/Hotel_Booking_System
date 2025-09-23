@@ -60,35 +60,35 @@
 
                             <Border Grid.Column="0" Style="{StaticResource CardStyle}" Background="#FF4CAF50">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="156" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding TotalHotels}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Total Hotels" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="1" Style="{StaticResource CardStyle}" Background="#FF2196F3">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="3,247" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding TotalUsers}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Total Users" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="2" Style="{StaticResource CardStyle}" Background="#FFFF9800">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="892" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ActiveBookings}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Active Bookings" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FFFF5722">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="$245K" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding MonthlyRevenue, StringFormat={}{0:C}}" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Monthly Revenue" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="4" Style="{StaticResource CardStyle}" Background="#FF9C27B0">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="23" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding PendingApprovals}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Pending Approvals" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
@@ -103,13 +103,13 @@
                                         <DataGridTextColumn Header="Request ID" Width="100" Binding="{Binding RequestID}"/>
                                         <DataGridTextColumn Header="Applicant Name" Width="150" Binding="{Binding ApplicantName}"/>
                                         <DataGridTextColumn Header="Hotel Name" Width="200" Binding="{Binding HotelName}"/>
-                                        <DataGridTextColumn Header="Location" Width="150" Binding="{Binding Location}"/>
-                                        <DataGridTextColumn Header="Date Applied" Width="100" Binding="{Binding DateApplied}"/>
+                                        <DataGridTextColumn Header="Hotel Address" Width="200" Binding="{Binding HotelAddress}"/>
+                                        <DataGridTextColumn Header="Date Applied" Width="150" Binding="{Binding CreatedAt, StringFormat={}{0:MMM dd, yyyy}}"/>
                                         <DataGridTemplateColumn Header="Actions" Width="180">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Button Content="👁️ View" Style="{StaticResource SecondaryButton}" 
+                                                        <Button Content="👁️ View" Style="{StaticResource SecondaryButton}"
                                                                Width="45" Height="25" Margin="2" FontSize="10"/>
                                                         <Button Content="✅ Approve" Style="{StaticResource SecondaryButton}"
                                                                Background="#FF4CAF50" Width="55" Height="25" Margin="2" FontSize="10"
