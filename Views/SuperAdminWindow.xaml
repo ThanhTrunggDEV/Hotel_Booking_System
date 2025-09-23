@@ -459,6 +459,11 @@
 
 
                         <StackPanel Grid.Column="0" Margin="0,0,30,0">
+                            <TextBlock Text="{Binding NotificationMessage}"
+                                       Foreground="Red"
+                                       FontSize="14"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,10"/>
 
 
                             <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">

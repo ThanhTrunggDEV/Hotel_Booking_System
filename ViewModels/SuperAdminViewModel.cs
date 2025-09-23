@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
@@ -47,6 +48,8 @@ namespace Hotel_Booking_System.ViewModels
         private string _currentPassword = string.Empty;
         private string _newPassword = string.Empty;
         private string _confirmPassword = string.Empty;
+        private string _notificationMessage = string.Empty;
+        private DispatcherTimer? _notificationTimer;
         public int PendingRequests
         {
             get { return _pendingRequests; }
@@ -125,6 +128,12 @@ namespace Hotel_Booking_System.ViewModels
         {
             get => _confirmPassword;
             set => Set(ref _confirmPassword, value);
+        }
+
+        public string NotificationMessage
+        {
+            get => _notificationMessage;
+            set => Set(ref _notificationMessage, value);
         }
 
 
@@ -363,7 +372,7 @@ namespace Hotel_Booking_System.ViewModels
             {
                 if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
                 {
-                    MessageBox.Show("Current user information is not available.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    ShowNotification("Current user information is not available.");
                     return;
                 }
 
@@ -377,11 +386,11 @@ namespace Hotel_Booking_System.ViewModels
                         CurrentUser = refreshed;
                     }
 
-                    MessageBox.Show("Profile image updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ShowNotification("Profile image updated successfully.");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Failed to upload image: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ShowNotification($"Failed to upload image: {ex.Message}");
                 }
             }
         }
@@ -391,7 +400,7 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
             {
-                MessageBox.Show("Current user information is not available.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowNotification("Current user information is not available.");
                 return;
             }
 
@@ -404,11 +413,11 @@ namespace Hotel_Booking_System.ViewModels
                     CurrentUser = refreshed;
                 }
 
-                MessageBox.Show("Profile updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                ShowNotification("Profile updated successfully.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to update profile: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowNotification($"Failed to update profile: {ex.Message}");
             }
         }
 
@@ -417,25 +426,25 @@ namespace Hotel_Booking_System.ViewModels
         {
             if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
             {
-                MessageBox.Show("Current user information is not available.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowNotification("Current user information is not available.");
                 return;
             }
 
             if (!_authenticationService.VerifyPassword(CurrentPassword, CurrentUser.Password))
             {
-                MessageBox.Show("Current password is incorrect.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowNotification("Current password is incorrect.");
                 return;
             }
 
             if (!IsPasswordValid(NewPassword))
             {
-                MessageBox.Show("New password does not meet the security requirements.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowNotification("New password does not meet the security requirements.");
                 return;
             }
 
             if (!string.Equals(NewPassword, ConfirmPassword, StringComparison.Ordinal))
             {
-                MessageBox.Show("New password and confirmation do not match.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowNotification("New password and confirmation do not match.");
                 return;
             }
 
@@ -449,13 +458,29 @@ namespace Hotel_Booking_System.ViewModels
                     CurrentUser = refreshed;
                 }
 
-                MessageBox.Show("Password changed successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                ShowNotification("Password changed successfully.");
                 ClearPasswordFields();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to change password: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowNotification($"Failed to change password: {ex.Message}");
             }
+        }
+
+        private void ShowNotification(string message)
+        {
+            NotificationMessage = message;
+            _notificationTimer?.Stop();
+            _notificationTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            _notificationTimer.Tick += (s, e) =>
+            {
+                NotificationMessage = string.Empty;
+                _notificationTimer?.Stop();
+            };
+            _notificationTimer.Start();
         }
 
         [RelayCommand]
