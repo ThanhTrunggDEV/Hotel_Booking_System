@@ -15,7 +15,6 @@ namespace Hotel_Booking_System.Views
     public partial class SuperAdminWindow : Window
     {
         private readonly IPaymentViewModel _paymentViewModel = App.Provider.GetRequiredService<IPaymentViewModel>();
-        private readonly IAdminViewModel _adminViewModel = App.Provider.GetRequiredService<IAdminViewModel>();
         private readonly ISuperAdminViewModel _superAdminViewModel = App.Provider.GetRequiredService<ISuperAdminViewModel>();
 
         public SuperAdminWindow()
@@ -23,7 +22,6 @@ namespace Hotel_Booking_System.Views
             InitializeComponent();
             DataContext = _superAdminViewModel;
             PaymentSummaryTab.DataContext = _paymentViewModel;
-            AdminBookingsRequestsTab.DataContext = _adminViewModel;
             Loaded += async (s, e) =>
             {
                 await _paymentViewModel.LoadPaymentsAsync();
