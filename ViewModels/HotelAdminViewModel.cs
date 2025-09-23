@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -15,6 +16,9 @@ using Hotel_Booking_System.Views;
 using Hotel_Manager.FrameWorks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace Hotel_Booking_System.ViewModels
 {
@@ -69,6 +73,81 @@ namespace Hotel_Booking_System.ViewModels
         public ObservableCollection<Room> Rooms { get; } = new();
         public ObservableCollection<Booking> Bookings { get; } = new();
         public ObservableCollection<string> BookingStatusFilters { get; } = new();
+        public ObservableCollection<RevenueDataPoint> WeeklyRevenue { get; } = new();
+        public ObservableCollection<RevenueDataPoint> MonthlyRevenue { get; } = new();
+        public ObservableCollection<RevenueDataPoint> YearlyRevenue { get; } = new();
+
+        private double _maxWeeklyRevenue;
+        public double MaxWeeklyRevenue
+        {
+            get => _maxWeeklyRevenue;
+            private set => Set(ref _maxWeeklyRevenue, value);
+        }
+
+        private double _maxMonthlyRevenue;
+        public double MaxMonthlyRevenue
+        {
+            get => _maxMonthlyRevenue;
+            private set => Set(ref _maxMonthlyRevenue, value);
+        }
+
+        private double _maxYearlyRevenue;
+        public double MaxYearlyRevenue
+        {
+            get => _maxYearlyRevenue;
+            private set => Set(ref _maxYearlyRevenue, value);
+        }
+
+        private double _weeklyRevenueTotal;
+        public double WeeklyRevenueTotal
+        {
+            get => _weeklyRevenueTotal;
+            private set => Set(ref _weeklyRevenueTotal, value);
+        }
+
+        private double _monthlyRevenueTotal;
+        public double MonthlyRevenueTotal
+        {
+            get => _monthlyRevenueTotal;
+            private set => Set(ref _monthlyRevenueTotal, value);
+        }
+
+        private double _yearlyRevenueTotal;
+        public double YearlyRevenueTotal
+        {
+            get => _yearlyRevenueTotal;
+            private set => Set(ref _yearlyRevenueTotal, value);
+        }
+
+        private readonly Dictionary<RevenueRange, List<RevenueDataPoint>> _revenueData = new();
+        private List<Payment> _currentHotelPayments = new();
+
+        public ObservableCollection<RevenueFilterOption> RevenueFilterOptions { get; } = new();
+
+        private RevenueFilterOption? _selectedRevenueFilter;
+        public RevenueFilterOption? SelectedRevenueFilter
+        {
+            get => _selectedRevenueFilter;
+            set
+            {
+                Set(ref _selectedRevenueFilter, value);
+                UpdateRevenueChart();
+            }
+        }
+
+        private PlotModel _revenuePlotModel = CreateEmptyRevenuePlotModel();
+        public PlotModel RevenuePlotModel
+        {
+            get => _revenuePlotModel;
+            private set => Set(ref _revenuePlotModel, value);
+        }
+
+        private string _revenueSummary = "Chưa có dữ liệu doanh thu.";
+        public string RevenueSummary
+        {
+            get => _revenueSummary;
+            private set => Set(ref _revenueSummary, value);
+        }
 
         private string _selectedBookingStatusFilter = "All";
         public string SelectedBookingStatusFilter
@@ -335,6 +414,11 @@ namespace Hotel_Booking_System.ViewModels
             _navigationService = navigationService;
             _authenticationService = authenticationService;
 
+            RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo tuần", Range = RevenueRange.Weekly });
+            RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo tháng", Range = RevenueRange.Monthly });
+            RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo năm", Range = RevenueRange.Yearly });
+            RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Tổng", Range = RevenueRange.Cumulative });
+
             WeakReferenceMessenger.Default.Register<HotelAdminViewModel, MessageService>(this, (recipient, message) =>
             {
                 recipient._userEmail = message.Value;
@@ -344,8 +428,12 @@ namespace Hotel_Booking_System.ViewModels
 
         private async void LoadCurrentUser()
         {
-            CurrentUser = await _userRepository.GetByEmailAsync(_userEmail);
-            LoadHotels();
+            var user = await _userRepository.GetByEmailAsync(_userEmail);
+            if (user != null)
+            {
+                CurrentUser = user;
+                LoadHotels();
+            }
         }
 
         private async void LoadHotels()
@@ -402,6 +490,7 @@ namespace Hotel_Booking_System.ViewModels
 
             UpdateBookingStatusFilters();
             ApplyBookingFilter();
+            UpdateRevenueAnalytics(bookings);
         }
 
         private async void LoadReviews()
@@ -603,6 +692,365 @@ namespace Hotel_Booking_System.ViewModels
             }
 
             return "Bronze";
+        }
+
+        private void UpdateRevenueAnalytics(List<Booking> bookings)
+        {
+            _currentHotelPayments = new List<Payment>();
+            _revenueData.Clear();
+
+            if (bookings != null && bookings.Count > 0)
+            {
+                var bookingIds = bookings
+                    .Select(b => b.BookingID)
+                    .Where(id => !string.IsNullOrWhiteSpace(id))
+                    .ToHashSet();
+
+                if (bookingIds.Count > 0)
+                {
+                    _currentHotelPayments = _paymentRepository.GetAllAsync().Result
+
+                        .Where(p => !string.IsNullOrWhiteSpace(p.BookingID) && bookingIds.Contains(p.BookingID))
+                        .ToList();
+                }
+            }
+
+            var today = DateTime.Today;
+
+            _revenueData[RevenueRange.Weekly] = BuildWeeklyRevenue(_currentHotelPayments, today);
+            _revenueData[RevenueRange.Monthly] = BuildMonthlyRevenue(_currentHotelPayments, today);
+            _revenueData[RevenueRange.Yearly] = BuildYearlyRevenue(_currentHotelPayments, today);
+            _revenueData[RevenueRange.Cumulative] = BuildCumulativeRevenue(_currentHotelPayments, today);
+
+            UpdateYearlyRevenueOverview();
+
+            if (SelectedRevenueFilter == null)
+            {
+                SelectedRevenueFilter = RevenueFilterOptions.FirstOrDefault();
+            }
+            else
+            {
+                UpdateRevenueChart();
+            }
+        }
+
+        private List<RevenueDataPoint> BuildWeeklyRevenue(List<Payment> payments, DateTime referenceDate)
+        {
+            payments ??= new List<Payment>();
+            var result = new List<RevenueDataPoint>();
+            const int numberOfWeeks = 12;
+
+            var firstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+            var currentWeekStart = referenceDate.Date;
+            while (currentWeekStart.DayOfWeek != firstDayOfWeek)
+            {
+                currentWeekStart = currentWeekStart.AddDays(-1);
+            }
+
+            var startWeek = currentWeekStart.AddDays(-7 * (numberOfWeeks - 1));
+
+            for (int i = 0; i < numberOfWeeks; i++)
+            {
+                var weekStart = startWeek.AddDays(i * 7);
+                var weekEndExclusive = weekStart.AddDays(7);
+
+                var amount = payments
+                    .Where(p => p.PaymentDate >= weekStart && p.PaymentDate < weekEndExclusive)
+                    .Sum(p => p.TotalPayment);
+
+                var weekEndInclusive = weekEndExclusive.AddDays(-1);
+                if (weekEndInclusive > referenceDate.Date)
+                {
+                    weekEndInclusive = referenceDate.Date;
+                }
+
+                result.Add(new RevenueDataPoint
+                {
+                    Label = $"{weekStart:dd/MM} - {weekEndInclusive:dd/MM}",
+                    Amount = amount,
+                    Timestamp = weekStart
+                });
+            }
+
+            return result;
+        }
+
+        private List<RevenueDataPoint> BuildMonthlyRevenue(List<Payment> payments, DateTime referenceDate)
+        {
+            payments ??= new List<Payment>();
+            var result = new List<RevenueDataPoint>();
+            var startMonth = new DateTime(referenceDate.Year, referenceDate.Month, 1).AddMonths(-11);
+
+            for (int i = 0; i < 12; i++)
+            {
+                var currentMonthStart = startMonth.AddMonths(i);
+                var nextMonthStart = currentMonthStart.AddMonths(1);
+                var amount = payments
+                    .Where(p => p.PaymentDate >= currentMonthStart && p.PaymentDate < nextMonthStart)
+                    .Sum(p => p.TotalPayment);
+
+                result.Add(new RevenueDataPoint
+                {
+                    Label = currentMonthStart.ToString("MM/yyyy"),
+                    Amount = amount,
+                    Timestamp = currentMonthStart
+                });
+            }
+
+            return result;
+        }
+
+        private List<RevenueDataPoint> BuildYearlyRevenue(List<Payment> payments, DateTime referenceDate)
+        {
+            payments ??= new List<Payment>();
+            var result = new List<RevenueDataPoint>();
+            var startYear = new DateTime(referenceDate.Year - 4, 1, 1);
+
+            for (int i = 0; i < 5; i++)
+            {
+                var currentYearStart = startYear.AddYears(i);
+                var nextYearStart = currentYearStart.AddYears(1);
+                var amount = payments
+                    .Where(p => p.PaymentDate >= currentYearStart && p.PaymentDate < nextYearStart)
+                    .Sum(p => p.TotalPayment);
+
+                result.Add(new RevenueDataPoint
+                {
+                    Label = currentYearStart.Year.ToString(),
+                    Amount = amount,
+                    Timestamp = currentYearStart
+                });
+            }
+
+            return result;
+        }
+
+        private List<RevenueDataPoint> BuildCumulativeRevenue(List<Payment> payments, DateTime referenceDate)
+        {
+            payments ??= new List<Payment>();
+            var result = new List<RevenueDataPoint>();
+
+            var grouped = payments
+                .GroupBy(p => p.PaymentDate.Date)
+                .OrderBy(g => g.Key);
+
+            double runningTotal = 0;
+            foreach (var group in grouped)
+            {
+                runningTotal += group.Sum(p => p.TotalPayment);
+                result.Add(new RevenueDataPoint
+                {
+                    Label = group.Key.ToString("dd/MM/yyyy"),
+                    Amount = runningTotal,
+                    Timestamp = group.Key
+                });
+            }
+
+            if (result.Count == 0)
+            {
+                result.Add(new RevenueDataPoint
+                {
+                    Label = referenceDate.ToString("dd/MM/yyyy"),
+                    Amount = 0,
+                    Timestamp = referenceDate
+                });
+            }
+
+            return result;
+        }
+
+        private void UpdateRevenueChart()
+        {
+            if (SelectedRevenueFilter == null)
+            {
+                var emptyModel = CreateEmptyRevenuePlotModel();
+                emptyModel.InvalidatePlot(true);
+                RevenuePlotModel = emptyModel;
+                RevenueSummary = "Chưa có dữ liệu doanh thu.";
+                return;
+            }
+
+            if (!_revenueData.TryGetValue(SelectedRevenueFilter.Range, out var data) || data.Count == 0)
+            {
+                var emptyModel = CreateEmptyRevenuePlotModel();
+                emptyModel.InvalidatePlot(true);
+                RevenuePlotModel = emptyModel;
+                RevenueSummary = "Chưa có dữ liệu doanh thu.";
+                return;
+            }
+
+            var model = CreateRevenuePlotModel(data);
+            model.InvalidatePlot(true);
+            RevenuePlotModel = model;
+
+            var firstDate = data.First().Timestamp;
+            var lastDate = data.Last().Timestamp;
+            var weeklyRangeEndDate = lastDate.AddDays(6);
+            if (weeklyRangeEndDate > DateTime.Today)
+            {
+                weeklyRangeEndDate = DateTime.Today;
+            }
+            double total = SelectedRevenueFilter.Range == RevenueRange.Cumulative
+                ? data.Last().Amount
+                : data.Sum(d => d.Amount);
+
+            string modeDescription = SelectedRevenueFilter.Range switch
+            {
+                RevenueRange.Weekly => "theo tuần",
+                RevenueRange.Monthly => "theo tháng",
+                RevenueRange.Yearly => "theo năm",
+                RevenueRange.Cumulative => "tích lũy",
+                _ => string.Empty
+            };
+
+            string rangeDescription = SelectedRevenueFilter.Range switch
+            {
+                RevenueRange.Weekly => $"({firstDate:dd/MM} - {weeklyRangeEndDate:dd/MM})",
+                RevenueRange.Monthly => $"({firstDate:MM/yyyy} - {lastDate:MM/yyyy})",
+                RevenueRange.Yearly => $"({firstDate:yyyy} - {lastDate:yyyy})",
+                RevenueRange.Cumulative => $"(đến {lastDate:dd/MM/yyyy})",
+                _ => string.Empty
+            };
+
+            if (!string.IsNullOrWhiteSpace(rangeDescription))
+            {
+                rangeDescription = " " + rangeDescription;
+            }
+
+            RevenueSummary = $"Tổng doanh thu {modeDescription}{rangeDescription}: ${total:N0}";
+        }
+
+        private void UpdateYearlyRevenueOverview()
+        {
+            YearlyRevenue.Clear();
+
+            if (!_revenueData.TryGetValue(RevenueRange.Yearly, out var yearlyData) || yearlyData.Count == 0)
+            {
+                YearlyRevenueTotal = 0;
+                MaxYearlyRevenue = 0;
+                return;
+            }
+
+            double yearlyTotal = 0;
+            double yearlyMax = 0;
+
+            foreach (var dataPoint in yearlyData)
+            {
+                YearlyRevenue.Add(new RevenueDataPoint
+                {
+                    Label = dataPoint.Label,
+                    Amount = dataPoint.Amount,
+                    Timestamp = dataPoint.Timestamp
+                });
+
+                yearlyTotal += dataPoint.Amount;
+                yearlyMax = Math.Max(yearlyMax, dataPoint.Amount);
+            }
+
+            YearlyRevenueTotal = yearlyTotal;
+            MaxYearlyRevenue = yearlyMax;
+        }
+
+        private static PlotModel CreateRevenuePlotModel(IReadOnlyList<RevenueDataPoint> data)
+        {
+            var model = new PlotModel
+            {
+                Background = OxyColors.Transparent,
+                TextColor = OxyColor.FromRgb(66, 66, 66),
+                PlotAreaBorderColor = OxyColor.FromArgb(0, 0, 0, 0)
+            };
+
+            var xAxis = new CategoryAxis
+            {
+                Position = AxisPosition.Bottom,
+                Angle = -45,
+                GapWidth = 0.3,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                MinorStep = 1
+            };
+
+            foreach (var label in data.Select(d => d.Label))
+            {
+                xAxis.Labels.Add(label);
+            }
+
+            var yAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                MinimumPadding = 0,
+                MaximumPadding = 0.1,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                MajorGridlineStyle = LineStyle.Solid,
+                MajorGridlineColor = OxyColor.FromArgb(40, 158, 158, 158),
+                MinorGridlineStyle = LineStyle.None,
+                StringFormat = "N0"
+            };
+
+            var series = new LineSeries
+            {
+                StrokeThickness = 2.5,
+                Color = OxyColor.FromRgb(0, 150, 255),
+                MarkerType = MarkerType.Circle,
+                MarkerSize = 4,
+                MarkerStroke = OxyColors.White,
+                MarkerFill = OxyColor.FromRgb(0, 150, 255),
+                CanTrackerInterpolatePoints = false
+            };
+
+            for (var i = 0; i < data.Count; i++)
+            {
+                series.Points.Add(new DataPoint(i, data[i].Amount));
+            }
+
+            model.Axes.Add(xAxis);
+            model.Axes.Add(yAxis);
+            model.Series.Add(series);
+
+            return model;
+        }
+
+        private static PlotModel CreateEmptyRevenuePlotModel()
+        {
+            var model = new PlotModel
+            {
+                Background = OxyColors.Transparent,
+                PlotAreaBorderColor = OxyColors.Transparent,
+                TextColor = OxyColor.FromRgb(158, 158, 158)
+            };
+
+            var xAxis = new CategoryAxis
+            {
+                Position = AxisPosition.Bottom,
+                IsZoomEnabled = false,
+                IsPanEnabled = false
+            };
+            xAxis.Labels.Add("Không có dữ liệu");
+
+            var yAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Minimum = 0,
+                Maximum = 1,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                MajorGridlineStyle = LineStyle.None,
+                MinorGridlineStyle = LineStyle.None
+            };
+
+            var placeholderSeries = new LineSeries
+            {
+                Color = OxyColor.FromRgb(189, 189, 189),
+                StrokeThickness = 2
+            };
+            placeholderSeries.Points.Add(new DataPoint(0, 0));
+
+            model.Axes.Add(xAxis);
+            model.Axes.Add(yAxis);
+            model.Series.Add(placeholderSeries);
+
+            return model;
         }
 
         private void SyncAmenitiesFromHotel()
@@ -943,6 +1391,27 @@ namespace Hotel_Booking_System.ViewModels
                 LoadBookings();
             }
         }
+    }
+
+    public class RevenueDataPoint
+    {
+        public string Label { get; set; } = string.Empty;
+        public double Amount { get; set; }
+        public DateTime Timestamp { get; set; }
+    }
+
+    public class RevenueFilterOption
+    {
+        public string DisplayName { get; set; } = string.Empty;
+        public RevenueRange Range { get; set; }
+    }
+
+    public enum RevenueRange
+    {
+        Weekly,
+        Monthly,
+        Yearly,
+        Cumulative
     }
 }
 

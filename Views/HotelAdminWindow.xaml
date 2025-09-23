@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotel_Booking_System.Views"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
             Title="Multi-Hotel Booking System" Height="900" Width="1400"
         WindowState="Maximized"
@@ -74,13 +75,6 @@
                                 <StackPanel Margin="20" HorizontalAlignment="Center">
                                     <TextBlock Text="15" FontSize="32" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                     <TextBlock Text="Pending" Foreground="White" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FFFF5722">
-                                <StackPanel Margin="20" HorizontalAlignment="Center">
-                                    <TextBlock Text="$12,450" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Revenue Today" Foreground="White" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -289,7 +283,41 @@
                 </ScrollViewer>
             </TabItem>
 
-            
+
+            <TabItem Style="{StaticResource TabItemStyle}" x:Name="RevenueTab" Header="💰 Doanh thu" Visibility="Visible">
+                <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Tổng quan doanh thu" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Text="Chọn khoảng thời gian để theo dõi đường doanh thu và xu hướng kinh doanh của khách sạn." Margin="0,8,0,20" Foreground="#FF666666"/>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel Margin="25">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="Hiển thị:" VerticalAlignment="Center" Foreground="#FF424242" FontWeight="SemiBold"/>
+                                    <ComboBox Width="220"
+                                              Margin="12,0,0,0"
+                                              Style="{StaticResource ModernComboBox}"
+                                              ItemsSource="{Binding RevenueFilterOptions}"
+                                              SelectedItem="{Binding SelectedRevenueFilter}"
+                                              DisplayMemberPath="DisplayName"/>
+                                </StackPanel>
+
+                                <oxy:PlotView Margin="0,20,0,16"
+                                              Height="360"
+                                              MinHeight="280"
+                                              Model="{Binding RevenuePlotModel}"
+                                              Background="Transparent"/>
+
+                                <TextBlock Text="{Binding RevenueSummary}"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FF424242"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
             <TabItem Style="{StaticResource TabItemStyle}" x:Name="ReviewsTab" Header="⭐ Reviews" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
