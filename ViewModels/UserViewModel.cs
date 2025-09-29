@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
+using Hotel_Booking_System.Views;
 using Hotel_Manager.FrameWorks;
 using Microsoft.Win32;
 using System;
@@ -173,10 +174,7 @@ namespace Hotel_Booking_System.ViewModels
         public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
         public string ChatInput { get => _chatInput; set => Set(ref _chatInput, value); }
         public ObservableCollection<AIChat> Chats { get; set; } = new();
-        public ObservableCollection<Review> Reviews { get; set; } = new ObservableCollection<Review>();
-         public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
-
-  
+        public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
 
 
 
@@ -603,12 +601,32 @@ namespace Hotel_Booking_System.ViewModels
 
 
         [RelayCommand]
+        private async Task ShowHotelReviews(Hotel hotel)
+        {
+            if (hotel == null)
+            {
+                return;
+            }
+
+            var viewModel = new HotelReviewsViewModel(_reviewRepository, _userRepository);
+            await viewModel.InitializeAsync(hotel);
+
+            var window = new HotelReviewsWindow
+            {
+                DataContext = viewModel,
+                Owner = Application.Current?.MainWindow
+            };
+
+            window.ShowDialog();
+        }
+
+
+        [RelayCommand]
         private void ShowHotelDetails(string hotelID)
         {
 
             CurrentHotel = Hotels.FirstOrDefault(h => h.HotelID == hotelID);
             FilterRoomsByHotel(hotelID);
-            LoadReviewsForHotel(hotelID);
             ShowAvailableHotels = "Collapsed";
             ShowSearchHotel = "Collapsed";
 
@@ -814,11 +832,7 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
-            bool res = _navigationService.OpenReviewDialog(booking);
-            if (res)
-            {
-                LoadReviewsForHotel(booking.HotelID);
-            }
+            _navigationService.OpenReviewDialog(booking);
         }
 
         [RelayCommand]
@@ -968,28 +982,6 @@ namespace Hotel_Booking_System.ViewModels
 
             room.Status = available ? "Available" : "Booked";
         }
-        private void LoadReviewsForHotel(string hotelId)
-        {
-            Reviews.Clear();
-            var reviewList = _reviewRepository.GetAllAsync().Result;
-            var hotelReviews = reviewList
-                .Where(r => r.HotelID == hotelId)
-                .OrderByDescending(r => r.CreatedAt)
-                .ToList();
-            foreach (var review in hotelReviews)
-            {
-                var user = _userRepository.GetByIdAsync(review.UserID).Result;
-                if (user != null)
-                {
-                    review.ReviewerName = user.FullName;
-                    review.ReviewerAvatarUrl = user.AvatarUrl;
-                }
-                review.AdminReplyDraft = string.Empty;
-                Reviews.Add(review);
-            }
-        }
-
-        
         
 
     }
