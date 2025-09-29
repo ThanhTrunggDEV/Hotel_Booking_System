@@ -29,7 +29,10 @@ namespace Hotel_Booking_System.ViewModels
         private string _searchKeyword = string.Empty;
         private string _emptyStateVisibility = "Collapsed";
         private string _reviewListVisibility = "Collapsed";
+        private string _summaryVisibility = "Collapsed";
         private string _hotelName = string.Empty;
+        private double _averageRating;
+        private int _totalReviews;
 
         public HotelReviewsViewModel(IReviewRepository reviewRepository, IUserRepository userRepository)
         {
@@ -89,6 +92,26 @@ namespace Hotel_Booking_System.ViewModels
             get => _reviewListVisibility;
             private set => Set(ref _reviewListVisibility, value);
         }
+
+        public string SummaryVisibility
+        {
+            get => _summaryVisibility;
+            private set => Set(ref _summaryVisibility, value);
+        }
+
+        public double AverageRating
+        {
+            get => _averageRating;
+            private set => Set(ref _averageRating, value);
+        }
+
+        public int TotalReviews
+        {
+            get => _totalReviews;
+            private set => Set(ref _totalReviews, value);
+        }
+
+        public ObservableCollection<RatingBreakdown> RatingBreakdowns { get; } = new();
 
         public async Task InitializeAsync(Hotel? hotel)
         {
@@ -172,6 +195,7 @@ namespace Hotel_Booking_System.ViewModels
 
             EmptyStateVisibility = Reviews.Count == 0 ? "Visible" : "Collapsed";
             ReviewListVisibility = Reviews.Count == 0 ? "Collapsed" : "Visible";
+            UpdateSummary();
         }
 
         private int? GetRatingFromFilter()
@@ -188,6 +212,44 @@ namespace Hotel_Booking_System.ViewModels
             }
 
             return null;
+        }
+
+        private void UpdateSummary()
+        {
+            TotalReviews = _allReviews.Count;
+
+            if (TotalReviews == 0)
+            {
+                SummaryVisibility = "Collapsed";
+                AverageRating = 0;
+                RatingBreakdowns.Clear();
+                return;
+            }
+
+            AverageRating = Math.Round(_allReviews.Average(r => r.Rating), 1);
+
+            RatingBreakdowns.Clear();
+            for (var rating = 5; rating >= 1; rating--)
+            {
+                var count = _allReviews.Count(r => r.Rating == rating);
+                var percentage = TotalReviews == 0 ? 0 : (double)count / TotalReviews;
+                RatingBreakdowns.Add(new RatingBreakdown
+                {
+                    Rating = rating,
+                    Count = count,
+                    Percentage = percentage
+                });
+            }
+
+            SummaryVisibility = "Visible";
+        }
+
+        public class RatingBreakdown
+        {
+            public int Rating { get; set; }
+            public int Count { get; set; }
+            public double Percentage { get; set; }
+            public string DisplayLabel => $"{Rating} sao";
         }
     }
 }

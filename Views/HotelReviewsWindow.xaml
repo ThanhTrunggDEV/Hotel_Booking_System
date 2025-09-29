@@ -16,6 +16,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -43,22 +44,133 @@
                         Cursor="Hand"/>
             </Grid>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,20,0,16">
-                <StackPanel Width="200">
-                    <TextBlock Text="Lọc theo số sao" FontSize="12" Foreground="#FF757575" Margin="0,0,0,6"/>
-                    <ComboBox ItemsSource="{Binding RatingFilters}"
-                              SelectedItem="{Binding SelectedRatingFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              Height="32"/>
+            <Border Grid.Row="1"
+                    Margin="0,20,0,16"
+                    Padding="20"
+                    Background="#FFEEF7FF"
+                    CornerRadius="12"
+                    Visibility="{Binding SummaryVisibility}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Điểm đánh giá trung bình" FontSize="12" Foreground="#FF4C6B8A"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding AverageRating, StringFormat='{}{0:0.0}'}"
+                                       FontSize="40"
+                                       FontWeight="Bold"
+                                       Foreground="#FF1A73E8"/>
+                            <StackPanel Margin="16,4,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="⭐" FontSize="16" Margin="0,0,2,0"/>
+                                    <TextBlock Text="{Binding AverageRating, StringFormat='{}{0:0.0}/5'}" FontSize="16" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding TotalReviews, StringFormat='Từ {0} đánh giá'}"
+                                           FontSize="12"
+                                           Foreground="#FF607D8B"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                        <TextBlock Text="Phân bổ số sao" FontSize="12" Foreground="#FF4C6B8A"/>
+                        <ItemsControl ItemsSource="{Binding RatingBreakdowns}" Margin="0,10,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding DisplayLabel}" FontSize="12" Foreground="#FF37474F"/>
+                                        <ProgressBar Grid.Column="1"
+                                                     Margin="12,0"
+                                                     Height="8"
+                                                     VerticalAlignment="Center"
+                                                     Value="{Binding Percentage}"
+                                                     Maximum="1"
+                                                     Foreground="#FF1A73E8"
+                                                     Background="#FFCFD8DC"/>
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding Count, StringFormat='{}{0}'}"
+                                                   FontSize="12"
+                                                   Foreground="#FF455A64"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Lọc theo số sao" FontSize="12" Foreground="#FF757575" Margin="0,0,0,8"/>
+                    <ListBox ItemsSource="{Binding RatingFilters}"
+                             SelectedItem="{Binding SelectedRatingFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Margin" Value="0,0,8,0"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border x:Name="Chip"
+                                                    Background="#FFE3F2FD"
+                                                    CornerRadius="16"
+                                                    Padding="16,8"
+                                                    BorderBrush="Transparent"
+                                                    BorderThickness="1">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Chip" Property="Background" Value="#FF1A73E8"/>
+                                                    <Setter TargetName="Chip" Property="BorderBrush" Value="#FF0B57D0"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Chip" Property="BorderBrush" Value="#FF64B5F6"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                 </StackPanel>
-                <StackPanel Margin="20,0,0,0" Width="240">
-                    <TextBlock Text="Tìm kiếm" FontSize="12" Foreground="#FF757575" Margin="0,0,0,6"/>
-                    <TextBox Text="{Binding SearchKeyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Height="32"
-                             ToolTip="Nhập tên hoặc nội dung"/>
+
+                <StackPanel Margin="24,0,0,0" Width="240">
+                    <TextBlock Text="Tìm kiếm" FontSize="12" Foreground="#FF757575" Margin="0,0,0,8"/>
+                    <Border Background="#FFF5F5F5" CornerRadius="20" Padding="12,6" BorderBrush="#FFE0E0E0" BorderThickness="1">
+                        <DockPanel>
+                            <TextBlock Text="🔍" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBox Text="{Binding SearchKeyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     ToolTip="Nhập tên hoặc nội dung"/>
+                        </DockPanel>
+                    </Border>
                 </StackPanel>
             </StackPanel>
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -74,21 +186,23 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border BorderBrush="#FFE0E0E0"
-                                        BorderThickness="0,0,0,1"
-                                        Padding="0,16"
-                                        Margin="0,0,0,8">
+                                        BorderThickness="1"
+                                        Padding="16"
+                                        Margin="0,0,0,12"
+                                        CornerRadius="12"
+                                        Background="#FFF9FBFF">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Border Width="44"
-                                                Height="44"
-                                                CornerRadius="22"
+                                        <Border Width="48"
+                                                Height="48"
+                                                CornerRadius="24"
                                                 Background="#FFE0E0E0"
                                                 ClipToBounds="True"
-                                                Margin="0,0,12,0">
+                                                Margin="0,0,16,0">
                                             <Image Source="{Binding ReviewerAvatarUrl}" Stretch="UniformToFill"/>
                                         </Border>
 
@@ -104,13 +218,16 @@
                                                            FontSize="12"
                                                            Foreground="#FF757575"/>
                                             </Grid>
-                                            <TextBlock Text="{Binding Rating, StringFormat='{}{0}/5 ⭐'}"
-                                                       Foreground="#FFFF9800"
-                                                       FontWeight="SemiBold"
-                                                       Margin="0,4,0,0"/>
+                                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="⭐" FontSize="14"/>
+                                                <TextBlock Text="{Binding Rating, StringFormat='{}{0}/5'}"
+                                                           Foreground="#FFFF9800"
+                                                           FontWeight="SemiBold"
+                                                           Margin="6,0,0,0"/>
+                                            </StackPanel>
                                             <TextBlock Text="{Binding Comment}"
                                                        TextWrapping="Wrap"
-                                                       Margin="0,6,0,0"/>
+                                                       Margin="0,10,0,0"/>
                                             <Border Background="#FFF3E5F5"
                                                     BorderBrush="#FFE0E0E0"
                                                     BorderThickness="1"
@@ -157,7 +274,7 @@
                            Visibility="{Binding EmptyStateVisibility}"/>
             </Grid>
 
-            <Button Grid.Row="3"
+            <Button Grid.Row="4"
                     Content="Đóng"
                     HorizontalAlignment="Right"
                     Width="100"
