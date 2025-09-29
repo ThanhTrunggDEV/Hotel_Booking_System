@@ -26,7 +26,6 @@ namespace Hotel_Booking_System.ViewModels
 
         private List<Review> _allReviews = new();
         private string _selectedRatingFilter;
-        private string _searchKeyword = string.Empty;
         private string _emptyStateVisibility = "Collapsed";
         private string _reviewListVisibility = "Collapsed";
         private string _summaryVisibility = "Collapsed";
@@ -56,21 +55,6 @@ namespace Hotel_Booking_System.ViewModels
                 }
 
                 Set(ref _selectedRatingFilter, value);
-                ApplyFilters();
-            }
-        }
-
-        public string SearchKeyword
-        {
-            get => _searchKeyword;
-            set
-            {
-                if (_searchKeyword == value)
-                {
-                    return;
-                }
-
-                Set(ref _searchKeyword, value);
                 ApplyFilters();
             }
         }
@@ -178,14 +162,6 @@ namespace Hotel_Booking_System.ViewModels
             if (rating.HasValue)
             {
                 filtered = filtered.Where(r => r.Rating == rating.Value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(SearchKeyword))
-            {
-                var keyword = SearchKeyword.Trim();
-                filtered = filtered.Where(r =>
-                    (!string.IsNullOrEmpty(r.Comment) && r.Comment.Contains(keyword, StringComparison.OrdinalIgnoreCase)) ||
-                    (!string.IsNullOrEmpty(r.ReviewerName) && r.ReviewerName.Contains(keyword, StringComparison.OrdinalIgnoreCase)));
             }
 
             foreach (var review in filtered)
