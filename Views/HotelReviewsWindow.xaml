@@ -1,0 +1,173 @@
+<Window x:Class="Hotel_Booking_System.Views.HotelReviewsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Đánh giá khách sạn"
+        Height="600"
+        Width="640"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+    <Border CornerRadius="16" Background="White" Padding="24" SnapsToDevicePixels="True">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Đánh giá khách sạn" FontSize="22" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding HotelName, StringFormat='Dành cho {0}'}" FontSize="12" Foreground="#FF616161" Margin="0,4,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1"
+                        x:Name="CloseButton"
+                        Content="✕"
+                        Width="32"
+                        Height="32"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Foreground="#FF424242"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Right"
+                        Cursor="Hand"/>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,20,0,16">
+                <StackPanel Width="200">
+                    <TextBlock Text="Lọc theo số sao" FontSize="12" Foreground="#FF757575" Margin="0,0,0,6"/>
+                    <ComboBox ItemsSource="{Binding RatingFilters}"
+                              SelectedItem="{Binding SelectedRatingFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Height="32"/>
+                </StackPanel>
+                <StackPanel Margin="20,0,0,0" Width="240">
+                    <TextBlock Text="Tìm kiếm" FontSize="12" Foreground="#FF757575" Margin="0,0,0,6"/>
+                    <TextBox Text="{Binding SearchKeyword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Height="32"
+                             ToolTip="Nhập tên hoặc nội dung"/>
+                </StackPanel>
+            </StackPanel>
+
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Text="{Binding Reviews.Count, StringFormat='Tổng cộng {0} đánh giá'}"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,12"/>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding ReviewListVisibility}">
+                    <ItemsControl ItemsSource="{Binding Reviews}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#FFE0E0E0"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="0,16"
+                                        Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Width="44"
+                                                Height="44"
+                                                CornerRadius="22"
+                                                Background="#FFE0E0E0"
+                                                ClipToBounds="True"
+                                                Margin="0,0,12,0">
+                                            <Image Source="{Binding ReviewerAvatarUrl}" Stretch="UniformToFill"/>
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding ReviewerName}" FontWeight="Bold" FontSize="14"/>
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding CreatedAt, StringFormat='{}{0:dd/MM/yyyy}'}"
+                                                           FontSize="12"
+                                                           Foreground="#FF757575"/>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Rating, StringFormat='{}{0}/5 ⭐'}"
+                                                       Foreground="#FFFF9800"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,4,0,0"/>
+                                            <TextBlock Text="{Binding Comment}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,6,0,0"/>
+                                            <Border Background="#FFF3E5F5"
+                                                    BorderBrush="#FFE0E0E0"
+                                                    BorderThickness="1"
+                                                    CornerRadius="6"
+                                                    Padding="10"
+                                                    Margin="0,10,0,0">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AdminReply}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding AdminReply}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <StackPanel>
+                                                    <TextBlock Text="Phản hồi từ khách sạn"
+                                                               FontWeight="Bold"
+                                                               FontSize="12"
+                                                               Foreground="#FF6A1B9A"/>
+                                                    <TextBlock Text="{Binding AdminReply}"
+                                                               TextWrapping="Wrap"
+                                                               Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <TextBlock Grid.Row="1"
+                           Text="Chưa có đánh giá nào cho khách sạn này."
+                           Foreground="#FF757575"
+                           FontStyle="Italic"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding EmptyStateVisibility}"/>
+            </Grid>
+
+            <Button Grid.Row="3"
+                    Content="Đóng"
+                    HorizontalAlignment="Right"
+                    Width="100"
+                    Height="36"
+                    Margin="0,20,0,0"
+                    Background="#FF2196F3"
+                    Foreground="White"
+                    BorderBrush="Transparent"
+                    FontWeight="Bold"
+                    x:Name="CloseFooterButton"/>
+        </Grid>
+    </Border>
+</Window>
