@@ -66,9 +66,16 @@
      
 
                             <StackPanel>
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Hotel Filters" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    <Button Grid.Column="1" Content="{Binding HotelFiltersToggleText}" Command="{Binding ToggleHotelFiltersCommand}" Style="{StaticResource SecondaryButton}" Margin="10,0,0,0"/>
+                                </Grid>
                                 <Border Visibility="{Binding ShowSearchHotel}" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
-                                    <StackPanel Margin="25">
-                                        <TextBlock HorizontalAlignment="Center" Text="Hotel Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+                                    <StackPanel Margin="25,20,25,25">
                                         <TextBlock Text="Location" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <ComboBox x:Name="cbbLocation" Style="{StaticResource ModernComboBox}">
                                             <ComboBoxItem>Hà Nội</ComboBoxItem>
@@ -169,9 +176,16 @@
                                     </StackPanel>
                                 </Border>
 
+                                <Grid Margin="0,30,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Room Filters" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    <Button Grid.Column="1" Content="{Binding RoomFiltersToggleText}" Command="{Binding ToggleRoomFiltersCommand}" Style="{StaticResource SecondaryButton}" Margin="10,0,0,0"/>
+                                </Grid>
                                 <Border Visibility="{Binding ShowSearchRoom}" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
-                                    <StackPanel Margin="25">
-                                        <TextBlock HorizontalAlignment="Center" Text="Room Filters" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+                                    <StackPanel Margin="25,20,25,25">
 
                                         <TextBlock Text="Price ($)" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
