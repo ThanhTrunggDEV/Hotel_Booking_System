@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
-using Hotel_Booking_System.Views;
 using Hotel_Manager.FrameWorks;
 using Microsoft.Win32;
 using System;
@@ -600,27 +599,6 @@ namespace Hotel_Booking_System.ViewModels
                 chat.Response += c;
                 await Task.Delay(30);
             }
-        }
-
-
-        [RelayCommand]
-        private async Task ShowHotelReviews(Hotel hotel)
-        {
-            if (hotel == null)
-            {
-                return;
-            }
-
-            var viewModel = new HotelReviewsViewModel(_reviewRepository, _userRepository);
-            await viewModel.InitializeAsync(hotel);
-
-            var window = new HotelReviewsWindow
-            {
-                DataContext = viewModel,
-                Owner = Application.Current?.MainWindow
-            };
-
-            window.ShowDialog();
         }
 
 
