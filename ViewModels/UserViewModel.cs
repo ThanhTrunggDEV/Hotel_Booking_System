@@ -42,6 +42,7 @@ namespace Hotel_Booking_System.ViewModels
         private string _roomSortType = "Default";
         private string _showAvailableHotels = "Visible";
         private string _showRooms = "Collapsed";
+        private string _showRegisterForm = "Collapsed";
         private string _showChatBox = "Collapsed";
         private string _showChatButton = "Visible";
         private Hotel _currentHotel = new();
@@ -107,6 +108,11 @@ namespace Hotel_Booking_System.ViewModels
         {
             get => _showChatButton;
             set => Set(ref _showChatButton, value);
+        }
+        public string ShowRegisterForm
+        {
+            get => _showRegisterForm;
+            set => Set(ref _showRegisterForm, value);
         }
         public string ShowAvailableHotels
         {
@@ -614,34 +620,14 @@ namespace Hotel_Booking_System.ViewModels
         {
             RequestHotelName = string.Empty;
             RequestHotelAddress = string.Empty;
-
-            var registerWindow = new Views.RegisterHotelWindow
-            {
-                DataContext = this
-            };
-
-            var ownerWindow = Application.Current?.Windows.OfType<Window>()
-                .FirstOrDefault(window => window is Views.UserWindow);
-
-            if (ownerWindow is not null)
-            {
-                registerWindow.Owner = ownerWindow;
-            }
-
-            registerWindow.WindowStartupLocation = ownerWindow is not null
-                ? WindowStartupLocation.CenterOwner
-                : WindowStartupLocation.CenterScreen;
-
-            registerWindow.ShowDialog();
+            ShowRegisterForm = "Visible";
         }
         [RelayCommand]
         private void CloseForm()
         {
-            var registerWindow = Application.Current?.Windows
-                .OfType<Views.RegisterHotelWindow>()
-                .FirstOrDefault();
-
-            registerWindow?.Close();
+            RequestHotelName = string.Empty;
+            RequestHotelAddress = string.Empty;
+            ShowRegisterForm = "Collapsed";
         }
         [RelayCommand]
         private async Task SubmitRequest()
@@ -659,12 +645,7 @@ namespace Hotel_Booking_System.ViewModels
             await _hotelAdminRequestRepository.AddAsync(req);
             await _hotelAdminRequestRepository.SaveAsync();
             RequestHotelName = RequestHotelAddress = string.Empty;
-
-            var registerWindow = Application.Current?.Windows
-                .OfType<Views.RegisterHotelWindow>()
-                .FirstOrDefault();
-
-            registerWindow?.Close();
+            ShowRegisterForm = "Collapsed";
         }
 
         [RelayCommand]

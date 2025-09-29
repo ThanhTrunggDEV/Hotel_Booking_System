@@ -9,9 +9,9 @@ namespace Hotel_Booking_System.Interfaces
 {
     internal interface IBookingViewModel
     {
-        Room SelectedRoom { get; set; }
-        User CurrentUser { get; set; }
-        Hotel Hotel{ get; set; }
+        Room? SelectedRoom { get; set; }
+        User? CurrentUser { get; set; }
+        Hotel? Hotel{ get; set; }
         string GuestName { get; set; }
     }
 }
