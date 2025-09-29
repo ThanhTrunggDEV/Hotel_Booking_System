@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
+using Hotel_Booking_System.Views;
 using Hotel_Manager.FrameWorks;
 using Microsoft.Win32;
 using System;
@@ -37,7 +38,7 @@ namespace Hotel_Booking_System.ViewModels
         private int _totalBookings;
         private double _totalSpent;
         private string _showSearchRoom = "Collapsed";
-        private string _showSearchHotel = "Visible";
+        private string _showSearchHotel = "Collapsed";
         private string _sortType = "Default";
         private string _roomSortType = "Default";
         private string _showAvailableHotels = "Visible";
@@ -51,11 +52,11 @@ namespace Hotel_Booking_System.ViewModels
         private string _errorMessage = string.Empty;
         private string _requestHotelName = "";
         private string _requestHotelAddress = "";
-        private string _requestReason = "";
         private string _selectedModel = string.Empty;
         private string _chatInput = string.Empty;
         private string _membershipLevel = "Bronze";
         private string _hasBookings = "Collapsed";
+        private string _filterOverlayVisibility = "Collapsed";
 
         private DispatcherTimer? _typingTimer;
 
@@ -99,7 +100,6 @@ namespace Hotel_Booking_System.ViewModels
         public Hotel CurrentHotel { get => _currentHotel; set => Set(ref _currentHotel, value); }
         public string RequestHotelName { get => _requestHotelName; set => Set(ref _requestHotelName, value); }
         public string RequestHotelAddress { get => _requestHotelAddress; set => Set(ref _requestHotelAddress, value); }
-        public string RequestReason { get => _requestReason; set => Set(ref _requestReason, value); }
 
         public string ShowChatBox
         {
@@ -126,6 +126,12 @@ namespace Hotel_Booking_System.ViewModels
         {
             get => _showRooms;
             set => Set(ref _showRooms, value);
+        }
+
+        public string FilterOverlayVisibility
+        {
+            get => _filterOverlayVisibility;
+            set => Set(ref _filterOverlayVisibility, value);
         }
 
         public ObservableCollection<Booking> AllBookings { get; set; } = new();
@@ -175,10 +181,7 @@ namespace Hotel_Booking_System.ViewModels
         public string ErrorMessage { get => _errorMessage; set => Set(ref _errorMessage, value); }
         public string ChatInput { get => _chatInput; set => Set(ref _chatInput, value); }
         public ObservableCollection<AIChat> Chats { get; set; } = new();
-        public ObservableCollection<Review> Reviews { get; set; } = new ObservableCollection<Review>();
-         public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
-
-  
+        public string SelectedModel { get => _selectedModel; set => Set(ref _selectedModel, value); }
 
 
 
@@ -605,16 +608,79 @@ namespace Hotel_Booking_System.ViewModels
 
 
         [RelayCommand]
+        private async Task ShowHotelReviews(Hotel hotel)
+        {
+            if (hotel == null)
+            {
+                return;
+            }
+
+            var viewModel = new HotelReviewsViewModel(_reviewRepository, _userRepository);
+            await viewModel.InitializeAsync(hotel);
+
+            var window = new HotelReviewsWindow
+            {
+                DataContext = viewModel,
+                Owner = Application.Current?.MainWindow
+            };
+
+            window.ShowDialog();
+        }
+
+
+        private void SetHotelFiltersVisibility(string visibility)
+        {
+            ShowSearchHotel = visibility;
+            UpdateFilterOverlayVisibility();
+        }
+
+        private void SetRoomFiltersVisibility(string visibility)
+        {
+            ShowSearchRoom = visibility;
+            UpdateFilterOverlayVisibility();
+        }
+
+        private void UpdateFilterOverlayVisibility()
+        {
+            FilterOverlayVisibility =
+                ShowSearchHotel == "Visible" || ShowSearchRoom == "Visible" ? "Visible" : "Collapsed";
+        }
+
+        [RelayCommand]
+        private void OpenFilters()
+        {
+            if (ShowRoomList == "Visible")
+            {
+                var shouldShowRoomFilters = ShowSearchRoom != "Visible";
+                SetHotelFiltersVisibility("Collapsed");
+                SetRoomFiltersVisibility(shouldShowRoomFilters ? "Visible" : "Collapsed");
+            }
+            else
+            {
+                var shouldShowHotelFilters = ShowSearchHotel != "Visible";
+                SetRoomFiltersVisibility("Collapsed");
+                SetHotelFiltersVisibility(shouldShowHotelFilters ? "Visible" : "Collapsed");
+            }
+        }
+
+        [RelayCommand]
+        private void CloseFilters()
+        {
+            SetHotelFiltersVisibility("Collapsed");
+            SetRoomFiltersVisibility("Collapsed");
+        }
+
+
+        [RelayCommand]
         private void ShowHotelDetails(string hotelID)
         {
 
             CurrentHotel = Hotels.FirstOrDefault(h => h.HotelID == hotelID);
             FilterRoomsByHotel(hotelID);
-            LoadReviewsForHotel(hotelID);
             ShowAvailableHotels = "Collapsed";
-            ShowSearchHotel = "Collapsed";
+            SetHotelFiltersVisibility("Collapsed");
 
-            ShowSearchRoom = "Visible";
+            SetRoomFiltersVisibility("Collapsed");
             ShowRoomList = "Visible";
         }
         [RelayCommand]
@@ -630,20 +696,19 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private async Task SubmitRequest()
         {
-            if (string.IsNullOrWhiteSpace(RequestHotelName) || string.IsNullOrWhiteSpace(RequestHotelAddress) || string.IsNullOrWhiteSpace(RequestReason)) return;
+            if (string.IsNullOrWhiteSpace(RequestHotelName) || string.IsNullOrWhiteSpace(RequestHotelAddress)) return;
             var req = new HotelAdminRequest
             {
                 RequestID = Guid.NewGuid().ToString(),
                 UserID = CurrentUser.UserID,
                 HotelName = RequestHotelName,
                 HotelAddress = RequestHotelAddress,
-                Reason = RequestReason,
                 Status = "Pending",
                 CreatedAt = DateTime.Now
             };
             await _hotelAdminRequestRepository.AddAsync(req);
             await _hotelAdminRequestRepository.SaveAsync();
-            RequestHotelName = RequestHotelAddress = RequestReason = string.Empty;
+            RequestHotelName = RequestHotelAddress = string.Empty;
             ShowRegisterForm = "Collapsed";
         }
 
@@ -653,8 +718,8 @@ namespace Hotel_Booking_System.ViewModels
             ShowRoomList = "Collapsed";
             ShowAvailableHotels = "Visible";
 
-            ShowSearchHotel = "Visible";
-            ShowSearchRoom = "Collapsed";
+            SetHotelFiltersVisibility("Collapsed");
+            SetRoomFiltersVisibility("Collapsed");
         }
         [RelayCommand]
         private async Task UploadImage()
@@ -664,20 +729,43 @@ namespace Hotel_Booking_System.ViewModels
 
             if (openFileDialog.ShowDialog() == true)
             {
-                CurrentUser.AvatarUrl = await UploadImageService.UploadAsync(openFileDialog.FileName);
+                try
+                {
+                    CurrentUser.AvatarUrl = await UploadImageService.UploadAsync(openFileDialog.FileName);
+                    await _userRepository.UpdateAsync(CurrentUser);
+                    var refreshed = await _userRepository.GetByIdAsync(CurrentUser.UserID);
+                    if (refreshed != null)
+                    {
+                        CurrentUser = refreshed;
+                    }
+
+                    ShowNotification("Profile image updated successfully.");
+                }
+                catch (Exception)
+                {
+                    ShowNotification("Failed to update profile image. Please try again.");
+                }
+            }
+        }
+
+        [RelayCommand]
+        private async Task UpdateInfo()
+        {
+            try
+            {
                 await _userRepository.UpdateAsync(CurrentUser);
                 var refreshed = await _userRepository.GetByIdAsync(CurrentUser.UserID);
                 if (refreshed != null)
                 {
                     CurrentUser = refreshed;
                 }
-            }
-        }
 
-        [RelayCommand]
-        private void UpdateInfo()
-        {
-            _userRepository.UpdateAsync(CurrentUser);
+                ShowNotification("Profile information updated successfully.");
+            }
+            catch (Exception)
+            {
+                ShowNotification("Failed to update profile information. Please try again.");
+            }
 
         }
         [RelayCommand]
@@ -794,11 +882,7 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
-            bool res = _navigationService.OpenReviewDialog(booking);
-            if (res)
-            {
-                LoadReviewsForHotel(booking.HotelID);
-            }
+            _navigationService.OpenReviewDialog(booking);
         }
 
         [RelayCommand]
@@ -948,28 +1032,6 @@ namespace Hotel_Booking_System.ViewModels
 
             room.Status = available ? "Available" : "Booked";
         }
-        private void LoadReviewsForHotel(string hotelId)
-        {
-            Reviews.Clear();
-            var reviewList = _reviewRepository.GetAllAsync().Result;
-            var hotelReviews = reviewList
-                .Where(r => r.HotelID == hotelId)
-                .OrderByDescending(r => r.CreatedAt)
-                .ToList();
-            foreach (var review in hotelReviews)
-            {
-                var user = _userRepository.GetByIdAsync(review.UserID).Result;
-                if (user != null)
-                {
-                    review.ReviewerName = user.FullName;
-                    review.ReviewerAvatarUrl = user.AvatarUrl;
-                }
-                review.AdminReplyDraft = string.Empty;
-                Reviews.Add(review);
-            }
-        }
-
-        
         
 
     }

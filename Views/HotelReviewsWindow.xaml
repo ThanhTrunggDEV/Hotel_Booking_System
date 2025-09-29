@@ -1,0 +1,277 @@
+<Window x:Class="Hotel_Booking_System.Views.HotelReviewsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Đánh giá khách sạn"
+        Height="700"
+        Width="640"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+    <Border CornerRadius="16" Background="White" Padding="24" SnapsToDevicePixels="True">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.25"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Đánh giá khách sạn" FontSize="22" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding HotelName, StringFormat='Dành cho {0}'}" FontSize="12" Foreground="#FF616161" Margin="0,4,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1"
+                        x:Name="CloseButton"
+                        Content="✕"
+                        Width="32"
+                        Height="32"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Foreground="#FF424242"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Right"
+                        Cursor="Hand"/>
+            </Grid>
+
+            <Border Grid.Row="1"
+                    Margin="0,20,0,16"
+                    Padding="20"
+                    Background="#FFEEF7FF"
+                    CornerRadius="12"
+                    Visibility="{Binding SummaryVisibility}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Điểm đánh giá trung bình" FontSize="12" Foreground="#FF4C6B8A"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding AverageRating, StringFormat='{}{0:0.0}'}"
+                                       FontSize="40"
+                                       FontWeight="Bold"
+                                       Foreground="#FF1A73E8"/>
+                            <StackPanel Margin="16,4,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="⭐" FontSize="16" Margin="0,0,2,0"/>
+                                    <TextBlock Text="{Binding AverageRating, StringFormat='{}{0:0.0}/5'}" FontSize="16" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding TotalReviews, StringFormat='Từ {0} đánh giá'}"
+                                           FontSize="12"
+                                           Foreground="#FF607D8B"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                        <TextBlock Text="Phân bổ số sao" FontSize="12" Foreground="#FF4C6B8A"/>
+                        <ItemsControl ItemsSource="{Binding RatingBreakdowns}" Margin="0,10,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding DisplayLabel}" FontSize="12" Foreground="#FF37474F"/>
+                                        <ProgressBar Grid.Column="1"
+                                                     Margin="12,0"
+                                                     Height="8"
+                                                     VerticalAlignment="Center"
+                                                     Value="{Binding Percentage}"
+                                                     Maximum="1"
+                                                     Foreground="#FF1A73E8"
+                                                     Background="#FFCFD8DC"/>
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding Count, StringFormat='{}{0}'}"
+                                                   FontSize="12"
+                                                   Foreground="#FF455A64"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Lọc theo số sao" FontSize="12" Foreground="#FF757575" Margin="0,0,0,8"/>
+                    <ListBox ItemsSource="{Binding RatingFilters}"
+                             SelectedItem="{Binding SelectedRatingFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Margin" Value="0,0,8,0"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border x:Name="Chip"
+                                                    Background="#FFE3F2FD"
+                                                    CornerRadius="16"
+                                                    Padding="16,8"
+                                                    BorderBrush="Transparent"
+                                                    BorderThickness="1">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Chip" Property="Background" Value="#FF1A73E8"/>
+                                                    <Setter TargetName="Chip" Property="BorderBrush" Value="#FF0B57D0"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Chip" Property="BorderBrush" Value="#FF64B5F6"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </StackPanel>
+            </StackPanel>
+
+            <Grid Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Text="{Binding Reviews.Count, StringFormat='Tổng cộng {0} đánh giá'}"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,12"/>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding ReviewListVisibility}">
+                    <ItemsControl ItemsSource="{Binding Reviews}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#FFE0E0E0"
+                                        BorderThickness="1"
+                                        Padding="16"
+                                        Margin="0,0,0,12"
+                                        CornerRadius="12"
+                                        Background="#FFF9FBFF">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Width="48"
+                                                Height="48"
+                                                CornerRadius="24"
+                                                Background="#FFE0E0E0"
+                                                ClipToBounds="True"
+                                                Margin="0,0,16,0">
+                                            <Image Source="{Binding ReviewerAvatarUrl}" Stretch="UniformToFill"/>
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding ReviewerName}" FontWeight="Bold" FontSize="14"/>
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding CreatedAt, StringFormat='{}{0:dd/MM/yyyy}'}"
+                                                           FontSize="12"
+                                                           Foreground="#FF757575"/>
+                                            </Grid>
+                                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="⭐" FontSize="14"/>
+                                                <TextBlock Text="{Binding Rating, StringFormat='{}{0}/5'}"
+                                                           Foreground="#FFFF9800"
+                                                           FontWeight="SemiBold"
+                                                           Margin="6,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Comment}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,10,0,0"/>
+                                            <Border Background="#FFF3E5F5"
+                                                    BorderBrush="#FFE0E0E0"
+                                                    BorderThickness="1"
+                                                    CornerRadius="6"
+                                                    Padding="10"
+                                                    Margin="0,10,0,0">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AdminReply}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding AdminReply}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <StackPanel>
+                                                    <TextBlock Text="Phản hồi từ khách sạn"
+                                                               FontWeight="Bold"
+                                                               FontSize="12"
+                                                               Foreground="#FF6A1B9A"/>
+                                                    <TextBlock Text="{Binding AdminReply}"
+                                                               TextWrapping="Wrap"
+                                                               Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <TextBlock Grid.Row="1"
+                           Text="Chưa có đánh giá nào cho khách sạn này."
+                           Foreground="#FF757575"
+                           FontStyle="Italic"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding EmptyStateVisibility}"/>
+            </Grid>
+
+            <Button Grid.Row="4"
+                    Content="Đóng"
+                    HorizontalAlignment="Right"
+                    Width="100"
+                    Height="36"
+                    Margin="0,20,0,0"
+                    Background="#FF2196F3"
+                    Foreground="White"
+                    BorderBrush="Transparent"
+                    FontWeight="Bold"
+                    x:Name="CloseFooterButton"/>
+        </Grid>
+    </Border>
+</Window>
