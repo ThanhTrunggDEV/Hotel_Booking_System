@@ -56,171 +56,47 @@
 
                     
 
-                    <Grid Grid.Row="1" Margin="30,20">
+                    <Grid Grid.Row="0" Margin="30,20,30,10">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="320"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <ScrollViewer>
-     
+                        <Grid VerticalAlignment="Center">
+                            <TextBlock Text="Available Hotels"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       Visibility="{Binding ShowAvailableHotels}"/>
+                            <TextBlock Text="Available Rooms"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       Visibility="{Binding ShowRoomList}"/>
+                        </Grid>
 
-                            <StackPanel>
-                                <Grid Margin="0,0,0,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="Hotel Filters" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
-                                    <Button Grid.Column="1" Content="{Binding HotelFiltersToggleText}" Command="{Binding ToggleHotelFiltersCommand}" Style="{StaticResource SecondaryButton}" Margin="10,0,0,0"/>
-                                </Grid>
-                                <Border Visibility="{Binding ShowSearchHotel}" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
-                                    <StackPanel Margin="25,20,25,25">
-                                        <TextBlock Text="Location" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <ComboBox x:Name="cbbLocation" Style="{StaticResource ModernComboBox}">
-                                            <ComboBoxItem>Hà Nội</ComboBoxItem>
-                                            <ComboBoxItem>Tuyên Quang</ComboBoxItem>
-                                            <ComboBoxItem>Lào Cai</ComboBoxItem>
-                                            <ComboBoxItem>Thái Nguyên</ComboBoxItem>
-                                            <ComboBoxItem>Phú Thọ</ComboBoxItem>
-                                            <ComboBoxItem>Bắc Ninh</ComboBoxItem>
-                                            <ComboBoxItem>Hưng Yên</ComboBoxItem>
-                                            <ComboBoxItem>Hải Phòng</ComboBoxItem>
-                                            <ComboBoxItem>Ninh Bình</ComboBoxItem>
-                                            <ComboBoxItem>Quảng Trị</ComboBoxItem>
-                                            <ComboBoxItem>Đà Nẵng</ComboBoxItem>
-                                            <ComboBoxItem>Quảng Ngãi</ComboBoxItem>
-                                            <ComboBoxItem>Gia Lai</ComboBoxItem>
-                                            <ComboBoxItem>Khánh Hòa</ComboBoxItem>
-                                            <ComboBoxItem>Lâm Đồng</ComboBoxItem>
-                                            <ComboBoxItem>Đăk Lăk</ComboBoxItem>
-                                            <ComboBoxItem>TP. Hồ Chí Minh</ComboBoxItem>
-                                            <ComboBoxItem>TP. Cần Thơ</ComboBoxItem>
-                                            <ComboBoxItem>Vĩnh Long</ComboBoxItem>
-                                            <ComboBoxItem>Đồng Tháp</ComboBoxItem>
-                                            <ComboBoxItem>Cà Mau</ComboBoxItem>
-                                            <ComboBoxItem>An Giang</ComboBoxItem>
+                        <Button Grid.Column="1"
+                                Width="48"
+                                Height="48"
+                                Margin="0"
+                                Padding="0"
+                                Background="White"
+                                BorderBrush="#FF1976D2"
+                                BorderThickness="1.5"
+                                Foreground="#FF1976D2"
+                                Cursor="Hand"
+                                ToolTip="Filters"
+                                Command="{Binding OpenFiltersCommand}">
+                            <TextBlock Text="&#xE16E;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="20"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Button>
+                    </Grid>
 
-                                        </ComboBox>
-                                        <TextBlock Text="Price Range ($)" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                            <StackPanel>
-                                                <Grid Margin="0,0,0,10">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBox x:Name="txtMinPrice" Width="80" Height="30" 
-                                     
-                                    HorizontalAlignment="Center"/>
-                                                    <TextBlock Grid.Column="1" Text="to" 
-                                      VerticalAlignment="Center" 
-                                      Margin="10,0" 
-                                      HorizontalAlignment="Center"/>
-                                                    <TextBox x:Name="txtMaxPrice" Grid.Column="2" Width="80" Height="30" 
-                                    
-                                    HorizontalAlignment="Center"/>
-                                                </Grid>
-                                            </StackPanel>
-                                        </Border>
-
-                                        <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                            <StackPanel>
-                                                <CheckBox x:Name="cbFiveStar" Content="⭐⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                                <CheckBox x:Name="cbFourStar" Content="⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                                <CheckBox x:Name="cbThreeStar" Content="⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                                <CheckBox x:Name="cbTwoStar" Content="⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-                                                <CheckBox x:Name="cbOneStar" Content="⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
-
-                                            </StackPanel>
-                                        </Border>
-
-                                        <TextBlock Text="User Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                            <TextBox x:Name="txtUserRating" Width="80" Height="30" HorizontalAlignment="Left"/>
-                                        </Border>
-
-                                        <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                            <StackPanel>
-                                                <CheckBox x:Name="cbFreeWifi" Content="🌐 Free WiFi" Margin="0,5"/>
-                                                <CheckBox x:Name="cbSwimmingPool" Content="🏊 Swimming Pool" Margin="0,5"/>
-                                                <CheckBox x:Name="cbFreeParking" Content="🚗 Free Parking" Margin="0,5"/>
-                                                <CheckBox x:Name="cbRestaurant" Content="🍽️ Restaurant" Margin="0,5"/>
-                                                <CheckBox x:Name="cbGym" Content="🏋️ Gym" Margin="0,5"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <Button Content="Clear Filters" Command="{Binding ClearSearchCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
-                                        <Button Command="{Binding SearchHotelsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
-                                            <Button.CommandParameter>
-                                                <MultiBinding Converter="{StaticResource FilterHotelConverter}">
-                                                    <Binding ElementName="cbbLocation" Path="Text"/>
-                                                    <Binding ElementName="txtMinPrice" Path="Text"/>
-                                                    <Binding ElementName="txtMaxPrice" Path="Text"/>
-                                                    <Binding ElementName="cbFiveStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbFourStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbThreeStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbTwoStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbOneStar" Path="IsChecked"/>
-                                                    <Binding ElementName="cbFreeWifi" Path="IsChecked"/>
-                                                    <Binding ElementName="cbSwimmingPool" Path="IsChecked"/>
-                                                    <Binding ElementName="cbFreeParking" Path="IsChecked"/>
-                                                    <Binding ElementName="cbRestaurant" Path="IsChecked"/>
-                                                    <Binding ElementName="cbGym" Path="IsChecked"/>
-                                                    <Binding ElementName="txtUserRating" Path="Text"/>
-                                                </MultiBinding>
-                                            </Button.CommandParameter>
-                                        </Button>
-                                    </StackPanel>
-                                </Border>
-
-                                <Grid Margin="0,30,0,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="Room Filters" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
-                                    <Button Grid.Column="1" Content="{Binding RoomFiltersToggleText}" Command="{Binding ToggleRoomFiltersCommand}" Style="{StaticResource SecondaryButton}" Margin="10,0,0,0"/>
-                                </Grid>
-                                <Border Visibility="{Binding ShowSearchRoom}" Grid.Column="0" Style="{StaticResource CardStyle}" Height="850" VerticalAlignment="Top">
-                                    <StackPanel Margin="25,20,25,25">
-
-                                        <TextBlock Text="Price ($)" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
-                                            <TextBox x:Name="txtRoomPrice" Width="80" Height="30" HorizontalAlignment="Center"/>
-                                        </Border>
-
-                                        <TextBlock Text="Capacity" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <TextBox x:Name="txtRoomCapacity" Width="80" Height="30" Margin="0,0,0,20"/>
-
-                                        <TextBlock Text="Check-in Date" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <DatePicker x:Name="dpRoomCheckIn" Width="150" Height="30" Margin="0,0,0,20"/>
-
-                                        <TextBlock Text="Check-out Date" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <DatePicker x:Name="dpRoomCheckOut" Width="150" Height="30" Margin="0,0,0,20"/>
-
-                                        <Button Content="Clear Filters" Command="{Binding ClearRoomFiltersCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,0,20"/>
-                                        <Button Command="{Binding FilterRoomsCommand}" Content="Search" Width="120" Margin="0,0,0,20" Style="{StaticResource PrimaryButton}">
-                                            <Button.CommandParameter>
-                                                <MultiBinding Converter="{StaticResource FilterRoomConverter}">
-                                                    <Binding ElementName="txtRoomPrice" Path="Text"/>
-                                                    <Binding ElementName="txtRoomCapacity" Path="Text"/>
-                                                    <Binding ElementName="dpRoomCheckIn" Path="SelectedDate"/>
-                                                    <Binding ElementName="dpRoomCheckOut" Path="SelectedDate"/>
-                                                </MultiBinding>
-                                            </Button.CommandParameter>
-                                        </Button>
-                                    </StackPanel>
-                                </Border>
-
-                            </StackPanel>
-                            
-                        </ScrollViewer>
+                    <Grid Grid.Row="1" Margin="30,0,30,30">
 
 
-                        <Grid Visibility="{Binding ShowRoomList}" Grid.Column="1"  Height="Auto" Margin="20,0,0,0">
+                        <Grid Visibility="{Binding ShowRoomList}"  Height="Auto" Margin="0">
                             <Border Grid.Row="2" Background="White" CornerRadius="15" Height="Auto" Margin="0,20,0,0" 
         Visibility="{Binding ShowRoomList}">
                                 <Grid>
@@ -354,7 +230,7 @@
 
                         </Grid>
                         
-                        <Grid Visibility="{Binding ShowAvailableHotels}" Grid.Column="1" Margin="20,0,0,0">
+                        <Grid Visibility="{Binding ShowAvailableHotels}" Margin="0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
@@ -519,13 +395,250 @@
                             </ListView>
                         </Grid>
 
+                        <Border Visibility="{Binding FilterOverlayVisibility}"
+                                Background="#66000000"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Panel.ZIndex="20"/>
+
+                        <Border Visibility="{Binding ShowSearchHotel}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Stretch"
+                                Width="360"
+                                Background="White"
+                                CornerRadius="20"
+                                Margin="0"
+                                Panel.ZIndex="30">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#33000000"
+                                                  BlurRadius="18"
+                                                  ShadowDepth="0"
+                                                  Opacity="0.4"/>
+                            </Border.Effect>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0" Margin="20,16,20,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="&#xE16E;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="22"
+                                               Foreground="#FF1976D2"
+                                               VerticalAlignment="Center"/>
+
+                                    <Button Grid.Column="1"
+                                            Width="32"
+                                            Height="32"
+                                            Padding="0"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Foreground="#FF1976D2"
+                                            Cursor="Hand"
+                                            Command="{Binding CloseFiltersCommand}">
+                                        <TextBlock Text="&#xE10A;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="16"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Button>
+                                </Grid>
+
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="25,0,25,25">
+                                        <TextBlock Text="Location" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <ComboBox x:Name="cbbLocation" Style="{StaticResource ModernComboBox}">
+                                            <ComboBoxItem>Hà Nội</ComboBoxItem>
+                                            <ComboBoxItem>Tuyên Quang</ComboBoxItem>
+                                            <ComboBoxItem>Lào Cai</ComboBoxItem>
+                                            <ComboBoxItem>Thái Nguyên</ComboBoxItem>
+                                            <ComboBoxItem>Phú Thọ</ComboBoxItem>
+                                            <ComboBoxItem>Bắc Ninh</ComboBoxItem>
+                                            <ComboBoxItem>Hưng Yên</ComboBoxItem>
+                                            <ComboBoxItem>Hải Phòng</ComboBoxItem>
+                                            <ComboBoxItem>Ninh Bình</ComboBoxItem>
+                                            <ComboBoxItem>Quảng Trị</ComboBoxItem>
+                                            <ComboBoxItem>Đà Nẵng</ComboBoxItem>
+                                            <ComboBoxItem>Quảng Ngãi</ComboBoxItem>
+                                            <ComboBoxItem>Gia Lai</ComboBoxItem>
+                                            <ComboBoxItem>Khánh Hòa</ComboBoxItem>
+                                            <ComboBoxItem>Lâm Đồng</ComboBoxItem>
+                                            <ComboBoxItem>Đăk Lăk</ComboBoxItem>
+                                            <ComboBoxItem>TP. Hồ Chí Minh</ComboBoxItem>
+                                            <ComboBoxItem>TP. Cần Thơ</ComboBoxItem>
+                                            <ComboBoxItem>Vĩnh Long</ComboBoxItem>
+                                            <ComboBoxItem>Đồng Tháp</ComboBoxItem>
+                                            <ComboBoxItem>Cà Mau</ComboBoxItem>
+                                            <ComboBoxItem>An Giang</ComboBoxItem>
+                                        </ComboBox>
+
+                                        <TextBlock Text="Price Range ($)" FontWeight="SemiBold" Margin="0,20,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBox x:Name="txtMinPrice" Width="80" Height="30" HorizontalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="1" Text="to" VerticalAlignment="Center" Margin="10,0" HorizontalAlignment="Center"/>
+                                                    <TextBox x:Name="txtMaxPrice" Grid.Column="2" Width="80" Height="30" HorizontalAlignment="Center"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <StackPanel>
+                                                <CheckBox x:Name="cbFiveStar" Content="⭐⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                                <CheckBox x:Name="cbFourStar" Content="⭐⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                                <CheckBox x:Name="cbThreeStar" Content="⭐⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                                <CheckBox x:Name="cbTwoStar" Content="⭐⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                                <CheckBox x:Name="cbOneStar" Content="⭐" Margin="0,5" Foreground="YellowGreen" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <TextBlock Text="User Rating" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <TextBox x:Name="txtUserRating" Width="80" Height="30" HorizontalAlignment="Left"/>
+                                        </Border>
+
+                                        <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <StackPanel>
+                                                <CheckBox x:Name="cbFreeWifi" Content="🌐 Free WiFi" Margin="0,5"/>
+                                                <CheckBox x:Name="cbSwimmingPool" Content="🏊 Swimming Pool" Margin="0,5"/>
+                                                <CheckBox x:Name="cbFreeParking" Content="🚗 Free Parking" Margin="0,5"/>
+                                                <CheckBox x:Name="cbRestaurant" Content="🍽️ Restaurant" Margin="0,5"/>
+                                                <CheckBox x:Name="cbGym" Content="🏋️ Gym" Margin="0,5"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                            <Button Content="Clear" Command="{Binding ClearSearchCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,10,0"/>
+                                            <Button Command="{Binding SearchHotelsCommand}" Content="Search" Width="120" Style="{StaticResource PrimaryButton}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource FilterHotelConverter}">
+                                                        <Binding ElementName="cbbLocation" Path="Text"/>
+                                                        <Binding ElementName="txtMinPrice" Path="Text"/>
+                                                        <Binding ElementName="txtMaxPrice" Path="Text"/>
+                                                        <Binding ElementName="cbFiveStar" Path="IsChecked"/>
+                                                        <Binding ElementName="cbFourStar" Path="IsChecked"/>
+                                                        <Binding ElementName="cbThreeStar" Path="IsChecked"/>
+                                                        <Binding ElementName="cbTwoStar" Path="IsChecked"/>
+                                                        <Binding ElementName="cbOneStar" Path="IsChecked"/>
+                                                        <Binding ElementName="cbFreeWifi" Path="IsChecked"/>
+                                                        <Binding ElementName="cbSwimmingPool" Path="IsChecked"/>
+                                                        <Binding ElementName="cbFreeParking" Path="IsChecked"/>
+                                                        <Binding ElementName="cbRestaurant" Path="IsChecked"/>
+                                                        <Binding ElementName="cbGym" Path="IsChecked"/>
+                                                        <Binding ElementName="txtUserRating" Path="Text"/>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+
+                        <Border Visibility="{Binding ShowSearchRoom}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Stretch"
+                                Width="320"
+                                Background="White"
+                                CornerRadius="20"
+                                Margin="0"
+                                Panel.ZIndex="30">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#33000000"
+                                                  BlurRadius="18"
+                                                  ShadowDepth="0"
+                                                  Opacity="0.4"/>
+                            </Border.Effect>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0" Margin="20,16,20,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="&#xE16E;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="22"
+                                               Foreground="#FF1976D2"
+                                               VerticalAlignment="Center"/>
+
+                                    <Button Grid.Column="1"
+                                            Width="32"
+                                            Height="32"
+                                            Padding="0"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Foreground="#FF1976D2"
+                                            Cursor="Hand"
+                                            Command="{Binding CloseFiltersCommand}">
+                                        <TextBlock Text="&#xE10A;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="16"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Button>
+                                </Grid>
+
+                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="25,0,25,25">
+                                        <TextBlock Text="Price ($)" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <Border Background="#FFF8F9FA" CornerRadius="8" Padding="15,12" Margin="0,0,0,20">
+                                            <TextBox x:Name="txtRoomPrice" Width="80" Height="30" HorizontalAlignment="Center"/>
+                                        </Border>
+
+                                        <TextBlock Text="Capacity" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <TextBox x:Name="txtRoomCapacity" Width="80" Height="30" Margin="0,0,0,20"/>
+
+                                        <TextBlock Text="Check-in Date" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <DatePicker x:Name="dpRoomCheckIn" Width="150" Height="30" Margin="0,0,0,20"/>
+
+                                        <TextBlock Text="Check-out Date" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                        <DatePicker x:Name="dpRoomCheckOut" Width="150" Height="30" Margin="0,0,0,20"/>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Clear" Command="{Binding ClearRoomFiltersCommand}" Style="{StaticResource SecondaryButton}" Width="120" Margin="0,0,10,0"/>
+                                            <Button Command="{Binding FilterRoomsCommand}" Content="Search" Width="120" Style="{StaticResource PrimaryButton}">
+                                                <Button.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource FilterRoomConverter}">
+                                                        <Binding ElementName="txtRoomPrice" Path="Text"/>
+                                                        <Binding ElementName="txtRoomCapacity" Path="Text"/>
+                                                        <Binding ElementName="dpRoomCheckIn" Path="SelectedDate"/>
+                                                        <Binding ElementName="dpRoomCheckOut" Path="SelectedDate"/>
+                                                    </MultiBinding>
+                                                </Button.CommandParameter>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+
                         <Button Visibility="{Binding ShowChatButton}" x:Name="btnChat" Width="60" Height="60"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Margin="0,0,30,30"
                     BorderBrush="Transparent"
                     Cursor="Hand"
-                    Padding="0" Grid.Column="1"
+                    Padding="0"
                     Command="{Binding ShowChatBoxFuncCommand}">
                             <Button.Style>
                                 <Style TargetType="Button">
@@ -552,8 +665,8 @@
                             </Button.Style>
                         </Button>
 
-                        <Border Visibility="{Binding ShowChatBox}" x:Name="AIChatPanel" Grid.Column="1" Style="{StaticResource CardStyle}" 
-                    Height="600" VerticalAlignment="Center" HorizontalAlignment="Right" 
+                        <Border Visibility="{Binding ShowChatBox}" x:Name="AIChatPanel" Style="{StaticResource CardStyle}"
+                    Height="600" VerticalAlignment="Center" HorizontalAlignment="Right"
                     Width="350" Margin="0,0,30,0">
                             <Grid>
                                 <Grid.RowDefinitions>

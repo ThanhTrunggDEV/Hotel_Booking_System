@@ -38,7 +38,7 @@ namespace Hotel_Booking_System.ViewModels
         private int _totalBookings;
         private double _totalSpent;
         private string _showSearchRoom = "Collapsed";
-        private string _showSearchHotel = "Visible";
+        private string _showSearchHotel = "Collapsed";
         private string _sortType = "Default";
         private string _roomSortType = "Default";
         private string _showAvailableHotels = "Visible";
@@ -56,8 +56,7 @@ namespace Hotel_Booking_System.ViewModels
         private string _chatInput = string.Empty;
         private string _membershipLevel = "Bronze";
         private string _hasBookings = "Collapsed";
-        private string _hotelFiltersToggleText = "Hide Hotel Filters";
-        private string _roomFiltersToggleText = "Show Room Filters";
+        private string _filterOverlayVisibility = "Collapsed";
 
         private DispatcherTimer? _typingTimer;
 
@@ -129,16 +128,10 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _showRooms, value);
         }
 
-        public string HotelFiltersToggleText
+        public string FilterOverlayVisibility
         {
-            get => _hotelFiltersToggleText;
-            set => Set(ref _hotelFiltersToggleText, value);
-        }
-
-        public string RoomFiltersToggleText
-        {
-            get => _roomFiltersToggleText;
-            set => Set(ref _roomFiltersToggleText, value);
+            get => _filterOverlayVisibility;
+            set => Set(ref _filterOverlayVisibility, value);
         }
 
         public ObservableCollection<Booking> AllBookings { get; set; } = new();
@@ -638,27 +631,43 @@ namespace Hotel_Booking_System.ViewModels
         private void SetHotelFiltersVisibility(string visibility)
         {
             ShowSearchHotel = visibility;
-            HotelFiltersToggleText = visibility == "Visible" ? "Hide Hotel Filters" : "Show Hotel Filters";
+            UpdateFilterOverlayVisibility();
         }
 
         private void SetRoomFiltersVisibility(string visibility)
         {
             ShowSearchRoom = visibility;
-            RoomFiltersToggleText = visibility == "Visible" ? "Hide Room Filters" : "Show Room Filters";
+            UpdateFilterOverlayVisibility();
+        }
+
+        private void UpdateFilterOverlayVisibility()
+        {
+            FilterOverlayVisibility =
+                ShowSearchHotel == "Visible" || ShowSearchRoom == "Visible" ? "Visible" : "Collapsed";
         }
 
         [RelayCommand]
-        private void ToggleHotelFilters()
+        private void OpenFilters()
         {
-            var newVisibility = ShowSearchHotel == "Visible" ? "Collapsed" : "Visible";
-            SetHotelFiltersVisibility(newVisibility);
+            if (ShowRoomList == "Visible")
+            {
+                var shouldShowRoomFilters = ShowSearchRoom != "Visible";
+                SetHotelFiltersVisibility("Collapsed");
+                SetRoomFiltersVisibility(shouldShowRoomFilters ? "Visible" : "Collapsed");
+            }
+            else
+            {
+                var shouldShowHotelFilters = ShowSearchHotel != "Visible";
+                SetRoomFiltersVisibility("Collapsed");
+                SetHotelFiltersVisibility(shouldShowHotelFilters ? "Visible" : "Collapsed");
+            }
         }
 
         [RelayCommand]
-        private void ToggleRoomFilters()
+        private void CloseFilters()
         {
-            var newVisibility = ShowSearchRoom == "Visible" ? "Collapsed" : "Visible";
-            SetRoomFiltersVisibility(newVisibility);
+            SetHotelFiltersVisibility("Collapsed");
+            SetRoomFiltersVisibility("Collapsed");
         }
 
 
@@ -671,7 +680,7 @@ namespace Hotel_Booking_System.ViewModels
             ShowAvailableHotels = "Collapsed";
             SetHotelFiltersVisibility("Collapsed");
 
-            SetRoomFiltersVisibility("Visible");
+            SetRoomFiltersVisibility("Collapsed");
             ShowRoomList = "Visible";
         }
         [RelayCommand]
@@ -709,7 +718,7 @@ namespace Hotel_Booking_System.ViewModels
             ShowRoomList = "Collapsed";
             ShowAvailableHotels = "Visible";
 
-            SetHotelFiltersVisibility("Visible");
+            SetHotelFiltersVisibility("Collapsed");
             SetRoomFiltersVisibility("Collapsed");
         }
         [RelayCommand]
