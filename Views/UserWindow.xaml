@@ -192,7 +192,6 @@
                                                                 <Grid.ColumnDefinitions>
                                                                     <ColumnDefinition Width="*"/>
                                                                     <ColumnDefinition Width="Auto"/>
-                                                                    <ColumnDefinition Width="Auto"/>
                                                                 </Grid.ColumnDefinitions>
 
                                                                 <StackPanel Grid.Column="0">
@@ -201,15 +200,7 @@
                                FontSize="20" FontWeight="Bold" Foreground="#2E7D32"/>
                                                                 </StackPanel>
 
-                                                                <Button Grid.Column="1" Content="Booked Dates"
-                                                                        Style="{StaticResource SecondaryButton}"
-                                                                        Width="110"
-                                                                        Height="35"
-                                                                        Margin="0,0,10,0"
-                        Command="{Binding DataContext.ShowBookedDatesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                        CommandParameter="{Binding}"/>
-
-                                                                <Button Grid.Column="2" Content="Book"
+                                                                <Button Grid.Column="1" Content="Book"
                                                                         Style="{StaticResource PrimaryButton}"
                                                                         Width="80"
                                                                         Height="35"
