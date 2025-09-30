@@ -23,5 +23,20 @@ namespace Hotel_Booking_System.DomainModels
 
         [NotMapped]
         public string RoomNumber { get; set; } = string.Empty;
+
+        [NotMapped]
+        public Review? UserReview { get; set; }
+
+        [NotMapped]
+        public int ReviewRating { get; set; }
+
+        [NotMapped]
+        public string ReviewComment { get; set; } = string.Empty;
+
+        [NotMapped]
+        public bool HasReview => UserReview != null;
+
+        [NotMapped]
+        public string ReviewStars => ReviewRating > 0 ? new string('★', ReviewRating) : string.Empty;
     }
 }

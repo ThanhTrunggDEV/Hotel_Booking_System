@@ -113,20 +113,32 @@ namespace Hotel_Booking_System.Services
         public bool OpenReviewDialog(Booking booking)
         {
             var reviewWindow = App.Provider!.GetRequiredService<ReviewDialog>();
+            var vm = App.Provider!.GetRequiredService<IReviewViewModel>();
+
+            vm.Booking = booking;
+            reviewWindow.DataContext = vm;
 
             reviewWindow.btnCancel.Click += (s, e) =>
             {
                 reviewWindow.DialogResult = false;
                 reviewWindow.Close();
             };
-            reviewWindow.btnSubmit.Click += (s, e) => reviewWindow.DialogResult = true;
 
-            var vm = App.Provider!.GetRequiredService<IReviewViewModel>();
-            vm.Booking = booking;
+            reviewWindow.btnSubmit.Click += async (s, e) =>
+            {
+                if (vm.SubmitCommand.CanExecute(null))
+                {
+                    await vm.SubmitCommand.ExecuteAsync(null);
+                    if (vm.IsReviewSubmitted)
+                    {
+                        reviewWindow.DialogResult = true;
+                        reviewWindow.Close();
+                    }
+                }
+            };
 
-            reviewWindow.DataContext = vm;
             reviewWindow.ShowDialog();
-            return reviewWindow.DialogResult == true;
+            return reviewWindow.DialogResult == true && vm.IsReviewSubmitted;
         }
 
 
