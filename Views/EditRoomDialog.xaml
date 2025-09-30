@@ -26,8 +26,12 @@
                 Margin="28,0,28,28"
                 Padding="24"
                 Background="White"
-                CornerRadius="20"
-                Effect="{DynamicResource {x:Static SystemParameters.DropShadowKey}}">
+                CornerRadius="20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="16"
+                                   Opacity="0.2"
+                                   ShadowDepth="0"/>
+            </Border.Effect>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
