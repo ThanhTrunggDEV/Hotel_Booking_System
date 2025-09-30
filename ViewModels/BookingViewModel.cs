@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,13 +17,16 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IRoomRepository _roomRepository;
         private readonly INavigationService _navigationService;
 
-        private DateTime _checkInDate = DateTime.Now;
-        private DateTime _checkOutDate = DateTime.Now;
+        private DateTime _checkInDate = DateTime.Today;
+        private DateTime _checkOutDate = DateTime.Today.AddDays(1);
         private int _numberOfGuests;
         private string _guestName = string.Empty;
         private double _totalPayment;
         private string _notificationMessage = string.Empty;
         private string _notificationVisibility = "Collapsed";
+        private Room? _selectedRoom;
+
+        public ObservableCollection<string> UpcomingBookedDates { get; } = new();
 
         public BookingViewModel(IBookingRepository bookingRepository, IRoomRepository roomRepository, INavigationService navigationService)
         {
@@ -66,7 +70,28 @@ namespace Hotel_Booking_System.ViewModels
                 CalculateTotalPayment();
             }
         }
-        public Room? SelectedRoom { get; set; }
+        public Room? SelectedRoom
+        {
+            get => _selectedRoom;
+            set
+            {
+                Set(ref _selectedRoom, value);
+                if (_selectedRoom != null)
+                {
+                    if (CheckInDate.Date < DateTime.Today)
+                    {
+                        CheckInDate = DateTime.Today;
+                    }
+
+                    if (CheckOutDate <= CheckInDate)
+                    {
+                        CheckOutDate = CheckInDate.AddDays(1);
+                    }
+                }
+                _ = LoadBookedDatesAsync();
+                CalculateTotalPayment();
+            }
+        }
         public User? CurrentUser { get; set; }
         public Hotel? Hotel { get; set; }
 
@@ -82,6 +107,8 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _notificationVisibility, value);
         }
 
+        public bool HasUpcomingBookedDates => UpcomingBookedDates.Any();
+
         private void CalculateTotalPayment()
         {
             if (SelectedRoom == null)
@@ -96,6 +123,31 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
             TotalPayment = days * SelectedRoom.PricePerNight;
+        }
+
+        private async Task LoadBookedDatesAsync()
+        {
+            UpcomingBookedDates.Clear();
+
+            if (SelectedRoom == null)
+            {
+                OnPropertyChanged(nameof(HasUpcomingBookedDates));
+                return;
+            }
+
+            var bookings = await _bookingRepository.GetAllAsync();
+
+            var upcoming = bookings
+                .Where(b => b.RoomID == SelectedRoom.RoomID && b.Status != "Cancelled" && b.CheckOutDate >= DateTime.Today)
+                .OrderBy(b => b.CheckInDate)
+                .ToList();
+
+            foreach (var booking in upcoming)
+            {
+                UpcomingBookedDates.Add($"{booking.CheckInDate:dd/MM/yyyy} - {booking.CheckOutDate:dd/MM/yyyy}");
+            }
+
+            OnPropertyChanged(nameof(HasUpcomingBookedDates));
         }
 
 

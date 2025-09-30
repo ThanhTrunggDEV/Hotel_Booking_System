@@ -71,9 +71,10 @@
                                   SelectedValuePath="Tag"
                                   Background="Transparent"
                                   BorderThickness="0"
-                                  Padding="10"
-                                  Height="38"
-                                  HorizontalContentAlignment="Stretch">
+                                  Padding="12"
+                                  Height="46"
+                                  HorizontalContentAlignment="Stretch"
+                                  VerticalContentAlignment="Center">
                             <ComboBoxItem Tag="Cash">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
