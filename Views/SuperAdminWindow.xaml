@@ -44,10 +44,10 @@
 
 
  
-            <TabItem Style="{StaticResource TabItemStyle}" x:Name="SuperAdminDashboard" Header="👑 System Overview" Visibility="Visible">
+            <TabItem Style="{StaticResource TabItemStyle}" x:Name="SuperAdminDashboard" Header="👑 Tổng quan hệ thống" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="Super Admin Dashboard" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Text="Bảng điều khiển Super Admin" Style="{StaticResource HeaderTextStyle}"/>
 
         
                         <Grid Margin="0,0,0,30">
@@ -62,35 +62,35 @@
                             <Border Grid.Column="0" Style="{StaticResource CardStyle}" Background="#FF4CAF50">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
                                     <TextBlock Text="{Binding TotalHotels}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Total Hotels" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                                    <TextBlock Text="Tổng số khách sạn" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="1" Style="{StaticResource CardStyle}" Background="#FF2196F3">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
                                     <TextBlock Text="{Binding TotalUsers}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Total Users" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                                    <TextBlock Text="Tổng số người dùng" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="2" Style="{StaticResource CardStyle}" Background="#FFFF9800">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
                                     <TextBlock Text="{Binding ActiveBookings}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Active Bookings" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                                    <TextBlock Text="Đặt phòng đang hoạt động" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FFFF5722">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
                                     <TextBlock Text="{Binding MonthlyRevenue, StringFormat={}{0:C}}" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Monthly Revenue" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                                    <TextBlock Text="Doanh thu hàng tháng" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
                             <Border Grid.Column="4" Style="{StaticResource CardStyle}" Background="#FF9C27B0">
                                 <StackPanel Margin="15" HorizontalAlignment="Center">
                                     <TextBlock Text="{Binding PendingApprovals}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Pending Approvals" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                                    <TextBlock Text="Đang chờ phê duyệt" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -102,9 +102,9 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Pending Hotel Admin Requests" FontSize="18" FontWeight="Bold"/>
+                                    <TextBlock Text="Yêu cầu quản trị khách sạn đang chờ" FontSize="18" FontWeight="Bold"/>
                                     <Border Grid.Column="1" Background="#FFE3F2FD" Padding="10,4" CornerRadius="12" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding PendingRequest.Count, StringFormat=Pending: {0}}" FontSize="12" FontWeight="SemiBold" Foreground="#FF1976D2"/>
+                                        <TextBlock Text="{Binding PendingRequest.Count, StringFormat=Đang chờ: {0}}" FontSize="12" FontWeight="SemiBold" Foreground="#FF1976D2"/>
                                     </Border>
                                 </Grid>
 
@@ -134,9 +134,9 @@
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                                                        <TextBlock Text="Request Details" FontSize="13" FontWeight="Bold" Foreground="#FF424242"/>
-                                                        <TextBlock Text="{Binding RequestID, StringFormat=ID: {0}}" Foreground="#FF424242" Margin="0,4,0,0"/>
-                                                        <TextBlock Text="{Binding CreatedAt, StringFormat=Submitted: {0:dd MMM yyyy}}" Foreground="#FF424242" Margin="0,4,0,0"/>
+                                                        <TextBlock Text="Chi tiết yêu cầu" FontSize="13" FontWeight="Bold" Foreground="#FF424242"/>
+                                                        <TextBlock Text="{Binding RequestID, StringFormat=Mã: {0}}" Foreground="#FF424242" Margin="0,4,0,0"/>
+                                                        <TextBlock Text="{Binding CreatedAt, StringFormat=Ngày gửi: {0:dd MMM yyyy}}" Foreground="#FF424242" Margin="0,4,0,0"/>
                                                         <Border CornerRadius="10" Padding="8,4" HorizontalAlignment="Left" Margin="0,6,0,0">
                                                             <Border.Style>
                                                                 <Style TargetType="Border">
@@ -159,13 +159,13 @@
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                                        <Button Content="Details" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Margin="0,0,6,0"
+                                                        <Button Content="Chi tiết" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Margin="0,0,6,0"
                                                                 Command="{Binding DataContext.ViewRequestDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                 CommandParameter="{Binding}"/>
-                                                        <Button Content="Approve" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Background="#FF4CAF50" Margin="0,0,6,0"
+                                                        <Button Content="Phê duyệt" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Background="#FF4CAF50" Margin="0,0,6,0"
                                                                 Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                 CommandParameter="{Binding RequestID}"/>
-                                                        <Button Content="Reject" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Background="#FFFF5722"
+                                                        <Button Content="Từ chối" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Background="#FFFF5722"
                                                                 Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                 CommandParameter="{Binding RequestID}"/>
                                                     </StackPanel>
@@ -197,9 +197,9 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Pending Hotels" FontSize="18" FontWeight="Bold"/>
+                                    <TextBlock Text="Khách sạn đang chờ" FontSize="18" FontWeight="Bold"/>
                                     <Border Grid.Column="1" Background="#FFF3E5F5" Padding="10,4" CornerRadius="12" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding PendingHotels.Count, StringFormat=Awaiting review: {0}}" FontSize="12" FontWeight="SemiBold" Foreground="#FF6A1B9A"/>
+                                        <TextBlock Text="{Binding PendingHotels.Count, StringFormat=Đang chờ duyệt: {0}}" FontSize="12" FontWeight="SemiBold" Foreground="#FF6A1B9A"/>
                                     </Border>
                                 </Grid>
 
@@ -229,33 +229,33 @@
                                                                 <ColumnDefinition Width="*"/>
                                                             </Grid.ColumnDefinitions>
                                                             <StackPanel Grid.Column="0">
-                                                                <TextBlock Text="Price Range" FontSize="12" FontWeight="Bold" Foreground="#FF424242"/>
+                                                                <TextBlock Text="Khoảng giá" FontSize="12" FontWeight="Bold" Foreground="#FF424242"/>
                                                                 <TextBlock Text="{Binding MinPrice, StringFormat={}{0:C}}" Foreground="#FF424242" Margin="0,2,0,0"/>
                                                             </StackPanel>
                                                             <StackPanel Grid.Column="1">
-                                                                <TextBlock Text="Max" FontSize="12" FontWeight="Bold" Foreground="#FF424242"/>
+                                                                <TextBlock Text="Tối đa" FontSize="12" FontWeight="Bold" Foreground="#FF424242"/>
                                                                 <TextBlock Text="{Binding MaxPrice, StringFormat={}{0:C}}" Foreground="#FF424242" Margin="0,2,0,0"/>
                                                             </StackPanel>
                                                         </Grid>
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="1" Margin="20,0,0,0">
-                                                        <TextBlock Text="Hotel Details" FontSize="13" FontWeight="Bold" Foreground="#FF424242"/>
-                                                        <TextBlock Text="{Binding HotelID, StringFormat=ID: {0}}" Foreground="#FF424242" Margin="0,4,0,0"/>
-                                                        <TextBlock Text="{Binding TotalRooms, StringFormat=Rooms: {0}}" Foreground="#FF424242" Margin="0,4,0,0"/>
+                                                        <TextBlock Text="Thông tin khách sạn" FontSize="13" FontWeight="Bold" Foreground="#FF424242"/>
+                                                        <TextBlock Text="{Binding HotelID, StringFormat=Mã: {0}}" Foreground="#FF424242" Margin="0,4,0,0"/>
+                                                        <TextBlock Text="{Binding TotalRooms, StringFormat=Số phòng: {0}}" Foreground="#FF424242" Margin="0,4,0,0"/>
                                                         <Border CornerRadius="10" Padding="8,4" HorizontalAlignment="Left" Background="#FFEDE7F6" Margin="0,6,0,0">
                                                             <TextBlock Text="{Binding Status}" FontWeight="SemiBold" Foreground="#FF4A148C"/>
                                                         </Border>
                                                     </StackPanel>
 
                                                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                                        <Button Content="View" Style="{StaticResource SecondaryButton}" Width="70" Height="28" Margin="0,0,6,0"
+                                                        <Button Content="Xem" Style="{StaticResource SecondaryButton}" Width="70" Height="28" Margin="0,0,6,0"
                                                                 Command="{Binding DataContext.ViewHotelDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                 CommandParameter="{Binding}"/>
-                                                        <Button Content="Approve" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Background="#FF4CAF50" Margin="0,0,6,0"
+                                                        <Button Content="Phê duyệt" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Background="#FF4CAF50" Margin="0,0,6,0"
                                                                 Command="{Binding DataContext.ApproveHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                 CommandParameter="{Binding HotelID}"/>
-                                                        <Button Content="Reject" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Background="#FFFF5722"
+                                                        <Button Content="Từ chối" Style="{StaticResource SecondaryButton}" Width="85" Height="28" Background="#FFFF5722"
                                                                 Command="{Binding DataContext.RejectHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                 CommandParameter="{Binding HotelID}"/>
                                                     </StackPanel>
@@ -282,7 +282,7 @@
 
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
-                                <TextBlock Text="System Reports and Analytics" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                                <TextBlock Text="Báo cáo và phân tích hệ thống" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
 
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -291,24 +291,24 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Grid.Column="0" Margin="0,0,15,0">
-                                        <Button Content="📊 Revenue Report" Style="{StaticResource PrimaryButton}" 
+                                        <Button Content="📊 Báo cáo doanh thu" Style="{StaticResource PrimaryButton}"
                                                HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="🏨 Hotel Performance" Style="{StaticResource PrimaryButton}" 
+                                        <Button Content="🏨 Hiệu suất khách sạn" Style="{StaticResource PrimaryButton}"
                                                HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="👥 User Analytics" Style="{StaticResource PrimaryButton}" 
+                                        <Button Content="👥 Phân tích người dùng" Style="{StaticResource PrimaryButton}"
                                                HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="📋 Booking Trends" Style="{StaticResource PrimaryButton}" 
+                                        <Button Content="📋 Xu hướng đặt phòng" Style="{StaticResource PrimaryButton}"
                                                HorizontalAlignment="Stretch" Margin="0,5"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                                        <Button Content="💰 Payment Summary" Style="{StaticResource PrimaryButton}" 
+                                        <Button Content="💰 Tổng quan thanh toán" Style="{StaticResource PrimaryButton}"
                                                HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="⭐ Review Analysis" Style="{StaticResource PrimaryButton}" 
+                                        <Button Content="⭐ Phân tích đánh giá" Style="{StaticResource PrimaryButton}"
                                                HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="🚨 System Issues" Style="{StaticResource PrimaryButton}" 
+                                        <Button Content="🚨 Sự cố hệ thống" Style="{StaticResource PrimaryButton}"
                                                Background="#FFFF5722" HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="📤 Export All Data" Style="{StaticResource PrimaryButton}" 
+                                        <Button Content="📤 Xuất toàn bộ dữ liệu" Style="{StaticResource PrimaryButton}"
                                                Background="#FF4CAF50" HorizontalAlignment="Stretch" Margin="0,5"/>
                                     </StackPanel>
                                 </Grid>
