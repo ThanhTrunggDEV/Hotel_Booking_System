@@ -173,10 +173,12 @@
                         </StackPanel>
                     </Border>
 
-                    <StackPanel Grid.Row="4" Visibility="{Binding NotificationVisibility}" Background="#FFEBEE" Orientation="Horizontal" Margin="0,0,0,16" Padding="12" CornerRadius="12">
-                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Foreground="#C62828" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding NotificationMessage}" Foreground="#C62828" TextWrapping="Wrap"/>
-                    </StackPanel>
+                    <Border Grid.Row="4" Visibility="{Binding NotificationVisibility}" Background="#FFEBEE" Margin="0,0,0,16" Padding="12" CornerRadius="12">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Foreground="#C62828" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding NotificationMessage}" Foreground="#C62828" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </Grid>
 
