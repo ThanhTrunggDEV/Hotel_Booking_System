@@ -12,38 +12,21 @@ namespace Hotel_Booking_System.Converters
 {
     public class ImageUrlToBitMap : IValueConverter
     {
-        private static readonly Dictionary<string, BitmapImage> _imageCache = new();
-        private static readonly object _cacheLock = new();
+
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is string url && !string.IsNullOrWhiteSpace(url))
-            {
-                lock (_cacheLock)
-                {
-                    if (_imageCache.TryGetValue(url, out var cachedBitmap))
-                    {
-                        return cachedBitmap;
-                    }
-                }
 
+            if (value is string url && !string.IsNullOrEmpty(url))
+            {
+               
                 try
                 {
                     var bitmap = new BitmapImage();
                     bitmap.BeginInit();
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.UriSource = new Uri(url, UriKind.RelativeOrAbsolute);
+                    bitmap.UriSource = new Uri(url);
+                   // bitmap.CacheOption = BitmapCacheOption.OnLoad;
                     bitmap.EndInit();
-                    bitmap.Freeze();
-
-                    lock (_cacheLock)
-                    {
-                        if (!_imageCache.ContainsKey(url))
-                        {
-                            _imageCache[url] = bitmap;
-                        }
-                    }
-
                     return bitmap;
                 }
                 catch
@@ -51,7 +34,6 @@ namespace Hotel_Booking_System.Converters
                     return null;
                 }
             }
-
             return null;
         }
 

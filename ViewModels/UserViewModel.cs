@@ -840,6 +840,29 @@ namespace Hotel_Booking_System.ViewModels
             }
         }
         [RelayCommand]
+        private void ShowBookedDates(Room room)
+        {
+            if (room == null)
+                return;
+
+            var bookings = _bookingRepository.GetAllAsync().Result;
+            var roomBookings = bookings
+                .Where(b => b.RoomID == room.RoomID && b.Status != "Cancelled")
+                .OrderBy(b => b.CheckInDate)
+                .ToList();
+
+            if (roomBookings.Any())
+            {
+                var message = string.Join("\n", roomBookings.Select(b =>
+                    $"{b.CheckInDate:dd/MM/yyyy} - {b.CheckOutDate:dd/MM/yyyy}"));
+                MessageBox.Show(message, "Booked Dates", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("No bookings for this room yet.", "Booked Dates", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        [RelayCommand]
         private void ReviewBooking(Booking booking)
         {
             if (booking == null)
@@ -852,12 +875,6 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
-            if (booking.HasReview)
-            {
-                MessageBox.Show("Bạn đã đánh giá đặt phòng này rồi.", "Đã đánh giá", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
             var reviews = _reviewRepository.GetAllAsync().Result;
             if (reviews.Any(r => r.BookingID == booking.BookingID))
             {
@@ -865,11 +882,7 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
-            bool reviewSubmitted = _navigationService.OpenReviewDialog(booking);
-            if (reviewSubmitted)
-            {
-                FilterBookingsByUser(CurrentUser.UserID);
-            }
+            _navigationService.OpenReviewDialog(booking);
         }
 
         [RelayCommand]
@@ -931,33 +944,12 @@ namespace Hotel_Booking_System.ViewModels
         {
             var bookingList = _bookingRepository.GetBookingByUserId(userId).Result;
             UpdateCompletedBookings(bookingList);
-            var allReviews = _reviewRepository.GetAllAsync().Result;
-            var reviewLookup = allReviews
-                .Where(r => r.UserID == userId)
-                .GroupBy(r => r.BookingID)
-                .Select(g => g.First())
-                .ToDictionary(r => r.BookingID, r => r);
             var payments = _paymentRepository.GetAllAsync().Result;
             AllBookings.Clear();
             double totalSpent = 0;
             var userBookings = bookingList.Where(b => b.UserID == userId).ToList();
             foreach (var booking in userBookings)
             {
-                if (reviewLookup.TryGetValue(booking.BookingID, out var review))
-                {
-                    booking.UserReview = review;
-                    booking.ReviewRating = review.Rating;
-                    booking.ReviewComment = string.IsNullOrWhiteSpace(review.Comment)
-                        ? "(Không có nhận xét)"
-                        : review.Comment.Trim();
-                }
-                else
-                {
-                    booking.UserReview = null;
-                    booking.ReviewRating = 0;
-                    booking.ReviewComment = string.Empty;
-                }
-
                 AllBookings.Add(booking);
                 var payment = payments.FirstOrDefault(p => p.BookingID == booking.BookingID);
                 if (payment != null)
@@ -1026,11 +1018,6 @@ namespace Hotel_Booking_System.ViewModels
 
         private void EvaluateRoomAvailability(Room room, List<Booking> bookings, DateTime? checkIn, DateTime? checkOut)
         {
-            if (room.Status == "Maintenance")
-            {
-                return;
-            }
-
             var roomBookings = bookings.Where(b => b.RoomID == room.RoomID && b.Status != "Cancelled");
             bool available = true;
 
@@ -1043,10 +1030,7 @@ namespace Hotel_Booking_System.ViewModels
                 available = !roomBookings.Any(b => b.CheckOutDate > DateTime.Now);
             }
 
-            if (available)
-            {
-                room.Status = "Available";
-            }
+            room.Status = available ? "Available" : "Booked";
         }
         
 

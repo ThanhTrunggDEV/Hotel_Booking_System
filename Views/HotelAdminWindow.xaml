@@ -81,161 +81,118 @@
 
 
                         <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
-                            <StackPanel Margin="25">
-                                <TextBlock Text="Hotel Information" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                                    <ComboBox Style="{StaticResource ModernComboBox}" ItemsSource="{Binding Hotels}" SelectedItem="{Binding CurrentHotel}" DisplayMemberPath="HotelName" Width="200"/>
-                                    <Button Content="Add Hotel" Style="{StaticResource PrimaryButton}" Width="100" Margin="10,0,0,0"
-                                            Command="{Binding NewHotelCommand}"/>
-                                </StackPanel>
+                            <Grid Margin="25">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                                <Border Margin="0,0,0,20" Background="#FFF3F6FB" CornerRadius="16" Padding="16">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="260"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Grid.Column="0" Height="220" CornerRadius="12" Background="#FFECEFF5" ClipToBounds="True">
-                                            <Grid>
-                                                <Image Source="{Binding CurrentHotel.HotelImage}" Stretch="UniformToFill"/>
-                                                <Border Background="#44000000"/>
-                                                <TextBlock Text="No preview available"
-                                                           Foreground="White"
-                                                           FontSize="16"
-                                                           FontWeight="SemiBold"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding CurrentHotel.HotelImage}" Value="">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding CurrentHotel.HotelImage}" Value="{x:Null}">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-
-                                                <StackPanel Orientation="Vertical" Margin="16" VerticalAlignment="Bottom">
-                                                    <TextBlock Text="Hotel preview" Foreground="#FFE0E0E0" FontSize="12"/>
-                                                    <TextBlock Text="{Binding CurrentHotel.HotelName, FallbackValue=Unnamed Hotel}"
-                                                               Foreground="White" FontSize="18" FontWeight="Bold"/>
-                                                    <TextBlock Text="{Binding CurrentHotel.City, StringFormat='📍 {0}', FallbackValue='📍 Unknown'}"
-                                                               Foreground="#FFE0E0E0" FontSize="12"/>
-                                                </StackPanel>
-
-                                                <Button Content="Change Photo"
-                                                        Command="{Binding UploadHotelImageCommand}"
-                                                        HorizontalAlignment="Right"
-                                                        VerticalAlignment="Top"
-                                                        Margin="12"
-                                                        Width="140"
-                                                        Height="40"
-                                                        Style="{StaticResource PrimaryButton}"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <StackPanel Grid.Column="1" Margin="24,0,0,0" VerticalAlignment="Center">
-                                            <TextBlock Text="Hotel Highlights" FontSize="16" FontWeight="Bold" Margin="0,0,0,12"/>
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                                <Border Background="#1A4CAF50" CornerRadius="8" Padding="8,4" Margin="0,0,8,0">
-                                                    <TextBlock Text="{Binding CurrentHotel.Rating, StringFormat='⭐ {0:0}/5', FallbackValue='⭐ 0/5'}"
-                                                               Foreground="#FF2E7D32" FontWeight="SemiBold"/>
-                                                </Border>
-                                                <Border Background="#1A2196F3" CornerRadius="8" Padding="8,4">
-                                                    <TextBlock Text="{Binding Rooms.Count, StringFormat='🛏️ {0} rooms', FallbackValue='🛏️ 0 rooms'}"
-                                                               Foreground="#FF1565C0" FontWeight="SemiBold"/>
-                                                </Border>
-                                            </StackPanel>
-
-                                            <TextBlock Text="{Binding CurrentHotel.Address, FallbackValue='No address provided'}"
-                                                       Foreground="#FF424242" TextWrapping="Wrap" Margin="0,0,0,8"/>
-                                            <TextBlock Text="{Binding CurrentHotel.Description, FallbackValue='Add a welcoming description for your hotel to help guests learn more.'}"
-                                                       Foreground="#FF757575" TextWrapping="Wrap"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-
-                                <Grid>
+                                <Grid Grid.Row="0">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
 
-                                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,15,15">
-                                        <TextBlock Text="Hotel Name" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="{Binding CurrentHotel.HotelName}" Style="{StaticResource ModernTextBox}"/>
-                                    </StackPanel>
+                                    <TextBlock Text="Hotel Information" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
 
-                                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="15,0,0,15">
-                                        <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <ComboBox Style="{StaticResource ModernComboBox}" FontSize="14"
-                                                  SelectedValuePath="Tag"
-                                                  SelectedValue="{Binding CurrentHotel.Rating, Mode=TwoWay}">
-                                            <ComboBoxItem Tag="5" Content="⭐⭐⭐⭐⭐ 5 Stars"/>
-                                            <ComboBoxItem Tag="4" Content="⭐⭐⭐⭐ 4 Stars"/>
-                                            <ComboBoxItem Tag="3" Content="⭐⭐⭐ 3 Stars"/>
-                                            <ComboBoxItem Tag="2" Content="⭐⭐ 2 Stars"/>
-                                            <ComboBoxItem Tag="1" Content="⭐ 1 Stars"/>
-                                        </ComboBox>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <TextBlock Text="Address" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="{Binding CurrentHotel.Address}"
-                                            Style="{StaticResource ModernTextBox}"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <TextBlock Text="City" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <ComboBox Style="{StaticResource ModernComboBox}"
-                                                  ItemsSource="{Binding CityOptions}"
-                                                  SelectedItem="{Binding CurrentHotel.City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding CurrentHotel.Description}"
-                                            Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <WrapPanel>
-                                            <CheckBox Content="🌐 Free WiFi" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasFreeWifi, Mode=TwoWay}"/>
-                                            <CheckBox Content="🏊 Swimming Pool" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasSwimmingPool, Mode=TwoWay}"/>
-                                            <CheckBox Content="🚗 Free Parking" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasFreeParking, Mode=TwoWay}"/>
-                                            <CheckBox Content="🍽️ Restaurant" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasRestaurant, Mode=TwoWay}"/>
-                                            <CheckBox Content="🏋️ Gym" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasGym, Mode=TwoWay}"/>
-                                        </WrapPanel>
-                                    </StackPanel>
-                                                                    <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <CheckBox Content="Visible to users" IsChecked="{Binding CurrentHotel.IsVisible}" />
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <ComboBox Style="{StaticResource ModernComboBox}" ItemsSource="{Binding Hotels}" SelectedItem="{Binding CurrentHotel}" DisplayMemberPath="HotelName" Width="220"/>
+                                        <Button Content="Add Hotel" Style="{StaticResource PrimaryButton}" Width="110" Margin="10,0,0,0"
+                                                Command="{Binding NewHotelCommand}"/>
                                     </StackPanel>
                                 </Grid>
 
-                                <Button Content="Update Hotel Info" Width="170" Style="{StaticResource PrimaryButton}"
-                                        Command="{Binding UpdateHotelInfoCommand}"
-                                   HorizontalAlignment="Left"/>
-                            </StackPanel>
+                                <Grid Grid.Row="1" Margin="0,20,0,20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="260"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Margin="0,0,30,0">
+                                        <Border Height="180" CornerRadius="12" Background="#FFF1F3F5" BorderBrush="#FFE0E3E7" BorderThickness="1">
+                                            <Image Source="{Binding CurrentHotel.HotelImage}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <Button Content="Upload Image" Style="{StaticResource PrimaryButton}" Width="140" Margin="0,15,0,10"
+                                                Command="{Binding UploadHotelImageCommand}"/>
+                                        <CheckBox Content="Visible to users" IsChecked="{Binding CurrentHotel.IsVisible}"/>
+                                    </StackPanel>
+
+                                    <Grid Grid.Column="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid Grid.Row="0" Margin="0,0,0,15">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="220"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                                                <TextBlock Text="Hotel Name" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                                <TextBox Text="{Binding CurrentHotel.HotelName}" Style="{StaticResource ModernTextBox}"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                                <ComboBox Style="{StaticResource ModernComboBox}" FontSize="14"
+                                                          SelectedValuePath="Tag"
+                                                          SelectedValue="{Binding CurrentHotel.Rating, Mode=TwoWay}">
+                                                    <ComboBoxItem Tag="5" Content="⭐⭐⭐⭐⭐ 5 Stars"/>
+                                                    <ComboBoxItem Tag="4" Content="⭐⭐⭐⭐ 4 Stars"/>
+                                                    <ComboBoxItem Tag="3" Content="⭐⭐⭐ 3 Stars"/>
+                                                    <ComboBoxItem Tag="2" Content="⭐⭐ 2 Stars"/>
+                                                    <ComboBoxItem Tag="1" Content="⭐ 1 Stars"/>
+                                                </ComboBox>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <StackPanel Grid.Row="1" Margin="0,0,0,15">
+                                            <TextBlock Text="Address" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Text="{Binding CurrentHotel.Address}" Style="{StaticResource ModernTextBox}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2" Margin="0,0,0,15">
+                                            <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding CurrentHotel.Description}"
+                                                     Height="100" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3">
+                                            <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                            <UniformGrid Columns="2" HorizontalAlignment="Stretch">
+                                                <CheckBox Content="🌐 Free WiFi" Margin="0,0,20,10"
+                                                          IsChecked="{Binding HasFreeWifi, Mode=TwoWay}"/>
+                                                <CheckBox Content="🏊 Swimming Pool" Margin="0,0,20,10"
+                                                          IsChecked="{Binding HasSwimmingPool, Mode=TwoWay}"/>
+                                                <CheckBox Content="🚗 Free Parking" Margin="0,0,20,10"
+                                                          IsChecked="{Binding HasFreeParking, Mode=TwoWay}"/>
+                                                <CheckBox Content="🍽️ Restaurant" Margin="0,0,20,10"
+                                                          IsChecked="{Binding HasRestaurant, Mode=TwoWay}"/>
+                                                <CheckBox Content="🏋️ Gym" Margin="0,0,20,10"
+                                                          IsChecked="{Binding HasGym, Mode=TwoWay}"/>
+                                            </UniformGrid>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding NotificationMessage}" Foreground="#FF1976D2" FontSize="14"
+                                               VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                                    <Button Grid.Column="1" Content="Update Hotel Info" Width="180" Style="{StaticResource PrimaryButton}"
+                                            Command="{Binding UpdateHotelInfoCommand}"/>
+                                </Grid>
+                            </Grid>
                         </Border>
 
 
@@ -309,16 +266,16 @@
                                                           Opacity="0.1"/>
                                     </DataGrid.Effect>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Room #" Width="90" Binding="{Binding RoomNumber}"/>
-                                        <DataGridTextColumn Header="Type" Width="140" Binding="{Binding RoomType}"/>
-                                        <DataGridTextColumn Header="Price / Night" Width="140">
+                                        <DataGridTextColumn Header="Room #" Width="110" Binding="{Binding RoomNumber}"/>
+                                        <DataGridTextColumn Header="Type" Width="180" Binding="{Binding RoomType}"/>
+                                        <DataGridTextColumn Header="Price / Night" Width="180">
                                             <DataGridTextColumn.Binding>
                                                 <Binding Path="PricePerNight" StringFormat="{}{0:N0} ₫"/>
                                             </DataGridTextColumn.Binding>
                                         </DataGridTextColumn>
-                                        <DataGridTextColumn Header="Status" Width="120" Binding="{Binding Status}"/>
-                                        <DataGridTextColumn Header="Capacity" Width="120" Binding="{Binding Capacity}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="220">
+                                        <DataGridTextColumn Header="Status" Width="150" Binding="{Binding Status}"/>
+                                        <DataGridTextColumn Header="Capacity" Width="140" Binding="{Binding Capacity}"/>
+                                        <DataGridTemplateColumn Header="Actions" Width="260">
                                             <DataGridTemplateColumn.HeaderStyle>
                                                 <Style TargetType="DataGridColumnHeader">
                                                     <Setter Property="Background" Value="#F1F3F5"/>
