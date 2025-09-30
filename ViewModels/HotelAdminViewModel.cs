@@ -703,47 +703,32 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
-            var adminHotels = Hotels
-                .Where(h => h.UserID == CurrentUser.UserID)
-                .Select(h => h.HotelID)
-                .Where(id => !string.IsNullOrEmpty(id))
-                .ToHashSet();
+            _cachedAllBookings ??= new List<Booking>();
+            _cachedPayments ??= new List<Payment>();
 
-            if (adminHotels.Count == 0)
+            var userBookings = _cachedAllBookings
+                .Where(b => string.Equals(b.UserID, CurrentUser.UserID, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            TotalBookings = userBookings.Count;
+
+            if (userBookings.Count == 0)
             {
-                TotalBookings = 0;
                 TotalSpent = 0;
                 MembershipLevel = "Bronze";
                 return;
             }
 
-            if (_cachedAllBookings == null)
-            {
-                _cachedAllBookings = new List<Booking>();
-            }
+            var bookingIds = new HashSet<string>(userBookings
+                .Where(b => !string.IsNullOrEmpty(b.BookingID))
+                .Select(b => b.BookingID));
 
-            if (_cachedPayments == null)
-            {
-                _cachedPayments = new List<Payment>();
-            }
+            var totalSpent = _cachedPayments
+                .Where(p => !string.IsNullOrEmpty(p.BookingID) && bookingIds.Contains(p.BookingID))
+                .Sum(p => p.TotalPayment);
 
-            var bookings = _cachedAllBookings
-                .Where(b => !string.IsNullOrEmpty(b.HotelID) && adminHotels.Contains(b.HotelID))
-                .ToList();
-
-            double totalRevenue = 0;
-            foreach (var booking in bookings)
-            {
-                var payment = _cachedPayments.FirstOrDefault(p => p.BookingID == booking.BookingID);
-                if (payment != null)
-                {
-                    totalRevenue += payment.TotalPayment;
-                }
-            }
-
-            TotalBookings = bookings.Count;
-            TotalSpent = totalRevenue;
-            MembershipLevel = CalculateMembershipLevel(totalRevenue);
+            TotalSpent = totalSpent;
+            MembershipLevel = CalculateMembershipLevel(totalSpent);
         }
 
         private static string CalculateMembershipLevel(double totalRevenue)
