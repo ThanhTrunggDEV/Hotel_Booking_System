@@ -852,6 +852,12 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
+            if (booking.HasReview)
+            {
+                MessageBox.Show("Bạn đã đánh giá đặt phòng này rồi.", "Đã đánh giá", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             var reviews = _reviewRepository.GetAllAsync().Result;
             if (reviews.Any(r => r.BookingID == booking.BookingID))
             {
@@ -859,7 +865,11 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
-            _navigationService.OpenReviewDialog(booking);
+            bool reviewSubmitted = _navigationService.OpenReviewDialog(booking);
+            if (reviewSubmitted)
+            {
+                FilterBookingsByUser(CurrentUser.UserID);
+            }
         }
 
         [RelayCommand]
@@ -921,12 +931,33 @@ namespace Hotel_Booking_System.ViewModels
         {
             var bookingList = _bookingRepository.GetBookingByUserId(userId).Result;
             UpdateCompletedBookings(bookingList);
+            var allReviews = _reviewRepository.GetAllAsync().Result;
+            var reviewLookup = allReviews
+                .Where(r => r.UserID == userId)
+                .GroupBy(r => r.BookingID)
+                .Select(g => g.First())
+                .ToDictionary(r => r.BookingID, r => r);
             var payments = _paymentRepository.GetAllAsync().Result;
             AllBookings.Clear();
             double totalSpent = 0;
             var userBookings = bookingList.Where(b => b.UserID == userId).ToList();
             foreach (var booking in userBookings)
             {
+                if (reviewLookup.TryGetValue(booking.BookingID, out var review))
+                {
+                    booking.UserReview = review;
+                    booking.ReviewRating = review.Rating;
+                    booking.ReviewComment = string.IsNullOrWhiteSpace(review.Comment)
+                        ? "(Không có nhận xét)"
+                        : review.Comment.Trim();
+                }
+                else
+                {
+                    booking.UserReview = null;
+                    booking.ReviewRating = 0;
+                    booking.ReviewComment = string.Empty;
+                }
+
                 AllBookings.Add(booking);
                 var payment = payments.FirstOrDefault(p => p.BookingID == booking.BookingID);
                 if (payment != null)
