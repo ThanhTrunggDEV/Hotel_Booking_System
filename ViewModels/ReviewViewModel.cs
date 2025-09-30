@@ -17,16 +17,7 @@ namespace Hotel_Booking_System.ViewModels
         public Booking Booking
         {
             get => _booking;
-            set
-            {
-                Set(ref _booking, value);
-                if (value != null)
-                {
-                    Rating = 5;
-                    Comment = string.Empty;
-                }
-                IsReviewSubmitted = false;
-            }
+            set => Set(ref _booking, value);
         }
 
         private int _rating = 5;
@@ -41,13 +32,6 @@ namespace Hotel_Booking_System.ViewModels
         {
             get => _comment;
             set => Set(ref _comment, value);
-        }
-
-        private bool _isReviewSubmitted;
-        public bool IsReviewSubmitted
-        {
-            get => _isReviewSubmitted;
-            private set => Set(ref _isReviewSubmitted, value);
         }
 
         public ReviewViewModel(IReviewRepository reviewRepository)
@@ -84,7 +68,6 @@ namespace Hotel_Booking_System.ViewModels
 
             await _reviewRepository.AddAsync(review);
             await _reviewRepository.SaveAsync();
-            IsReviewSubmitted = true;
         }
     }
 }

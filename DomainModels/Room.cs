@@ -32,31 +32,7 @@ namespace Hotel_Booking_System.DomainModels
         public string RoomType { get; set; } = string.Empty;
         public int Capacity { get; set; }
         public double PricePerNight { get; set; }
-
-        private string _status = "Available";
-        public string Status
-        {
-            get => _status;
-            set
-            {
-                var normalized = NormalizeStatus(value);
-                if (_status != normalized)
-                {
-                    _status = normalized;
-                    PropertyChanged?.Invoke(this, new(nameof(Status)));
-                }
-            }
-        }
-
-        private static string NormalizeStatus(string? status)
-        {
-            if (string.Equals(status, "Maintenance", StringComparison.OrdinalIgnoreCase))
-            {
-                return "Maintenance";
-            }
-
-            return "Available";
-        }
+        public string Status { get; set; } = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
     }
