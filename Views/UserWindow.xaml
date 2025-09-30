@@ -195,7 +195,7 @@
                                                                 </Grid.ColumnDefinitions>
 
                                                                 <StackPanel Grid.Column="0">
-                                                                    <TextBlock Text="Price per night" FontSize="11" Foreground="#999"/>
+                                                                    <TextBlock Text="Giá mỗi đêm" FontSize="11" Foreground="#999"/>
                                                                     <TextBlock Text="{Binding PricePerNight, StringFormat='${0:F0}'}"
                                FontSize="20" FontWeight="Bold" Foreground="#2E7D32"/>
                                                                 </StackPanel>
@@ -782,14 +782,23 @@
             </TabItem>
 
 
-            <TabItem Style="{StaticResource TabItemStyle}" x:Name="MyBookingsTab" Header="📅 My Bookings" Visibility="Visible">
+            <TabItem Style="{StaticResource TabItemStyle}" x:Name="MyBookingsTab" Header="📅 Đặt phòng của tôi" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="My Bookings" Style="{StaticResource HeaderTextStyle}" Margin="0,0,0,20"/>
+                        <TextBlock Text="Danh sách đặt phòng" Style="{StaticResource HeaderTextStyle}" Margin="0,0,0,20"/>
 
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                            <TextBlock Text="Filter:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <ComboBox Width="150" ItemsSource="{Binding BookingStatusOptions}" SelectedItem="{Binding SelectedBookingStatus}" Style="{StaticResource ModernComboBox}"/>
+                            <TextBlock Text="Lọc:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox Width="180"
+                                      ItemsSource="{Binding BookingStatusOptions}"
+                                      SelectedItem="{Binding SelectedBookingStatus}"
+                                      Style="{StaticResource ModernComboBox}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource BookingStatusToVietnameseConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </StackPanel>
 
                         <ItemsControl x:Name="BookingsItemsControl" ItemsSource="{Binding Bookings}">
@@ -818,7 +827,7 @@
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding HotelID, Converter={StaticResource HotelIdToHotelNameConverter}}"
                                                                    FontSize="20" FontWeight="Bold" Foreground="White"/>
-                                                        <TextBlock Text="{Binding BookingID, StringFormat='Booking #{0}'}"
+                                                        <TextBlock Text="{Binding BookingID, StringFormat='Mã đặt phòng: {0}'}"
                                                                    FontSize="13" Foreground="#B3FFFFFF"/>
                                                     </StackPanel>
 
@@ -853,7 +862,7 @@
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
-                                                        <TextBlock Text="{Binding Status}" FontWeight="SemiBold" FontSize="13">
+                                                        <TextBlock Text="{Binding Status, Converter={StaticResource BookingStatusToVietnameseConverter}}" FontWeight="SemiBold" FontSize="13">
                                                             <TextBlock.Style>
                                                                 <Style TargetType="TextBlock">
                                                                     <Setter Property="Foreground" Value="White"/>
@@ -892,7 +901,7 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                                                    <TextBlock Text="Guest" FontSize="12" Foreground="#7A869A"/>
+                                                    <TextBlock Text="Khách hàng" FontSize="12" Foreground="#7A869A"/>
                                                     <StackPanel Orientation="Horizontal" Margin="0,6,0,12" VerticalAlignment="Center">
                                                         <TextBlock Text="&#xE13D;" FontFamily="Segoe MDL2 Assets" Foreground="#FFFFFF" FontSize="16">
                                                             <TextBlock.Effect>
@@ -900,20 +909,20 @@
                                                             </TextBlock.Effect>
                                                         </TextBlock>
                                                         <Border Background="#EEF2FF" CornerRadius="16" Padding="12,6" Margin="8,0,0,0">
-                                                            <TextBlock Text="{Binding GuestName, FallbackValue='Guest'}" FontSize="14" FontWeight="Bold" Foreground="#1F2D5C"/>
+                                                            <TextBlock Text="{Binding GuestName, FallbackValue='Khách'}" FontSize="14" FontWeight="Bold" Foreground="#1F2D5C"/>
                                                         </Border>
                                                     </StackPanel>
 
-                                                    <TextBlock Text="Room" FontSize="12" Foreground="#7A869A"/>
+                                                    <TextBlock Text="Phòng" FontSize="12" Foreground="#7A869A"/>
                                                     <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                                                         <TextBlock Text="&#xE8B2;" FontFamily="Segoe MDL2 Assets" Foreground="#1976D2" FontSize="16" Margin="0,0,6,0"/>
-                                                        <TextBlock Text="{Binding RoomID, Converter={StaticResource RoomIdToRoomNumberConverter}, StringFormat='Room {0}'}"
+                                                        <TextBlock Text="{Binding RoomID, Converter={StaticResource RoomIdToRoomNumberConverter}, StringFormat='Phòng {0}'}"
                                                                    FontSize="14" FontWeight="Bold" Foreground="#1F2D5C"/>
                                                     </StackPanel>
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="1" Margin="0,0,20,0">
-                                                    <TextBlock Text="Stay" FontSize="12" Foreground="#7A869A"/>
+                                                    <TextBlock Text="Thời gian lưu trú" FontSize="12" Foreground="#7A869A"/>
                                                     <Border Background="#EEF2FF" CornerRadius="12" Padding="12" Margin="0,6,0,12">
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
@@ -927,7 +936,7 @@
                                                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0" VerticalAlignment="Center">
                                                                 <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" Foreground="#1976D2" FontSize="16" Margin="0,0,6,0"/>
                                                                 <StackPanel>
-                                                                    <TextBlock Text="Duration" FontSize="12" Foreground="#7A869A"/>
+                                                                    <TextBlock Text="Số đêm" FontSize="12" Foreground="#7A869A"/>
                                                                     <TextBlock x:Name="tblNights" FontWeight="Bold" Foreground="#1F2D5C">
                                                                         <TextBlock.Text>
                                                                             <MultiBinding Converter="{StaticResource NightsCalculatorConverter}">
@@ -944,7 +953,7 @@
 
                                                 <Border Grid.Column="2" Background="#F6F8FF" BorderBrush="#E0E7FF" BorderThickness="1" CornerRadius="16" Padding="16" VerticalAlignment="Stretch">
                                                     <StackPanel>
-                                                        <TextBlock Text="Payment" FontSize="12" Foreground="#7A869A"/>
+                                                        <TextBlock Text="Thanh toán" FontSize="12" Foreground="#7A869A"/>
                                                         <TextBlock Margin="0,6,0,0" FontWeight="Bold" FontSize="18" Foreground="#2E7D32">
                                                             <TextBlock.Text>
                                                                 <MultiBinding Converter="{StaticResource TotalAmountCalculatorConverter}">
@@ -953,7 +962,7 @@
                                                                 </MultiBinding>
                                                             </TextBlock.Text>
                                                         </TextBlock>
-                                                        <TextBlock Text="Includes taxes and fees" FontSize="11" Foreground="#96A0C1" Margin="0,6,0,0"/>
+                                                        <TextBlock Text="Đã bao gồm thuế và phí" FontSize="11" Foreground="#96A0C1" Margin="0,6,0,0"/>
                                                     </StackPanel>
                                                 </Border>
                                             </Grid>
@@ -969,12 +978,12 @@
                                                             <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" Foreground="#5063C4" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                         </Border>
                                                         <StackPanel Margin="12,0,0,0">
-                                                            <TextBlock Text="Share your experience" FontWeight="Bold" FontSize="14" Foreground="#1F2D5C"/>
-                                                            <TextBlock Text="Leave a quick review to help other guests." FontSize="12" Foreground="#6F7D99"/>
+                                                            <TextBlock Text="Chia sẻ trải nghiệm của bạn" FontWeight="Bold" FontSize="14" Foreground="#1F2D5C"/>
+                                                            <TextBlock Text="Hãy để lại đánh giá nhanh để hỗ trợ các du khách khác." FontSize="12" Foreground="#6F7D99"/>
                                                         </StackPanel>
                                                     </StackPanel>
                                                     <Button Grid.Column="1"
-                                                            Content="Leave a Review"
+                                                            Content="Viết đánh giá"
                                                             Style="{StaticResource PrimaryButton}"
                                                             Height="42" Width="160"
                                                             HorizontalAlignment="Right"
@@ -984,15 +993,15 @@
                                             </Border>
 
                                             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
-                                                <Button Content="Cancel"
-                                                        Width="110"
+                                                <Button Content="Hủy đặt phòng"
+                                                        Width="130"
                                                         Height="44"
                                                         Margin="0,0,10,0"
                                                         Style="{StaticResource SecondaryButton}"
                                                         Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
-                                                <Button Content="Edit"
-                                                        Width="120"
+                                                <Button Content="Chỉnh sửa"
+                                                        Width="130"
                                                         Height="44"
                                                         Style="{StaticResource SecondaryButton}"
                                                         Command="{Binding DataContext.EditBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
@@ -1009,8 +1018,8 @@
                         <Border Style="{StaticResource CardStyle}" Visibility="{Binding HasBookings}">
                             <StackPanel HorizontalAlignment="Center" Margin="20,40">
                                 <TextBlock Text="📅" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,20"/>
-                                <TextBlock Text="No bookings found" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                                <TextBlock Text="Your upcoming and past bookings will appear here." 
+                                <TextBlock Text="Không tìm thấy đặt phòng" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                <TextBlock Text="Các đặt phòng sắp tới và đã qua sẽ hiển thị tại đây."
                               FontSize="14" Foreground="#FF666666" HorizontalAlignment="Center" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
