@@ -969,26 +969,69 @@
 
                                             <Border Grid.Row="2" Background="#F3F6FF" CornerRadius="14" Padding="18" Margin="0,0,0,15">
                                                 <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                        <Border Background="#E8EDFF" CornerRadius="50" Width="44" Height="44" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" Foreground="#5063C4" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                        </Border>
-                                                        <StackPanel Margin="12,0,0,0">
-                                                            <TextBlock Text="Chia sẻ trải nghiệm của bạn" FontWeight="Bold" FontSize="14" Foreground="#1F2D5C"/>
-                                                            <TextBlock Text="Hãy để lại đánh giá nhanh để hỗ trợ các du khách khác." FontSize="12" Foreground="#6F7D99"/>
+                                                    <Grid x:Name="ReviewPrompt" Visibility="Visible">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <Border Background="#E8EDFF" CornerRadius="50" Width="44" Height="44" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" Foreground="#5063C4" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            </Border>
+                                                            <StackPanel Margin="12,0,0,0">
+                                                                <TextBlock Text="Chia sẻ trải nghiệm của bạn" FontWeight="Bold" FontSize="14" Foreground="#1F2D5C"/>
+                                                                <TextBlock Text="Hãy để lại đánh giá nhanh để hỗ trợ các du khách khác." FontSize="12" Foreground="#6F7D99"/>
+                                                            </StackPanel>
                                                         </StackPanel>
-                                                    </StackPanel>
-                                                    <Button Grid.Column="1"
-                                                            Content="Viết đánh giá"
-                                                            Style="{StaticResource PrimaryButton}"
-                                                            Height="42" Width="160"
-                                                            HorizontalAlignment="Right"
-                                                            Command="{Binding DataContext.ReviewBookingCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            CommandParameter="{Binding}"/>
+                                                        <Button Grid.Column="1"
+                                                                Content="Viết đánh giá"
+                                                                Style="{StaticResource PrimaryButton}"
+                                                                Height="42" Width="160"
+                                                                HorizontalAlignment="Right"
+                                                                Command="{Binding DataContext.ReviewBookingCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                CommandParameter="{Binding}"/>
+                                                    </Grid>
+                                                    <Grid x:Name="ReviewDetails" Visibility="Collapsed">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <Grid Grid.Row="0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Border Grid.Column="0" Background="#E8F5E9" CornerRadius="50" Width="44" Height="44" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" Foreground="#2E7D32" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            </Border>
+
+                                                            <StackPanel Grid.Column="1" Margin="12,0,16,0" VerticalAlignment="Center">
+                                                                <TextBlock Text="Đã đánh giá" FontWeight="Bold" FontSize="14" Foreground="#1F2D5C"/>
+                                                                <TextBlock Text="Cảm ơn bạn đã chia sẻ cảm nhận sau kỳ nghỉ." FontSize="12" Foreground="#6F7D99"/>
+                                                            </StackPanel>
+
+                                                            <Border Grid.Column="2" Background="{StaticResource PrimaryGradient}" CornerRadius="18" Padding="14,10" VerticalAlignment="Center">
+                                                                <StackPanel>
+                                                                    <TextBlock Text="Điểm đánh giá" FontSize="11" Foreground="#B3FFFFFF" HorizontalAlignment="Center"/>
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,0">
+                                                                        <TextBlock Text="{Binding ReviewRating}" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                                                                        <TextBlock Text="/5" FontSize="12" Foreground="#E0F2FF" Margin="4,4,0,0"/>
+                                                                    </StackPanel>
+                                                                    <TextBlock Text="{Binding ReviewStars}" FontSize="14" Foreground="#FFD54F" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </Grid>
+
+                                                        <Border Grid.Row="1" Background="White" BorderBrush="#E0E7FF" BorderThickness="1" CornerRadius="12" Padding="14" Margin="0,16,0,0">
+                                                            <StackPanel>
+                                                                <TextBlock Text="Nhận xét của bạn" FontSize="12" Foreground="#6F7D99"/>
+                                                                <TextBlock Text="{Binding ReviewComment}" FontSize="13" Foreground="#1F2D5C" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </Grid>
                                                 </Grid>
                                             </Border>
 
@@ -1009,6 +1052,16 @@
                                             </StackPanel>
                                         </Grid>
                                     </Border>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding HasReview}" Value="True">
+                                            <Setter TargetName="ReviewPrompt" Property="Visibility" Value="Collapsed"/>
+                                            <Setter TargetName="ReviewDetails" Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding HasReview}" Value="False">
+                                            <Setter TargetName="ReviewPrompt" Property="Visibility" Value="Visible"/>
+                                            <Setter TargetName="ReviewDetails" Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
                                 </DataTemplate>
 
                             </ItemsControl.ItemTemplate>
