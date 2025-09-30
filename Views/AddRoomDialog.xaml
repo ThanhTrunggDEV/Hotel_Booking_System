@@ -125,7 +125,6 @@
                                   SelectedValue="{Binding Status, Mode=TwoWay}"
                                   Style="{StaticResource ModernComboBox}">
                             <ComboBoxItem Content="Available"/>
-                            <ComboBoxItem Content="Occupied"/>
                             <ComboBoxItem Content="Maintenance"/>
                         </ComboBox>
                     </StackPanel>

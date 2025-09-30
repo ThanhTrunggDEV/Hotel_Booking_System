@@ -1026,6 +1026,11 @@ namespace Hotel_Booking_System.ViewModels
 
         private void EvaluateRoomAvailability(Room room, List<Booking> bookings, DateTime? checkIn, DateTime? checkOut)
         {
+            if (room.Status == "Maintenance")
+            {
+                return;
+            }
+
             var roomBookings = bookings.Where(b => b.RoomID == room.RoomID && b.Status != "Cancelled");
             bool available = true;
 
@@ -1038,7 +1043,10 @@ namespace Hotel_Booking_System.ViewModels
                 available = !roomBookings.Any(b => b.CheckOutDate > DateTime.Now);
             }
 
-            room.Status = available ? "Available" : "Booked";
+            if (available)
+            {
+                room.Status = "Available";
+            }
         }
         
 
