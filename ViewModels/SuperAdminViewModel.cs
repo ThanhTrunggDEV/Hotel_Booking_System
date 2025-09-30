@@ -329,6 +329,55 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         [RelayCommand]
+        private void ViewRequestDetails(HotelAdminRequest? request)
+        {
+            if (request == null)
+            {
+                return;
+            }
+
+            var applicant = Users.FirstOrDefault(u => u.UserID == request.UserID);
+            var applicantName = !string.IsNullOrWhiteSpace(request.ApplicantName)
+                ? request.ApplicantName
+                : applicant?.FullName ?? "Unknown";
+
+            var details = new StringBuilder();
+            details.AppendLine($"Applicant: {applicantName}");
+
+            if (applicant != null)
+            {
+                if (!string.IsNullOrWhiteSpace(applicant.Email))
+                {
+                    details.AppendLine($"Email: {applicant.Email}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(applicant.Phone))
+                {
+                    details.AppendLine($"Phone: {applicant.Phone}");
+                }
+            }
+
+            details.AppendLine($"Hotel: {request.HotelName}");
+            if (!string.IsNullOrWhiteSpace(request.HotelAddress))
+            {
+                details.AppendLine($"Address: {request.HotelAddress}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Reason))
+            {
+                details.AppendLine();
+                details.AppendLine("Reason provided:");
+                details.AppendLine(request.Reason);
+            }
+
+            details.AppendLine();
+            details.AppendLine($"Submitted: {request.CreatedAt:dd MMM yyyy}");
+            details.AppendLine($"Status: {request.Status}");
+
+            MessageBox.Show(details.ToString(), "Hotel Admin Request", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
         private async Task ApproveRequest(string id)
         {
             var request = await _hotelAdminRequestRepository.GetByIdAsync(id);
