@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -11,7 +13,9 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
+using Hotel_Booking_System.Views;
 using Hotel_Manager.FrameWorks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 
 namespace Hotel_Booking_System.ViewModels
@@ -325,6 +329,55 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         [RelayCommand]
+        private void ViewRequestDetails(HotelAdminRequest? request)
+        {
+            if (request == null)
+            {
+                return;
+            }
+
+            var applicant = Users.FirstOrDefault(u => u.UserID == request.UserID);
+            var applicantName = !string.IsNullOrWhiteSpace(request.ApplicantName)
+                ? request.ApplicantName
+                : applicant?.FullName ?? "Unknown";
+
+            var details = new StringBuilder();
+            details.AppendLine($"Applicant: {applicantName}");
+
+            if (applicant != null)
+            {
+                if (!string.IsNullOrWhiteSpace(applicant.Email))
+                {
+                    details.AppendLine($"Email: {applicant.Email}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(applicant.Phone))
+                {
+                    details.AppendLine($"Phone: {applicant.Phone}");
+                }
+            }
+
+            details.AppendLine($"Hotel: {request.HotelName}");
+            if (!string.IsNullOrWhiteSpace(request.HotelAddress))
+            {
+                details.AppendLine($"Address: {request.HotelAddress}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Reason))
+            {
+                details.AppendLine();
+                details.AppendLine("Reason provided:");
+                details.AppendLine(request.Reason);
+            }
+
+            details.AppendLine();
+            details.AppendLine($"Submitted: {request.CreatedAt:dd MMM yyyy}");
+            details.AppendLine($"Status: {request.Status}");
+
+            MessageBox.Show(details.ToString(), "Hotel Admin Request", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
         private async Task ApproveRequest(string id)
         {
             var request = await _hotelAdminRequestRepository.GetByIdAsync(id);
@@ -489,6 +542,211 @@ namespace Hotel_Booking_System.ViewModels
             CurrentPassword = string.Empty;
             NewPassword = string.Empty;
             ConfirmPassword = string.Empty;
+        }
+
+        [RelayCommand]
+        private void ViewHotelDetails(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                return;
+            }
+
+            var details = new StringBuilder();
+            details.AppendLine($"Name: {hotel.HotelName}");
+            details.AppendLine($"City: {hotel.City}");
+            details.AppendLine($"Address: {hotel.Address}");
+            details.AppendLine($"Status: {hotel.Status}");
+            details.AppendLine($"Total rooms: {hotel.TotalRooms}");
+            details.AppendLine($"Rating: {hotel.Rating}/5");
+
+            MessageBox.Show(details.ToString(), "Hotel Details", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
+        private async Task EditHotelAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var dialog = App.Provider?.GetRequiredService<AddHotelDialog>();
+                if (dialog == null)
+                {
+                    MessageBox.Show("Unable to open the edit dialog.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                dialog.Title = "Edit Hotel";
+                var editableHotel = new Hotel
+                {
+                    HotelID = hotel.HotelID,
+                    UserID = hotel.UserID,
+                    HotelName = hotel.HotelName,
+                    Address = hotel.Address,
+                    City = hotel.City,
+                    Description = hotel.Description,
+                    Rating = hotel.Rating
+                };
+
+                dialog.DataContext = editableHotel;
+
+                if (dialog.ShowDialog() == true)
+                {
+                    hotel.HotelName = editableHotel.HotelName;
+                    hotel.Address = editableHotel.Address;
+                    hotel.City = editableHotel.City;
+                    hotel.Description = editableHotel.Description;
+                    hotel.Rating = editableHotel.Rating;
+
+                    await _hotelRepository.UpdateAsync(hotel);
+
+                    hotel.Status = GetHotelStatus(hotel);
+
+                    UpdateHotelStats();
+                    UpdateCityOptions();
+                    ApplyHotelFilters();
+
+                    MessageBox.Show($"Hotel \"{hotel.HotelName}\" was updated successfully.", "Hotel Updated", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to edit hotel: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ManageRoomsAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var rooms = await _roomRepository.GetAllAsync();
+                var hotelRooms = rooms
+                    .Where(r => r.HotelID == hotel.HotelID)
+                    .OrderBy(r => r.RoomNumber)
+                    .ToList();
+
+                if (hotelRooms.Count == 0)
+                {
+                    MessageBox.Show($"{hotel.HotelName} does not have any rooms yet.", "Rooms Overview", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var builder = new StringBuilder();
+                builder.AppendLine($"{hotel.HotelName} currently has {hotelRooms.Count} room(s):");
+                foreach (var room in hotelRooms.Take(10))
+                {
+                    builder.AppendLine($"• Room {room.RoomNumber} - {room.RoomType} ({room.PricePerNight:C})");
+                }
+
+                if (hotelRooms.Count > 10)
+                {
+                    builder.AppendLine($"…and {hotelRooms.Count - 10} more room(s).");
+                }
+
+                MessageBox.Show(builder.ToString(), "Rooms Overview", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to load rooms for {hotel.HotelName}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ShowHotelAnalyticsAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var rooms = await _roomRepository.GetAllAsync();
+                var hotelRooms = rooms.Where(r => r.HotelID == hotel.HotelID).ToList();
+
+                double minPrice = hotelRooms.Count > 0 ? hotelRooms.Min(r => r.PricePerNight) : 0;
+                double maxPrice = hotelRooms.Count > 0 ? hotelRooms.Max(r => r.PricePerNight) : 0;
+                double averagePrice = hotelRooms.Count > 0 ? hotelRooms.Average(r => r.PricePerNight) : 0;
+
+                var analytics = new StringBuilder();
+                analytics.AppendLine($"Hotel: {hotel.HotelName}");
+                analytics.AppendLine($"Status: {hotel.Status}");
+                analytics.AppendLine($"Total rooms: {hotelRooms.Count}");
+                analytics.AppendLine($"Average rating: {hotel.Rating}/5");
+                analytics.AppendLine($"Price range: {minPrice:C} - {maxPrice:C}");
+                analytics.AppendLine($"Average price: {averagePrice:C}");
+
+                MessageBox.Show(analytics.ToString(), "Hotel Analytics", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to load analytics for {hotel.HotelName}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ToggleHotelVisibilityAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                return;
+            }
+
+            try
+            {
+                hotel.IsVisible = !hotel.IsVisible;
+                await _hotelRepository.UpdateAsync(hotel);
+
+                hotel.Status = GetHotelStatus(hotel);
+
+                UpdateHotelStats();
+                ApplyHotelFilters();
+
+                var state = hotel.IsVisible ? "activated" : "suspended";
+                MessageBox.Show($"Hotel \"{hotel.HotelName}\" has been {state}.", "Hotel Updated", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to update hotel visibility: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private void ContactHotelAdmin(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                return;
+            }
+
+            var admin = Users.FirstOrDefault(u => u.UserID == hotel.UserID);
+            if (admin == null || string.IsNullOrWhiteSpace(admin.Email))
+            {
+                MessageBox.Show("This hotel does not have an associated admin email.", "Contact Admin", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                var subject = Uri.EscapeDataString($"Regarding {hotel.HotelName}");
+                var mailto = $"mailto:{admin.Email}?subject={subject}";
+
+                Process.Start(new ProcessStartInfo(mailto) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to open the default mail client: {ex.Message}", "Contact Admin", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         [RelayCommand]
@@ -657,6 +915,7 @@ namespace Hotel_Booking_System.ViewModels
         [RelayCommand]
         private void SearchHotels()
         {
+            HotelSearchTerm = HotelSearchTerm?.Trim() ?? string.Empty;
             ApplyHotelFilters();
         }
 
@@ -676,6 +935,118 @@ namespace Hotel_Booking_System.ViewModels
         private async Task RefreshHotelsAsync()
         {
             await LoadDataAsync();
+        }
+
+        [RelayCommand]
+        private void ViewUserDetails(User? user)
+        {
+            if (user == null)
+            {
+                return;
+            }
+
+            var builder = new StringBuilder();
+            builder.AppendLine($"Name: {user.FullName}");
+            builder.AppendLine($"Email: {user.Email}");
+            builder.AppendLine($"Phone: {user.Phone}");
+            builder.AppendLine($"Gender: {user.Gender}");
+            builder.AppendLine($"Role: {user.Role}");
+            builder.AppendLine($"Date of birth: {user.DateOfBirth:dd/MM/yyyy}");
+
+            MessageBox.Show(builder.ToString(), "User Details", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
+        private async Task ChangeUserRole(User? user)
+        {
+            if (user == null)
+            {
+                return;
+            }
+
+            var message = $"The current role of {user.FullName} is \"{user.Role}\".\n\nSelect Yes to promote to Hotel Admin, No to assign the standard User role, or Cancel to keep the current role.";
+            var result = MessageBox.Show(message, "Change User Role", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+
+            var newRole = result == MessageBoxResult.Yes ? "HotelAdmin" : "User";
+
+            if (string.Equals(user.Role, newRole, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show($"{user.FullName} already has the role \"{newRole}\".", "No Changes", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                user.Role = newRole;
+                await _userRepository.UpdateAsync(user);
+                MessageBox.Show($"Updated {user.FullName}'s role to {newRole} successfully.", "Role Updated", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to update user role: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task RemoveUserAsync(User? user)
+        {
+            if (user == null)
+            {
+                return;
+            }
+
+            var confirm = MessageBox.Show($"Are you sure you want to remove {user.FullName} from the system?", "Remove User", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (confirm != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                await _userRepository.DeleteAsync(user.UserID);
+                await _userRepository.SaveAsync();
+
+                Users.Remove(user);
+                TotalUsers = Users.Count;
+
+                MessageBox.Show($"{user.FullName} has been removed.", "User Removed", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to remove user: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private void ContactUser(User? user)
+        {
+            if (user == null || string.IsNullOrWhiteSpace(user.Email))
+            {
+                MessageBox.Show("This user does not have a valid email address.", "Contact User", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                var subject = Uri.EscapeDataString("Support from Hotel Booking System");
+                var mailto = $"mailto:{user.Email}?subject={subject}";
+                Process.Start(new ProcessStartInfo(mailto) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to open the default mail client: {ex.Message}", "Contact User", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private void Logout()
+        {
+            _navigationService.NavigateToLogin();
         }
 
         private static bool IsPasswordValid(string password)
