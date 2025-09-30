@@ -106,6 +106,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,15,15">
@@ -128,17 +129,24 @@
 
                                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Address" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="{Binding CurrentHotel.Address}" 
+                                        <TextBox Text="{Binding CurrentHotel.Address}"
                                             Style="{StaticResource ModernTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding CurrentHotel.Description}" 
-                                            Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                                        <TextBlock Text="City" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <ComboBox Style="{StaticResource ModernComboBox}"
+                                                  ItemsSource="{Binding CityOptions}"
+                                                  SelectedItem="{Binding CurrentHotel.City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                        <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding CurrentHotel.Description}"
+                                            Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <WrapPanel>
                                             <CheckBox Content="🌐 Free WiFi" Margin="0,0,15,5"
@@ -153,7 +161,7 @@
                                                       IsChecked="{Binding HasGym, Mode=TwoWay}"/>
                                         </WrapPanel>
                                     </StackPanel>
-                                                                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                                                    <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <CheckBox Content="Visible to users" IsChecked="{Binding CurrentHotel.IsVisible}" />
                                     </StackPanel>
                                 </Grid>

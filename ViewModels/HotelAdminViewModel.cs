@@ -54,6 +54,7 @@ namespace Hotel_Booking_System.ViewModels
         private DispatcherTimer? _notificationTimer;
 
         public ObservableCollection<Hotel> Hotels { get; } = new();
+        public ObservableCollection<string> CityOptions { get; } = new();
         public Hotel? CurrentHotel
         {
             get => _currentHotel;
@@ -61,6 +62,7 @@ namespace Hotel_Booking_System.ViewModels
             {
                 Set(ref _currentHotel, value);
 
+                EnsureCityInOptions(_currentHotel?.City);
                 SyncAmenitiesFromHotel();
                 LoadRooms();
                 LoadBookings();
@@ -414,6 +416,8 @@ namespace Hotel_Booking_System.ViewModels
             _navigationService = navigationService;
             _authenticationService = authenticationService;
 
+            InitializeCityOptions();
+
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo tuần", Range = RevenueRange.Weekly });
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo tháng", Range = RevenueRange.Monthly });
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo năm", Range = RevenueRange.Yearly });
@@ -424,6 +428,41 @@ namespace Hotel_Booking_System.ViewModels
                 recipient._userEmail = message.Value;
                 recipient.LoadCurrentUser();
             });
+        }
+
+        private static readonly string[] DefaultCityOptions = new[]
+        {
+            "Hà Nội",
+            "Tuyên Quang",
+            "Lào Cai",
+            "Thái Nguyên",
+            "Phú Thọ",
+            "Bắc Ninh",
+            "Hưng Yên",
+            "Hải Phòng",
+            "Ninh Bình",
+            "Quảng Trị",
+            "Đà Nẵng",
+            "Quảng Ngãi",
+            "Gia Lai",
+            "Khánh Hòa",
+            "Lâm Đồng",
+            "Đăk Lăk",
+            "TP. Hồ Chí Minh",
+            "TP. Cần Thơ",
+            "Vĩnh Long",
+            "Đồng Tháp",
+            "Cà Mau",
+            "An Giang"
+        };
+
+        private void InitializeCityOptions()
+        {
+            CityOptions.Clear();
+            foreach (var city in DefaultCityOptions)
+            {
+                CityOptions.Add(city);
+            }
         }
 
         private async void LoadCurrentUser()
@@ -446,6 +485,7 @@ namespace Hotel_Booking_System.ViewModels
             foreach (var hotel in hotels.Where(h => h.UserID == CurrentUser.UserID && h.IsApproved))
             {
                 Hotels.Add(hotel);
+                EnsureCityInOptions(hotel.City);
             }
 
             CurrentHotel = Hotels.FirstOrDefault();
@@ -1264,6 +1304,7 @@ namespace Hotel_Booking_System.ViewModels
 
             if (string.IsNullOrWhiteSpace(CurrentHotel.HotelName) ||
                 string.IsNullOrWhiteSpace(CurrentHotel.Address) ||
+                string.IsNullOrWhiteSpace(CurrentHotel.City) ||
                 CurrentHotel.Rating < 1 || CurrentHotel.Rating > 5)
             {
                 return;
@@ -1281,6 +1322,7 @@ namespace Hotel_Booking_System.ViewModels
             }
             else
             {
+                EnsureCityInOptions(CurrentHotel.City);
                 await _hotelRepository.UpdateAsync(CurrentHotel);
             }
         }
@@ -1389,6 +1431,19 @@ namespace Hotel_Booking_System.ViewModels
                 booking.Status = "Cancelled";
                 await _bookingRepository.UpdateAsync(booking);
                 LoadBookings();
+            }
+        }
+
+        private void EnsureCityInOptions(string? city)
+        {
+            if (string.IsNullOrWhiteSpace(city))
+            {
+                return;
+            }
+
+            if (!CityOptions.Contains(city))
+            {
+                CityOptions.Add(city);
             }
         }
     }
