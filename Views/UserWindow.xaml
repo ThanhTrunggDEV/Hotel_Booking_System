@@ -799,88 +799,204 @@
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
 
-                                            
-                                            <Grid Grid.Row="0" Margin="0,0,0,10">
+                                            <Border Grid.Row="0"
+                                                    Background="{StaticResource PrimaryGradient}"
+                                                    CornerRadius="12"
+                                                    Padding="18"
+                                                    Margin="0,0,0,20">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding HotelID, Converter={StaticResource HotelIdToHotelNameConverter}}"
+                                                                   FontSize="20" FontWeight="Bold" Foreground="White"/>
+                                                        <TextBlock Text="{Binding BookingID, StringFormat='Booking #{0}'}"
+                                                                   FontSize="13" Foreground="#B3FFFFFF"/>
+                                                    </StackPanel>
+
+                                                    <Border Grid.Column="1"
+                                                            Padding="12,6"
+                                                            CornerRadius="20"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Center"
+                                                            BorderThickness="0">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="#332196F3"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                                                                        <Setter Property="Background" Value="#E8F5E9"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Done">
+                                                                        <Setter Property="Background" Value="#E8F5E9"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                        <Setter Property="Background" Value="#FFF8E1"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                        <Setter Property="Background" Value="#FFEBEE"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
+                                                                        <Setter Property="Background" Value="#FFEBEE"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="ModifyRequested">
+                                                                        <Setter Property="Background" Value="#E3F2FD"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                        <TextBlock Text="{Binding Status}" FontWeight="SemiBold" FontSize="13">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                                                                            <Setter Property="Foreground" Value="#2E7D32"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Done">
+                                                                            <Setter Property="Foreground" Value="#2E7D32"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                            <Setter Property="Foreground" Value="#FF8F00"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                            <Setter Property="Foreground" Value="#D32F2F"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
+                                                                            <Setter Property="Foreground" Value="#D32F2F"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="ModifyRequested">
+                                                                            <Setter Property="Foreground" Value="#1976D2"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+
+                                            <Grid Grid.Row="1" Margin="0,0,0,20">
                                                 <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <StackPanel Grid.Column="0">
-                                                    <TextBlock Text="{Binding HotelID, Converter={StaticResource HotelIdToHotelNameConverter}}" 
-                               FontSize="20" FontWeight="Bold" Foreground="#333"/>
-                                                    <TextBlock Text="{Binding BookingID, StringFormat='Booking #{0}'}" 
-                               FontSize="12" Foreground="#999"/>
+                                                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                                                    <TextBlock Text="Guest" FontSize="12" Foreground="#7A869A"/>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,12" VerticalAlignment="Center">
+                                                        <TextBlock Text="&#xE13D;" FontFamily="Segoe MDL2 Assets" Foreground="#FFFFFF" FontSize="16">
+                                                            <TextBlock.Effect>
+                                                                <DropShadowEffect BlurRadius="12" Color="#331976D2" ShadowDepth="0"/>
+                                                            </TextBlock.Effect>
+                                                        </TextBlock>
+                                                        <Border Background="#EEF2FF" CornerRadius="16" Padding="12,6" Margin="8,0,0,0">
+                                                            <TextBlock Text="{Binding GuestName, FallbackValue='Guest'}" FontSize="14" FontWeight="Bold" Foreground="#1F2D5C"/>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <TextBlock Text="Room" FontSize="12" Foreground="#7A869A"/>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                                        <TextBlock Text="&#xE8B2;" FontFamily="Segoe MDL2 Assets" Foreground="#1976D2" FontSize="16" Margin="0,0,6,0"/>
+                                                        <TextBlock Text="{Binding RoomID, Converter={StaticResource RoomIdToRoomNumberConverter}, StringFormat='Room {0}'}"
+                                                                   FontSize="14" FontWeight="Bold" Foreground="#1F2D5C"/>
+                                                    </StackPanel>
                                                 </StackPanel>
 
-                                                
-                                                <Border Grid.Column="1" Background="#E3F2FD" Padding="8,4" CornerRadius="10" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Status}" 
-                               FontWeight="SemiBold" Foreground="#2196F3"/>
+                                                <StackPanel Grid.Column="1" Margin="0,0,20,0">
+                                                    <TextBlock Text="Stay" FontSize="12" Foreground="#7A869A"/>
+                                                    <Border Background="#EEF2FF" CornerRadius="12" Padding="12" Margin="0,6,0,12">
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="&#xE787;" FontFamily="Segoe MDL2 Assets" Foreground="#1976D2" FontSize="16" Margin="0,0,6,0"/>
+                                                                <TextBlock>
+                                                                    <Run Text="{Binding CheckInDate, StringFormat='{}{0:MMM dd}'}"/>
+                                                                    <Run Text="  →  "/>
+                                                                    <Run Text="{Binding CheckOutDate, StringFormat='{}{0:MMM dd}'}"/>
+                                                                </TextBlock>
+                                                            </StackPanel>
+                                                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0" VerticalAlignment="Center">
+                                                                <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" Foreground="#1976D2" FontSize="16" Margin="0,0,6,0"/>
+                                                                <StackPanel>
+                                                                    <TextBlock Text="Duration" FontSize="12" Foreground="#7A869A"/>
+                                                                    <TextBlock x:Name="tblNights" FontWeight="Bold" Foreground="#1F2D5C">
+                                                                        <TextBlock.Text>
+                                                                            <MultiBinding Converter="{StaticResource NightsCalculatorConverter}">
+                                                                                <Binding Path="CheckInDate"/>
+                                                                                <Binding Path="CheckOutDate"/>
+                                                                            </MultiBinding>
+                                                                        </TextBlock.Text>
+                                                                    </TextBlock>
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </StackPanel>
+
+                                                <Border Grid.Column="2" Background="#F6F8FF" BorderBrush="#E0E7FF" BorderThickness="1" CornerRadius="16" Padding="16" VerticalAlignment="Stretch">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Payment" FontSize="12" Foreground="#7A869A"/>
+                                                        <TextBlock Margin="0,6,0,0" FontWeight="Bold" FontSize="18" Foreground="#2E7D32">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding Converter="{StaticResource TotalAmountCalculatorConverter}">
+                                                                    <Binding Path="RoomID"/>
+                                                                    <Binding ElementName="tblNights" Path="Text"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                        <TextBlock Text="Includes taxes and fees" FontSize="11" Foreground="#96A0C1" Margin="0,6,0,0"/>
+                                                    </StackPanel>
                                                 </Border>
                                             </Grid>
 
-                                         
-                                            <Grid Grid.Row="1" Margin="0,10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="2*"/>
-                                                    <ColumnDefinition Width="2*"/>
-                                                </Grid.ColumnDefinitions>
+                                            <Border Grid.Row="2" Background="#F3F6FF" CornerRadius="14" Padding="18" Margin="0,0,0,15">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                        <Border Background="#E8EDFF" CornerRadius="50" Width="44" Height="44" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" Foreground="#5063C4" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                        </Border>
+                                                        <StackPanel Margin="12,0,0,0">
+                                                            <TextBlock Text="Share your experience" FontWeight="Bold" FontSize="14" Foreground="#1F2D5C"/>
+                                                            <TextBlock Text="Leave a quick review to help other guests." FontSize="12" Foreground="#6F7D99"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1"
+                                                            Content="Leave a Review"
+                                                            Style="{StaticResource PrimaryButton}"
+                                                            Height="42" Width="160"
+                                                            HorizontalAlignment="Right"
+                                                            Command="{Binding DataContext.ReviewBookingCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}"/>
+                                                </Grid>
+                                            </Border>
 
-                                                
-                                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                                    <TextBlock Text="Guest" FontSize="12" Foreground="#666"/>
-                                                    <TextBlock Text="{Binding GuestName, FallbackValue='Guest'}"
-                               FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
-
-                                                    <TextBlock Text="Room" FontSize="12" Foreground="#666"/>
-                                                    <TextBlock Text="{Binding RoomID, Converter={StaticResource RoomIdToRoomNumberConverter}, StringFormat='Room {0}'}" 
-                               FontSize="14" FontWeight="Bold"/>
-                                                </StackPanel>
-
-                                                
-                                                <StackPanel Grid.Column="1">
-                                                    <TextBlock Text="Check-in / Check-out" FontSize="12" Foreground="#666"/>
-                                                    <TextBlock>
-                        <Run Text="{Binding CheckInDate, StringFormat='{}{0:MMM dd}'}"/>
-                        <Run Text=" → "/>
-                        <Run Text="{Binding CheckOutDate, StringFormat='{}{0:MMM dd}'}"/>
-                                                    </TextBlock>
-
-                                                    <TextBlock Text="Duration" FontSize="12" Foreground="#666" Margin="0,8,0,0"/>
-                                                    <TextBlock x:Name="tblNights" FontWeight="Bold" Foreground="#4CAF50">
-                                                        <TextBlock.Text>
-                                                            <MultiBinding Converter="{StaticResource NightsCalculatorConverter}">
-                                                                <Binding Path="CheckInDate"/>
-                                                                <Binding Path="CheckOutDate"/>
-                                                            </MultiBinding>
-                                                        </TextBlock.Text>
-                                                    </TextBlock>
-
-                                                    <TextBlock Text="Total" FontSize="12" Foreground="#666" Margin="0,8,0,0"/>
-                                                    <TextBlock FontWeight="Bold" FontSize="16" Foreground="#4CAF50">
-                                                        <TextBlock.Text>
-                                                            <MultiBinding Converter="{StaticResource TotalAmountCalculatorConverter}">
-                                                                <Binding Path="RoomID"/>
-                                                                <Binding ElementName="tblNights" Path="Text"/>
-                                                                
-                                                            </MultiBinding>
-                                                        </TextBlock.Text>
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Grid>
-
-                                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0" >
-                                                <Button Content="Cancel" Width="100" Style="{StaticResource SecondaryButton}"
-                        Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
-                                                <Button Content="Review" Width="100" Style="{StaticResource SecondaryButton}"
-                        Command="{Binding DataContext.ReviewBookingCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
-                                                <Button Content="Edit" Width="120" Style="{StaticResource SecondaryButton}"
-                        Command="{Binding DataContext.EditBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}"/>
+                                            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
+                                                <Button Content="Cancel"
+                                                        Width="110"
+                                                        Height="44"
+                                                        Margin="0,0,10,0"
+                                                        Style="{StaticResource SecondaryButton}"
+                                                        Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        CommandParameter="{Binding}"/>
+                                                <Button Content="Edit"
+                                                        Width="120"
+                                                        Height="44"
+                                                        Style="{StaticResource SecondaryButton}"
+                                                        Command="{Binding DataContext.EditBookingCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        CommandParameter="{Binding}"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
