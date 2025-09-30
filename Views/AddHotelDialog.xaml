@@ -11,25 +11,37 @@
     <Window.Resources>
         <x:Array x:Key="CityOptions" Type="sys:String" xmlns:sys="clr-namespace:System;assembly=mscorlib">
             <sys:String>Hà Nội</sys:String>
-            <sys:String>Hồ Chí Minh</sys:String>
-            <sys:String>Đà Nẵng</sys:String>
+            <sys:String>Tuyên Quang</sys:String>
+            <sys:String>Lào Cai</sys:String>
+            <sys:String>Thái Nguyên</sys:String>
+            <sys:String>Phú Thọ</sys:String>
+            <sys:String>Bắc Ninh</sys:String>
+            <sys:String>Hưng Yên</sys:String>
             <sys:String>Hải Phòng</sys:String>
-            <sys:String>Nha Trang</sys:String>
-            <sys:String>Huế</sys:String>
+            <sys:String>Ninh Bình</sys:String>
+            <sys:String>Quảng Trị</sys:String>
+            <sys:String>Đà Nẵng</sys:String>
+            <sys:String>Quảng Ngãi</sys:String>
+            <sys:String>Gia Lai</sys:String>
+            <sys:String>Khánh Hòa</sys:String>
+            <sys:String>Lâm Đồng</sys:String>
+            <sys:String>Đăk Lăk</sys:String>
+            <sys:String>TP. Hồ Chí Minh</sys:String>
+            <sys:String>TP. Cần Thơ</sys:String>
+            <sys:String>Vĩnh Long</sys:String>
+            <sys:String>Đồng Tháp</sys:String>
+            <sys:String>Cà Mau</sys:String>
+            <sys:String>An Giang</sys:String>
         </x:Array>
     </Window.Resources>
 
     <Grid Margin="30">
-        <Border CornerRadius="22"
+        <Border Style="{StaticResource CardStyle}"
+                CornerRadius="22"
+                BorderThickness="0"
                 Background="White"
                 Padding="0"
-                BorderThickness="0">
-            <Border.Effect>
-                <DropShadowEffect Color="#8895A7"
-                                  BlurRadius="25"
-                                  ShadowDepth="8"
-                                  Opacity="0.25" />
-            </Border.Effect>
+                Margin="0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="140" />
@@ -76,7 +88,7 @@
                     <StackPanel Orientation="Vertical">
                         <Border Background="#F7F9FC"
                                 CornerRadius="18"
-                                Padding="20"
+                                Padding="24"
                                 Margin="0,0,0,24">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -85,9 +97,11 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0"
                                             HorizontalAlignment="Stretch">
-                                    <Border Height="180"
+                                    <Border Height="190"
                                             CornerRadius="18"
-                                            Background="#E9ECF5"
+                                            Background="White"
+                                            BorderBrush="#E2E8F0"
+                                            BorderThickness="1"
                                             ClipToBounds="True">
                                         <Grid>
                                             <Image Source="{Binding HotelImage}"
@@ -127,7 +141,7 @@
 
                                 <StackPanel Grid.Column="1"
                                             Margin="30,0,0,0">
-                                    <Grid>
+                                    <Grid Margin="0,8,0,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="*" />
@@ -152,7 +166,7 @@
                                         </StackPanel>
                                     </Grid>
 
-                                    <StackPanel Margin="0,20,0,0">
+                                    <StackPanel Margin="0,24,0,0">
                                         <TextBlock Text="Địa chỉ chi tiết"
                                                    FontWeight="SemiBold"
                                                    Foreground="#2C3E50"
@@ -161,13 +175,12 @@
                                                  Style="{StaticResource ModernTextBox}" />
                                     </StackPanel>
 
-                                    <Grid>
+                                    <Grid Margin="0,24,0,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="0"
-                                                    Margin="0,20,0,0">
+                                        <StackPanel Grid.Column="0">
                                             <TextBlock Text="Giá thấp nhất (VNĐ)"
                                                        FontWeight="SemiBold"
                                                        Foreground="#2C3E50"
@@ -177,7 +190,7 @@
                                                      HorizontalContentAlignment="Right" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="1"
-                                                    Margin="20,20,0,0">
+                                                    Margin="20,0,0,0">
                                             <TextBlock Text="Giá cao nhất (VNĐ)"
                                                        FontWeight="SemiBold"
                                                        Foreground="#2C3E50"
@@ -188,13 +201,12 @@
                                         </StackPanel>
                                     </Grid>
 
-                                    <Grid>
+                                    <Grid Margin="0,24,0,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="0"
-                                                    Margin="0,20,0,0">
+                                        <StackPanel Grid.Column="0">
                                             <TextBlock Text="Xếp hạng"
                                                        FontWeight="SemiBold"
                                                        Foreground="#2C3E50"
@@ -210,7 +222,7 @@
                                             </ComboBox>
                                         </StackPanel>
                                         <StackPanel Grid.Column="1"
-                                                    Margin="20,20,0,0">
+                                                    Margin="20,0,0,0">
                                             <TextBlock Text="Trạng thái hiển thị"
                                                        FontWeight="SemiBold"
                                                        Foreground="#2C3E50"
@@ -221,7 +233,7 @@
                                         </StackPanel>
                                     </Grid>
 
-                                    <StackPanel Margin="0,20,0,0">
+                                    <StackPanel Margin="0,24,0,0">
                                         <TextBlock Text="Mô tả chi tiết"
                                                    FontWeight="SemiBold"
                                                    Foreground="#2C3E50"
@@ -246,9 +258,28 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Kiểm tra lại thông tin trước khi lưu."
-                               Foreground="#607089"
-                               VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="0,0,16,0">
+                        <Border Width="40"
+                                Height="40"
+                                Background="#EEF2FF"
+                                CornerRadius="20"
+                                Margin="0,0,12,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                            <Viewbox Stretch="Uniform">
+                                <TextBlock Text="ℹ"
+                                           FontWeight="SemiBold"
+                                           Foreground="#5B6C84"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Text="Kiểm tra lại thông tin trước khi lưu."
+                                   Foreground="#607089"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
                     <Button x:Name="btnCancel"
                             Grid.Column="1"
                             Content="Huỷ"
