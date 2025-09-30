@@ -271,7 +271,7 @@
                                             <Setter Property="Padding" Value="16,10"/>
                                             <Setter Property="BorderBrush" Value="#E9ECEF"/>
                                             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                         </Style>
 
                                         <Style TargetType="DataGridRow">
@@ -295,7 +295,7 @@
                                         </Style>
 
                                         <Style TargetType="DataGridCell">
-                                            <Setter Property="Padding" Value="10,0"/>
+                                            <Setter Property="Padding" Value="16,0"/>
                                             <Setter Property="BorderThickness" Value="0"/>
                                             <Setter Property="Foreground" Value="#212529"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -318,18 +318,30 @@
                                         </DataGridTextColumn>
                                         <DataGridTextColumn Header="Status" Width="120" Binding="{Binding Status}"/>
                                         <DataGridTextColumn Header="Capacity" Width="120" Binding="{Binding Capacity}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="170">
+                                        <DataGridTemplateColumn Header="Actions" Width="220">
+                                            <DataGridTemplateColumn.HeaderStyle>
+                                                <Style TargetType="DataGridColumnHeader">
+                                                    <Setter Property="Background" Value="#F1F3F5"/>
+                                                    <Setter Property="Foreground" Value="#343A40"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Setter Property="FontSize" Value="14"/>
+                                                    <Setter Property="Padding" Value="16,10"/>
+                                                    <Setter Property="BorderBrush" Value="#E9ECEF"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTemplateColumn.HeaderStyle>
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                                         <Button Style="{StaticResource SecondaryButton}"
-                                                           Width="80" Height="32" FontSize="12" Margin="0,0,8,0"
+                                                           Width="96" Height="32" FontSize="12" Margin="0,0,10,0"
                                                            Content="✏️  Edit"
                                                             Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                             CommandParameter="{Binding}"/>
                                                         <Button Style="{StaticResource SecondaryButton}"
                                                            Background="#FFFF6B6B" BorderBrush="#FFFF6B6B" Foreground="#FFFFFF"
-                                                           Width="110" Height="32" FontSize="12"
+                                                           Width="120" Height="32" FontSize="12"
                                                            Content="🗑️  Remove"
                                                             Command="{Binding DataContext.RemoveRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                             CommandParameter="{Binding}"/>
@@ -386,7 +398,7 @@
                                             <Setter Property="Padding" Value="16,10"/>
                                             <Setter Property="BorderBrush" Value="#E9ECEF"/>
                                             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                         </Style>
 
                                         <Style TargetType="DataGridRow">
@@ -410,7 +422,7 @@
                                         </Style>
 
                                         <Style TargetType="DataGridCell">
-                                            <Setter Property="Padding" Value="10,0"/>
+                                            <Setter Property="Padding" Value="16,0"/>
                                             <Setter Property="BorderThickness" Value="0"/>
                                             <Setter Property="Foreground" Value="#212529"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -429,11 +441,23 @@
                                         <DataGridTextColumn Header="Check-in" Width="160" Binding="{Binding CheckInDate}"/>
                                         <DataGridTextColumn Header="Check-out" Width="160" Binding="{Binding CheckOutDate}"/>
                                         <DataGridTextColumn Header="Status" Width="150" Binding="{Binding Status}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="230">
+                                        <DataGridTemplateColumn Header="Actions" Width="250">
+                                            <DataGridTemplateColumn.HeaderStyle>
+                                                <Style TargetType="DataGridColumnHeader">
+                                                    <Setter Property="Background" Value="#F1F3F5"/>
+                                                    <Setter Property="Foreground" Value="#343A40"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Setter Property="FontSize" Value="14"/>
+                                                    <Setter Property="Padding" Value="16,10"/>
+                                                    <Setter Property="BorderBrush" Value="#E9ECEF"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTemplateColumn.HeaderStyle>
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                        <Button Width="110" Height="32" FontSize="12" Background="#FF51CF66" Margin="0,0,8,0"
+                                                        <Button Width="120" Height="32" FontSize="12" Background="#FF51CF66" Margin="0,0,12,0"
                                                             Command="{Binding DataContext.ConfirmBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                             CommandParameter="{Binding}">
                                                             <Button.Style>
