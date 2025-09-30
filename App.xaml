@@ -16,7 +16,6 @@
         <conv:RoomIdToRoomNumberConverter x:Key="RoomIdToRoomNumberConverter"/>
         <conv:RevenueToHeightConverter x:Key="RevenueToHeightConverter"/>
         <conv:HotelIdToHotelNameConverter x:Key="HotelIdToHotelNameConverter"/>
-        <conv:BookingStatusToVietnameseConverter x:Key="BookingStatusToVietnameseConverter"/>
 
         <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#667eea" Offset="0"/>

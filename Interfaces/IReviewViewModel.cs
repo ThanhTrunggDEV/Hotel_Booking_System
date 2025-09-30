@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.Input;
 using Hotel_Booking_System.DomainModels;
 
 namespace Hotel_Booking_System.Interfaces
@@ -8,7 +7,5 @@ namespace Hotel_Booking_System.Interfaces
         Booking Booking { get; set; }
         int Rating { get; set; }
         string Comment { get; set; }
-        IAsyncRelayCommand SubmitCommand { get; }
-        bool IsReviewSubmitted { get; }
     }
 }

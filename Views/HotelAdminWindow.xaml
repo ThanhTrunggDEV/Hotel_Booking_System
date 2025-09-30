@@ -89,77 +89,11 @@
                                             Command="{Binding NewHotelCommand}"/>
                                 </StackPanel>
 
-                                <Border Margin="0,0,0,20" Background="#FFF3F6FB" CornerRadius="16" Padding="16">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="260"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Grid.Column="0" Height="220" CornerRadius="12" Background="#FFECEFF5" ClipToBounds="True">
-                                            <Grid>
-                                                <Image Source="{Binding CurrentHotel.HotelImage}" Stretch="UniformToFill"/>
-                                                <Border Background="#44000000"/>
-                                                <TextBlock Text="No preview available"
-                                                           Foreground="White"
-                                                           FontSize="16"
-                                                           FontWeight="SemiBold"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding CurrentHotel.HotelImage}" Value="">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding CurrentHotel.HotelImage}" Value="{x:Null}">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-
-                                                <StackPanel Orientation="Vertical" Margin="16" VerticalAlignment="Bottom">
-                                                    <TextBlock Text="Hotel preview" Foreground="#FFE0E0E0" FontSize="12"/>
-                                                    <TextBlock Text="{Binding CurrentHotel.HotelName, FallbackValue=Unnamed Hotel}"
-                                                               Foreground="White" FontSize="18" FontWeight="Bold"/>
-                                                    <TextBlock Text="{Binding CurrentHotel.City, StringFormat='📍 {0}', FallbackValue='📍 Unknown'}"
-                                                               Foreground="#FFE0E0E0" FontSize="12"/>
-                                                </StackPanel>
-
-                                                <Button Content="Change Photo"
-                                                        Command="{Binding UploadHotelImageCommand}"
-                                                        HorizontalAlignment="Right"
-                                                        VerticalAlignment="Top"
-                                                        Margin="12"
-                                                        Width="140"
-                                                        Height="40"
-                                                        Style="{StaticResource PrimaryButton}"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <StackPanel Grid.Column="1" Margin="24,0,0,0" VerticalAlignment="Center">
-                                            <TextBlock Text="Hotel Highlights" FontSize="16" FontWeight="Bold" Margin="0,0,0,12"/>
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                                <Border Background="#1A4CAF50" CornerRadius="8" Padding="8,4" Margin="0,0,8,0">
-                                                    <TextBlock Text="{Binding CurrentHotel.Rating, StringFormat='⭐ {0:0}/5', FallbackValue='⭐ 0/5'}"
-                                                               Foreground="#FF2E7D32" FontWeight="SemiBold"/>
-                                                </Border>
-                                                <Border Background="#1A2196F3" CornerRadius="8" Padding="8,4">
-                                                    <TextBlock Text="{Binding Rooms.Count, StringFormat='🛏️ {0} rooms', FallbackValue='🛏️ 0 rooms'}"
-                                                               Foreground="#FF1565C0" FontWeight="SemiBold"/>
-                                                </Border>
-                                            </StackPanel>
-
-                                            <TextBlock Text="{Binding CurrentHotel.Address, FallbackValue='No address provided'}"
-                                                       Foreground="#FF424242" TextWrapping="Wrap" Margin="0,0,0,8"/>
-                                            <TextBlock Text="{Binding CurrentHotel.Description, FallbackValue='Add a welcoming description for your hotel to help guests learn more.'}"
-                                                       Foreground="#FF757575" TextWrapping="Wrap"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                    <Image Source="{Binding CurrentHotel.HotelImage}" Width="150" Height="100"/>
+                                    <Button Content="Upload Image" Style="{StaticResource PrimaryButton}" Width="120" Margin="10,0,0,0"
+                                            Command="{Binding UploadHotelImageCommand}"/>
+                                </StackPanel>
 
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -167,7 +101,6 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
@@ -195,24 +128,17 @@
 
                                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Address" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="{Binding CurrentHotel.Address}"
+                                        <TextBox Text="{Binding CurrentHotel.Address}" 
                                             Style="{StaticResource ModernTextBox}"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <TextBlock Text="City" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <ComboBox Style="{StaticResource ModernComboBox}"
-                                                  ItemsSource="{Binding CityOptions}"
-                                                  SelectedItem="{Binding CurrentHotel.City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding CurrentHotel.Description}"
+                                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding CurrentHotel.Description}" 
                                             Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                                     </StackPanel>
 
-                                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <WrapPanel>
                                             <CheckBox Content="🌐 Free WiFi" Margin="0,0,15,5"
@@ -227,7 +153,7 @@
                                                       IsChecked="{Binding HasGym, Mode=TwoWay}"/>
                                         </WrapPanel>
                                     </StackPanel>
-                                                                    <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Margin="0,0,0,15">
+                                                                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,15">
                                         <CheckBox Content="Visible to users" IsChecked="{Binding CurrentHotel.IsVisible}" />
                                     </StackPanel>
                                 </Grid>
@@ -248,103 +174,26 @@
                                        Command="{Binding AddRoomCommand}"/>
                                 </Grid>
 
-                                <DataGrid Height="320"
-                                          AutoGenerateColumns="False"
-                                          CanUserAddRows="False"
-                                          ItemsSource="{Binding Rooms}"
-                                          AlternationCount="2"
-                                          HeadersVisibility="Column"
-                                          RowHeaderWidth="0"
-                                          RowHeight="52"
-                                          ColumnHeaderHeight="48"
-                                          GridLinesVisibility="Horizontal"
-                                          HorizontalGridLinesBrush="#E9ECEF"
-                                          VerticalGridLinesBrush="#E9ECEF"
-                                          Background="Transparent"
-                                          BorderBrush="Transparent">
-                                    <DataGrid.Resources>
-                                        <Style TargetType="DataGridColumnHeader">
-                                            <Setter Property="Background" Value="#F1F3F5"/>
-                                            <Setter Property="Foreground" Value="#343A40"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                            <Setter Property="FontSize" Value="14"/>
-                                            <Setter Property="Padding" Value="16,10"/>
-                                            <Setter Property="BorderBrush" Value="#E9ECEF"/>
-                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                        </Style>
-
-                                        <Style TargetType="DataGridRow">
-                                            <Setter Property="FontSize" Value="13"/>
-                                            <Setter Property="Padding" Value="12,0"/>
-                                            <Setter Property="Background" Value="White"/>
-                                            <Setter Property="BorderBrush" Value="#E9ECEF"/>
-                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                            <Style.Triggers>
-                                                <Trigger Property="AlternationIndex" Value="1">
-                                                    <Setter Property="Background" Value="#F8F9FC"/>
-                                                </Trigger>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#E7F1FF"/>
-                                                </Trigger>
-                                                <Trigger Property="IsSelected" Value="True">
-                                                    <Setter Property="Background" Value="#D0E3FF"/>
-                                                    <Setter Property="Foreground" Value="#1C274C"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-
-                                        <Style TargetType="DataGridCell">
-                                            <Setter Property="Padding" Value="16,0"/>
-                                            <Setter Property="BorderThickness" Value="0"/>
-                                            <Setter Property="Foreground" Value="#212529"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        </Style>
-                                    </DataGrid.Resources>
-
-                                    <DataGrid.Effect>
-                                        <DropShadowEffect Color="#000000"
-                                                          BlurRadius="10"
-                                                          ShadowDepth="0"
-                                                          Opacity="0.1"/>
-                                    </DataGrid.Effect>
+                                <DataGrid Height="300" AutoGenerateColumns="False" CanUserAddRows="False"
+                                          ItemsSource="{Binding Rooms}">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Room #" Width="90" Binding="{Binding RoomNumber}"/>
-                                        <DataGridTextColumn Header="Type" Width="140" Binding="{Binding RoomType}"/>
-                                        <DataGridTextColumn Header="Price / Night" Width="140">
-                                            <DataGridTextColumn.Binding>
-                                                <Binding Path="PricePerNight" StringFormat="{}{0:N0} ₫"/>
-                                            </DataGridTextColumn.Binding>
-                                        </DataGridTextColumn>
-                                        <DataGridTextColumn Header="Status" Width="120" Binding="{Binding Status}"/>
-                                        <DataGridTextColumn Header="Capacity" Width="120" Binding="{Binding Capacity}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="220">
-                                            <DataGridTemplateColumn.HeaderStyle>
-                                                <Style TargetType="DataGridColumnHeader">
-                                                    <Setter Property="Background" Value="#F1F3F5"/>
-                                                    <Setter Property="Foreground" Value="#343A40"/>
-                                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                                    <Setter Property="FontSize" Value="14"/>
-                                                    <Setter Property="Padding" Value="16,10"/>
-                                                    <Setter Property="BorderBrush" Value="#E9ECEF"/>
-                                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                                </Style>
-                                            </DataGridTemplateColumn.HeaderStyle>
+                                        <DataGridTextColumn Header="Room #" Width="80" Binding="{Binding RoomNumber}"/>
+                                        <DataGridTextColumn Header="Type" Width="120" Binding="{Binding RoomType}"/>
+                                        <DataGridTextColumn Header="Price/Night" Width="100" Binding="{Binding PricePerNight}"/>
+                                        <DataGridTextColumn Header="Status" Width="100" Binding="{Binding Status}"/>
+                                        <DataGridTextColumn Header="Capacity" Width="100" Binding="{Binding Capacity}"/>
+                                        <DataGridTemplateColumn Header="Actions" Width="150">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                        <Button Style="{StaticResource SecondaryButton}"
-                                                           Width="96" Height="32" FontSize="12" Margin="0,0,10,0"
-                                                           Content="✏️  Edit"
-                                                            Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                            CommandParameter="{Binding}"/>
-                                                        <Button Style="{StaticResource SecondaryButton}"
-                                                           Background="#FFFF6B6B" BorderBrush="#FFFF6B6B" Foreground="#FFFFFF"
-                                                           Width="120" Height="32" FontSize="12"
-                                                           Content="🗑️  Remove"
-                                                            Command="{Binding DataContext.RemoveRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                            CommandParameter="{Binding}"/>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Button Content="Edit" Style="{StaticResource SecondaryButton}"
+                                                           Width="30" Height="25" Margin="2" FontSize="10"
+                                                           Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                           CommandParameter="{Binding}"/>
+                                                        <Button Content="Remove" Style="{StaticResource SecondaryButton}"
+                                                           Background="#FFFF5722" Width="30" Height="25" Margin="2" FontSize="10"
+                                                           Command="{Binding DataContext.RemoveRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                           CommandParameter="{Binding}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
@@ -375,197 +224,59 @@
   
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
-                                <ItemsControl ItemsSource="{Binding Bookings}">
-                                    <ItemsControl.ItemContainerStyle>
-                                        <Style TargetType="ContentPresenter">
-                                            <Setter Property="Margin" Value="0,0,0,16"/>
-                                        </Style>
-                                    </ItemsControl.ItemContainerStyle>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Background="White"
-                                                    CornerRadius="18"
-                                                    Padding="20"
-                                                    BorderBrush="#E3E7EF"
-                                                    BorderThickness="1">
-                                                <Border.Effect>
-                                                    <DropShadowEffect Color="#000000"
-                                                                      BlurRadius="12"
-                                                                      ShadowDepth="0"
-                                                                      Opacity="0.08"/>
-                                                </Border.Effect>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="2*"/>
-                                                        <ColumnDefinition Width="1.6*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-
-                                                    <StackPanel Grid.Column="0" Margin="0,0,24,0">
-                                                        <TextBlock Text="{Binding BookingID, StringFormat=Booking #{0}}"
-                                                                   FontSize="16"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="#1C274C"/>
-                                                        <TextBlock Text="{Binding GuestName, StringFormat=👤  {0}}"
-                                                                   FontSize="14"
-                                                                   Margin="0,8,0,0"
-                                                                   Foreground="#424C5C"/>
-                                                        <TextBlock Text="{Binding RoomNumber, StringFormat=🛏️  Phòng {0}}"
-                                                                   FontSize="13"
-                                                                   Margin="0,4,0,0"
-                                                                   Foreground="#5A6473"/>
-                                                    </StackPanel>
-
-                                                    <Grid Grid.Column="1">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-
-                                                        <TextBlock Grid.Row="0" Grid.Column="0"
-                                                                   Text="Check-in"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="#374151"/>
-                                                        <TextBlock Grid.Row="0" Grid.Column="1"
-                                                                   Text="{Binding CheckInDate, StringFormat=🛬 {0}, FallbackValue=🛬 Chưa xác định}"
-                                                                   Foreground="#475467"/>
-
-                                                        <TextBlock Grid.Row="1" Grid.Column="0"
-                                                                   Margin="0,6,0,0"
-                                                                   Text="Check-out"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="#374151"/>
-                                                        <TextBlock Grid.Row="1" Grid.Column="1"
-                                                                   Margin="0,6,0,0"
-                                                                   Text="{Binding CheckOutDate, StringFormat=🛫 {0}, FallbackValue=🛫 Chưa xác định}"
-                                                                   Foreground="#475467"/>
-
-                                                        <TextBlock Grid.Row="2" Grid.Column="0"
-                                                                   Margin="0,6,0,0"
-                                                                   Text="Guests"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="#374151"/>
-                                                        <TextBlock Grid.Row="2" Grid.Column="1"
-                                                                   Margin="0,6,0,0"
-                                                                   Text="{Binding NumberOfGuests, StringFormat=👥 {0} khách, FallbackValue=👥 1 khách}"
-                                                                   Foreground="#475467"/>
-                                                    </Grid>
-
-                                                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                                        <Border Padding="12,6"
-                                                                CornerRadius="16"
-                                                                HorizontalAlignment="Right">
-                                                            <Border.Style>
-                                                                <Style TargetType="Border">
-                                                                    <Setter Property="Background" Value="#E3F2FD"/>
-                                                                    <Setter Property="BorderBrush" Value="#90CAF9"/>
-                                                                    <Setter Property="BorderThickness" Value="1"/>
+                                <DataGrid Height="400" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bookings}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Booking ID" Width="200" Binding="{Binding BookingID}"/>
+                                        <DataGridTextColumn Header="Guest Name" Width="150" Binding="{Binding GuestName}"/>
+                                        <DataGridTextColumn Header="Room" Width="100" Binding="{Binding RoomNumber}"/>
+                                        <DataGridTextColumn Header="Check-in" Width="150" Binding="{Binding CheckInDate}"/>
+                                        <DataGridTextColumn Header="Check-out" Width="150" Binding="{Binding CheckOutDate}"/>
+                                        <DataGridTextColumn Header="Status" Width="120" Binding="{Binding Status}"/>
+                                        <DataGridTemplateColumn Header="Actions" Width="200">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Button Width="60" Height="25" Margin="2" FontSize="10" Background="#FF4CAF50"
+                                                            Command="{Binding DataContext.ConfirmBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Setter Property="Content" Value="Confirm"/>
                                                                     <Style.Triggers>
                                                                         <DataTrigger Binding="{Binding Status}" Value="Pending">
-                                                                            <Setter Property="Background" Value="#FFF8E1"/>
-                                                                            <Setter Property="BorderBrush" Value="#FFE082"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="Confirmed">
-                                                                            <Setter Property="Background" Value="#E8F5E9"/>
-                                                                            <Setter Property="BorderBrush" Value="#A5D6A7"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="Cancelled">
-                                                                            <Setter Property="Background" Value="#FFEBEE"/>
-                                                                            <Setter Property="BorderBrush" Value="#EF9A9A"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
-                                                                            <Setter Property="Background" Value="#FFF3E0"/>
-                                                                            <Setter Property="BorderBrush" Value="#FFB74D"/>
+                                                                            <Setter Property="Visibility" Value="Visible"/>
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
                                                                 </Style>
-                                                            </Border.Style>
-                                                            <TextBlock Text="{Binding Status}"
-                                                                       Foreground="#1C274C"
-                                                                       FontWeight="SemiBold"/>
-                                                        </Border>
-
-                                                        <StackPanel Orientation="Horizontal"
-                                                                    HorizontalAlignment="Right"
-                                                                    Margin="0,12,0,0">
-                                                            <Button Width="116"
-                                                                    Height="32"
-                                                                    FontSize="12"
-                                                                    Margin="0,0,10,0"
-                                                                    Command="{Binding DataContext.ConfirmBookingCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                    CommandParameter="{Binding}">
-                                                                <Button.Style>
-                                                                    <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
-                                                                        <Setter Property="Content" Value="✅  Xác nhận"/>
-                                                                        <Setter Property="Foreground" Value="White"/>
-                                                                        <Setter Property="Background" Value="#FF51CF66"/>
-                                                                        <Setter Property="BorderBrush" Value="#FF51CF66"/>
-                                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding Status}" Value="Pending">
-                                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </Button.Style>
-                                                            </Button>
-
-                                                            <Button Width="140"
-                                                                    Height="32"
-                                                                    FontSize="12"
-                                                                    Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                    CommandParameter="{Binding}">
-                                                                <Button.Style>
-                                                                    <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
-                                                                        <Setter Property="Foreground" Value="White"/>
-                                                                        <Setter Property="Background" Value="#FFFF6B6B"/>
-                                                                        <Setter Property="BorderBrush" Value="#FFFF6B6B"/>
-                                                                        <Setter Property="Content" Value="❌  Hủy đặt"/>
-                                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding Status}" Value="Pending">
-                                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
-                                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                                                <Setter Property="Content" Value="✔️  Duyệt hủy"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </Button.Style>
-                                                            </Button>
-                                                        </StackPanel>
+                                                            </Button.Style>
+                                                        </Button>
+                                                        <Button Width="80" Height="25" Margin="2" FontSize="10" Background="#FFFF5722"
+                                                            Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Setter Property="Content" Value="Cancel"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                            <Setter Property="Content" Value="Cancel"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                            <Setter Property="Content" Value="Approve Cancel"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
                                                     </StackPanel>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-
-                                <TextBlock Text="Hiện chưa có đặt phòng nào khớp bộ lọc"
-                                           Foreground="#8A94A6"
-                                           FontStyle="Italic"
-                                           HorizontalAlignment="Center"
-                                           Margin="0,40,0,0">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Bookings.Count}" Value="0">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Bookings}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
                             </StackPanel>
                         </Border>
                     </StackPanel>

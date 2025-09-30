@@ -5,7 +5,6 @@ using System.Linq;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using System.Windows;
 
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -55,7 +54,6 @@ namespace Hotel_Booking_System.ViewModels
         private DispatcherTimer? _notificationTimer;
 
         public ObservableCollection<Hotel> Hotels { get; } = new();
-        public ObservableCollection<string> CityOptions { get; } = new();
         public Hotel? CurrentHotel
         {
             get => _currentHotel;
@@ -63,17 +61,14 @@ namespace Hotel_Booking_System.ViewModels
             {
                 Set(ref _currentHotel, value);
 
-                EnsureCityInOptions(_currentHotel?.City);
                 SyncAmenitiesFromHotel();
-                _ = LoadRoomsAsync();
-                _ = LoadBookingsAsync();
-                _ = LoadReviewsAsync();
+                LoadRooms();
+                LoadBookings();
+                LoadReviews();
             }
         }
 
         private readonly List<Booking> _allBookings = new();
-        private List<Booking> _cachedAllBookings = new();
-        private List<Payment> _cachedPayments = new();
 
         public ObservableCollection<Room> Rooms { get; } = new();
         public ObservableCollection<Booking> Bookings { get; } = new();
@@ -419,8 +414,6 @@ namespace Hotel_Booking_System.ViewModels
             _navigationService = navigationService;
             _authenticationService = authenticationService;
 
-            InitializeCityOptions();
-
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo tuần", Range = RevenueRange.Weekly });
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo tháng", Range = RevenueRange.Monthly });
             RevenueFilterOptions.Add(new RevenueFilterOption { DisplayName = "Theo năm", Range = RevenueRange.Yearly });
@@ -431,41 +424,6 @@ namespace Hotel_Booking_System.ViewModels
                 recipient._userEmail = message.Value;
                 recipient.LoadCurrentUser();
             });
-        }
-
-        private static readonly string[] DefaultCityOptions = new[]
-        {
-            "Hà Nội",
-            "Tuyên Quang",
-            "Lào Cai",
-            "Thái Nguyên",
-            "Phú Thọ",
-            "Bắc Ninh",
-            "Hưng Yên",
-            "Hải Phòng",
-            "Ninh Bình",
-            "Quảng Trị",
-            "Đà Nẵng",
-            "Quảng Ngãi",
-            "Gia Lai",
-            "Khánh Hòa",
-            "Lâm Đồng",
-            "Đăk Lăk",
-            "TP. Hồ Chí Minh",
-            "TP. Cần Thơ",
-            "Vĩnh Long",
-            "Đồng Tháp",
-            "Cà Mau",
-            "An Giang"
-        };
-
-        private void InitializeCityOptions()
-        {
-            CityOptions.Clear();
-            foreach (var city in DefaultCityOptions)
-            {
-                CityOptions.Add(city);
-            }
         }
 
         private async void LoadCurrentUser()
@@ -488,60 +446,41 @@ namespace Hotel_Booking_System.ViewModels
             foreach (var hotel in hotels.Where(h => h.UserID == CurrentUser.UserID && h.IsApproved))
             {
                 Hotels.Add(hotel);
-                EnsureCityInOptions(hotel.City);
             }
 
             CurrentHotel = Hotels.FirstOrDefault();
+            UpdateProfileStatistics();
         }
 
-        private async Task LoadRoomsAsync()
+        private void LoadRooms()
         {
             if (CurrentHotel == null)
-            {
-                Rooms.Clear();
                 return;
-            }
 
-            var rooms = await _roomRepository.GetAllAsync();
-            var relevantRooms = rooms
-                .Where(r => r.HotelID == CurrentHotel.HotelID)
-                .OrderBy(r => r.RoomNumber)
-                .ToList();
-
+            var rooms = _roomRepository.GetAllAsync().Result
+                .Where(r => r.HotelID == CurrentHotel.HotelID);
             Rooms.Clear();
-            foreach (var room in relevantRooms)
+            foreach (var room in rooms)
             {
                 Rooms.Add(room);
             }
         }
 
-        private async Task LoadBookingsAsync()
+        private void LoadBookings()
         {
             if (CurrentHotel == null)
-            {
-                _allBookings.Clear();
-                Bookings.Clear();
-                _cachedAllBookings = new List<Booking>();
-                _cachedPayments = new List<Payment>();
-                UpdateBookingStatusFilters();
-                UpdateProfileStatistics();
-                UpdateRevenueAnalytics(new List<Booking>(), new List<Payment>());
                 return;
-            }
 
-            var rooms = await _roomRepository.GetAllAsync();
-            var roomNumbers = rooms
+            var roomNumbers = _roomRepository.GetAllAsync().Result
                 .Where(r => r.HotelID == CurrentHotel.HotelID)
                 .ToDictionary(r => r.RoomID, r => r.RoomNumber);
 
-            var allBookings = await _bookingRepository.GetAllAsync();
-            var currentHotelBookings = allBookings
+            var bookings = _bookingRepository.GetAllAsync().Result
                 .Where(b => b.HotelID == CurrentHotel.HotelID)
-                .OrderByDescending(b => b.CheckInDate)
                 .ToList();
 
             _allBookings.Clear();
-            foreach (var booking in currentHotelBookings)
+            foreach (var booking in bookings)
             {
                 booking.RoomNumber = roomNumbers.TryGetValue(booking.RoomID, out var number)
                     ? number
@@ -549,14 +488,9 @@ namespace Hotel_Booking_System.ViewModels
                 _allBookings.Add(booking);
             }
 
-            _cachedAllBookings = allBookings;
-
             UpdateBookingStatusFilters();
             ApplyBookingFilter();
-
-            _cachedPayments = await _paymentRepository.GetAllAsync();
-            UpdateRevenueAnalytics(currentHotelBookings, _cachedPayments);
-            UpdateProfileStatistics();
+            UpdateRevenueAnalytics(bookings);
         }
 
         private async void LoadReviews()
@@ -691,6 +625,8 @@ namespace Hotel_Booking_System.ViewModels
             {
                 Bookings.Add(booking);
             }
+
+            UpdateProfileStatistics();
         }
 
         private void UpdateProfileStatistics()
@@ -703,32 +639,39 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
-            _cachedAllBookings ??= new List<Booking>();
-            _cachedPayments ??= new List<Payment>();
+            var adminHotels = Hotels
+                .Where(h => h.UserID == CurrentUser.UserID)
+                .Select(h => h.HotelID)
+                .Where(id => !string.IsNullOrEmpty(id))
+                .ToHashSet();
 
-            var userBookings = _cachedAllBookings
-                .Where(b => string.Equals(b.UserID, CurrentUser.UserID, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            TotalBookings = userBookings.Count;
-
-            if (userBookings.Count == 0)
+            if (adminHotels.Count == 0)
             {
+                TotalBookings = 0;
                 TotalSpent = 0;
                 MembershipLevel = "Bronze";
                 return;
             }
 
-            var bookingIds = new HashSet<string>(userBookings
-                .Where(b => !string.IsNullOrEmpty(b.BookingID))
-                .Select(b => b.BookingID));
+            var bookings = _bookingRepository.GetAllAsync().Result
+                .Where(b => !string.IsNullOrEmpty(b.HotelID) && adminHotels.Contains(b.HotelID))
+                .ToList();
 
-            var totalSpent = _cachedPayments
-                .Where(p => !string.IsNullOrEmpty(p.BookingID) && bookingIds.Contains(p.BookingID))
-                .Sum(p => p.TotalPayment);
+            var payments = _paymentRepository.GetAllAsync().Result;
 
-            TotalSpent = totalSpent;
-            MembershipLevel = CalculateMembershipLevel(totalSpent);
+            double totalRevenue = 0;
+            foreach (var booking in bookings)
+            {
+                var payment = payments.FirstOrDefault(p => p.BookingID == booking.BookingID);
+                if (payment != null)
+                {
+                    totalRevenue += payment.TotalPayment;
+                }
+            }
+
+            TotalBookings = bookings.Count;
+            TotalSpent = totalRevenue;
+            MembershipLevel = CalculateMembershipLevel(totalRevenue);
         }
 
         private static string CalculateMembershipLevel(double totalRevenue)
@@ -751,12 +694,10 @@ namespace Hotel_Booking_System.ViewModels
             return "Bronze";
         }
 
-        private void UpdateRevenueAnalytics(List<Booking> bookings, List<Payment> payments)
+        private void UpdateRevenueAnalytics(List<Booking> bookings)
         {
             _currentHotelPayments = new List<Payment>();
             _revenueData.Clear();
-
-            payments ??= new List<Payment>();
 
             if (bookings != null && bookings.Count > 0)
             {
@@ -767,7 +708,8 @@ namespace Hotel_Booking_System.ViewModels
 
                 if (bookingIds.Count > 0)
                 {
-                    _currentHotelPayments = payments
+                    _currentHotelPayments = _paymentRepository.GetAllAsync().Result
+
                         .Where(p => !string.IsNullOrWhiteSpace(p.BookingID) && bookingIds.Contains(p.BookingID))
                         .ToList();
                 }
@@ -1322,7 +1264,6 @@ namespace Hotel_Booking_System.ViewModels
 
             if (string.IsNullOrWhiteSpace(CurrentHotel.HotelName) ||
                 string.IsNullOrWhiteSpace(CurrentHotel.Address) ||
-                string.IsNullOrWhiteSpace(CurrentHotel.City) ||
                 CurrentHotel.Rating < 1 || CurrentHotel.Rating > 5)
             {
                 return;
@@ -1340,7 +1281,6 @@ namespace Hotel_Booking_System.ViewModels
             }
             else
             {
-                EnsureCityInOptions(CurrentHotel.City);
                 await _hotelRepository.UpdateAsync(CurrentHotel);
             }
         }
@@ -1362,7 +1302,7 @@ namespace Hotel_Booking_System.ViewModels
             {
                 await _roomRepository.AddAsync(room);
                 await _roomRepository.SaveAsync();
-                await LoadRoomsAsync();
+                LoadRooms();
             }
         }
 
@@ -1392,10 +1332,8 @@ namespace Hotel_Booking_System.ViewModels
                 room.Capacity = copy.Capacity;
                 room.PricePerNight = copy.PricePerNight;
                 room.RoomImage = copy.RoomImage;
-                room.Status = copy.Status;
                 await _roomRepository.UpdateAsync(room);
-                await LoadRoomsAsync();
-                await LoadBookingsAsync();
+                LoadRooms();
             }
         }
 
@@ -1421,25 +1359,9 @@ namespace Hotel_Booking_System.ViewModels
             if (room == null)
                 return;
 
-            var confirmationMessage = string.IsNullOrWhiteSpace(room.RoomNumber)
-                ? "Bạn có chắc chắn muốn xóa phòng này?"
-                : $"Bạn có chắc chắn muốn xóa phòng {room.RoomNumber}?";
-
-            var confirmation = MessageBox.Show(
-                confirmationMessage,
-                "Xác nhận xóa phòng",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (confirmation != MessageBoxResult.Yes)
-            {
-                return;
-            }
-
             await _roomRepository.DeleteAsync(room.RoomID);
             await _roomRepository.SaveAsync();
-            await LoadRoomsAsync();
-            await LoadBookingsAsync();
+            LoadRooms();
         }
 
         [RelayCommand]
@@ -1452,7 +1374,7 @@ namespace Hotel_Booking_System.ViewModels
             {
                 booking.Status = "Confirmed";
                 await _bookingRepository.UpdateAsync(booking);
-                await LoadBookingsAsync();
+                LoadBookings();
             }
         }
 
@@ -1466,20 +1388,7 @@ namespace Hotel_Booking_System.ViewModels
             {
                 booking.Status = "Cancelled";
                 await _bookingRepository.UpdateAsync(booking);
-                await LoadBookingsAsync();
-            }
-        }
-
-        private void EnsureCityInOptions(string? city)
-        {
-            if (string.IsNullOrWhiteSpace(city))
-            {
-                return;
-            }
-
-            if (!CityOptions.Contains(city))
-            {
-                CityOptions.Add(city);
+                LoadBookings();
             }
         }
     }
