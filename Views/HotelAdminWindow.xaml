@@ -248,26 +248,91 @@
                                        Command="{Binding AddRoomCommand}"/>
                                 </Grid>
 
-                                <DataGrid Height="300" AutoGenerateColumns="False" CanUserAddRows="False"
-                                          ItemsSource="{Binding Rooms}">
+                                <DataGrid Height="320"
+                                          AutoGenerateColumns="False"
+                                          CanUserAddRows="False"
+                                          ItemsSource="{Binding Rooms}"
+                                          AlternationCount="2"
+                                          HeadersVisibility="Column"
+                                          RowHeaderWidth="0"
+                                          RowHeight="52"
+                                          ColumnHeaderHeight="48"
+                                          GridLinesVisibility="Horizontal"
+                                          HorizontalGridLinesBrush="#E9ECEF"
+                                          VerticalGridLinesBrush="#E9ECEF"
+                                          Background="Transparent"
+                                          BorderBrush="Transparent">
+                                    <DataGrid.Resources>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="Background" Value="#F1F3F5"/>
+                                            <Setter Property="Foreground" Value="#343A40"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="FontSize" Value="14"/>
+                                            <Setter Property="Padding" Value="16,10"/>
+                                            <Setter Property="BorderBrush" Value="#E9ECEF"/>
+                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        </Style>
+
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="FontSize" Value="13"/>
+                                            <Setter Property="Padding" Value="12,0"/>
+                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="BorderBrush" Value="#E9ECEF"/>
+                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="AlternationIndex" Value="1">
+                                                    <Setter Property="Background" Value="#F8F9FC"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#E7F1FF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#D0E3FF"/>
+                                                    <Setter Property="Foreground" Value="#1C274C"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="Padding" Value="10,0"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="Foreground" Value="#212529"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGrid.Resources>
+
+                                    <DataGrid.Effect>
+                                        <DropShadowEffect Color="#000000"
+                                                          BlurRadius="10"
+                                                          ShadowDepth="0"
+                                                          Opacity="0.1"/>
+                                    </DataGrid.Effect>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Room #" Width="80" Binding="{Binding RoomNumber}"/>
-                                        <DataGridTextColumn Header="Type" Width="120" Binding="{Binding RoomType}"/>
-                                        <DataGridTextColumn Header="Price/Night" Width="100" Binding="{Binding PricePerNight}"/>
-                                        <DataGridTextColumn Header="Status" Width="100" Binding="{Binding Status}"/>
-                                        <DataGridTextColumn Header="Capacity" Width="100" Binding="{Binding Capacity}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="150">
+                                        <DataGridTextColumn Header="Room #" Width="90" Binding="{Binding RoomNumber}"/>
+                                        <DataGridTextColumn Header="Type" Width="140" Binding="{Binding RoomType}"/>
+                                        <DataGridTextColumn Header="Price / Night" Width="140">
+                                            <DataGridTextColumn.Binding>
+                                                <Binding Path="PricePerNight" StringFormat="{}{0:N0} ₫"/>
+                                            </DataGridTextColumn.Binding>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Status" Width="120" Binding="{Binding Status}"/>
+                                        <DataGridTextColumn Header="Capacity" Width="120" Binding="{Binding Capacity}"/>
+                                        <DataGridTemplateColumn Header="Actions" Width="170">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Button Content="Edit" Style="{StaticResource SecondaryButton}"
-                                                           Width="30" Height="25" Margin="2" FontSize="10"
-                                                           Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                           CommandParameter="{Binding}"/>
-                                                        <Button Content="Remove" Style="{StaticResource SecondaryButton}"
-                                                           Background="#FFFF5722" Width="30" Height="25" Margin="2" FontSize="10"
-                                                           Command="{Binding DataContext.RemoveRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                           CommandParameter="{Binding}"/>
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                        <Button Style="{StaticResource SecondaryButton}"
+                                                           Width="80" Height="32" FontSize="12" Margin="0,0,8,0"
+                                                           Content="✏️  Edit"
+                                                            Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}"/>
+                                                        <Button Style="{StaticResource SecondaryButton}"
+                                                           Background="#FFFF6B6B" BorderBrush="#FFFF6B6B" Foreground="#FFFFFF"
+                                                           Width="110" Height="32" FontSize="12"
+                                                           Content="🗑️  Remove"
+                                                            Command="{Binding DataContext.RemoveRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
@@ -298,25 +363,86 @@
   
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
-                                <DataGrid Height="400" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bookings}">
+                                <DataGrid Height="420"
+                                          AutoGenerateColumns="False"
+                                          CanUserAddRows="False"
+                                          ItemsSource="{Binding Bookings}"
+                                          AlternationCount="2"
+                                          HeadersVisibility="Column"
+                                          RowHeaderWidth="0"
+                                          RowHeight="52"
+                                          ColumnHeaderHeight="48"
+                                          GridLinesVisibility="Horizontal"
+                                          HorizontalGridLinesBrush="#E9ECEF"
+                                          VerticalGridLinesBrush="#E9ECEF"
+                                          Background="Transparent"
+                                          BorderBrush="Transparent">
+                                    <DataGrid.Resources>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="Background" Value="#F1F3F5"/>
+                                            <Setter Property="Foreground" Value="#343A40"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="FontSize" Value="14"/>
+                                            <Setter Property="Padding" Value="16,10"/>
+                                            <Setter Property="BorderBrush" Value="#E9ECEF"/>
+                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        </Style>
+
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="FontSize" Value="13"/>
+                                            <Setter Property="Padding" Value="12,0"/>
+                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="BorderBrush" Value="#E9ECEF"/>
+                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="AlternationIndex" Value="1">
+                                                    <Setter Property="Background" Value="#F8F9FC"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#E7F1FF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#D0E3FF"/>
+                                                    <Setter Property="Foreground" Value="#1C274C"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="Padding" Value="10,0"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="Foreground" Value="#212529"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGrid.Resources>
+                                    <DataGrid.Effect>
+                                        <DropShadowEffect Color="#000000"
+                                                          BlurRadius="10"
+                                                          ShadowDepth="0"
+                                                          Opacity="0.1"/>
+                                    </DataGrid.Effect>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Booking ID" Width="200" Binding="{Binding BookingID}"/>
-                                        <DataGridTextColumn Header="Guest Name" Width="150" Binding="{Binding GuestName}"/>
-                                        <DataGridTextColumn Header="Room" Width="100" Binding="{Binding RoomNumber}"/>
-                                        <DataGridTextColumn Header="Check-in" Width="150" Binding="{Binding CheckInDate}"/>
-                                        <DataGridTextColumn Header="Check-out" Width="150" Binding="{Binding CheckOutDate}"/>
-                                        <DataGridTextColumn Header="Status" Width="120" Binding="{Binding Status}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="200">
+                                        <DataGridTextColumn Header="Booking ID" Width="180" Binding="{Binding BookingID}"/>
+                                        <DataGridTextColumn Header="Guest Name" Width="180" Binding="{Binding GuestName}"/>
+                                        <DataGridTextColumn Header="Room" Width="90" Binding="{Binding RoomNumber}"/>
+                                        <DataGridTextColumn Header="Check-in" Width="160" Binding="{Binding CheckInDate}"/>
+                                        <DataGridTextColumn Header="Check-out" Width="160" Binding="{Binding CheckOutDate}"/>
+                                        <DataGridTextColumn Header="Status" Width="150" Binding="{Binding Status}"/>
+                                        <DataGridTemplateColumn Header="Actions" Width="230">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Button Width="60" Height="25" Margin="2" FontSize="10" Background="#FF4CAF50"
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                        <Button Width="110" Height="32" FontSize="12" Background="#FF51CF66" Margin="0,0,8,0"
                                                             Command="{Binding DataContext.ConfirmBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                             CommandParameter="{Binding}">
                                                             <Button.Style>
                                                                 <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="BorderBrush" Value="#FF51CF66"/>
+                                                                    <Setter Property="Background" Value="#FF51CF66"/>
+                                                                    <Setter Property="Content" Value="✅  Confirm"/>
                                                                     <Setter Property="Visibility" Value="Collapsed"/>
-                                                                    <Setter Property="Content" Value="Confirm"/>
                                                                     <Style.Triggers>
                                                                         <DataTrigger Binding="{Binding Status}" Value="Pending">
                                                                             <Setter Property="Visibility" Value="Visible"/>
@@ -325,21 +451,23 @@
                                                                 </Style>
                                                             </Button.Style>
                                                         </Button>
-                                                        <Button Width="80" Height="25" Margin="2" FontSize="10" Background="#FFFF5722"
+                                                        <Button Width="140" Height="32" FontSize="12" Background="#FFFF6B6B"
                                                             Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                             CommandParameter="{Binding}">
                                                             <Button.Style>
                                                                 <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="BorderBrush" Value="#FFFF6B6B"/>
+                                                                    <Setter Property="Background" Value="#FFFF6B6B"/>
+                                                                    <Setter Property="Content" Value="❌  Cancel"/>
                                                                     <Setter Property="Visibility" Value="Collapsed"/>
-                                                                    <Setter Property="Content" Value="Cancel"/>
                                                                     <Style.Triggers>
                                                                         <DataTrigger Binding="{Binding Status}" Value="Pending">
                                                                             <Setter Property="Visibility" Value="Visible"/>
-                                                                            <Setter Property="Content" Value="Cancel"/>
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
                                                                             <Setter Property="Visibility" Value="Visible"/>
-                                                                            <Setter Property="Content" Value="Approve Cancel"/>
+                                                                            <Setter Property="Content" Value="✔️  Approve Cancel"/>
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
                                                                 </Style>
