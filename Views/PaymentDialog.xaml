@@ -1,7 +1,7 @@
 <Window x:Class="Hotel_Booking_System.Views.PaymentDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Payment"
+        Title="Thanh toán"
         Height="360" Width="420"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
@@ -39,14 +39,14 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="White" Margin="0,0,12,0"/>
                         <StackPanel>
-                            <TextBlock Text="Secure Payment" FontSize="22" FontWeight="Bold" Foreground="White"/>
-                            <TextBlock Text="Review the details before you confirm the transaction." FontSize="12" Foreground="#E8F5E9"/>
+                            <TextBlock Text="Thanh toán an toàn" FontSize="22" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="Vui lòng kiểm tra thông tin trước khi xác nhận giao dịch." FontSize="12" Foreground="#E8F5E9"/>
                         </StackPanel>
                     </StackPanel>
 
                     <Border Grid.Column="1" Background="#33FFFFFF" Padding="10,6" CornerRadius="18">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="Total" Foreground="#E8F5E9" FontSize="12" Margin="0,0,6,0"/>
+                            <TextBlock Text="Tổng cộng" Foreground="#E8F5E9" FontSize="12" Margin="0,0,6,0"/>
                             <TextBlock Text="{Binding TotalPayment, StringFormat='${0:F0}'}" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
                         </StackPanel>
                     </Border>
@@ -58,14 +58,14 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#26A69A" Margin="0,0,12,0" VerticalAlignment="Center"/>
                         <StackPanel>
-                            <TextBlock Text="Payment Details" FontSize="14" FontWeight="SemiBold" Foreground="#2F4F4F"/>
-                            <TextBlock Text="Select your preferred payment method to continue." FontSize="12" Foreground="#607D8B" TextWrapping="Wrap"/>
+                            <TextBlock Text="Chi tiết thanh toán" FontSize="14" FontWeight="SemiBold" Foreground="#2F4F4F"/>
+                            <TextBlock Text="Chọn phương thức thanh toán để tiếp tục." FontSize="12" Foreground="#607D8B" TextWrapping="Wrap"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
                 <StackPanel Margin="0,0,0,18">
-                    <TextBlock Text="Payment Method" FontSize="12" Foreground="#607D8B" Margin="0,0,0,8"/>
+                    <TextBlock Text="Phương thức thanh toán" FontSize="12" Foreground="#607D8B" Margin="0,0,0,8"/>
                     <Border Background="#FFFFFF" CornerRadius="10" BorderBrush="#CFD8DC" BorderThickness="1">
                         <ComboBox SelectedValue="{Binding Method}"
                                   SelectedValuePath="Tag"
@@ -78,19 +78,19 @@
                             <ComboBoxItem Tag="Cash">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Cash"/>
+                                    <TextBlock Text="Tiền mặt"/>
                                 </StackPanel>
                             </ComboBoxItem>
                             <ComboBoxItem Tag="Credit Card">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Credit Card"/>
+                                    <TextBlock Text="Thẻ tín dụng"/>
                                 </StackPanel>
                             </ComboBoxItem>
                             <ComboBoxItem Tag="Bank Transfer">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Bank Transfer"/>
+                                    <TextBlock Text="Chuyển khoản"/>
                                 </StackPanel>
                             </ComboBoxItem>
                         </ComboBox>
@@ -100,13 +100,13 @@
                 <Border Background="#FFF3E0" CornerRadius="12" Padding="14" BorderBrush="#FFE0B2" BorderThickness="1">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#FB8C00" Margin="0,0,10,0"/>
-                        <TextBlock Text="Payment confirmation is final. Ensure all booking details are correct before submitting." Foreground="#FB8C00" FontSize="12" TextWrapping="Wrap"/>
+                        <TextBlock Text="Xác nhận thanh toán là cuối cùng. Hãy đảm bảo thông tin đặt phòng chính xác trước khi gửi." Foreground="#FB8C00" FontSize="12" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
             </StackPanel>
 
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,30,30">
-                <Button Content="Cancel" Width="100" Height="38"
+                <Button Content="Hủy" Width="100" Height="38"
                         x:Name="btnCancel"
                         Background="White"
                         Foreground="#455A64"
@@ -114,7 +114,7 @@
                         BorderThickness="1"
                         FontWeight="SemiBold"
                         Margin="0,0,12,0"/>
-                <Button Content="Pay" Width="120" Height="38"
+                <Button Content="Thanh toán" Width="120" Height="38"
                         x:Name="btnPay"
                         Command="{Binding ConfirmPaymentCommand}"
                         Background="#26A69A"
