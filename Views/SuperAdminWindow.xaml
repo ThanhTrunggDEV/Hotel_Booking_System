@@ -34,7 +34,8 @@
                 <TextBlock Text="{Binding CurrentUser.FullName}" Foreground="White" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Bottom"/>
 
                 <Button Content="Logout" Style="{StaticResource PrimaryButton}" Width="100"
-                       Background="#FFFF5722" Margin="5,0,0,0"/>
+                       Background="#FFFF5722" Margin="5,0,0,0"
+                       Command="{Binding LogoutCommand}"/>
             </StackPanel>
         </Grid>
 
@@ -314,18 +315,30 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Button Content="👁️" ToolTip="View Details" Style="{StaticResource SecondaryButton}" 
-                                                   Width="25" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="✏️" ToolTip="Edit Hotel" Style="{StaticResource SecondaryButton}" 
-                                                   Background="#FF2196F3" Width="25" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="🏠" ToolTip="Manage Rooms" Style="{StaticResource SecondaryButton}" 
-                                                   Background="#FFFF9800" Width="25" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="📊" ToolTip="Analytics" Style="{StaticResource SecondaryButton}" 
-                                                   Background="#FF9C27B0" Width="25" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="⚠️" ToolTip="Suspend" Style="{StaticResource SecondaryButton}" 
-                                                   Background="#FFFF5722" Width="25" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="📧" ToolTip="Contact Admin" Style="{StaticResource SecondaryButton}" 
-                                                   Background="#FF607D8B" Width="25" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="👁️" ToolTip="View Details" Style="{StaticResource SecondaryButton}"
+                                                   Width="25" Height="25" Margin="2" FontSize="10"
+                                                                Command="{Binding DataContext.ViewHotelDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
+                                                        <Button Content="✏️" ToolTip="Edit Hotel" Style="{StaticResource SecondaryButton}"
+                                                   Background="#FF2196F3" Width="25" Height="25" Margin="2" FontSize="10"
+                                                                Command="{Binding DataContext.EditHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
+                                                        <Button Content="🏠" ToolTip="Manage Rooms" Style="{StaticResource SecondaryButton}"
+                                                   Background="#FFFF9800" Width="25" Height="25" Margin="2" FontSize="10"
+                                                                Command="{Binding DataContext.ManageRoomsAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
+                                                        <Button Content="📊" ToolTip="Analytics" Style="{StaticResource SecondaryButton}"
+                                                   Background="#FF9C27B0" Width="25" Height="25" Margin="2" FontSize="10"
+                                                                Command="{Binding DataContext.ShowHotelAnalyticsAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
+                                                        <Button Content="⚠️" ToolTip="Suspend / Activate" Style="{StaticResource SecondaryButton}"
+                                                   Background="#FFFF5722" Width="25" Height="25" Margin="2" FontSize="10"
+                                                                Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
+                                                        <Button Content="📧" ToolTip="Contact Admin" Style="{StaticResource SecondaryButton}"
+                                                   Background="#FF607D8B" Width="25" Height="25" Margin="2" FontSize="10"
+                                                                Command="{Binding DataContext.ContactHotelAdminCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
@@ -416,26 +429,40 @@
 
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
-                                <DataGrid Height="400" AutoGenerateColumns="False" CanUserAddRows="False">
+                                <DataGrid Height="400" AutoGenerateColumns="False" CanUserAddRows="False"
+                                          IsReadOnly="True" ItemsSource="{Binding Users}">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="User ID" Width="80" Binding="{Binding UserId}"/>
-                                        <DataGridTextColumn Header="Name" Width="150" Binding="{Binding FullName}"/>
-                                        <DataGridTextColumn Header="Email" Width="200" Binding="{Binding Email}"/>
-                                        <DataGridTextColumn Header="Role" Width="100" Binding="{Binding Role}"/>
-                                        <DataGridTextColumn Header="Status" Width="80" Binding="{Binding Status}"/>
-                                        <DataGridTextColumn Header="Last Login" Width="100" Binding="{Binding LastLogin}"/>
+                                        <DataGridTextColumn Header="User ID" Width="100" Binding="{Binding UserID}"/>
+                                        <DataGridTextColumn Header="Name" Width="160" Binding="{Binding FullName}"/>
+                                        <DataGridTextColumn Header="Email" Width="220" Binding="{Binding Email}"/>
+                                        <DataGridTextColumn Header="Role" Width="120" Binding="{Binding Role}"/>
+                                        <DataGridTextColumn Header="Phone" Width="140" Binding="{Binding Phone}"/>
+                                        <DataGridTextColumn Header="Gender" Width="100" Binding="{Binding Gender}"/>
+                                        <DataGridTextColumn Header="Date of Birth" Width="140" Binding="{Binding DateOfBirth, StringFormat='{}{0:dd/MM/yyyy}'}"/>
                                         <DataGridTemplateColumn Header="Actions" Width="200">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Button Content="👁️" Style="{StaticResource SecondaryButton}" 
-                                                               Width="25" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="✏️" Style="{StaticResource SecondaryButton}" 
-                                                               Background="#FFFF9800" Width="25" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="🚫" Style="{StaticResource SecondaryButton}" 
-                                                               Background="#FFFF5722" Width="25" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="📧" Style="{StaticResource SecondaryButton}" 
-                                                               Background="#FF2196F3" Width="25" Height="25" Margin="2" FontSize="10"/>
+                                                        <Button Content="👁️" Style="{StaticResource SecondaryButton}"
+                                                               Width="25" Height="25" Margin="2" FontSize="10"
+                                                                ToolTip="View details"
+                                                                Command="{Binding DataContext.ViewUserDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
+                                                        <Button Content="✏️" Style="{StaticResource SecondaryButton}"
+                                                               Background="#FFFF9800" Width="25" Height="25" Margin="2" FontSize="10"
+                                                                ToolTip="Change role"
+                                                                Command="{Binding DataContext.ChangeUserRoleCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
+                                                        <Button Content="🚫" Style="{StaticResource SecondaryButton}"
+                                                               Background="#FFFF5722" Width="25" Height="25" Margin="2" FontSize="10"
+                                                                ToolTip="Remove user"
+                                                                Command="{Binding DataContext.RemoveUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
+                                                        <Button Content="📧" Style="{StaticResource SecondaryButton}"
+                                                               Background="#FF2196F3" Width="25" Height="25" Margin="2" FontSize="10"
+                                                                ToolTip="Contact user"
+                                                                Command="{Binding DataContext.ContactUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
@@ -682,27 +709,6 @@
                 </ScrollViewer>
 
             </TabItem>
-
-
-            <TabItem x:Name="PaymentSummaryTab" Header="💰 Payment Summary">
-                <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <TextBlock Text="Payment Summary" Style="{StaticResource HeaderTextStyle}"/>
-                        <DataGrid ItemsSource="{Binding Payments}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,20,0,20">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Payment ID" Binding="{Binding PaymentID}" Width="*"/>
-                                <DataGridTextColumn Header="Booking ID" Binding="{Binding BookingID}" Width="*"/>
-                                <DataGridTextColumn Header="Amount" Binding="{Binding TotalPayment}" Width="*"/>
-                                <DataGridTextColumn Header="Method" Binding="{Binding Method}" Width="*"/>
-                                <DataGridTextColumn Header="Date" Binding="{Binding PaymentDate}" Width="*"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <TextBlock Text="{Binding TotalRevenue, StringFormat='Total Revenue: ${0:F0}'}" FontSize="16" FontWeight="Bold" Foreground="#27AE60" HorizontalAlignment="Right"/>
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-
-
         </TabControl>
     </Grid>
 </Window>
