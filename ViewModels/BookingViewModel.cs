@@ -211,8 +211,6 @@ namespace Hotel_Booking_System.ViewModels
 
 
             };
-            SelectedRoom.Status = "Booked";
-            await _roomRepository.UpdateAsync(SelectedRoom);
             await _bookingRepository.AddAsync(booking);
             await _bookingRepository.SaveAsync();
 
