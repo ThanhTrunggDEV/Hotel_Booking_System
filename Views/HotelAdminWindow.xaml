@@ -180,10 +180,18 @@
                                     </Grid>
                                 </Grid>
 
-                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <Button Content="Update Hotel Info" Width="180" Style="{StaticResource PrimaryButton}"
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding NotificationMessage}" Foreground="#FF1976D2" FontSize="14"
+                                               VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                                    <Button Grid.Column="1" Content="Update Hotel Info" Width="180" Style="{StaticResource PrimaryButton}"
                                             Command="{Binding UpdateHotelInfoCommand}"/>
-                                </StackPanel>
+                                </Grid>
                             </Grid>
                         </Border>
 

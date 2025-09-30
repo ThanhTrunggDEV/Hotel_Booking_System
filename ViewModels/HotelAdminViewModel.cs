@@ -1260,12 +1260,16 @@ namespace Hotel_Booking_System.ViewModels
         private async Task UpdateHotelInfo()
         {
             if (CurrentHotel == null)
+            {
+                ShowNotification("Please select a hotel to update.");
                 return;
+            }
 
             if (string.IsNullOrWhiteSpace(CurrentHotel.HotelName) ||
                 string.IsNullOrWhiteSpace(CurrentHotel.Address) ||
                 CurrentHotel.Rating < 1 || CurrentHotel.Rating > 5)
             {
+                ShowNotification("Please provide a hotel name, address, and rating between 1 and 5.");
                 return;
             }
 
@@ -1278,10 +1282,12 @@ namespace Hotel_Booking_System.ViewModels
                 await _hotelRepository.AddAsync(CurrentHotel);
                 await _hotelRepository.SaveAsync();
                 LoadHotels();
+                ShowNotification("Hotel information submitted successfully. An administrator will review the changes.");
             }
             else
             {
                 await _hotelRepository.UpdateAsync(CurrentHotel);
+                ShowNotification("Hotel information updated successfully.");
             }
         }
 
