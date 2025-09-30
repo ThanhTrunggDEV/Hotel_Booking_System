@@ -865,7 +865,11 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
-            _navigationService.OpenReviewDialog(booking);
+            bool reviewSubmitted = _navigationService.OpenReviewDialog(booking);
+            if (reviewSubmitted)
+            {
+                FilterBookingsByUser(CurrentUser.UserID);
+            }
         }
 
         [RelayCommand]

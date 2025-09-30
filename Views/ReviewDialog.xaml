@@ -109,7 +109,6 @@
                             Width="150"
                             Height="44"
                             x:Name="btnSubmit"
-                            Command="{Binding SubmitCommand}"
                             Style="{StaticResource PrimaryButton}"/>
                 </StackPanel>
             </Border>
