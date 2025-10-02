@@ -577,7 +577,7 @@
                                     CornerRadius="0,0,12,12"
                                     Padding="0">
                                 <ContentPresenter x:Name="PART_SelectedContentHost"
-                                                  Margin="0,20,0,0"
+                                                  Margin="0,6,0,0"
                                                   ContentSource="SelectedContent"/>
                             </Border>
                         </Grid>
