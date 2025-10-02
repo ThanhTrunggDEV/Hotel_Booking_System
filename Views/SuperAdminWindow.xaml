@@ -545,26 +545,10 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Header="Tác vụ" Width="240">
+                                            <DataGridTemplateColumn Header="Tác vụ" Width="160">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <Button Content="👁️" ToolTip="Xem chi tiết" Style="{StaticResource SecondaryButton}"
-                                                                    Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.ViewHotelDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding}"/>
-                                                            <Button Content="✏️" ToolTip="Chỉnh sửa" Style="{StaticResource SecondaryButton}"
-                                                                    Background="#FF2196F3" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.EditHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding}"/>
-                                                            <Button Content="🏠" ToolTip="Quản lý phòng" Style="{StaticResource SecondaryButton}"
-                                                                    Background="#FFFF9800" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.ManageHotelRoomsAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding}"/>
-                                                            <Button Content="📊" ToolTip="Phân tích" Style="{StaticResource SecondaryButton}"
-                                                                    Background="#FF9C27B0" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.ShowHotelAnalyticsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding}"/>
                                                             <Button Content="🙈" ToolTip="Ẩn/Hiện" Style="{StaticResource SecondaryButton}"
                                                                     Background="#FFFF5722" Foreground="White" Width="26" Height="26" Margin="2" FontSize="11"
                                                                     Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
@@ -572,10 +556,6 @@
                                                             <Button Content="🗑️" ToolTip="Xóa khách sạn" Style="{StaticResource SecondaryButton}"
                                                                     Background="#FFD32F2F" Foreground="White" Width="26" Height="26" Margin="2" FontSize="11"
                                                                     Command="{Binding DataContext.DeleteHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding}"/>
-                                                            <Button Content="📧" ToolTip="Liên hệ admin" Style="{StaticResource SecondaryButton}"
-                                                                    Background="#FF607D8B" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.ContactHotelAdminAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                     CommandParameter="{Binding}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
@@ -640,15 +620,6 @@
                                             </Border>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,18,0,0" HorizontalAlignment="Right">
-                                                <Button Content="👁️ Xem" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0"
-                                                        Command="{Binding DataContext.ViewHotelDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                        CommandParameter="{Binding}"/>
-                                                <Button Content="✏️ Sửa" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0" Background="#FF2196F3"
-                                                        Command="{Binding DataContext.EditHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                        CommandParameter="{Binding}"/>
-                                                <Button Content="⚙️ Phòng" Style="{StaticResource SecondaryButton}" Width="90" Margin="0,0,8,0" Background="#FFFF9800"
-                                                        Command="{Binding DataContext.ManageHotelRoomsAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                        CommandParameter="{Binding}"/>
                                                 <Button Content="🙈 Ẩn/Hiện" Style="{StaticResource SecondaryButton}" Width="110" Background="#FFFF5722" Foreground="White" Margin="0,0,8,0"
                                                         Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
