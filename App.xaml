@@ -564,7 +564,7 @@
                             <Border Grid.Row="0"
                                     Background="#FFF0F3FF"
                                     CornerRadius="12"
-                                    Padding="6">
+                                    Padding="4,4,4,0">
                                 <TabPanel Background="Transparent"
                                           IsItemsHost="True"
                                           Margin="0"
@@ -577,7 +577,7 @@
                                     CornerRadius="0,0,12,12"
                                     Padding="0">
                                 <ContentPresenter x:Name="PART_SelectedContentHost"
-                                                  Margin="0,6,0,0"
+                                                  Margin="0"
                                                   ContentSource="SelectedContent"/>
                             </Border>
                         </Grid>
