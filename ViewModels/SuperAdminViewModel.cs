@@ -1221,6 +1221,35 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
+            if (dialog.IsDeleteRequested)
+            {
+                if (CurrentUser != null && CurrentUser.UserID == user.UserID)
+                {
+                    MessageBox.Show("You cannot delete your own account while logged in.", "User management", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                try
+                {
+                    await _userRepository.DeleteAsync(user.UserID);
+                    await _userRepository.SaveAsync();
+
+                    Users.Remove(user);
+                    TotalUsers = Math.Max(0, TotalUsers - 1);
+
+                    UpdateUserRoleCounts();
+                    ApplyUserFilters();
+
+                    ShowNotification("User has been deleted.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to delete user: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                return;
+            }
+
             try
             {
                 var storedUser = await _userRepository.GetByIdAsync(user.UserID) ?? user;

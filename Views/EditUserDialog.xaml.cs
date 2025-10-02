@@ -5,6 +5,8 @@ namespace Hotel_Booking_System.Views
 {
     public partial class EditUserDialog : Window
     {
+        public bool IsDeleteRequested { get; private set; }
+
         public EditUserDialog()
         {
             InitializeComponent();
@@ -12,6 +14,8 @@ namespace Hotel_Booking_System.Views
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            IsDeleteRequested = false;
+
             if (DataContext is not DomainModels.User user)
             {
                 DialogResult = false;
@@ -36,6 +40,27 @@ namespace Hotel_Booking_System.Views
                 return;
             }
 
+            DialogResult = true;
+            Close();
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not DomainModels.User user)
+            {
+                MessageBox.Show("No user selected for deletion.", "Delete user", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var confirmation = MessageBox.Show($"Bạn có chắc chắn muốn xóa tài khoản {user.FullName}?", "Xác nhận xóa",
+                MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (confirmation != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            IsDeleteRequested = true;
             DialogResult = true;
             Close();
         }
