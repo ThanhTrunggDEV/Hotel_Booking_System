@@ -232,9 +232,14 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <Button Content="Update Hotel Info" Width="170" Style="{StaticResource PrimaryButton}"
-                                        Command="{Binding UpdateHotelInfoCommand}"
-                                   HorizontalAlignment="Left"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <Button Content="Update Hotel Info" Width="170" Style="{StaticResource PrimaryButton}"
+                                            Command="{Binding UpdateHotelInfoCommand}"/>
+                                    <Button Content="Delete Hotel" Width="150" Margin="12,0,0,0"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Background="#FFFF5722"
+                                            Command="{Binding DeleteHotelCommand}"/>
+                                </StackPanel>
                             </StackPanel>
                         </Border>
 

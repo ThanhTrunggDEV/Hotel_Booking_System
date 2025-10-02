@@ -485,6 +485,7 @@ namespace Hotel_Booking_System.ViewModels
 
             var hotels = await _hotelRepository.GetAllAsync();
             Hotels.Clear();
+            CityOptions.Clear();
             foreach (var hotel in hotels.Where(h => h.UserID == CurrentUser.UserID && h.IsApproved))
             {
                 Hotels.Add(hotel);
@@ -1397,6 +1398,92 @@ namespace Hotel_Booking_System.ViewModels
                 await LoadRoomsAsync();
                 await LoadBookingsAsync();
             }
+        }
+
+        [RelayCommand]
+        private async Task DeleteHotel()
+        {
+            if (CurrentHotel == null)
+            {
+                return;
+            }
+
+            var hotelName = string.IsNullOrWhiteSpace(CurrentHotel.HotelName)
+                ? "khách sạn này"
+                : $"khách sạn \"{CurrentHotel.HotelName}\"";
+
+            var confirmation = MessageBox.Show(
+                $"Bạn có chắc chắn muốn xóa {hotelName}? Thao tác này sẽ xóa tất cả phòng, đặt phòng, thanh toán và đánh giá liên quan.",
+                "Xác nhận xóa khách sạn",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirmation != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            var hotelId = CurrentHotel.HotelID;
+
+            CurrentHotel = null;
+
+            var rooms = await _roomRepository.GetAllAsync();
+            var hotelRooms = rooms
+                .Where(r => r.HotelID == hotelId)
+                .ToList();
+
+            foreach (var room in hotelRooms)
+            {
+                await _roomRepository.DeleteAsync(room.RoomID);
+            }
+            await _roomRepository.SaveAsync();
+
+            var allBookings = await _bookingRepository.GetAllAsync();
+            var hotelBookings = allBookings
+                .Where(b => b.HotelID == hotelId)
+                .ToList();
+
+            var bookingIds = hotelBookings
+                .Select(b => b.BookingID)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .ToHashSet();
+
+            if (bookingIds.Count > 0)
+            {
+                var payments = await _paymentRepository.GetAllAsync();
+                var relatedPayments = payments
+                    .Where(p => !string.IsNullOrWhiteSpace(p.BookingID) && bookingIds.Contains(p.BookingID))
+                    .ToList();
+
+                foreach (var payment in relatedPayments)
+                {
+                    await _paymentRepository.DeleteAsync(payment.PaymentID);
+                }
+                await _paymentRepository.SaveAsync();
+            }
+
+            var reviews = await _reviewRepository.GetAllAsync();
+            var hotelReviews = reviews
+                .Where(r => r.HotelID == hotelId)
+                .ToList();
+
+            foreach (var review in hotelReviews)
+            {
+                await _reviewRepository.DeleteAsync(review.ReviewID);
+            }
+            await _reviewRepository.SaveAsync();
+
+            foreach (var booking in hotelBookings)
+            {
+                await _bookingRepository.DeleteAsync(booking.BookingID);
+            }
+            await _bookingRepository.SaveAsync();
+
+            await _hotelRepository.DeleteAsync(hotelId);
+            await _hotelRepository.SaveAsync();
+
+            LoadHotels();
+            ShowNotification("Khách sạn đã được xóa thành công.");
         }
 
         [RelayCommand]
