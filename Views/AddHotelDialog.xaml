@@ -6,7 +6,8 @@
         Width="760"
         MinHeight="600"
         MinWidth="700"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         Background="#FFF8F9FA">
     <Window.Resources>
         <x:Array x:Key="CityOptions" Type="sys:String" xmlns:sys="clr-namespace:System;assembly=mscorlib">

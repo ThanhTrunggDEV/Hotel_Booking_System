@@ -159,7 +159,7 @@
                         <ComboBox SelectedValue="{Binding Role, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   SelectedValuePath="Content"
                                   Style="{StaticResource ModernComboBox}">
-                            <ComboBoxItem Content="Customer"/>
+                            <ComboBoxItem Content="User"/>
                             <ComboBoxItem Content="HotelAdmin"/>
                             <ComboBoxItem Content="SuperAdmin"/>
                         </ComboBox>
