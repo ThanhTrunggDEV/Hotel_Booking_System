@@ -10,5 +10,6 @@ namespace Hotel_Booking_System.Interfaces
     public interface IAIChatRepository : IRepository<AIChat>
     {
         Task<List<AIChat>> GetByUserId(string  userId);
+        Task ClearByUserIdAsync(string userId);
     }
 }

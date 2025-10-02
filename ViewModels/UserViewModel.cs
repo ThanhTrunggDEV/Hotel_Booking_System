@@ -530,6 +530,32 @@ namespace Hotel_Booking_System.ViewModels
             ShowChatButton = "Collapsed";
             ShowChatBox = "Visible";
         }
+
+        [RelayCommand]
+        private async Task ClearChatHistory()
+        {
+            if (CurrentUser == null || string.IsNullOrWhiteSpace(CurrentUser.UserID))
+            {
+                return;
+            }
+
+            try
+            {
+                _typingTimer?.Stop();
+                _typingTimer = null;
+
+                Chats.Clear();
+                ErrorVisibility = "Collapsed";
+                ErrorMessage = string.Empty;
+
+                await _aiChatRepository.ClearByUserIdAsync(CurrentUser.UserID);
+            }
+            catch
+            {
+                ErrorMessage = "Không thể xóa lịch sử trò chuyện. Vui lòng thử lại.";
+                ErrorVisibility = "Visible";
+            }
+        }
         [RelayCommand]
         private async Task Send()
         {

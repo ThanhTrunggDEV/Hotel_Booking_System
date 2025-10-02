@@ -46,6 +46,18 @@ namespace Hotel_Booking_System.Repository
 
         public Task<List<AIChat>> GetByUserId(string userId) => _context.AIChats.Where(ai => ai.UserID == userId).ToListAsync();
 
+        public async Task ClearByUserIdAsync(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentException("User ID is required", nameof(userId));
+            }
+
+            var chats = _context.AIChats.Where(c => c.UserID == userId);
+            _context.AIChats.RemoveRange(chats);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
