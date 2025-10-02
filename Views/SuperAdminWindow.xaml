@@ -827,27 +827,13 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Giới tính" Width="100" Binding="{Binding Gender}"/>
                                             <DataGridTextColumn Header="Ngày sinh" Width="140" Binding="{Binding DateOfBirth, StringFormat='{}{0:dd/MM/yyyy}'}"/>
-                                            <DataGridTemplateColumn Header="Tác vụ" Width="220">
+                                            <DataGridTemplateColumn Header="Tác vụ" Width="140">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <Button Content="👁️" ToolTip="Xem chi tiết" Style="{StaticResource SecondaryButton}"
-                                                                    Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.ViewUserDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding}"/>
-                                                            <Button Content="✏️" ToolTip="Chỉnh sửa" Style="{StaticResource SecondaryButton}"
-                                                                    Background="#FFFF9800" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding}"/>
-                                                            <Button Content="🚫" ToolTip="Vô hiệu hóa" Style="{StaticResource SecondaryButton}"
-                                                                    Background="#FFFF5722" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.DeactivateUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding}"/>
-                                                            <Button Content="📧" ToolTip="Liên hệ" Style="{StaticResource SecondaryButton}"
-                                                                    Background="#FF2196F3" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.ContactUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding}"/>
-                                                        </StackPanel>
+                                                        <Button Content="✏️ Vai trò" ToolTip="Chỉnh sửa vai trò" Style="{StaticResource SecondaryButton}"
+                                                                Background="#FFFF9800" Width="90" Height="28"
+                                                                Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                CommandParameter="{Binding}"/>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
@@ -903,23 +889,14 @@
                                             </UniformGrid>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,18,0,0" HorizontalAlignment="Right">
-                                                <Button Content="👁️ Xem" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0"
-                                                        Command="{Binding DataContext.ViewUserDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                        CommandParameter="{Binding}"/>
-                                                <Button Content="✏️ Sửa" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0" Background="#FFFF9800"
+                                                <Button Content="✏️ Cập nhật vai trò" Style="{StaticResource SecondaryButton}" Width="150" Background="#FFFF9800"
                                                         Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                        CommandParameter="{Binding}"/>
-                                                <Button Content="🚫 Khóa" Style="{StaticResource SecondaryButton}" Width="90" Margin="0,0,8,0" Background="#FFFF5722"
-                                                        Command="{Binding DataContext.DeactivateUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                        CommandParameter="{Binding}"/>
-                                                <Button Content="📧 Liên hệ" Style="{StaticResource SecondaryButton}" Width="100" Background="#FF2196F3"
-                                                        Command="{Binding DataContext.ContactUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
 
-                                    <TextBlock Text="Chọn một người dùng để xem thông tin chi tiết và thao tác nhanh." Foreground="#FF90A4AE" FontStyle="Italic" TextAlignment="Center" Margin="20">
+                                    <TextBlock Text="Chọn một người dùng để xem thông tin chi tiết và cập nhật vai trò." Foreground="#FF90A4AE" FontStyle="Italic" TextAlignment="Center" Margin="20">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -935,18 +912,6 @@
                             </Border>
                         </Grid>
 
-                        <Border Style="{StaticResource CardStyle}" Margin="0,20,0,0">
-                            <StackPanel Margin="24">
-                                <TextBlock Text="Thao tác nhanh" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
-                                <TextBlock Text="Các công cụ hỗ trợ chăm sóc khách hàng và quản trị người dùng." FontSize="13" Foreground="#FF607D8B" Margin="0,0,0,12"/>
-                                <WrapPanel>
-                                    <Button Content="📨 Gửi email hàng loạt" Style="{StaticResource PrimaryButton}" Margin="6"/>
-                                    <Button Content="📦 Xuất danh sách" Style="{StaticResource PrimaryButton}" Margin="6"/>
-                                    <Button Content="🛡️ Kiểm tra bảo mật" Style="{StaticResource PrimaryButton}" Margin="6"/>
-                                    <Button Content="📊 Báo cáo hoạt động" Style="{StaticResource PrimaryButton}" Margin="6"/>
-                                </WrapPanel>
-                            </StackPanel>
-                        </Border>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
