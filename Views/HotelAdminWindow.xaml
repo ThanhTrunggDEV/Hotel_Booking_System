@@ -88,83 +88,18 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-<<<<<<< HEAD
                                 <Grid Grid.Row="0">
-=======
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                                    <Image Source="{Binding CurrentHotel.HotelImage}" Width="150" Height="100"/>
-                                    <Button Content="Upload Image" Style="{StaticResource PrimaryButton}" Width="120" Margin="10,0,0,0"
-                                            Command="{Binding UploadHotelImageCommand}"/>
-                                </StackPanel>
-
-                                <Grid>
->>>>>>> parent of 65d53c0 (Merge pull request #196 from ThanhTrunggDEV/refactor-hotel-admin-window-tables-o1r2bd)
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-<<<<<<< HEAD
-=======
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
->>>>>>> parent of 65d53c0 (Merge pull request #196 from ThanhTrunggDEV/refactor-hotel-admin-window-tables-o1r2bd)
 
                                     <TextBlock Text="Hotel Information" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
 
-<<<<<<< HEAD
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                         <ComboBox Style="{StaticResource ModernComboBox}" ItemsSource="{Binding Hotels}" SelectedItem="{Binding CurrentHotel}" DisplayMemberPath="HotelName" Width="220"/>
                                         <Button Content="Add Hotel" Style="{StaticResource PrimaryButton}" Width="110" Margin="10,0,0,0"
                                                 Command="{Binding NewHotelCommand}"/>
-=======
-                                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="15,0,0,15">
-                                        <TextBlock Text="Star Rating" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <ComboBox Style="{StaticResource ModernComboBox}" FontSize="14"
-                                                  SelectedValuePath="Tag"
-                                                  SelectedValue="{Binding CurrentHotel.Rating, Mode=TwoWay}">
-                                            <ComboBoxItem Tag="5" Content="⭐⭐⭐⭐⭐ 5 Stars"/>
-                                            <ComboBoxItem Tag="4" Content="⭐⭐⭐⭐ 4 Stars"/>
-                                            <ComboBoxItem Tag="3" Content="⭐⭐⭐ 3 Stars"/>
-                                            <ComboBoxItem Tag="2" Content="⭐⭐ 2 Stars"/>
-                                            <ComboBoxItem Tag="1" Content="⭐ 1 Stars"/>
-                                        </ComboBox>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <TextBlock Text="Address" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Text="{Binding CurrentHotel.Address}" 
-                                            Style="{StaticResource ModernTextBox}"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding CurrentHotel.Description}" 
-                                            Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <TextBlock Text="Amenities" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                                        <WrapPanel>
-                                            <CheckBox Content="🌐 Free WiFi" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasFreeWifi, Mode=TwoWay}"/>
-                                            <CheckBox Content="🏊 Swimming Pool" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasSwimmingPool, Mode=TwoWay}"/>
-                                            <CheckBox Content="🚗 Free Parking" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasFreeParking, Mode=TwoWay}"/>
-                                            <CheckBox Content="🍽️ Restaurant" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasRestaurant, Mode=TwoWay}"/>
-                                            <CheckBox Content="🏋️ Gym" Margin="0,0,15,5"
-                                                      IsChecked="{Binding HasGym, Mode=TwoWay}"/>
-                                        </WrapPanel>
-                                    </StackPanel>
-                                                                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,15">
-                                        <CheckBox Content="Visible to users" IsChecked="{Binding CurrentHotel.IsVisible}" />
->>>>>>> parent of 65d53c0 (Merge pull request #196 from ThanhTrunggDEV/refactor-hotel-admin-window-tables-o1r2bd)
                                     </StackPanel>
                                 </Grid>
 
@@ -273,7 +208,6 @@
                                 <DataGrid Height="300" AutoGenerateColumns="False" CanUserAddRows="False"
                                           ItemsSource="{Binding Rooms}">
                                     <DataGrid.Columns>
-<<<<<<< HEAD
                                         <DataGridTextColumn Header="Room #" Width="110" Binding="{Binding RoomNumber}"/>
                                         <DataGridTextColumn Header="Type" Width="180" Binding="{Binding RoomType}"/>
                                         <DataGridTextColumn Header="Price / Night" Width="180">
@@ -296,17 +230,9 @@
                                                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                                 </Style>
                                             </DataGridTemplateColumn.HeaderStyle>
-=======
-                                        <DataGridTextColumn Header="Room #" Width="80" Binding="{Binding RoomNumber}"/>
-                                        <DataGridTextColumn Header="Type" Width="120" Binding="{Binding RoomType}"/>
-                                        <DataGridTextColumn Header="Price/Night" Width="100" Binding="{Binding PricePerNight}"/>
-                                        <DataGridTextColumn Header="Status" Width="100" Binding="{Binding Status}"/>
-                                        <DataGridTextColumn Header="Capacity" Width="100" Binding="{Binding Capacity}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="150">
->>>>>>> parent of 65d53c0 (Merge pull request #196 from ThanhTrunggDEV/refactor-hotel-admin-window-tables-o1r2bd)
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
                                                         <Button Content="Edit" Style="{StaticResource SecondaryButton}"
                                                            Width="30" Height="25" Margin="2" FontSize="10"
                                                            Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
