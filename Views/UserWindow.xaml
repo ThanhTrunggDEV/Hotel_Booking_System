@@ -301,7 +301,7 @@
                                             </Border.Effect>
                                             <Grid MinHeight="240">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="320"/>
+                                                    <ColumnDefinition Width="500"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
 
@@ -367,7 +367,7 @@
                                                         </StackPanel>
                                                     </StackPanel>
 
-                                                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12" Spacing="16">
+                                                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12" >
                                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                                             <TextBlock Text="🏨" FontSize="16"/>
                                                             <TextBlock Text="{Binding AverageRating, StringFormat={}{0:F1}}" Margin="6,0,0,0" FontWeight="Bold" FontSize="14" Foreground="#444"/>
@@ -408,7 +408,7 @@
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
+                                                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                                                             <TextBlock Text="💲" FontSize="20"/>
                                                             <TextBlock FontSize="14">
                                                                 <Run Text="$"/>
