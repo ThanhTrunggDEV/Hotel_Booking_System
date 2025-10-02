@@ -387,7 +387,7 @@
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                     <Button Content="🔄 Làm mới" Style="{StaticResource SecondaryButton}" Width="110"
-                                            Command="{Binding RefreshHotelsAsyncCommand}" Margin="0,0,10,0"/>
+                                            Command="{Binding RefreshHotelsCommand}" Margin="0,0,10,0"/>
                                     <Button Content="📊 Phân tích" Style="{StaticResource SecondaryButton}" Width="110"
                                             Command="{Binding ShowHotelAnalyticsCommand}"
                                             CommandParameter="{Binding SelectedHotel}"/>
@@ -551,11 +551,11 @@
                                                         <StackPanel Orientation="Horizontal">
                                                             <Button Content="🙈" ToolTip="Ẩn/Hiện" Style="{StaticResource SecondaryButton}"
                                                                     Background="#FFFF5722" Foreground="White" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    Command="{Binding DataContext.ToggleHotelVisibilityCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                     CommandParameter="{Binding}"/>
                                                             <Button Content="🗑️" ToolTip="Xóa khách sạn" Style="{StaticResource SecondaryButton}"
                                                                     Background="#FFD32F2F" Foreground="White" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.DeleteHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    Command="{Binding DataContext.DeleteHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                     CommandParameter="{Binding}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
@@ -621,10 +621,10 @@
 
                                             <StackPanel Orientation="Horizontal" Margin="0,18,0,0" HorizontalAlignment="Right">
                                                 <Button Content="🙈 Ẩn/Hiện" Style="{StaticResource SecondaryButton}" Width="110" Background="#FFFF5722" Foreground="White" Margin="0,0,8,0"
-                                                        Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        Command="{Binding DataContext.ToggleHotelVisibilityCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
                                                 <Button Content="🗑️ Xóa" Style="{StaticResource SecondaryButton}" Width="100" Background="#FFD32F2F" Foreground="White"
-                                                        Command="{Binding DataContext.DeleteHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        Command="{Binding DataContext.DeleteHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
                                             </StackPanel>
                                         </StackPanel>
@@ -837,15 +837,15 @@
                                                                     CommandParameter="{Binding}"/>
                                                             <Button Content="✏️" ToolTip="Chỉnh sửa" Style="{StaticResource SecondaryButton}"
                                                                     Background="#FFFF9800" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.EditUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                     CommandParameter="{Binding}"/>
                                                             <Button Content="🚫" ToolTip="Vô hiệu hóa" Style="{StaticResource SecondaryButton}"
                                                                     Background="#FFFF5722" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.DeactivateUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    Command="{Binding DataContext.DeactivateUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                     CommandParameter="{Binding}"/>
                                                             <Button Content="📧" ToolTip="Liên hệ" Style="{StaticResource SecondaryButton}"
                                                                     Background="#FF2196F3" Width="26" Height="26" Margin="2" FontSize="11"
-                                                                    Command="{Binding DataContext.ContactUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    Command="{Binding DataContext.ContactUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                     CommandParameter="{Binding}"/>
                                                         </StackPanel>
                                                     </DataTemplate>
@@ -907,13 +907,13 @@
                                                         Command="{Binding DataContext.ViewUserDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
                                                 <Button Content="✏️ Sửa" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0" Background="#FFFF9800"
-                                                        Command="{Binding DataContext.EditUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
                                                 <Button Content="🚫 Khóa" Style="{StaticResource SecondaryButton}" Width="90" Margin="0,0,8,0" Background="#FFFF5722"
-                                                        Command="{Binding DataContext.DeactivateUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        Command="{Binding DataContext.DeactivateUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
                                                 <Button Content="📧 Liên hệ" Style="{StaticResource SecondaryButton}" Width="100" Background="#FF2196F3"
-                                                        Command="{Binding DataContext.ContactUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        Command="{Binding DataContext.ContactUserCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
                                             </StackPanel>
                                         </StackPanel>
