@@ -530,6 +530,29 @@ namespace Hotel_Booking_System.ViewModels
             ShowChatButton = "Collapsed";
             ShowChatBox = "Visible";
         }
+
+        [RelayCommand]
+        private async Task ClearChatHistory()
+        {
+            if (CurrentUser == null || string.IsNullOrEmpty(CurrentUser.UserID))
+            {
+                return;
+            }
+
+            if (!Chats.Any())
+            {
+                return;
+            }
+
+            var chatIds = Chats.Select(c => c.ChatID).ToList();
+            foreach (var chatId in chatIds)
+            {
+                await _aiChatRepository.DeleteAsync(chatId);
+            }
+
+            await _aiChatRepository.SaveAsync();
+            Chats.Clear();
+        }
         [RelayCommand]
         private async Task Send()
         {

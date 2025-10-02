@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Net.Http;
@@ -35,13 +36,28 @@ namespace Hotel_Booking_System
         public static IServiceProvider Provider => provider ??= ConfigDI();
         private static IServiceProvider ConfigDI()
         {
+            var geminiModel = Environment.GetEnvironmentVariable("GEMINI_MODEL");
+            var geminiApiBaseUrl = Environment.GetEnvironmentVariable("GEMINI_API_BASE_URL");
+            var geminiMaxOutputTokens = Environment.GetEnvironmentVariable("GEMINI_MAX_OUTPUT_TOKENS");
+
+            var maxOutputTokens = 1024;
+            if (!string.IsNullOrWhiteSpace(geminiMaxOutputTokens) &&
+                int.TryParse(geminiMaxOutputTokens, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedTokens) &&
+                parsedTokens > 0)
+            {
+                maxOutputTokens = parsedTokens;
+            }
+
             var geminiOptions = new GeminiOptions
             {
                 ApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY") ?? string.Empty,
-                DefaultModel = Environment.GetEnvironmentVariable("GEMINI_MODEL") ?? "gemini-2.5-flash"
+                DefaultModel = string.IsNullOrWhiteSpace(geminiModel) ? "gemini-2.5-flash" : geminiModel,
+                ApiBaseUrl = string.IsNullOrWhiteSpace(geminiApiBaseUrl) ? "https://generativelanguage.googleapis.com/v1beta" : geminiApiBaseUrl,
+                MaxOutputTokens = maxOutputTokens
             };
 
             return new ServiceCollection()
+                .AddLogging()
                 .AddDbContext<AppDbContext>()
                 .AddTransient<LoginWindow>()
                 .AddTransient<ForgotPasswordWindow>()

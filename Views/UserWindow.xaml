@@ -671,11 +671,16 @@
                                         <CornerRadius TopLeft="8" TopRight="8" BottomLeft="0" BottomRight="0"/>
                                     </Border.CornerRadius>
                                     <StackPanel Orientation="Horizontal"  Margin="15,12">
-                                        <TextBlock Text="🤖 AI Travel Assistant                       " 
-                                       FontSize="16" FontWeight="Bold" Foreground="White" 
+                                        <TextBlock Text="🤖 AI Travel Assistant                       "
+                                       FontSize="16" FontWeight="Bold" Foreground="White"
                                        HorizontalAlignment="Center"/>
-                                        <Button Command="{Binding ShowChatButtonFuncCommand}" x:Name="btnCloseChat" Content="✖" BorderThickness="0" Background="Transparent" 
-                                    Width="25" Height="25" Foreground="White" 
+                                        <Button Command="{Binding ClearChatHistoryCommand}" Content="🗑"
+                                                ToolTip="Xóa cuộc trò chuyện"
+                                                BorderThickness="0" Background="Transparent"
+                                    Width="25" Height="25" Foreground="White"
+                                    HorizontalAlignment="Right" Margin="10,0,0,0"/>
+                                        <Button Command="{Binding ShowChatButtonFuncCommand}" x:Name="btnCloseChat" Content="✖" BorderThickness="0" Background="Transparent"
+                                    Width="25" Height="25" Foreground="White"
                                     HorizontalAlignment="Right" Margin="10,0,0,0"/>
                                     </StackPanel>
                                 </Border>
