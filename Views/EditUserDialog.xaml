@@ -53,11 +53,10 @@
                                 CornerRadius="44"
                                 Background="#F1F5F9"
                                 BorderBrush="#E2E8F0"
-                                BorderThickness="1">
-                            <Border.Background>
-                                <ImageBrush ImageSource="{Binding AvatarUrl, FallbackValue=https://i.ibb.co/FLvg0hX4/avatar-default.png}"
-                                            Stretch="UniformToFill"/>
-                            </Border.Background>
+                                BorderThickness="1"
+                                ClipToBounds="True">
+                            <Image Source="{Binding AvatarUrl, FallbackValue=https://i.ibb.co/FLvg0hX4/avatar-default.png}"
+                                   Stretch="UniformToFill"/>
                         </Border>
 
                         <StackPanel Grid.Column="1"
