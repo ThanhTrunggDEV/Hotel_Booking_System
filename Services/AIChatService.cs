@@ -285,6 +285,7 @@ namespace Hotel_Booking_System.Services
             builder.AppendLine("\nTrước khi đề xuất phòng, hãy đảm bảo đã biết thành phố hoặc điểm đến, ngày nhận phòng, ngày trả phòng, số lượng khách và ngân sách mong muốn. Nếu thiếu bất kỳ thông tin nào, hãy đặt câu hỏi trong trường reply và để mảng recommendedRooms trống.");
             builder.AppendLine("Hãy thu thập thông tin theo từng bước rõ ràng: (1) hỏi thành phố hoặc địa điểm, (2) hỏi ngày nhận phòng, (3) hỏi ngày trả phòng, (4) hỏi số lượng khách, (5) hỏi ngân sách. Chỉ chuyển sang bước tiếp theo khi đã nhận được câu trả lời rõ ràng cho bước hiện tại. Nếu người dùng đã cung cấp một vài thông tin, chỉ hỏi tiếp những mục còn thiếu theo đúng thứ tự này.");
             builder.AppendLine("Khi đã có đủ dữ liệu, hãy tóm tắt lại thông tin hiểu được trước khi đề xuất phòng. Nếu người dùng yêu cầu tóm tắt hoặc thông tin cụ thể về phòng/khách sạn, hãy trả lời trong reply và chỉ đưa phòng vào recommendedRooms nếu thực sự phù hợp.");
+            builder.AppendLine("Nếu không có phòng hoặc khách sạn nào thỏa điều kiện, vẫn phải trả lời trong reply rằng chưa tìm thấy lựa chọn phù hợp và giữ recommendedRooms rỗng, đồng thời gợi ý người dùng điều chỉnh yêu cầu.");
 
             var missingInformationInstruction = BuildRoomSearchGuidance(userMessage, availableHotels.Select(h => h.city ?? string.Empty));
             if (!string.IsNullOrWhiteSpace(missingInformationInstruction))
@@ -607,11 +608,73 @@ namespace Hotel_Booking_System.Services
                     }
                 }
 
-                if (explanation == null && part.TryGetProperty("functionCall", out var functionCall) && functionCall.ValueKind == JsonValueKind.Object)
+                if (part.TryGetProperty("functionCall", out var functionCall) && functionCall.ValueKind == JsonValueKind.Object)
                 {
-                    var name = functionCall.TryGetProperty("name", out var nameElement) ? nameElement.GetString() : null;
-                    explanation = BuildFunctionCallExplanation(name);
+                    if (TryExtractFunctionCallArguments(functionCall, out var functionCallText))
+                    {
+                        text = functionCallText;
+                        return true;
+                    }
+
+                    if (explanation == null)
+                    {
+                        var name = functionCall.TryGetProperty("name", out var nameElement) ? nameElement.GetString() : null;
+                        explanation = BuildFunctionCallExplanation(name);
+                    }
                 }
+            }
+
+            return false;
+        }
+
+        private static bool TryExtractFunctionCallArguments(JsonElement functionCall, out string? text)
+        {
+            text = null;
+
+            if (functionCall.TryGetProperty("args", out var args))
+            {
+                if (TryNormalizeFunctionValue(args, out text))
+                {
+                    return true;
+                }
+            }
+
+            if (functionCall.TryGetProperty("arguments", out var arguments))
+            {
+                if (TryNormalizeFunctionValue(arguments, out text))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool TryNormalizeFunctionValue(JsonElement element, out string? text)
+        {
+            text = null;
+
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.String:
+                    var value = element.GetString();
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        text = value;
+                        return true;
+                    }
+
+                    break;
+                case JsonValueKind.Object:
+                case JsonValueKind.Array:
+                    var raw = element.GetRawText();
+                    if (!string.IsNullOrWhiteSpace(raw))
+                    {
+                        text = raw;
+                        return true;
+                    }
+
+                    break;
             }
 
             return false;
