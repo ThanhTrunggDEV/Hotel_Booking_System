@@ -879,79 +879,81 @@
                             </Border>
 
                             <Border Grid.Column="1" Style="{StaticResource CardStyle}">
-                                <Grid Margin="24">
-                                    <Grid.DataContext>
-                                        <Binding Path="SelectedUser"/>
-                                    </Grid.DataContext>
-                                    <Grid.Style>
-                                        <Style TargetType="Grid">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Grid.Style>
+                                <Grid>
+                                    <Grid Margin="24">
+                                        <Grid.DataContext>
+                                            <Binding Path="SelectedUser"/>
+                                        </Grid.DataContext>
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
 
-                                    <StackPanel>
-                                    <TextBlock Text="{Binding FullName}" FontSize="20" FontWeight="Bold" TextWrapping="Wrap"/>
-                                    <Border Background="#FF3949AB" CornerRadius="12" Padding="8,4" HorizontalAlignment="Left" Margin="0,8,0,0">
-                                        <TextBlock Text="{Binding Role}" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
-                                    </Border>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding FullName}" FontSize="20" FontWeight="Bold" TextWrapping="Wrap"/>
+                                            <Border Background="#FF3949AB" CornerRadius="12" Padding="8,4" HorizontalAlignment="Left" Margin="0,8,0,0">
+                                                <TextBlock Text="{Binding Role}" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
+                                            </Border>
 
-                                    <StackPanel Margin="0,16,0,0">
-                                        <TextBlock Text="Thông tin liên hệ" FontSize="12" Foreground="#FF607D8B"/>
-                                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                                            <TextBlock Text="📧" FontSize="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="{Binding Email}" FontSize="13" Foreground="#FF37474F" TextWrapping="Wrap" Width="220"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                                            <TextBlock Text="📱" FontSize="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="{Binding Phone}" FontSize="13" Foreground="#FF37474F"/>
-                                        </StackPanel>
-                                    </StackPanel>
+                                            <StackPanel Margin="0,16,0,0">
+                                                <TextBlock Text="Thông tin liên hệ" FontSize="12" Foreground="#FF607D8B"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                                    <TextBlock Text="📧" FontSize="16" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="{Binding Email}" FontSize="13" Foreground="#FF37474F" TextWrapping="Wrap" Width="220"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                                    <TextBlock Text="📱" FontSize="16" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="{Binding Phone}" FontSize="13" Foreground="#FF37474F"/>
+                                                </StackPanel>
+                                            </StackPanel>
 
-                                    <UniformGrid Columns="2" Margin="0,16,0,0">
-                                        <StackPanel Margin="0,0,12,12">
-                                            <TextBlock Text="Giới tính" FontSize="12" Foreground="#FF607D8B"/>
-                                            <TextBlock Text="{Binding Gender}" FontSize="15" FontWeight="SemiBold"/>
-                                        </StackPanel>
-                                        <StackPanel Margin="12,0,0,12">
-                                            <TextBlock Text="Ngày sinh" FontSize="12" Foreground="#FF607D8B"/>
-                                            <TextBlock Text="{Binding DateOfBirth, StringFormat='{}{0:dd/MM/yyyy}'}" FontSize="15" FontWeight="SemiBold"/>
-                                        </StackPanel>
-                                    </UniformGrid>
+                                            <UniformGrid Columns="2" Margin="0,16,0,0">
+                                                <StackPanel Margin="0,0,12,12">
+                                                    <TextBlock Text="Giới tính" FontSize="12" Foreground="#FF607D8B"/>
+                                                    <TextBlock Text="{Binding Gender}" FontSize="15" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                                <StackPanel Margin="12,0,0,12">
+                                                    <TextBlock Text="Ngày sinh" FontSize="12" Foreground="#FF607D8B"/>
+                                                    <TextBlock Text="{Binding DateOfBirth, StringFormat='{}{0:dd/MM/yyyy}'}" FontSize="15" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </UniformGrid>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0" HorizontalAlignment="Right">
-                                        <Button Content="👁️ Xem" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0"
-                                                Command="{Binding DataContext.ViewUserDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                CommandParameter="{Binding}"/>
-                                        <Button Content="✏️ Sửa" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0" Background="#FFFF9800"
-                                                Command="{Binding DataContext.EditUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                CommandParameter="{Binding}"/>
-                                        <Button Content="🚫 Khóa" Style="{StaticResource SecondaryButton}" Width="90" Margin="0,0,8,0" Background="#FFFF5722"
-                                                Command="{Binding DataContext.DeactivateUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                CommandParameter="{Binding}"/>
-                                        <Button Content="📧 Liên hệ" Style="{StaticResource SecondaryButton}" Width="100" Background="#FF2196F3"
-                                                Command="{Binding DataContext.ContactUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                CommandParameter="{Binding}"/>
-                                    </StackPanel>
-                                    </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,18,0,0" HorizontalAlignment="Right">
+                                                <Button Content="👁️ Xem" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0"
+                                                        Command="{Binding DataContext.ViewUserDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        CommandParameter="{Binding}"/>
+                                                <Button Content="✏️ Sửa" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0" Background="#FFFF9800"
+                                                        Command="{Binding DataContext.EditUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        CommandParameter="{Binding}"/>
+                                                <Button Content="🚫 Khóa" Style="{StaticResource SecondaryButton}" Width="90" Margin="0,0,8,0" Background="#FFFF5722"
+                                                        Command="{Binding DataContext.DeactivateUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        CommandParameter="{Binding}"/>
+                                                <Button Content="📧 Liên hệ" Style="{StaticResource SecondaryButton}" Width="100" Background="#FF2196F3"
+                                                        Command="{Binding DataContext.ContactUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        CommandParameter="{Binding}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <TextBlock Text="Chọn một người dùng để xem thông tin chi tiết và thao tác nhanh." Foreground="#FF90A4AE" FontStyle="Italic" TextAlignment="Center" Margin="20">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedUser}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                 </Grid>
-
-                                <TextBlock Text="Chọn một người dùng để xem thông tin chi tiết và thao tác nhanh." Foreground="#FF90A4AE" FontStyle="Italic" TextAlignment="Center" Margin="20">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedUser}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
                             </Border>
                         </Grid>
 
