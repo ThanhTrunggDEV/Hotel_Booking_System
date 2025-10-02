@@ -71,6 +71,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Grid.Column="0" Margin="0,0,15,0" Background="#40111111" Padding="15" CornerRadius="12">
                                         <StackPanel>
@@ -78,39 +79,21 @@
                                             <TextBlock Text="{Binding TotalHotels}" Foreground="White" FontSize="26" FontWeight="Bold"/>
                                         </StackPanel>
                                     </Border>
-                                    <Border Grid.Column="1" Background="#40111111" Padding="15" CornerRadius="12">
+                                    <Border Grid.Column="1" Margin="0,0,15,0" Background="#40111111" Padding="15" CornerRadius="12">
                                         <StackPanel>
                                             <TextBlock Text="Tổng Người Dùng" Foreground="#F5FFFFFF" FontSize="12"/>
                                             <TextBlock Text="{Binding TotalUsers}" Foreground="White" FontSize="26" FontWeight="Bold"/>
                                         </StackPanel>
                                     </Border>
+                                    <Border Grid.Column="2" Background="#40111111" Padding="15" CornerRadius="12">
+                                        <StackPanel>
+                                            <TextBlock Text="Yêu Cầu Chờ Duyệt" Foreground="#F5FFFFFF" FontSize="12"/>
+                                            <TextBlock Text="{Binding PendingApprovals}" Foreground="White" FontSize="26" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Border>
                                 </Grid>
                             </Grid>
                         </Border>
-
-                        <WrapPanel Margin="0,0,0,30" ItemWidth="220" ItemHeight="120">
-                            <Border Style="{StaticResource CardStyle}" Background="#FFF1F8E9" Width="220" Height="120" Margin="0,0,15,15">
-                                <StackPanel Margin="15">
-                                    <TextBlock Text="🏢" FontSize="24" Margin="0,0,0,10"/>
-                                    <TextBlock Text="Tổng Khách Sạn" FontSize="12" Foreground="#FF2E7D32"/>
-                                    <TextBlock Text="{Binding TotalHotels}" FontSize="24" FontWeight="Bold" Foreground="#FF1B5E20"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource CardStyle}" Background="#FFE3F2FD" Width="220" Height="120" Margin="0,0,15,15">
-                                <StackPanel Margin="15">
-                                    <TextBlock Text="🧑‍🤝‍🧑" FontSize="24" Margin="0,0,0,10"/>
-                                    <TextBlock Text="Tổng Người Dùng" FontSize="12" Foreground="#FF1565C0"/>
-                                    <TextBlock Text="{Binding TotalUsers}" FontSize="24" FontWeight="Bold" Foreground="#FF0D47A1"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource CardStyle}" Background="#FFF3E5F5" Width="220" Height="120" Margin="0,0,15,15">
-                                <StackPanel Margin="15">
-                                    <TextBlock Text="⏳" FontSize="24" Margin="0,0,0,10"/>
-                                    <TextBlock Text="Yêu Cầu Chờ Duyệt" FontSize="12" Foreground="#FF6A1B9A"/>
-                                    <TextBlock Text="{Binding PendingApprovals}" FontSize="24" FontWeight="Bold" Foreground="#FF4A148C"/>
-                                </StackPanel>
-                            </Border>
-                        </WrapPanel>
 
                         <StackPanel Margin="0,0,0,30">
                             <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
