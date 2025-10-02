@@ -178,24 +178,24 @@ namespace Hotel_Booking_System.Services
 
         private static bool HasBudgetMention(string normalizedMessage, string accentlessMessage)
         {
-            if (Regex.IsMatch(normalizedMessage, "\\b(ngân\s*sách|giá)\\b", RegexOptions.CultureInvariant))
+            if (Regex.IsMatch(normalizedMessage, @"\b(ngân\s*sách|giá)\b", RegexOptions.CultureInvariant))
                 return true;
 
-            if (Regex.IsMatch(accentlessMessage, "\\b(ngan\s*sach|gia|budget|price)\\b", RegexOptions.CultureInvariant))
+            if (Regex.IsMatch(accentlessMessage, @"\b(ngan\s*sach|gia|budget|price)\b", RegexOptions.CultureInvariant))
                 return true;
 
-            return Regex.IsMatch(accentlessMessage, "\\d{3,}");
+            return Regex.IsMatch(accentlessMessage, @"\d{3,}");
         }
 
         private static bool HasGuestCountMention(string normalizedMessage, string accentlessMessage)
         {
-            if (Regex.IsMatch(normalizedMessage, "\\b(\\d+)\\s*(người|khách)\\b", RegexOptions.CultureInvariant))
+            if (Regex.IsMatch(normalizedMessage, @"\b(\d+)\s*(người|khách)\b", RegexOptions.CultureInvariant))
                 return true;
 
-            if (Regex.IsMatch(accentlessMessage, "\\b(\\d+)\\s*(nguoi|khach|people|guest)s?\\b", RegexOptions.CultureInvariant))
+            if (Regex.IsMatch(accentlessMessage, @"\b(\d+)\s*(nguoi|khach|people|guest)s?\b", RegexOptions.CultureInvariant))
                 return true;
 
-            return Regex.IsMatch(accentlessMessage, "\\b(single|double|twin|family)\\b", RegexOptions.CultureInvariant);
+            return Regex.IsMatch(accentlessMessage, @"\b(single|double|twin|family)\b", RegexOptions.CultureInvariant);
         }
 
         private static string RemoveDiacritics(string text)
