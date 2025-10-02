@@ -289,73 +289,347 @@
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <TextBlock Text="Booking Management" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Text="Quản lý các yêu cầu đặt phòng với giao diện hiện đại, trực quan và dễ thao tác." Foreground="#FF666666" Margin="0,0,0,20" TextWrapping="Wrap"/>
 
-                        <Grid Margin="0,0,0,20">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="Filter by Status:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <ComboBox Width="200"
-                                          Style="{StaticResource ModernComboBox}"
-                                          ItemsSource="{Binding BookingStatusFilters}"
-                                          SelectedItem="{Binding SelectedBookingStatusFilter}"/>
-                            </StackPanel>
-                        </Grid>
+                        <WrapPanel Margin="0,0,0,10" ItemWidth="240">
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,20,20" Width="240">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FFE3F2FD" Offset="0"/>
+                                        <GradientStop Color="#FFCFE0FC" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <StackPanel Margin="20">
+                                    <TextBlock Text="📘" FontSize="26"/>
+                                    <TextBlock Text="{Binding HotelBookingsCount, FallbackValue=0}" FontSize="28" FontWeight="Bold" Margin="0,12,0,2"/>
+                                    <TextBlock Text="Tổng số đặt phòng" FontWeight="SemiBold" Foreground="#FF1E3A8A"/>
+                                    <TextBlock Text="Tất cả các đặt phòng của khách sạn hiện tại." FontSize="12" Foreground="#FF6B7280" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Border>
 
-  
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,20,20" Width="240">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FFFFF4E5" Offset="0"/>
+                                        <GradientStop Color="#FFFFE0B2" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <StackPanel Margin="20">
+                                    <TextBlock Text="⏳" FontSize="26"/>
+                                    <TextBlock Text="{Binding PendingBookingsCount, FallbackValue=0}" FontSize="28" FontWeight="Bold" Margin="0,12,0,2"/>
+                                    <TextBlock Text="Chờ xác nhận" FontWeight="SemiBold" Foreground="#FFB26A00"/>
+                                    <TextBlock Text="Số lượng đặt phòng đang chờ phê duyệt." FontSize="12" Foreground="#FF6B7280" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,20,20" Width="240">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FFE8F5E9" Offset="0"/>
+                                        <GradientStop Color="#FFC8E6C9" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <StackPanel Margin="20">
+                                    <TextBlock Text="✅" FontSize="26"/>
+                                    <TextBlock Text="{Binding ConfirmedBookingsCount, FallbackValue=0}" FontSize="28" FontWeight="Bold" Margin="0,12,0,2"/>
+                                    <TextBlock Text="Đã xác nhận" FontWeight="SemiBold" Foreground="#FF2E7D32"/>
+                                    <TextBlock Text="Đặt phòng đã được phê duyệt thành công." FontSize="12" Foreground="#FF6B7280" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,20,20" Width="240">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FFFFEBEE" Offset="0"/>
+                                        <GradientStop Color="#FFFFCDD2" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <StackPanel Margin="20">
+                                    <TextBlock Text="⚠️" FontSize="26"/>
+                                    <TextBlock Text="{Binding CancellationRequestsCount, FallbackValue=0}" FontSize="28" FontWeight="Bold" Margin="0,12,0,2"/>
+                                    <TextBlock Text="Yêu cầu hủy" FontWeight="SemiBold" Foreground="#FFC62828"/>
+                                    <TextBlock Text="Số lượng khách đang yêu cầu hủy phòng." FontSize="12" Foreground="#FF6B7280" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource CardStyle}" Margin="0,0,20,20" Width="240">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FFEDE7F6" Offset="0"/>
+                                        <GradientStop Color="#FFD1C4E9" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <StackPanel Margin="20">
+                                    <TextBlock Text="🏨" FontSize="26"/>
+                                    <TextBlock Text="{Binding TodayCheckInsCount, FallbackValue=0}" FontSize="28" FontWeight="Bold" Margin="0,12,0,2"/>
+                                    <TextBlock Text="Check-in hôm nay" FontWeight="SemiBold" Foreground="#FF6A1B9A"/>
+                                    <TextBlock Text="Khách dự kiến nhận phòng trong ngày hôm nay." FontSize="12" Foreground="#FF6B7280" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </WrapPanel>
+
+        
+                        <Border Style="{StaticResource CardStyle}" Margin="0,10,0,20">
+                            <Grid Margin="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Background="#FFF3F6FB" CornerRadius="12" Padding="0" Margin="0,0,20,0" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="16,0,8,0"/>
+                                        <TextBox Grid.Column="1"
+                                                 Style="{StaticResource ModernTextBox}"
+                                                 BorderThickness="0"
+                                                 Background="Transparent"
+                                                 Padding="0"
+                                                 FontSize="14"
+                                                 VerticalContentAlignment="Center"
+                                                 Text="{Binding BookingSearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                                 ToolTip="Nhập mã đặt phòng, tên khách hoặc số phòng"/>
+                                    </Grid>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="Trạng thái" FontWeight="SemiBold" Foreground="#FF424242"/>
+                                    <ComboBox Style="{StaticResource ModernComboBox}"
+                                              ItemsSource="{Binding BookingStatusFilters}"
+                                              SelectedItem="{Binding SelectedBookingStatusFilter}"
+                                              Margin="0,6,0,0"
+                                              MinWidth="200"/>
+                                </StackPanel>
+
+                                <Button Grid.Column="2"
+                                        Content="🔄 Làm mới"
+                                        Margin="20,0,0,0"
+                                        Padding="20,10"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource SecondaryButton}"
+                                        Command="{Binding RefreshBookingsCommand}"/>
+                            </Grid>
+                        </Border>
+
                         <Border Style="{StaticResource CardStyle}">
                             <StackPanel Margin="25">
-                                <DataGrid Height="400" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Bookings}">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Booking ID" Width="200" Binding="{Binding BookingID}"/>
-                                        <DataGridTextColumn Header="Guest Name" Width="150" Binding="{Binding GuestName}"/>
-                                        <DataGridTextColumn Header="Room" Width="100" Binding="{Binding RoomNumber}"/>
-                                        <DataGridTextColumn Header="Check-in" Width="150" Binding="{Binding CheckInDate}"/>
-                                        <DataGridTextColumn Header="Check-out" Width="150" Binding="{Binding CheckOutDate}"/>
-                                        <DataGridTextColumn Header="Status" Width="120" Binding="{Binding Status}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="200">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Button Width="60" Height="25" Margin="2" FontSize="10" Background="#FF4CAF50"
-                                                            Command="{Binding DataContext.ConfirmBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                            CommandParameter="{Binding}">
-                                                            <Button.Style>
-                                                                <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                                    <Setter Property="Content" Value="Confirm"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,0,0,16">
+                                    <TextBlock Text="Danh sách đặt phòng" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Bookings.Count, StringFormat='{}Đang hiển thị {0} đặt phòng'}" Foreground="#FF666666" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <TextBlock Text="Không có đặt phòng nào phù hợp với bộ lọc."
+                                           Foreground="#FF9CA3AF"
+                                           FontStyle="Italic"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,60,0,60">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Bookings.Count}" Value="0">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <ItemsControl ItemsSource="{Binding Bookings}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="ContentPresenter">
+                                            <Setter Property="Margin" Value="0,0,0,18"/>
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Margin="0"
+                                                    Padding="20"
+                                                    CornerRadius="16"
+                                                    BorderThickness="1"
+                                                    BorderBrush="#FFE5E7EB"
+                                                    Background="White">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="16"
+                                                                      ShadowDepth="0"
+                                                                      Opacity="0.06"/>
+                                                </Border.Effect>
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Cursor" Value="Hand"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                <Setter Property="Background" Value="#FFFFFBF2"/>
+                                                                <Setter Property="BorderBrush" Value="#FFF59E0B"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                                                                <Setter Property="Background" Value="#FFE8F5E9"/>
+                                                                <Setter Property="BorderBrush" Value="#FF4CAF50"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                <Setter Property="Background" Value="#FFFFEBEE"/>
+                                                                <Setter Property="BorderBrush" Value="#FFE53935"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
+                                                                <Setter Property="Background" Value="#FFFFF4E5"/>
+                                                                <Setter Property="BorderBrush" Value="#FFF59E0B"/>
+                                                            </DataTrigger>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="BorderBrush" Value="#FF7C3AED"/>
+                                                                <Setter Property="Background" Value="#FFF5F3FF"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding GuestName}" FontSize="16" FontWeight="Bold" Foreground="#FF111827"/>
+                                                            <Border Background="#FFE0F2FE"
+                                                                    Padding="10,4"
+                                                                    CornerRadius="12"
+                                                                    Margin="12,0,0,0">
+                                                                <TextBlock Text="{Binding NumberOfGuests, StringFormat='👥 {0} khách'}" FontSize="12" Foreground="#FF1D4ED8"/>
+                                                            </Border>
+                                                        </StackPanel>
+
+                                                        <Grid Margin="0,16,0,0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <StackPanel Grid.Column="0">
+                                                                <TextBlock Text="Mã đặt phòng" FontSize="11" Foreground="#FF6B7280"/>
+                                                                <TextBlock Text="{Binding BookingID}" FontSize="14" FontWeight="SemiBold" Foreground="#FF1F2937"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Grid.Column="1">
+                                                                <TextBlock Text="Phòng" FontSize="11" Foreground="#FF6B7280"/>
+                                                                <TextBlock Text="{Binding RoomNumber, StringFormat='Phòng {0}'}" FontSize="14" FontWeight="SemiBold" Foreground="#FF1F2937"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Grid.Column="2">
+                                                                <TextBlock Text="Thời gian" FontSize="11" Foreground="#FF6B7280"/>
+                                                                <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#FF1F2937">
+                                                                    <Run Text="{Binding CheckInDate, StringFormat='{}{0:dd MMM yyyy}'}"/>
+                                                                    <Run Text=" - "/>
+                                                                    <Run Text="{Binding CheckOutDate, StringFormat='{}{0:dd MMM yyyy}'}"/>
+                                                                </TextBlock>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="20,0,0,0">
+                                                        <Border Padding="12,6"
+                                                                CornerRadius="12"
+                                                                HorizontalAlignment="Right"
+                                                                Margin="0,0,0,12">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Background" Value="#FFEFF6FF"/>
                                                                     <Style.Triggers>
                                                                         <DataTrigger Binding="{Binding Status}" Value="Pending">
-                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                            <Setter Property="Background" Value="#FFFFF4E5"/>
                                                                         </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </Button.Style>
-                                                        </Button>
-                                                        <Button Width="80" Height="25" Margin="2" FontSize="10" Background="#FFFF5722"
-                                                            Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                            CommandParameter="{Binding}">
-                                                            <Button.Style>
-                                                                <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                                    <Setter Property="Content" Value="Cancel"/>
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding Status}" Value="Pending">
-                                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                                            <Setter Property="Content" Value="Cancel"/>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                                                                            <Setter Property="Background" Value="#FFE8F5E9"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                            <Setter Property="Background" Value="#FFFFEBEE"/>
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
-                                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                                            <Setter Property="Content" Value="Approve Cancel"/>
+                                                                            <Setter Property="Background" Value="#FFFFF4E5"/>
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
                                                                 </Style>
-                                                            </Button.Style>
-                                                        </Button>
+                                                            </Border.Style>
+                                                            <TextBlock Text="{Binding Status}" FontWeight="SemiBold" HorizontalAlignment="Center">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Setter Property="Foreground" Value="#FF1E3A8A"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                                <Setter Property="Foreground" Value="#FFB26A00"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                                                                                <Setter Property="Foreground" Value="#FF2E7D32"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                                <Setter Property="Foreground" Value="#FFC62828"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
+                                                                                <Setter Property="Foreground" Value="#FFB26A00"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </Border>
+
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                            <Button Content="✔️ Xác nhận"
+                                                                    Command="{Binding DataContext.ConfirmBookingCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                    CommandParameter="{Binding}">
+                                                                <Button.Style>
+                                                                    <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                                                                        <Setter Property="Height" Value="38"/>
+                                                                        <Setter Property="Padding" Value="18,0"/>
+                                                                        <Setter Property="FontSize" Value="13"/>
+                                                                        <Setter Property="Margin" Value="0,0,8,0"/>
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                            </Button>
+
+                                                            <Button Content="🗑️ Xử lý hủy"
+                                                                    Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                    CommandParameter="{Binding}">
+                                                                <Button.Style>
+                                                                    <Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+                                                                        <Setter Property="Height" Value="38"/>
+                                                                        <Setter Property="Padding" Value="18,0"/>
+                                                                        <Setter Property="FontSize" Value="13"/>
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="CancelledRequested">
+                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                            </Button>
+                                                        </StackPanel>
                                                     </StackPanel>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </StackPanel>
                         </Border>
                     </StackPanel>

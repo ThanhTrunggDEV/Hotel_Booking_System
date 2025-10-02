@@ -51,6 +51,12 @@ namespace Hotel_Booking_System.ViewModels
         private string _notificationMessage = string.Empty;
         private double _totalSpent;
         private int _totalBookings;
+        private int _pendingBookingsCount;
+        private int _confirmedBookingsCount;
+        private int _cancellationRequestsCount;
+        private int _todayCheckInsCount;
+        private int _hotelBookingsCount;
+        private string _bookingSearchQuery = string.Empty;
         private string _membershipLevel = "Bronze";
         private DispatcherTimer? _notificationTimer;
 
@@ -205,6 +211,46 @@ namespace Hotel_Booking_System.ViewModels
         {
             get => _totalBookings;
             private set => Set(ref _totalBookings, value);
+        }
+
+        public int PendingBookingsCount
+        {
+            get => _pendingBookingsCount;
+            private set => Set(ref _pendingBookingsCount, value);
+        }
+
+        public int ConfirmedBookingsCount
+        {
+            get => _confirmedBookingsCount;
+            private set => Set(ref _confirmedBookingsCount, value);
+        }
+
+        public int CancellationRequestsCount
+        {
+            get => _cancellationRequestsCount;
+            private set => Set(ref _cancellationRequestsCount, value);
+        }
+
+        public int TodayCheckInsCount
+        {
+            get => _todayCheckInsCount;
+            private set => Set(ref _todayCheckInsCount, value);
+        }
+
+        public int HotelBookingsCount
+        {
+            get => _hotelBookingsCount;
+            private set => Set(ref _hotelBookingsCount, value);
+        }
+
+        public string BookingSearchQuery
+        {
+            get => _bookingSearchQuery;
+            set
+            {
+                Set(ref _bookingSearchQuery, value);
+                ApplyBookingFilter();
+            }
         }
 
         public string MembershipLevel
@@ -525,6 +571,7 @@ namespace Hotel_Booking_System.ViewModels
                 _cachedAllBookings = new List<Booking>();
                 _cachedPayments = new List<Payment>();
                 UpdateBookingStatusFilters();
+                UpdateBookingInsights();
                 UpdateProfileStatistics();
                 UpdateRevenueAnalytics(new List<Booking>(), new List<Payment>());
                 return;
@@ -688,10 +735,31 @@ namespace Hotel_Booking_System.ViewModels
                 filtered = filtered.Where(b => string.Equals(b.Status, SelectedBookingStatusFilter, StringComparison.OrdinalIgnoreCase));
             }
 
+            if (!string.IsNullOrWhiteSpace(BookingSearchQuery))
+            {
+                filtered = filtered.Where(b =>
+                    (!string.IsNullOrWhiteSpace(b.BookingID) && b.BookingID.Contains(BookingSearchQuery, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(b.GuestName) && b.GuestName.Contains(BookingSearchQuery, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(b.RoomNumber) && b.RoomNumber.Contains(BookingSearchQuery, StringComparison.OrdinalIgnoreCase)));
+            }
+
             foreach (var booking in filtered)
             {
                 Bookings.Add(booking);
             }
+
+            UpdateBookingInsights();
+        }
+
+        private void UpdateBookingInsights()
+        {
+            var today = DateTime.Today;
+
+            HotelBookingsCount = _allBookings.Count;
+            PendingBookingsCount = _allBookings.Count(b => string.Equals(b.Status, "Pending", StringComparison.OrdinalIgnoreCase));
+            ConfirmedBookingsCount = _allBookings.Count(b => string.Equals(b.Status, "Confirmed", StringComparison.OrdinalIgnoreCase));
+            CancellationRequestsCount = _allBookings.Count(b => string.Equals(b.Status, "CancelledRequested", StringComparison.OrdinalIgnoreCase));
+            TodayCheckInsCount = _allBookings.Count(b => b.CheckInDate.Date == today);
         }
 
         private void UpdateProfileStatistics()
@@ -1555,6 +1623,12 @@ namespace Hotel_Booking_System.ViewModels
                 await _bookingRepository.UpdateAsync(booking);
                 await LoadBookingsAsync();
             }
+        }
+
+        [RelayCommand]
+        private async Task RefreshBookings()
+        {
+            await LoadBookingsAsync();
         }
 
         private void EnsureCityInOptions(string? city)
