@@ -10,14 +10,12 @@ namespace Hotel_Booking_System.Views
 {
     public partial class SuperAdminWindow : Window
     {
-        private readonly IPaymentViewModel _paymentViewModel = App.Provider.GetRequiredService<IPaymentViewModel>();
         private readonly ISuperAdminViewModel _superAdminViewModel = App.Provider.GetRequiredService<ISuperAdminViewModel>();
 
         public SuperAdminWindow()
         {
             InitializeComponent();
             DataContext = _superAdminViewModel;
-            PaymentSummaryTab.DataContext = _paymentViewModel;
 
             txtCurrentPassword.PasswordChanged += (s, e) =>
             {
@@ -41,7 +39,6 @@ namespace Hotel_Booking_System.Views
 
             Loaded += async (s, e) =>
             {
-                await _paymentViewModel.LoadPaymentsAsync();
                 await _superAdminViewModel.LoadDataAsync();
             };
         }
