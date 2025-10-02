@@ -1,0 +1,76 @@
+<Window x:Class="Hotel_Booking_System.Views.EditUserDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Edit User"
+        Height="420"
+        Width="520"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#FFF8F9FA">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Update user details"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Foreground="#FF1976D2"/>
+
+        <StackPanel Grid.Row="1" Margin="0,20,0,0">
+            <StackPanel Margin="0,0,0,12">
+                <TextBlock Text="Full name" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <Grid Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="Phone" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Gender" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <ComboBox SelectedValue="{Binding Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              SelectedValuePath="Content">
+                        <ComboBoxItem Content="Male"/>
+                        <ComboBoxItem Content="Female"/>
+                        <ComboBoxItem Content="Other"/>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Margin="0,0,0,12">
+                <TextBlock Text="Email" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <TextBox Text="{Binding Email}" IsReadOnly="True" Background="#FFEFF2F7"/>
+            </StackPanel>
+
+            <StackPanel Margin="0,0,0,12">
+                <TextBlock Text="Date of birth" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <DatePicker SelectedDate="{Binding DateOfBirth, Mode=TwoWay}"/>
+            </StackPanel>
+
+            <StackPanel Margin="0,0,0,12">
+                <TextBlock Text="Role" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <ComboBox SelectedValue="{Binding Role, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedValuePath="Content">
+                    <ComboBoxItem Content="Customer"/>
+                    <ComboBoxItem Content="HotelAdmin"/>
+                    <ComboBoxItem Content="SuperAdmin"/>
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button x:Name="btnCancel" Content="Cancel" Width="90" Margin="0,0,10,0" Click="Cancel_Click"/>
+            <Button x:Name="btnSave" Content="Save" Width="90" Click="Save_Click" Background="#FF1976D2" Foreground="White"/>
+        </StackPanel>
+    </Grid>
+</Window>

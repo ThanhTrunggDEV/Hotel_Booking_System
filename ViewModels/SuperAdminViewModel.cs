@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -11,6 +13,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Hotel_Booking_System.Services;
+using Hotel_Booking_System.Views;
 using Hotel_Manager.FrameWorks;
 using Microsoft.Win32;
 
@@ -28,6 +31,9 @@ namespace Hotel_Booking_System.ViewModels
         private readonly IPaymentRepository _paymentRepository;
         private readonly IAuthentication _authenticationService;
         private User _currentUser = new();
+        private List<Room> _allRooms = new();
+        private List<Booking> _allBookings = new();
+        private List<Payment> _allPayments = new();
         private int _totalHotels;
         private int _totalUsers;
         private int _pendingRequests;
@@ -178,6 +184,10 @@ namespace Hotel_Booking_System.ViewModels
                 var rooms = await _roomRepository.GetAllAsync();
                 var users = await _userRepository.GetAllAsync();
 
+                _allRooms = rooms;
+                _allBookings = await _bookingRepository.GetAllAsync();
+                _allPayments = await _paymentRepository.GetAllAsync();
+
                 TotalHotels = hotels.Count(h => h.IsApproved);
                 TotalUsers = users.Count();
 
@@ -217,15 +227,13 @@ namespace Hotel_Booking_System.ViewModels
                 UpdateHotelStats();
                 ApplyHotelFilters();
 
-                var bookings = await _bookingRepository.GetAllAsync();
-                ActiveBookings = bookings.Count(b => string.Equals(b.Status, "Confirmed", StringComparison.OrdinalIgnoreCase) || string.Equals(b.Status, "Pending", StringComparison.OrdinalIgnoreCase));
-                var payments = await _paymentRepository.GetAllAsync();
+                ActiveBookings = _allBookings.Count(b => string.Equals(b.Status, "Confirmed", StringComparison.OrdinalIgnoreCase) || string.Equals(b.Status, "Pending", StringComparison.OrdinalIgnoreCase));
                 var today = DateTime.Today;
-                MonthlyRevenue = payments
+                MonthlyRevenue = _allPayments
                     .Where(p => p.PaymentDate.Year == today.Year && p.PaymentDate.Month == today.Month)
                     .Sum(p => p.TotalPayment);
 
-                UpdateUserBookingStats(bookings, payments);
+                UpdateUserBookingStats(_allBookings, _allPayments);
 
                 var requests = (await _hotelAdminRequestRepository.GetAllAsync()).Where(r => r.Status == "Pending").ToList();
                 PendingRequest.Clear();
@@ -676,6 +684,395 @@ namespace Hotel_Booking_System.ViewModels
         private async Task RefreshHotelsAsync()
         {
             await LoadDataAsync();
+        }
+
+        [RelayCommand]
+        private void Logout()
+        {
+            WeakReferenceMessenger.Default.UnregisterAll(this);
+            ClearPasswordFields();
+            _navigationService.NavigateToLogin();
+        }
+
+        [RelayCommand]
+        private void ViewHotelDetails(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                ShowNotification("Unable to locate the selected hotel.");
+                return;
+            }
+
+            var builder = new StringBuilder();
+            builder.AppendLine($"Hotel ID: {hotel.HotelID}");
+            builder.AppendLine($"Name: {hotel.HotelName}");
+            builder.AppendLine($"City: {hotel.City}");
+            builder.AppendLine($"Address: {hotel.Address}");
+            builder.AppendLine($"Admin: {hotel.AdminName}");
+            builder.AppendLine($"Rooms: {hotel.TotalRooms}");
+            builder.AppendLine($"Status: {hotel.Status}");
+            builder.AppendLine($"Rating: {hotel.Rating}");
+
+            MessageBox.Show(builder.ToString(), "Hotel details", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
+        private async Task EditHotelAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                ShowNotification("Unable to locate the selected hotel.");
+                return;
+            }
+
+            var editableHotel = new Hotel
+            {
+                HotelID = hotel.HotelID,
+                HotelName = hotel.HotelName,
+                Address = hotel.Address,
+                City = hotel.City,
+                Description = hotel.Description,
+                Rating = hotel.Rating,
+                MinPrice = hotel.MinPrice,
+                MaxPrice = hotel.MaxPrice,
+                IsVisible = hotel.IsVisible
+            };
+
+            var dialog = new EditHotelDialog
+            {
+                Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive),
+                DataContext = editableHotel
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                var storedHotel = await _hotelRepository.GetByIdAsync(hotel.HotelID) ?? hotel;
+                storedHotel.HotelName = editableHotel.HotelName;
+                storedHotel.Address = editableHotel.Address;
+                storedHotel.City = editableHotel.City;
+                storedHotel.Description = editableHotel.Description;
+                storedHotel.Rating = editableHotel.Rating;
+                storedHotel.MinPrice = editableHotel.MinPrice;
+                storedHotel.MaxPrice = editableHotel.MaxPrice;
+                storedHotel.IsVisible = editableHotel.IsVisible;
+
+                await _hotelRepository.UpdateAsync(storedHotel);
+
+                hotel.HotelName = storedHotel.HotelName;
+                hotel.Address = storedHotel.Address;
+                hotel.City = storedHotel.City;
+                hotel.Description = storedHotel.Description;
+                hotel.Rating = storedHotel.Rating;
+                hotel.MinPrice = storedHotel.MinPrice;
+                hotel.MaxPrice = storedHotel.MaxPrice;
+                hotel.IsVisible = storedHotel.IsVisible;
+                hotel.Status = GetHotelStatus(hotel);
+
+                UpdateCityOptions();
+                UpdateHotelStats();
+                ApplyHotelFilters();
+
+                ShowNotification("Hotel information updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to update hotel: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ManageHotelRoomsAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                ShowNotification("Unable to locate the selected hotel.");
+                return;
+            }
+
+            if (_allRooms.Count == 0)
+            {
+                _allRooms = await _roomRepository.GetAllAsync();
+            }
+
+            var rooms = _allRooms.Where(r => r.HotelID == hotel.HotelID).ToList();
+
+            if (rooms.Count == 0)
+            {
+                MessageBox.Show("No rooms are currently registered for this hotel.", "Room management", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var builder = new StringBuilder();
+            builder.AppendLine($"Total rooms: {rooms.Count}");
+            foreach (var group in rooms.GroupBy(r => r.RoomType).OrderBy(g => g.Key))
+            {
+                builder.AppendLine($" • {group.Key}: {group.Count()} room(s)");
+            }
+
+            MessageBox.Show(builder.ToString(), "Room overview", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
+        private void ShowHotelAnalytics(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                ShowNotification("Unable to locate the selected hotel.");
+                return;
+            }
+
+            var hotelBookings = _allBookings.Where(b => b.HotelID == hotel.HotelID).ToList();
+            if (hotelBookings.Count == 0)
+            {
+                MessageBox.Show("There are no bookings for this hotel yet.", "Hotel analytics", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var bookingIds = new HashSet<string>(hotelBookings.Select(b => b.BookingID));
+            var revenue = _allPayments.Where(p => bookingIds.Contains(p.BookingID)).Sum(p => p.TotalPayment);
+            var confirmed = hotelBookings.Count(b => string.Equals(b.Status, "Confirmed", StringComparison.OrdinalIgnoreCase));
+            var completed = hotelBookings.Count(b => string.Equals(b.Status, "Completed", StringComparison.OrdinalIgnoreCase));
+            var pending = hotelBookings.Count(b => string.Equals(b.Status, "Pending", StringComparison.OrdinalIgnoreCase));
+
+            var builder = new StringBuilder();
+            builder.AppendLine($"Total bookings: {hotelBookings.Count}");
+            builder.AppendLine($"Confirmed: {confirmed}");
+            builder.AppendLine($"Completed: {completed}");
+            builder.AppendLine($"Pending: {pending}");
+            builder.AppendLine($"Revenue: {revenue:C}");
+
+            MessageBox.Show(builder.ToString(), "Hotel analytics", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
+        private async Task ToggleHotelVisibilityAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                ShowNotification("Unable to locate the selected hotel.");
+                return;
+            }
+
+            if (!hotel.IsApproved)
+            {
+                MessageBox.Show("Only approved hotels can be suspended or reactivated.", "Hotel status", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                var storedHotel = await _hotelRepository.GetByIdAsync(hotel.HotelID) ?? hotel;
+                storedHotel.IsVisible = !storedHotel.IsVisible;
+                await _hotelRepository.UpdateAsync(storedHotel);
+
+                hotel.IsVisible = storedHotel.IsVisible;
+                hotel.Status = GetHotelStatus(hotel);
+
+                UpdateHotelStats();
+                ApplyHotelFilters();
+
+                var statusText = hotel.IsVisible ? "Hotel has been reactivated." : "Hotel has been suspended.";
+                ShowNotification(statusText);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to update hotel status: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ContactHotelAdminAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                ShowNotification("Unable to locate the selected hotel.");
+                return;
+            }
+
+            var admin = Users.FirstOrDefault(u => u.UserID == hotel.UserID) ?? await _userRepository.GetByIdAsync(hotel.UserID);
+            if (admin == null || string.IsNullOrWhiteSpace(admin.Email))
+            {
+                MessageBox.Show("The hotel administrator does not have a valid email address.", "Contact admin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var subject = Uri.EscapeDataString($"Regarding {hotel.HotelName}");
+            var mailto = $"mailto:{admin.Email}?subject={subject}";
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = mailto,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception)
+            {
+                Clipboard.SetText(admin.Email);
+                MessageBox.Show($"Unable to open the default mail client. The email address has been copied to the clipboard: {admin.Email}", "Contact admin", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        [RelayCommand]
+        private void ViewUserDetails(User? user)
+        {
+            if (user == null)
+            {
+                ShowNotification("Unable to locate the selected user.");
+                return;
+            }
+
+            var builder = new StringBuilder();
+            builder.AppendLine($"User ID: {user.UserID}");
+            builder.AppendLine($"Name: {user.FullName}");
+            builder.AppendLine($"Email: {user.Email}");
+            builder.AppendLine($"Phone: {user.Phone}");
+            builder.AppendLine($"Gender: {user.Gender}");
+            builder.AppendLine($"Role: {user.Role}");
+            builder.AppendLine($"Date of Birth: {user.DateOfBirth:dd/MM/yyyy}");
+
+            MessageBox.Show(builder.ToString(), "User details", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
+        private async Task EditUserAsync(User? user)
+        {
+            if (user == null)
+            {
+                ShowNotification("Unable to locate the selected user.");
+                return;
+            }
+
+            var editableUser = new User
+            {
+                UserID = user.UserID,
+                FullName = user.FullName,
+                Phone = user.Phone,
+                Gender = user.Gender,
+                Email = user.Email,
+                Role = user.Role,
+                DateOfBirth = user.DateOfBirth,
+                AvatarUrl = user.AvatarUrl,
+                Password = user.Password
+            };
+
+            var dialog = new EditUserDialog
+            {
+                Owner = Application.Current?.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive),
+                DataContext = editableUser
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                var storedUser = await _userRepository.GetByIdAsync(user.UserID) ?? user;
+                storedUser.FullName = editableUser.FullName;
+                storedUser.Phone = editableUser.Phone;
+                storedUser.Gender = editableUser.Gender;
+                storedUser.Role = editableUser.Role;
+                storedUser.DateOfBirth = editableUser.DateOfBirth;
+
+                await _userRepository.UpdateAsync(storedUser);
+
+                user.FullName = storedUser.FullName;
+                user.Phone = storedUser.Phone;
+                user.Gender = storedUser.Gender;
+                user.Role = storedUser.Role;
+                user.DateOfBirth = storedUser.DateOfBirth;
+
+                var index = Users.IndexOf(user);
+                if (index >= 0)
+                {
+                    Users.RemoveAt(index);
+                    Users.Insert(index, user);
+                }
+
+                ShowNotification("User information updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to update user: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task DeactivateUserAsync(User? user)
+        {
+            if (user == null)
+            {
+                ShowNotification("Unable to locate the selected user.");
+                return;
+            }
+
+            if (CurrentUser != null && CurrentUser.UserID == user.UserID)
+            {
+                MessageBox.Show("You cannot deactivate your own account while logged in.", "User management", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var confirmation = MessageBox.Show($"Are you sure you want to deactivate {user.FullName}?", "Confirm deactivation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirmation != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                await _userRepository.DeleteAsync(user.UserID);
+                await _userRepository.SaveAsync();
+
+                Users.Remove(user);
+                TotalUsers = Math.Max(0, TotalUsers - 1);
+
+                ShowNotification("User has been deactivated.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to deactivate user: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ContactUserAsync(User? user)
+        {
+            if (user == null)
+            {
+                ShowNotification("Unable to locate the selected user.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(user.Email))
+            {
+                MessageBox.Show("The selected user does not have a valid email address.", "Contact user", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var subject = Uri.EscapeDataString("Support from Super Admin");
+            var mailto = $"mailto:{user.Email}?subject={subject}";
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = mailto,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception)
+            {
+                Clipboard.SetText(user.Email);
+                MessageBox.Show($"Unable to open the default mail client. The email address has been copied to the clipboard: {user.Email}", "Contact user", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private static bool IsPasswordValid(string password)
