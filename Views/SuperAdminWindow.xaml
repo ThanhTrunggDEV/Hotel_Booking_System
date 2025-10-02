@@ -47,151 +47,193 @@
             <TabItem Style="{StaticResource TabItemStyle}" x:Name="SuperAdminDashboard" Header="👑 System Overview" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="Super Admin Dashboard" Style="{StaticResource HeaderTextStyle}"/>
-
-        
-                        <Grid Margin="0,0,0,30">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Background="#FF4CAF50">
-                                <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding TotalHotels}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Total Hotels" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                        <Border Style="{StaticResource CardStyle}" Padding="30" Margin="0,0,0,30">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#FF1976D2" Offset="0"/>
+                                    <GradientStop Color="#FF512DA8" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="System Overview" FontSize="28" FontWeight="Bold" Foreground="White"/>
+                                    <TextBlock Text="Theo dõi tình trạng hoạt động của toàn bộ hệ thống trong thời gian thực." FontSize="14" Foreground="#E6FFFFFF" Margin="0,10,0,20" TextWrapping="Wrap"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="👩‍💼" FontSize="24" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Quản lý yêu cầu, khách sạn và người dùng một cách liền mạch." FontSize="14" Foreground="#F5FFFFFF" VerticalAlignment="Center" TextWrapping="Wrap" Width="240"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </Border>
-
-                            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Background="#FF2196F3">
-                                <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding TotalUsers}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Total Users" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Grid.Column="2" Style="{StaticResource CardStyle}" Background="#FFFF9800">
-                                <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding ActiveBookings}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Active Bookings" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FFFF5722">
-                                <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding MonthlyRevenue, StringFormat={}{0:C}}" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Monthly Revenue" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Grid.Column="4" Style="{StaticResource CardStyle}" Background="#FF9C27B0">
-                                <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding PendingApprovals}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Pending Approvals" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-
-                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
-                            <StackPanel Margin="25">
-                                <TextBlock Text="Pending Hotel Admin Requests" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
-
-                                <DataGrid Height="200" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingRequest}">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Request ID" Width="100" Binding="{Binding RequestID}"/>
-                                        <DataGridTextColumn Header="Applicant Name" Width="150" Binding="{Binding ApplicantName}"/>
-                                        <DataGridTextColumn Header="Hotel Name" Width="200" Binding="{Binding HotelName}"/>
-                                        <DataGridTextColumn Header="Hotel Address" Width="200" Binding="{Binding HotelAddress}"/>
-                                        <DataGridTextColumn Header="Date Applied" Width="150" Binding="{Binding CreatedAt, StringFormat={}{0:MMM dd, yyyy}}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="180">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Button Content="👁️ View" Style="{StaticResource SecondaryButton}"
-                                                               Width="45" Height="25" Margin="2" FontSize="10"/>
-                                                        <Button Content="✅ Approve" Style="{StaticResource SecondaryButton}"
-                                                               Background="#FF4CAF50" Width="55" Height="25" Margin="2" FontSize="10"
-                                                               Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                               CommandParameter="{Binding RequestID}"/>
-                                                        <Button Content="❌ Reject" Style="{StaticResource SecondaryButton}"
-                                                               Background="#FFFF5722" Width="50" Height="25" Margin="2" FontSize="10"
-                                                               Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                               CommandParameter="{Binding RequestID}"/>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
-                            <StackPanel Margin="25">
-                                <TextBlock Text="Pending Hotels" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
-                                <DataGrid Height="200" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingHotels}">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Hotel ID" Width="100" Binding="{Binding HotelID}"/>
-                                        <DataGridTextColumn Header="Hotel Name" Width="200" Binding="{Binding HotelName}"/>
-                                        <DataGridTextColumn Header="City" Width="150" Binding="{Binding City}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="150">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Button Content="✅ Approve" Style="{StaticResource SecondaryButton}"
-                                                                Background="#FF4CAF50" Width="55" Height="25" Margin="2" FontSize="10"
-                                                                Command="{Binding DataContext.ApproveHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                CommandParameter="{Binding HotelID}"/>
-                                                        <Button Content="❌ Reject" Style="{StaticResource SecondaryButton}"
-                                                                Background="#FFFF5722" Width="50" Height="25" Margin="2" FontSize="10"
-                                                                Command="{Binding DataContext.RejectHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                CommandParameter="{Binding HotelID}"/>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Style="{StaticResource CardStyle}">
-                            <StackPanel Margin="25">
-                                <TextBlock Text="System Reports and Analytics" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
-
-                                <Grid>
+                                <Grid Grid.Column="1" Margin="30,0,0,0" VerticalAlignment="Center">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Border Grid.Row="0" Grid.Column="0" Margin="0,0,15,15" Background="#40111111" Padding="15" CornerRadius="12">
+                                        <StackPanel>
+                                            <TextBlock Text="Tổng Khách Sạn" Foreground="#F5FFFFFF" FontSize="12"/>
+                                            <TextBlock Text="{Binding TotalHotels}" Foreground="White" FontSize="26" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Row="0" Grid.Column="1" Margin="0,0,0,15" Background="#40111111" Padding="15" CornerRadius="12">
+                                        <StackPanel>
+                                            <TextBlock Text="Tổng Người Dùng" Foreground="#F5FFFFFF" FontSize="12"/>
+                                            <TextBlock Text="{Binding TotalUsers}" Foreground="White" FontSize="26" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Row="1" Grid.Column="0" Margin="0,0,15,0" Background="#40111111" Padding="15" CornerRadius="12">
+                                        <StackPanel>
+                                            <TextBlock Text="Đơn Đặt Phòng Đang Hoạt Động" Foreground="#F5FFFFFF" FontSize="12" TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding ActiveBookings}" Foreground="White" FontSize="26" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Row="1" Grid.Column="1" Background="#40111111" Padding="15" CornerRadius="12">
+                                        <StackPanel>
+                                            <TextBlock Text="Doanh Thu Tháng" Foreground="#F5FFFFFF" FontSize="12"/>
+                                            <TextBlock Text="{Binding MonthlyRevenue, StringFormat={}{0:C}}" Foreground="White" FontSize="26" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
 
-                                    <StackPanel Grid.Column="0" Margin="0,0,15,0">
-                                        <Button Content="📊 Revenue Report" Style="{StaticResource PrimaryButton}" 
-                                               HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="🏨 Hotel Performance" Style="{StaticResource PrimaryButton}" 
-                                               HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="👥 User Analytics" Style="{StaticResource PrimaryButton}" 
-                                               HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="📋 Booking Trends" Style="{StaticResource PrimaryButton}" 
-                                               HorizontalAlignment="Stretch" Margin="0,5"/>
+                        <WrapPanel Margin="0,0,0,30" ItemWidth="220" ItemHeight="120">
+                            <Border Style="{StaticResource CardStyle}" Background="#FFF1F8E9" Width="220" Height="120" Margin="0,0,15,15">
+                                <StackPanel Margin="15">
+                                    <TextBlock Text="🏢" FontSize="24" Margin="0,0,0,10"/>
+                                    <TextBlock Text="Tổng Khách Sạn" FontSize="12" Foreground="#FF2E7D32"/>
+                                    <TextBlock Text="{Binding TotalHotels}" FontSize="24" FontWeight="Bold" Foreground="#FF1B5E20"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource CardStyle}" Background="#FFE3F2FD" Width="220" Height="120" Margin="0,0,15,15">
+                                <StackPanel Margin="15">
+                                    <TextBlock Text="🧑‍🤝‍🧑" FontSize="24" Margin="0,0,0,10"/>
+                                    <TextBlock Text="Tổng Người Dùng" FontSize="12" Foreground="#FF1565C0"/>
+                                    <TextBlock Text="{Binding TotalUsers}" FontSize="24" FontWeight="Bold" Foreground="#FF0D47A1"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource CardStyle}" Background="#FFFFF3E0" Width="220" Height="120" Margin="0,0,15,15">
+                                <StackPanel Margin="15">
+                                    <TextBlock Text="🗓️" FontSize="24" Margin="0,0,0,10"/>
+                                    <TextBlock Text="Đơn Đặt Phòng" FontSize="12" Foreground="#FFEF6C00"/>
+                                    <TextBlock Text="{Binding ActiveBookings}" FontSize="24" FontWeight="Bold" Foreground="#FFE65100"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource CardStyle}" Background="#FFFFEBEE" Width="220" Height="120" Margin="0,0,15,15">
+                                <StackPanel Margin="15">
+                                    <TextBlock Text="💳" FontSize="24" Margin="0,0,0,10"/>
+                                    <TextBlock Text="Doanh Thu Tháng" FontSize="12" Foreground="#FFC62828"/>
+                                    <TextBlock Text="{Binding MonthlyRevenue, StringFormat={}{0:C}}" FontSize="22" FontWeight="Bold" Foreground="#FFB71C1C"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource CardStyle}" Background="#FFF3E5F5" Width="220" Height="120" Margin="0,0,15,15">
+                                <StackPanel Margin="15">
+                                    <TextBlock Text="⏳" FontSize="24" Margin="0,0,0,10"/>
+                                    <TextBlock Text="Yêu Cầu Chờ Duyệt" FontSize="12" Foreground="#FF6A1B9A"/>
+                                    <TextBlock Text="{Binding PendingApprovals}" FontSize="24" FontWeight="Bold" Foreground="#FF4A148C"/>
+                                </StackPanel>
+                            </Border>
+                        </WrapPanel>
+
+                        <Grid Margin="0,0,0,30">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,15,15">
+                                <StackPanel Margin="25">
+                                    <TextBlock Text="Yêu Cầu Quản Trị Khách Sạn Đang Chờ" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                                    <DataGrid Height="220" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingRequest}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Request ID" Width="100" Binding="{Binding RequestID}"/>
+                                            <DataGridTextColumn Header="Applicant" Width="150" Binding="{Binding ApplicantName}"/>
+                                            <DataGridTextColumn Header="Khách Sạn" Width="200" Binding="{Binding HotelName}"/>
+                                            <DataGridTextColumn Header="Địa Chỉ" Width="220" Binding="{Binding HotelAddress}"/>
+                                            <DataGridTextColumn Header="Ngày Gửi" Width="150" Binding="{Binding CreatedAt, StringFormat={}{0:MMM dd, yyyy}}"/>
+                                            <DataGridTemplateColumn Header="Thao Tác" Width="200">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Button Content="👁️ Chi tiết" Style="{StaticResource SecondaryButton}" Width="65" Height="26" Margin="2" FontSize="10"/>
+                                                            <Button Content="✅ Duyệt" Style="{StaticResource SecondaryButton}" Background="#FF4CAF50" Width="65" Height="26" Margin="2" FontSize="10"
+                                                                    Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding RequestID}"/>
+                                                            <Button Content="❌ Từ chối" Style="{StaticResource SecondaryButton}" Background="#FFFF5722" Width="65" Height="26" Margin="2" FontSize="10"
+                                                                    Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding RequestID}"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource CardStyle}" Margin="15,0,0,15">
+                                <StackPanel Margin="25">
+                                    <TextBlock Text="Khách Sạn Đang Chờ Kiểm Duyệt" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                                    <DataGrid Height="220" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingHotels}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Hotel ID" Width="100" Binding="{Binding HotelID}"/>
+                                            <DataGridTextColumn Header="Tên Khách Sạn" Width="220" Binding="{Binding HotelName}"/>
+                                            <DataGridTextColumn Header="Thành Phố" Width="150" Binding="{Binding City}"/>
+                                            <DataGridTemplateColumn Header="Thao Tác" Width="200">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Button Content="✅ Duyệt" Style="{StaticResource SecondaryButton}" Background="#FF4CAF50" Width="65" Height="26" Margin="2" FontSize="10"
+                                                                    Command="{Binding DataContext.ApproveHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding HotelID}"/>
+                                                            <Button Content="❌ Từ chối" Style="{StaticResource SecondaryButton}" Background="#FFFF5722" Width="65" Height="26" Margin="2" FontSize="10"
+                                                                    Command="{Binding DataContext.RejectHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding HotelID}"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource CardStyle}" Margin="0,0,0,0">
+                                <Grid Margin="25">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                                        <TextBlock Text="Báo Cáo &amp; Phân Tích Hệ Thống" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                                        <TextBlock Text="Truy cập nhanh vào các báo cáo và hành động quan trọng để đưa ra quyết định chính xác." FontSize="13" Foreground="#FF455A64" TextWrapping="Wrap" Margin="0,0,0,20"/>
+                                        <UniformGrid Columns="2" Rows="2" Margin="0,0,0,10">
+                                            <Button Content="📊 Doanh Thu" Style="{StaticResource PrimaryButton}" Margin="4"/>
+                                            <Button Content="🏨 Hiệu Suất Khách Sạn" Style="{StaticResource PrimaryButton}" Margin="4"/>
+                                            <Button Content="👥 Phân Tích Người Dùng" Style="{StaticResource PrimaryButton}" Margin="4"/>
+                                            <Button Content="📋 Xu Hướng Đặt Phòng" Style="{StaticResource PrimaryButton}" Margin="4"/>
+                                        </UniformGrid>
                                     </StackPanel>
-
-                                    <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                                        <Button Content="💰 Payment Summary" Style="{StaticResource PrimaryButton}" 
-                                               HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="⭐ Review Analysis" Style="{StaticResource PrimaryButton}" 
-                                               HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="🚨 System Issues" Style="{StaticResource PrimaryButton}" 
-                                               Background="#FFFF5722" HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="📤 Export All Data" Style="{StaticResource PrimaryButton}" 
-                                               Background="#FF4CAF50" HorizontalAlignment="Stretch" Margin="0,5"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <Button Content="💰 Tổng Quan Thanh Toán" Style="{StaticResource PrimaryButton}" Margin="0,4"/>
+                                        <Button Content="⭐ Phân Tích Đánh Giá" Style="{StaticResource PrimaryButton}" Margin="0,4"/>
+                                        <Button Content="🚨 Sự Cố Hệ Thống" Style="{StaticResource PrimaryButton}" Margin="0,4" Background="#FFFF5722"/>
+                                        <Button Content="📤 Xuất Toàn Bộ Dữ Liệu" Style="{StaticResource PrimaryButton}" Margin="0,4" Background="#FF4CAF50"/>
                                     </StackPanel>
                                 </Grid>
-                            </StackPanel>
-                        </Border>
+                            </Border>
+                        </Grid>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
