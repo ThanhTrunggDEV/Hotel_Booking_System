@@ -99,7 +99,10 @@
                             <StackPanel Margin="32">
                                 <TextBlock Text="Phê Duyệt Yêu Cầu & Khách Sạn Đang Chờ" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
                                 <TextBlock Text="Quản trị viên có thể chuyển đổi nhanh giữa danh sách yêu cầu đăng ký và các khách sạn chờ duyệt trong cùng một không gian làm việc." FontSize="13" Foreground="#FF607D8B" TextWrapping="Wrap"/>
-                                <TabControl Margin="0,24,0,0" Style="{StaticResource FlatInnerTabControl}">
+                                <TabControl Margin="0,24,0,0"
+                                            Style="{StaticResource FlatInnerTabControl}"
+                                            ItemContainerStyle="{StaticResource InnerTabItemStyle}"
+                                            Background="Transparent">
                                     <TabItem Header="Yêu Cầu Quản Trị Khách Sạn">
                                         <Grid Margin="0">
                                             <Grid.ColumnDefinitions>
@@ -186,13 +189,23 @@
                                                                     </Border>
                                                                 </StackPanel>
                                                             </StackPanel>
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                                <Button Content="✅ Duyệt" Style="{StaticResource SecondaryButton}" Background="#FF43A047" Padding="24,10" Margin="0,0,8,0"
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                                                <Button Style="{StaticResource ApproveActionButton}" Margin="0,0,12,0"
                                                                         Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                        CommandParameter="{Binding RequestID}"/>
-                                                                <Button Content="❌ Từ chối" Style="{StaticResource SecondaryButton}" Background="#FFE53935" Padding="24,10"
+                                                                        CommandParameter="{Binding RequestID}">
+                                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,8,0"/>
+                                                                        <TextBlock Text="Duyệt" FontSize="14" FontWeight="SemiBold"/>
+                                                                    </StackPanel>
+                                                                </Button>
+                                                                <Button Style="{StaticResource RejectActionButton}"
                                                                         Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                        CommandParameter="{Binding RequestID}"/>
+                                                                        CommandParameter="{Binding RequestID}">
+                                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,8,0"/>
+                                                                        <TextBlock Text="Từ chối" FontSize="14" FontWeight="SemiBold"/>
+                                                                    </StackPanel>
+                                                                </Button>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Grid>
@@ -311,13 +324,23 @@
                                                                     </ScrollViewer>
                                                                 </Border>
                                                             </StackPanel>
-                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                                <Button Content="✅ Duyệt" Style="{StaticResource SecondaryButton}" Background="#FF43A047" Padding="24,10" Margin="0,0,8,0"
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                                                <Button Style="{StaticResource ApproveActionButton}" Margin="0,0,12,0"
                                                                         Command="{Binding DataContext.ApproveHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                        CommandParameter="{Binding HotelID}"/>
-                                                                <Button Content="❌ Từ chối" Style="{StaticResource SecondaryButton}" Background="#FFE53935" Padding="24,10"
+                                                                        CommandParameter="{Binding HotelID}">
+                                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,8,0"/>
+                                                                        <TextBlock Text="Duyệt" FontSize="14" FontWeight="SemiBold"/>
+                                                                    </StackPanel>
+                                                                </Button>
+                                                                <Button Style="{StaticResource RejectActionButton}"
                                                                         Command="{Binding DataContext.RejectHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                        CommandParameter="{Binding HotelID}"/>
+                                                                        CommandParameter="{Binding HotelID}">
+                                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,8,0"/>
+                                                                        <TextBlock Text="Từ chối" FontSize="14" FontWeight="SemiBold"/>
+                                                                    </StackPanel>
+                                                                </Button>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Grid>
