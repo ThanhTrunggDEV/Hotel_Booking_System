@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Hotel_Booking_System.DomainModels;
@@ -18,13 +17,6 @@ namespace Hotel_Booking_System.Services
     public class AIChatService : IAIChatService
     {
         private const string DefaultApiBaseUrl = "https://generativelanguage.googleapis.com/v1beta";
-
-        private static readonly JsonSerializerOptions JsonOptions = new()
-        {
-            PropertyNameCaseInsensitive = true,
-            AllowTrailingCommas = true,
-            ReadCommentHandling = JsonCommentHandling.Skip
-        };
 
         private readonly IAIChatRepository _repository;
         private readonly GeminiOptions _options;
@@ -96,9 +88,6 @@ namespace Hotel_Booking_System.Services
                 .GroupBy(r => r.HotelID)
                 .ToDictionary(g => g.Key, g => g.Average(r => r.Rating));
 
-            var hotelLookup = hotels.ToDictionary(h => h.HotelID);
-            var roomLookup = rooms.ToDictionary(r => r.RoomID);
-
             var systemPrompt = BuildSystemPrompt(message, hotels, rooms, bookings, ratingsByHotel);
             var payload = BuildPayload(systemPrompt, history, message);
 
@@ -165,7 +154,7 @@ namespace Hotel_Booking_System.Services
                         }
 
                         var modelResponse = ParseModelResponse(text);
-                        var displayResponse = BuildDisplayResponse(modelResponse, hotelLookup, roomLookup);
+                        var displayResponse = BuildDisplayResponse(modelResponse);
 
                         var chat = new AIChat
                         {
@@ -274,18 +263,11 @@ namespace Hotel_Booking_System.Services
             });
 
             var builder = new StringBuilder();
-            builder.AppendLine("Bạn là trợ lý AI của hệ thống đặt phòng khách sạn. Nhiệm vụ của bạn là hỗ trợ người dùng tìm phòng phù hợp, giải đáp thắc mắc về khách sạn và chỉ đưa ra gợi ý dựa trên dữ liệu cung cấp.");
-            builder.AppendLine("\nLuôn trả lời bằng tiếng Việt chuẩn mực. Bạn phải phản hồi theo cấu trúc JSON sau:");
-            builder.AppendLine("{" +
-                               "\"reply\": \"<nội dung trả lời hoặc câu hỏi để lấy thêm thông tin>\"," +
-                               "\"recommendedRooms\": [" +
-                               "{\"roomId\": \"<mã phòng>\", \"hotelId\": \"<mã khách sạn>\", \"hotelName\": \"<tên khách sạn>\", \"roomType\": \"<loại phòng>\", \"pricePerNight\": <giá mỗi đêm>, \"reason\": \"<lý do gợi ý hoặc tóm tắt ngắn gọn>\"}" +
-                               "]" +
-                               "}");
-            builder.AppendLine("\nTrước khi đề xuất phòng, hãy đảm bảo đã biết thành phố hoặc điểm đến, ngày nhận phòng, ngày trả phòng, số lượng khách và ngân sách mong muốn. Nếu thiếu bất kỳ thông tin nào, hãy đặt câu hỏi trong trường reply và để mảng recommendedRooms trống.");
-            builder.AppendLine("Hãy thu thập thông tin theo từng bước rõ ràng: (1) hỏi thành phố hoặc địa điểm, (2) hỏi ngày nhận phòng, (3) hỏi ngày trả phòng, (4) hỏi số lượng khách, (5) hỏi ngân sách. Chỉ chuyển sang bước tiếp theo khi đã nhận được câu trả lời rõ ràng cho bước hiện tại. Nếu người dùng đã cung cấp một vài thông tin, chỉ hỏi tiếp những mục còn thiếu theo đúng thứ tự này.");
-            builder.AppendLine("Khi đã có đủ dữ liệu, hãy tóm tắt lại thông tin hiểu được trước khi đề xuất phòng. Nếu người dùng yêu cầu tóm tắt hoặc thông tin cụ thể về phòng/khách sạn, hãy trả lời trong reply và chỉ đưa phòng vào recommendedRooms nếu thực sự phù hợp.");
-            builder.AppendLine("Nếu không có phòng hoặc khách sạn nào thỏa điều kiện, vẫn phải trả lời trong reply rằng chưa tìm thấy lựa chọn phù hợp và giữ recommendedRooms rỗng, đồng thời gợi ý người dùng điều chỉnh yêu cầu.");
+            builder.AppendLine("Bạn là trợ lý AI của hệ thống đặt phòng khách sạn. Hãy hỗ trợ người dùng tìm phòng, giải đáp thắc mắc về khách sạn và chỉ đưa ra gợi ý dựa trên dữ liệu cung cấp.");
+            builder.AppendLine("\nLuôn trả lời bằng tiếng Việt tự nhiên, không sử dụng định dạng JSON.");
+            builder.AppendLine("Trước khi đề xuất phòng, bạn phải hỏi và xác nhận từng thông tin quan trọng theo đúng thứ tự: (1) thành phố hoặc địa điểm, (2) ngày nhận phòng, (3) ngày trả phòng, (4) số lượng khách, (5) ngân sách hoặc mức giá mong muốn. Chỉ chuyển bước khi đã có câu trả lời rõ ràng cho bước hiện tại. Nếu người dùng đã cung cấp một vài thông tin, hãy xác nhận lại và tiếp tục hỏi những mục còn thiếu.");
+            builder.AppendLine("Khi đã có đủ dữ liệu, hãy tóm tắt lại thông tin hiểu được và gợi ý tối đa vài khách sạn/phòng phù hợp. Nêu rõ tên khách sạn, loại phòng (nếu có) và lý do ngắn gọn vì sao nên chọn. Nếu người dùng yêu cầu tóm tắt hoặc thông tin cụ thể, hãy giải thích trực tiếp trong câu trả lời.");
+            builder.AppendLine("Nếu chưa có lựa chọn phù hợp, hãy nói rõ lý do và hướng dẫn người dùng điều chỉnh yêu cầu (ví dụ thay đổi ngày, ngân sách hoặc vị trí). Không được trả lời chung chung là không có phản hồi.");
 
             var missingInformationInstruction = BuildRoomSearchGuidance(userMessage, availableHotels.Select(h => h.city ?? string.Empty));
             if (!string.IsNullOrWhiteSpace(missingInformationInstruction))
@@ -508,25 +490,9 @@ namespace Hotel_Booking_System.Services
             var raw = text.Trim();
             var cleaned = StripCodeFence(raw);
 
-            if (TryParsePayload(cleaned, raw, out var parsedResponse))
-            {
-                return parsedResponse!;
-            }
-
-            var extractedJson = ExtractFirstJsonObject(cleaned);
-            if (extractedJson != null && TryParsePayload(extractedJson, raw, out parsedResponse))
-            {
-                return parsedResponse!;
-            }
-
-            var fallbackReply = ExtractReplyText(cleaned) ?? cleaned;
-
-            _logger.LogWarning("Không thể phân tích phản hồi JSON từ Gemini: {Text}", cleaned);
-
             return new AiAssistantResponse
             {
-                Reply = fallbackReply,
-                Recommendations = new List<AiRecommendation>(),
+                Reply = string.IsNullOrWhiteSpace(cleaned) ? raw : cleaned,
                 RawText = raw
             };
         }
@@ -787,117 +753,16 @@ namespace Hotel_Booking_System.Services
             return false;
         }
 
-        private static bool TryParsePayload(string json, string raw, out AiAssistantResponse? response)
+        private string BuildDisplayResponse(AiAssistantResponse response)
         {
-            try
-            {
-                var payload = JsonSerializer.Deserialize<GeminiChatPayload>(json, JsonOptions);
-                if (payload == null)
-                {
-                    response = null;
-                    return false;
-                }
+            var reply = response.Reply.Trim();
 
-                var reply = string.IsNullOrWhiteSpace(payload.Reply)
-                    ? ExtractReplyText(json) ?? raw
-                    : payload.Reply.Trim();
-
-                var recommendations = payload.RecommendedRooms?
-                        .Where(room => room != null)
-                        .Select(room => new AiRecommendation
-                        {
-                            RoomId = room!.RoomId,
-                            HotelId = room.HotelId,
-                            HotelName = room.HotelName,
-                            RoomType = room.RoomType,
-                            PricePerNight = room.PricePerNight,
-                            Reason = room.Reason
-                        })
-                        .ToList()
-                    ?? new List<AiRecommendation>();
-
-                response = new AiAssistantResponse
-                {
-                    Reply = reply,
-                    Recommendations = recommendations,
-                    RawText = raw
-                };
-
-                return true;
-            }
-            catch (JsonException)
-            {
-                response = null;
-                return false;
-            }
-        }
-
-        private string BuildDisplayResponse(AiAssistantResponse response, IDictionary<string, Hotel> hotels, IDictionary<string, Room> rooms)
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine(response.Reply.Trim());
-
-            if (response.Recommendations.Count > 0)
-            {
-                builder.AppendLine();
-                builder.AppendLine("Gợi ý phòng phù hợp:");
-
-                foreach (var recommendation in response.Recommendations)
-                {
-                    var details = new List<string>();
-
-                    if (!string.IsNullOrWhiteSpace(recommendation.RoomId) && rooms.TryGetValue(recommendation.RoomId, out var room))
-                    {
-                        if (hotels.TryGetValue(room.HotelID, out var hotel))
-                        {
-                            details.Add($"Khách sạn {hotel.HotelName}");
-                        }
-
-                        details.Add($"Phòng {room.RoomNumber} ({room.RoomType})");
-                        details.Add($"Sức chứa {room.Capacity} khách");
-                        details.Add($"Giá {FormatCurrency(room.PricePerNight)} mỗi đêm");
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrWhiteSpace(recommendation.HotelName))
-                        {
-                            details.Add($"Khách sạn {recommendation.HotelName}");
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(recommendation.RoomType))
-                        {
-                            details.Add(recommendation.RoomType);
-                        }
-
-                        if (recommendation.PricePerNight.HasValue)
-                        {
-                            details.Add($"Giá khoảng {FormatCurrency(recommendation.PricePerNight.Value)} mỗi đêm");
-                        }
-                    }
-
-                    var line = new StringBuilder("- ");
-                    line.Append(details.Any() ? string.Join(", ", details) : "Tùy chọn");
-
-                    if (!string.IsNullOrWhiteSpace(recommendation.Reason))
-                    {
-                        line.Append($" – {recommendation.Reason.Trim()}");
-                    }
-
-                    builder.AppendLine(line.ToString());
-                }
-            }
-
-            if (!string.Equals(response.RawText, builder.ToString(), StringComparison.Ordinal))
+            if (!string.Equals(response.RawText, reply, StringComparison.Ordinal))
             {
                 _logger.LogDebug("Gemini raw response: {Raw}", response.RawText);
             }
 
-            return builder.ToString().TrimEnd();
-        }
-
-        private static string FormatCurrency(double value)
-        {
-            return string.Format(CultureInfo.GetCultureInfo("vi-VN"), "{0:N0} VND", value);
+            return string.IsNullOrWhiteSpace(reply) ? response.RawText : reply;
         }
 
         private static string BuildRoomSearchGuidance(string userMessage, IEnumerable<string> cities)
@@ -1030,172 +895,10 @@ namespace Hotel_Booking_System.Services
             return trimmed[3..endIndex].Trim();
         }
 
-        private static string? ExtractFirstJsonObject(string text)
-        {
-            var start = text.IndexOf('{');
-            if (start < 0)
-            {
-                return null;
-            }
-
-            var depth = 0;
-            var inString = false;
-            var escape = false;
-
-            for (var i = start; i < text.Length; i++)
-            {
-                var ch = text[i];
-
-                if (inString)
-                {
-                    if (escape)
-                    {
-                        escape = false;
-                    }
-                    else if (ch == '\\')
-                    {
-                        escape = true;
-                    }
-                    else if (ch == '"')
-                    {
-                        inString = false;
-                    }
-
-                    continue;
-                }
-
-                if (ch == '"')
-                {
-                    inString = true;
-                    continue;
-                }
-
-                if (ch == '{')
-                {
-                    depth++;
-                    if (depth == 1)
-                    {
-                        start = i;
-                    }
-                }
-                else if (ch == '}')
-                {
-                    depth--;
-                    if (depth == 0)
-                    {
-                        return text[start..(i + 1)];
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private static string? ExtractReplyText(string text)
-        {
-            const string key = "\"reply\"";
-            var index = text.IndexOf(key, StringComparison.OrdinalIgnoreCase);
-            if (index < 0)
-            {
-                return null;
-            }
-
-            var colonIndex = text.IndexOf(':', index + key.Length);
-            if (colonIndex < 0)
-            {
-                return null;
-            }
-
-            var quoteIndex = text.IndexOf('"', colonIndex + 1);
-            if (quoteIndex < 0)
-            {
-                return null;
-            }
-
-            var builder = new StringBuilder();
-            var escaped = false;
-
-            for (var i = quoteIndex + 1; i < text.Length; i++)
-            {
-                var ch = text[i];
-
-                if (escaped)
-                {
-                    builder.Append(ch switch
-                    {
-                        '"' => '"',
-                        '\\' => '\\',
-                        'n' => '\n',
-                        'r' => '\r',
-                        't' => '\t',
-                        _ => ch
-                    });
-                    escaped = false;
-                    continue;
-                }
-
-                if (ch == '\\')
-                {
-                    escaped = true;
-                    continue;
-                }
-
-                if (ch == '"')
-                {
-                    return builder.ToString().Trim();
-                }
-
-                builder.Append(ch);
-            }
-
-            return null;
-        }
-
         private sealed class AiAssistantResponse
         {
             public string Reply { get; set; } = string.Empty;
-            public List<AiRecommendation> Recommendations { get; set; } = new();
             public string RawText { get; set; } = string.Empty;
-        }
-
-        private sealed class AiRecommendation
-        {
-            public string? RoomId { get; set; }
-            public string? HotelId { get; set; }
-            public string? HotelName { get; set; }
-            public string? RoomType { get; set; }
-            public double? PricePerNight { get; set; }
-            public string? Reason { get; set; }
-        }
-
-        private sealed class GeminiChatPayload
-        {
-            [JsonPropertyName("reply")]
-            public string? Reply { get; set; }
-
-            [JsonPropertyName("recommendedRooms")]
-            public List<GeminiRecommendedRoom?>? RecommendedRooms { get; set; }
-        }
-
-        private sealed class GeminiRecommendedRoom
-        {
-            [JsonPropertyName("roomId")]
-            public string? RoomId { get; set; }
-
-            [JsonPropertyName("hotelId")]
-            public string? HotelId { get; set; }
-
-            [JsonPropertyName("hotelName")]
-            public string? HotelName { get; set; }
-
-            [JsonPropertyName("roomType")]
-            public string? RoomType { get; set; }
-
-            [JsonPropertyName("pricePerNight")]
-            public double? PricePerNight { get; set; }
-
-            [JsonPropertyName("reason")]
-            public string? Reason { get; set; }
         }
      }
  }
