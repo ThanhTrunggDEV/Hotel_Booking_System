@@ -454,17 +454,17 @@
                                                         <Border x:Name="RowBorder" Background="{TemplateBinding Background}" CornerRadius="10" Padding="8" Margin="0,4">
                                                             <DataGridCellsPresenter/>
                                                         </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="RowBorder" Property="Background" Value="#FFF1F5F9"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsSelected" Value="True">
+                                                                <Setter TargetName="RowBorder" Property="Background" Value="#FFE3F2FD"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
                                                     </ControlTemplate>
                                                 </Setter.Value>
                                             </Setter>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="RowBorder" Property="Background" Value="#FFF1F5F9"/>
-                                                </Trigger>
-                                                <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="RowBorder" Property="Background" Value="#FFE3F2FD"/>
-                                                </Trigger>
-                                            </Style.Triggers>
                                         </Style>
                                     </DataGrid.RowStyle>
 
@@ -547,7 +547,6 @@
                                                                 Height="32"
                                                                 Margin="0,0,8,0"
                                                                 Content="✔️ Xác nhận"
-                                                                Style="{StaticResource SecondaryButton}"
                                                                 Command="{Binding DataContext.ConfirmBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                                 CommandParameter="{Binding}">
                                                             <Button.Style>
@@ -564,7 +563,6 @@
                                                         <Button Width="120"
                                                                 Height="32"
                                                                 Content="🗑️ Xử lý hủy"
-                                                                Style="{StaticResource SecondaryButton}"
                                                                 Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                                 CommandParameter="{Binding}">
                                                             <Button.Style>
