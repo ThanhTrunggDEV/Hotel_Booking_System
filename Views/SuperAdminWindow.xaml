@@ -72,32 +72,16 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Border Grid.Row="0" Grid.Column="0" Margin="0,0,15,15" Background="#40111111" Padding="15" CornerRadius="12">
+                                    <Border Grid.Column="0" Margin="0,0,15,0" Background="#40111111" Padding="15" CornerRadius="12">
                                         <StackPanel>
                                             <TextBlock Text="Tổng Khách Sạn" Foreground="#F5FFFFFF" FontSize="12"/>
                                             <TextBlock Text="{Binding TotalHotels}" Foreground="White" FontSize="26" FontWeight="Bold"/>
                                         </StackPanel>
                                     </Border>
-                                    <Border Grid.Row="0" Grid.Column="1" Margin="0,0,0,15" Background="#40111111" Padding="15" CornerRadius="12">
+                                    <Border Grid.Column="1" Background="#40111111" Padding="15" CornerRadius="12">
                                         <StackPanel>
                                             <TextBlock Text="Tổng Người Dùng" Foreground="#F5FFFFFF" FontSize="12"/>
                                             <TextBlock Text="{Binding TotalUsers}" Foreground="White" FontSize="26" FontWeight="Bold"/>
-                                        </StackPanel>
-                                    </Border>
-                                    <Border Grid.Row="1" Grid.Column="0" Margin="0,0,15,0" Background="#40111111" Padding="15" CornerRadius="12">
-                                        <StackPanel>
-                                            <TextBlock Text="Đơn Đặt Phòng Đang Hoạt Động" Foreground="#F5FFFFFF" FontSize="12" TextWrapping="Wrap"/>
-                                            <TextBlock Text="{Binding ActiveBookings}" Foreground="White" FontSize="26" FontWeight="Bold"/>
-                                        </StackPanel>
-                                    </Border>
-                                    <Border Grid.Row="1" Grid.Column="1" Background="#40111111" Padding="15" CornerRadius="12">
-                                        <StackPanel>
-                                            <TextBlock Text="Doanh Thu Tháng" Foreground="#F5FFFFFF" FontSize="12"/>
-                                            <TextBlock Text="{Binding MonthlyRevenue, StringFormat={}{0:C}}" Foreground="White" FontSize="26" FontWeight="Bold"/>
                                         </StackPanel>
                                     </Border>
                                 </Grid>
@@ -117,20 +101,6 @@
                                     <TextBlock Text="🧑‍🤝‍🧑" FontSize="24" Margin="0,0,0,10"/>
                                     <TextBlock Text="Tổng Người Dùng" FontSize="12" Foreground="#FF1565C0"/>
                                     <TextBlock Text="{Binding TotalUsers}" FontSize="24" FontWeight="Bold" Foreground="#FF0D47A1"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource CardStyle}" Background="#FFFFF3E0" Width="220" Height="120" Margin="0,0,15,15">
-                                <StackPanel Margin="15">
-                                    <TextBlock Text="🗓️" FontSize="24" Margin="0,0,0,10"/>
-                                    <TextBlock Text="Đơn Đặt Phòng" FontSize="12" Foreground="#FFEF6C00"/>
-                                    <TextBlock Text="{Binding ActiveBookings}" FontSize="24" FontWeight="Bold" Foreground="#FFE65100"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Style="{StaticResource CardStyle}" Background="#FFFFEBEE" Width="220" Height="120" Margin="0,0,15,15">
-                                <StackPanel Margin="15">
-                                    <TextBlock Text="💳" FontSize="24" Margin="0,0,0,10"/>
-                                    <TextBlock Text="Doanh Thu Tháng" FontSize="12" Foreground="#FFC62828"/>
-                                    <TextBlock Text="{Binding MonthlyRevenue, StringFormat={}{0:C}}" FontSize="22" FontWeight="Bold" Foreground="#FFB71C1C"/>
                                 </StackPanel>
                             </Border>
                             <Border Style="{StaticResource CardStyle}" Background="#FFF3E5F5" Width="220" Height="120" Margin="0,0,15,15">
