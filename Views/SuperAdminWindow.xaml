@@ -191,7 +191,7 @@
                                                                 </StackPanel>
                                                             </StackPanel>
                                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-                                                                <Button Style="{StaticResource ApproveActionButton}" Margin="0,0,12,0"
+                                                                <Button Style="{StaticResource SecondaryButton}" Margin="0,0,12,0"
                                                                         Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                         CommandParameter="{Binding RequestID}">
                                                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -199,7 +199,7 @@
                                                                         <TextBlock Text="Duyệt" FontSize="14" FontWeight="SemiBold"/>
                                                                     </StackPanel>
                                                                 </Button>
-                                                                <Button Style="{StaticResource RejectActionButton}"
+                                                                <Button Style="{StaticResource SecondaryButton}"
                                                                         Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                         CommandParameter="{Binding RequestID}">
                                                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -326,7 +326,7 @@
                                                                 </Border>
                                                             </StackPanel>
                                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-                                                                <Button Style="{StaticResource ApproveActionButton}" Margin="0,0,12,0"
+                                                                <Button Style="{StaticResource SecondaryButton}" Margin="0,0,12,0"
                                                                         Command="{Binding DataContext.ApproveHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                         CommandParameter="{Binding HotelID}">
                                                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -334,7 +334,7 @@
                                                                         <TextBlock Text="Duyệt" FontSize="14" FontWeight="SemiBold"/>
                                                                     </StackPanel>
                                                                 </Button>
-                                                                <Button Style="{StaticResource RejectActionButton}"
+                                                                <Button Style="{StaticResource SecondaryButton}"
                                                                         Command="{Binding DataContext.RejectHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                         CommandParameter="{Binding HotelID}">
                                                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -369,7 +369,7 @@
             </TabItem>
 
 
-            <TabItem x:Name="HotelManagementTab" Header="🏨 Hotel Management" Visibility="Visible">
+            <TabItem x:Name="HotelManagementTab" Style="{StaticResource TabItemStyle}" Header="🏨 Hotel Management" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
@@ -647,25 +647,12 @@
                             </Border>
                         </Grid>
 
-                        <Border Style="{StaticResource CardStyle}" Margin="0,20,0,0">
-                            <StackPanel Margin="24">
-                                <TextBlock Text="Lối tắt báo cáo" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
-                                <TextBlock Text="Chuẩn bị các báo cáo thường dùng chỉ bằng một cú nhấp chuột." FontSize="13" Foreground="#FF607D8B" Margin="0,0,0,12"/>
-                                <UniformGrid Columns="3" Rows="2" Margin="0,8,0,0">
-                                    <Button Content="📈 Hiệu suất khách sạn" Style="{StaticResource PrimaryButton}" Margin="6"/>
-                                    <Button Content="🏆 Khách sạn nổi bật" Style="{StaticResource PrimaryButton}" Margin="6"/>
-                                    <Button Content="📋 Tỷ lệ lấp phòng" Style="{StaticResource PrimaryButton}" Margin="6"/>
-                                    <Button Content="⭐ Tổng hợp đánh giá" Style="{StaticResource PrimaryButton}" Margin="6"/>
-                                    <Button Content="💰 Doanh thu theo khách sạn" Style="{StaticResource PrimaryButton}" Margin="6"/>
-                                    <Button Content="🚨 Cần chú ý" Style="{StaticResource PrimaryButton}" Margin="6" Background="#FFFF5722"/>
-                                </UniformGrid>
-                            </StackPanel>
-                        </Border>
+                       
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem x:Name="UserManagementTab" Header="👥 User Management" Visibility="Visible">
+            <TabItem x:Name="UserManagementTab" Style="{StaticResource TabItemStyle}" Header="👥 User Management" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
