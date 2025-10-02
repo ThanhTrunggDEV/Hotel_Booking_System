@@ -371,207 +371,313 @@
             <TabItem x:Name="HotelManagementTab" Header="🏨 Hotel Management" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="Hotel Management" Style="{StaticResource HeaderTextStyle}"/>
+                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                            <Grid Margin="24">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Hotel Management" Style="{StaticResource HeaderTextStyle}"/>
+                                    <TextBlock Text="Giám sát trạng thái khách sạn, áp dụng bộ lọc nâng cao và xem nhanh thông tin chi tiết từng khách sạn."
+                                               FontSize="13"
+                                               Foreground="#FF607D8B"
+                                               TextWrapping="Wrap"
+                                               Margin="0,8,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button Content="🔄 Làm mới" Style="{StaticResource SecondaryButton}" Width="110"
+                                            Command="{Binding RefreshHotelsAsyncCommand}" Margin="0,0,10,0"/>
+                                    <Button Content="📊 Phân tích" Style="{StaticResource SecondaryButton}" Width="110"
+                                            Command="{Binding ShowHotelAnalyticsCommand}"
+                                            CommandParameter="{Binding SelectedHotel}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
 
                         <Grid Margin="0,0,0,20">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                <Button Content="All Hotels" Style="{StaticResource PrimaryButton}" Width="100"
-                                        Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="All"/>
-                                <Button Content="Active" Background="#FF4CAF50" Style="{StaticResource PrimaryButton}" Width="80"
-                                        Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Active" Margin="10,0,0,0"/>
-                                <Button Content="Suspended" Background="#FFFF5722" Style="{StaticResource PrimaryButton}" Width="100"
-                                        Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Suspended" Margin="10,0,0,0"/>
-                                <ComboBox Style="{StaticResource ModernComboBox}" Width="160" Margin="10,0,0,0"
-                                          ItemsSource="{Binding CityOptions}"
-                                          SelectedItem="{Binding SelectedCity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                                <TextBox Text="{Binding HotelSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource ModernTextBox}" Width="220" Margin="0,0,10,0"/>
-                                <Button Content="🔍 Search" Width="100" Style="{StaticResource SecondaryButton}"
-                                        Command="{Binding SearchHotelsCommand}"/>
-                                <Button Content="✖ Clear" Width="100" Style="{StaticResource SecondaryButton}" Margin="10,0,0,0"
-                                        Command="{Binding ClearHotelSearchCommand}"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <Grid Margin="0,0,0,30">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Background="#FF4CAF50">
-                                <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding ActiveHotelsCount}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Active Hotels" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Background="#FF1E88E5" Margin="0,0,15,0">
+                                <StackPanel Margin="18">
+                                    <TextBlock Text="Đang hoạt động" Foreground="#B3FFFFFF" FontSize="12"/>
+                                    <TextBlock Text="{Binding ActiveHotelsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,0"/>
+                                    <TextBlock Text="Khách sạn hiển thị" Foreground="#E6FFFFFF" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
-                            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Background="#FFFF9800">
-                                <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding PendingHotelsCount}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Pending Approval" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Background="#FF8E24AA" Margin="0,0,15,0">
+                                <StackPanel Margin="18">
+                                    <TextBlock Text="Chờ duyệt" Foreground="#B3FFFFFF" FontSize="12"/>
+                                    <TextBlock Text="{Binding PendingHotelsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,0"/>
+                                    <TextBlock Text="Khách sạn đợi phê duyệt" Foreground="#E6FFFFFF" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
-                            <Border Grid.Column="2" Style="{StaticResource CardStyle}" Background="#FFFF5722">
-                                <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding SuspendedHotelsCount}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Suspended" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                            <Border Grid.Column="2" Style="{StaticResource CardStyle}" Background="#FFD84315" Margin="0,0,15,0">
+                                <StackPanel Margin="18">
+                                    <TextBlock Text="Tạm ngưng" Foreground="#B3FFFFFF" FontSize="12"/>
+                                    <TextBlock Text="{Binding SuspendedHotelsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,0"/>
+                                    <TextBlock Text="Đang bị ẩn khỏi hệ thống" Foreground="#E6FFFFFF" FontSize="12"/>
                                 </StackPanel>
                             </Border>
 
-                            <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FF2196F3">
-                                <StackPanel Margin="15" HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding AverageHotelRating, StringFormat=F1}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Avg Rating" Foreground="White" HorizontalAlignment="Center" FontSize="12"/>
+                            <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FF43A047">
+                                <StackPanel Margin="18">
+                                    <TextBlock Text="Điểm trung bình" Foreground="#B3FFFFFF" FontSize="12"/>
+                                    <TextBlock Text="{Binding AverageHotelRating, StringFormat=F1}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,0"/>
+                                    <TextBlock Text="Từ các đánh giá" Foreground="#E6FFFFFF" FontSize="12"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
 
-                        <Border Style="{StaticResource CardStyle}">
-                            <StackPanel Margin="25">
-                                <Grid Margin="0,0,0,15">
-                                    <TextBlock Text="Hotel Directory" FontSize="18" FontWeight="Bold"/>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button Content="🔄 Refresh" Style="{StaticResource SecondaryButton}" Width="90"
-                                                Command="{Binding RefreshHotelsAsyncCommand}"/>
-                                    </StackPanel>
+                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                            <StackPanel Margin="24">
+                                <TextBlock Text="Bộ lọc nâng cao" FontSize="18" FontWeight="Bold"/>
+                                <TextBlock Text="Lọc theo trạng thái, thành phố và từ khóa để tìm kiếm nhanh khách sạn phù hợp." FontSize="13" Foreground="#FF607D8B" TextWrapping="Wrap" Margin="0,8,0,0"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                    <Button Content="Tất cả" Style="{StaticResource PrimaryButton}" Width="90"
+                                            Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="All"/>
+                                    <Button Content="Hoạt động" Style="{StaticResource PrimaryButton}" Width="110" Margin="10,0,0,0" Background="#FF4CAF50"
+                                            Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Active"/>
+                                    <Button Content="Chờ duyệt" Style="{StaticResource PrimaryButton}" Width="110" Margin="10,0,0,0" Background="#FFFF9800"
+                                            Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Pending"/>
+                                    <Button Content="Tạm ngưng" Style="{StaticResource PrimaryButton}" Width="110" Margin="10,0,0,0" Background="#FFFF5722"
+                                            Command="{Binding SetHotelStatusFilterCommand}" CommandParameter="Suspended"/>
+                                </StackPanel>
+
+                                <Grid Margin="0,18,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="220"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <ComboBox Grid.Column="0" Style="{StaticResource ModernComboBox}"
+                                              ItemsSource="{Binding CityOptions}"
+                                              SelectedItem="{Binding SelectedCity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                    <TextBox Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource ModernTextBox}"
+                                             Text="{Binding HotelSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Height="32"/>
+
+                                    <Button Grid.Column="2" Content="🔍 Tìm kiếm" Style="{StaticResource SecondaryButton}" Width="110" Margin="10,0,0,0"
+                                            Command="{Binding SearchHotelsCommand}"/>
+                                    <Button Grid.Column="3" Content="✖ Xóa" Style="{StaticResource SecondaryButton}" Width="100" Margin="10,0,0,0"
+                                            Command="{Binding ClearHotelSearchCommand}"/>
                                 </Grid>
 
-                                <DataGrid Height="500" AutoGenerateColumns="False" CanUserAddRows="False"
-                                          ItemsSource="{Binding FilteredHotels}">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Hotel ID" Width="100" Binding="{Binding HotelID}"/>
-                                        <DataGridTextColumn Header="Hotel Name" Width="200" Binding="{Binding HotelName}"/>
-                                        <DataGridTextColumn Header="City" Width="100" Binding="{Binding City}"/>
-                                        <DataGridTextColumn Header="Address" Width="250" Binding="{Binding Address}"/>
-                                        <DataGridTextColumn Header="Star Rating" Width="80" Binding="{Binding Rating}"/>
-                                        <DataGridTextColumn Header="Total Rooms" Width="90" Binding="{Binding TotalRooms}"/>
-                                        <DataGridTextColumn Header="Admin" Width="120" Binding="{Binding AdminName}"/>
-                                        <DataGridTemplateColumn Header="Status" Width="80">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Border CornerRadius="12" Padding="8,4" HorizontalAlignment="Center">
-                                                        <Border.Style>
-                                                            <Style TargetType="Border">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="Active">
-                                                                        <Setter Property="Background" Value="#FF4CAF50"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="Pending">
-                                                                        <Setter Property="Background" Value="#FFFF9800"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Status}" Value="Suspended">
-                                                                        <Setter Property="Background" Value="#FFFF5722"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Border.Style>
-                                                        <TextBlock Text="{Binding Status}" Foreground="White" FontSize="10" FontWeight="Bold"/>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTextColumn Header="Created Date" Width="120" Binding="{Binding CreatedDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="220">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Button Content="👁️" ToolTip="View Details" Style="{StaticResource SecondaryButton}"
-                                                                Width="25" Height="25" Margin="2" FontSize="10"
-                                                                Command="{Binding DataContext.ViewHotelDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                CommandParameter="{Binding}"/>
-                                                        <Button Content="✏️" ToolTip="Edit Hotel" Style="{StaticResource SecondaryButton}"
-                                                                Background="#FF2196F3" Width="25" Height="25" Margin="2" FontSize="10"
-                                                                Command="{Binding DataContext.EditHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                CommandParameter="{Binding}"/>
-                                                        <Button Content="🏠" ToolTip="Manage Rooms" Style="{StaticResource SecondaryButton}"
-                                                                Background="#FFFF9800" Width="25" Height="25" Margin="2" FontSize="10"
-                                                                Command="{Binding DataContext.ManageHotelRoomsAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                CommandParameter="{Binding}"/>
-                                                        <Button Content="📊" ToolTip="Analytics" Style="{StaticResource SecondaryButton}"
-                                                                Background="#FF9C27B0" Width="25" Height="25" Margin="2" FontSize="10"
-                                                                Command="{Binding DataContext.ShowHotelAnalyticsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                CommandParameter="{Binding}"/>
-                                                        <Button Content="⚠️" ToolTip="Suspend" Style="{StaticResource SecondaryButton}"
-                                                                Background="#FFFF5722" Width="25" Height="25" Margin="2" FontSize="10"
-                                                                Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                CommandParameter="{Binding}"/>
-                                                        <Button Content="📧" ToolTip="Contact Admin" Style="{StaticResource SecondaryButton}"
-                                                                Background="#FF607D8B" Width="25" Height="25" Margin="2" FontSize="10"
-                                                                Command="{Binding DataContext.ContactHotelAdminAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                CommandParameter="{Binding}"/>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-
-                                <Grid Margin="0,15,0,0">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding HotelCountText}" VerticalAlignment="Center" FontSize="12" Foreground="#FF666666"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button Content="Previous" Style="{StaticResource SecondaryButton}" Width="70" Height="30" Margin="0,0,5,0"/>
-                                        <Button Content="1" Style="{StaticResource PrimaryButton}" Width="30" Height="30" Margin="2"/>
-                                        <Button Content="2" Style="{StaticResource SecondaryButton}" Width="30" Height="30" Margin="2"/>
-                                        <Button Content="3" Style="{StaticResource SecondaryButton}" Width="30" Height="30" Margin="2"/>
-                                        <Button Content="..." Style="{StaticResource SecondaryButton}" Width="30" Height="30" Margin="2"/>
-                                        <Button Content="16" Style="{StaticResource SecondaryButton}" Width="30" Height="30" Margin="2"/>
-                                        <Button Content="Next" Style="{StaticResource SecondaryButton}" Width="70" Height="30" Margin="5,0,0,0"/>
-                                    </StackPanel>
-                                </Grid>
+                                <TextBlock Text="{Binding HotelCountText}" Foreground="#FF607D8B" FontSize="12" Margin="0,16,0,0"/>
                             </StackPanel>
                         </Border>
 
-                        <Border Style="{StaticResource CardStyle}" Margin="0,20,0,0">
-                            <StackPanel Margin="25">
-                                <TextBlock Text="Quick Actions Reports" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
 
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,15,0">
+                                <StackPanel Margin="24">
+                                    <TextBlock Text="Danh sách khách sạn" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+                                    <DataGrid Height="520" AutoGenerateColumns="False" CanUserAddRows="False"
+                                              ItemsSource="{Binding FilteredHotels}"
+                                              SelectedItem="{Binding SelectedHotel, Mode=TwoWay}"
+                                              IsReadOnly="True"
+                                              RowBackground="White"
+                                              AlternatingRowBackground="#FFF5F7FA"
+                                              BorderThickness="0"
+                                              HeadersVisibility="Column">
+                                        <DataGrid.Resources>
+                                            <Style TargetType="DataGridColumnHeader">
+                                                <Setter Property="Background" Value="#FFE3F2FD"/>
+                                                <Setter Property="Foreground" Value="#FF0D47A1"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="Padding" Value="8,6"/>
+                                            </Style>
+                                        </DataGrid.Resources>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Mã" Width="80" Binding="{Binding HotelID}"/>
+                                            <DataGridTextColumn Header="Khách sạn" Width="220" Binding="{Binding HotelName}"/>
+                                            <DataGridTextColumn Header="Thành phố" Width="120" Binding="{Binding City}"/>
+                                            <DataGridTextColumn Header="Phòng" Width="80" Binding="{Binding TotalRooms}"/>
+                                            <DataGridTextColumn Header="Đánh giá" Width="90" Binding="{Binding Rating, StringFormat=F1}"/>
+                                            <DataGridTemplateColumn Header="Giá" Width="140">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                                                            <TextBlock Text="{Binding MinPrice, StringFormat='Từ {0:C}'}" FontSize="11" Foreground="#FF455A64"/>
+                                                            <TextBlock Text="{Binding MaxPrice, StringFormat='Đến {0:C}'}" FontSize="11" Foreground="#FF455A64"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Trạng thái" Width="120">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Border CornerRadius="12" Padding="8,4" HorizontalAlignment="Center">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Background" Value="#FF90A4AE"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Active">
+                                                                            <Setter Property="Background" Value="#FF4CAF50"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                            <Setter Property="Background" Value="#FFFF9800"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Suspended">
+                                                                            <Setter Property="Background" Value="#FFFF5722"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <TextBlock Text="{Binding Status}" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Tác vụ" Width="240">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Button Content="👁️" ToolTip="Xem chi tiết" Style="{StaticResource SecondaryButton}"
+                                                                    Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.ViewHotelDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="✏️" ToolTip="Chỉnh sửa" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FF2196F3" Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.EditHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="🏠" ToolTip="Quản lý phòng" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FFFF9800" Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.ManageHotelRoomsAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="📊" ToolTip="Phân tích" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FF9C27B0" Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.ShowHotelAnalyticsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="⚠️" ToolTip="Đổi trạng thái" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FFFF5722" Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="📧" ToolTip="Liên hệ admin" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FF607D8B" Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.ContactHotelAdminAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
 
-                                    <StackPanel Grid.Column="0" Margin="0,0,15,0">
-                                        <Button Content="📈 Hotel Performance Report" Style="{StaticResource PrimaryButton}" 
-                                   HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="🏆 Top Performing Hotels" Style="{StaticResource PrimaryButton}" 
-                                   HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="📋 Occupancy Analytics" Style="{StaticResource PrimaryButton}" 
-                                   HorizontalAlignment="Stretch" Margin="0,5"/>
-                                    </StackPanel>
+                            <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                                <Grid Margin="24">
+                                    <Grid.DataContext>
+                                        <Binding Path="SelectedHotel"/>
+                                    </Grid.DataContext>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
 
-                                    <StackPanel Grid.Column="1" Margin="7.5,0">
-                                        <Button Content="⭐ Rating Review Summary" Style="{StaticResource PrimaryButton}" 
-                                   HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="💰 Revenue by Hotel" Style="{StaticResource PrimaryButton}" 
-                                   HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="🚨 Hotels Needing Attention" Style="{StaticResource PrimaryButton}" 
-                                   Background="#FFFF5722" HorizontalAlignment="Stretch" Margin="0,5"/>
-                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding HotelName}" FontSize="20" FontWeight="Bold" TextWrapping="Wrap"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                            <TextBlock Text="📍" FontSize="16" Margin="0,0,6,0"/>
+                                            <TextBlock Text="{Binding Address}" FontSize="13" Foreground="#FF455A64" TextWrapping="Wrap" Width="220"/>
+                                        </StackPanel>
 
-                                    <StackPanel Grid.Column="2" Margin="15,0,0,0">
-                                        <Button Content="📊 Bulk Update Hotels" Style="{StaticResource PrimaryButton}" 
-                                   Background="#FFFF9800" HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="📤 Export Hotel Data" Style="{StaticResource PrimaryButton}" 
-                                   Background="#FF4CAF50" HorizontalAlignment="Stretch" Margin="0,5"/>
-                                        <Button Content="🔧 System Maintenance" Style="{StaticResource PrimaryButton}" 
-                                   Background="#FF9C27B0" HorizontalAlignment="Stretch" Margin="0,5"/>
+                                        <UniformGrid Columns="2" Margin="0,16,0,0">
+                                            <StackPanel Margin="0,0,12,12">
+                                                <TextBlock Text="Thành phố" FontSize="12" Foreground="#FF607D8B"/>
+                                                <TextBlock Text="{Binding City}" FontSize="15" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="12,0,0,12">
+                                                <TextBlock Text="Quản trị viên" FontSize="12" Foreground="#FF607D8B"/>
+                                                <TextBlock Text="{Binding AdminName}" FontSize="15" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,12,0">
+                                                <TextBlock Text="Số phòng" FontSize="12" Foreground="#FF607D8B"/>
+                                                <TextBlock Text="{Binding TotalRooms}" FontSize="15" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="12,0,0,0">
+                                                <TextBlock Text="Giá tham khảo" FontSize="12" Foreground="#FF607D8B"/>
+                                                <TextBlock Text="{Binding MinPrice, StringFormat='Từ {0:C}'}" FontSize="13" Foreground="#FF455A64"/>
+                                                <TextBlock Text="{Binding MaxPrice, StringFormat='Đến {0:C}'}" FontSize="13" Foreground="#FF455A64"/>
+                                            </StackPanel>
+                                        </UniformGrid>
+
+                                        <Border Background="#FFF5F7FA" CornerRadius="10" Padding="14" Margin="0,16,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="Mô tả" FontSize="12" Foreground="#FF607D8B" Margin="0,0,0,6"/>
+                                                <ScrollViewer Height="120" VerticalScrollBarVisibility="Auto" Background="Transparent">
+                                                    <TextBlock Text="{Binding Description}" FontSize="13" Foreground="#FF37474F" TextWrapping="Wrap"/>
+                                                </ScrollViewer>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,18,0,0" HorizontalAlignment="Right">
+                                            <Button Content="👁️ Xem" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0"
+                                                    Command="{Binding DataContext.ViewHotelDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                    CommandParameter="{Binding}"/>
+                                            <Button Content="✏️ Sửa" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0" Background="#FF2196F3"
+                                                    Command="{Binding DataContext.EditHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                    CommandParameter="{Binding}"/>
+                                            <Button Content="⚙️ Phòng" Style="{StaticResource SecondaryButton}" Width="90" Margin="0,0,8,0" Background="#FFFF9800"
+                                                    Command="{Binding DataContext.ManageHotelRoomsAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                    CommandParameter="{Binding}"/>
+                                            <Button Content="🚦 Trạng thái" Style="{StaticResource SecondaryButton}" Width="110" Background="#FFFF5722"
+                                                    Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                    CommandParameter="{Binding}"/>
+                                        </StackPanel>
                                     </StackPanel>
                                 </Grid>
+
+                                <TextBlock Text="Chọn một khách sạn trong danh sách để xem thông tin chi tiết." Foreground="#FF90A4AE" FontStyle="Italic" TextAlignment="Center" Margin="20">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedHotel}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Border>
+                        </Grid>
+
+                        <Border Style="{StaticResource CardStyle}" Margin="0,20,0,0">
+                            <StackPanel Margin="24">
+                                <TextBlock Text="Lối tắt báo cáo" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <TextBlock Text="Chuẩn bị các báo cáo thường dùng chỉ bằng một cú nhấp chuột." FontSize="13" Foreground="#FF607D8B" Margin="0,0,0,12"/>
+                                <UniformGrid Columns="3" Rows="2" Margin="0,8,0,0">
+                                    <Button Content="📈 Hiệu suất khách sạn" Style="{StaticResource PrimaryButton}" Margin="6"/>
+                                    <Button Content="🏆 Khách sạn nổi bật" Style="{StaticResource PrimaryButton}" Margin="6"/>
+                                    <Button Content="📋 Tỷ lệ lấp phòng" Style="{StaticResource PrimaryButton}" Margin="6"/>
+                                    <Button Content="⭐ Tổng hợp đánh giá" Style="{StaticResource PrimaryButton}" Margin="6"/>
+                                    <Button Content="💰 Doanh thu theo khách sạn" Style="{StaticResource PrimaryButton}" Margin="6"/>
+                                    <Button Content="🚨 Cần chú ý" Style="{StaticResource PrimaryButton}" Margin="6" Background="#FFFF5722"/>
+                                </UniformGrid>
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -581,68 +687,287 @@
             <TabItem x:Name="UserManagementTab" Header="👥 User Management" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="User Management" Style="{StaticResource HeaderTextStyle}"/>
+                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                            <Grid Margin="24">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="User Management" Style="{StaticResource HeaderTextStyle}"/>
+                                    <TextBlock Text="Theo dõi người dùng trên toàn hệ thống, phân loại nhanh theo vai trò và xem thông tin chi tiết."
+                                               FontSize="13" Foreground="#FF607D8B" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <TextBlock Text="Tổng số người dùng" Foreground="#FF607D8B" FontSize="12" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="{Binding TotalUsers}" FontSize="28" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
 
                         <Grid Margin="0,0,0,20">
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="All Users" Style="{StaticResource PrimaryButton}" Width="100"/>
-                                <Button Content="Customers" Background="#FF2196F3" Style="{StaticResource PrimaryButton}" Width="100"/>
-                                <Button Content="Hotel Admins" Background="#FFFF9800" Style="{StaticResource PrimaryButton}" Width="120"/>
-                                <Button Content="Super Admins" Background="#FFFF5722" Style="{StaticResource PrimaryButton}" Width="120"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                                <TextBox Text="Search users..." 
-                                        Style="{StaticResource ModernTextBox}" Margin="0,0,10,0"/>
-                                <Button Content="🔍 Search" Width="100" Style="{StaticResource SecondaryButton}"/>
-                            </StackPanel>
+                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Background="#FF3949AB" Margin="0,0,15,0">
+                                <StackPanel Margin="18">
+                                    <TextBlock Text="Tất cả" Foreground="#B3FFFFFF" FontSize="12"/>
+                                    <TextBlock Text="{Binding TotalUsers}" FontSize="26" FontWeight="Bold" Foreground="White" Margin="0,8,0,0"/>
+                                    <TextBlock Text="Người dùng trong hệ thống" Foreground="#E6FFFFFF" FontSize="12"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Background="#FF00897B" Margin="0,0,15,0">
+                                <StackPanel Margin="18">
+                                    <TextBlock Text="Khách hàng" Foreground="#B3FFFFFF" FontSize="12"/>
+                                    <TextBlock Text="{Binding CustomerCount}" FontSize="26" FontWeight="Bold" Foreground="White" Margin="0,8,0,0"/>
+                                    <TextBlock Text="Tài khoản đặt phòng" Foreground="#E6FFFFFF" FontSize="12"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Style="{StaticResource CardStyle}" Background="#FFFB8C00" Margin="0,0,15,0">
+                                <StackPanel Margin="18">
+                                    <TextBlock Text="Quản trị khách sạn" Foreground="#B3FFFFFF" FontSize="12"/>
+                                    <TextBlock Text="{Binding HotelAdminCount}" FontSize="26" FontWeight="Bold" Foreground="White" Margin="0,8,0,0"/>
+                                    <TextBlock Text="Admin từng khách sạn" Foreground="#E6FFFFFF" FontSize="12"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="3" Style="{StaticResource CardStyle}" Background="#FFD81B60">
+                                <StackPanel Margin="18">
+                                    <TextBlock Text="Super Admin" Foreground="#B3FFFFFF" FontSize="12"/>
+                                    <TextBlock Text="{Binding SuperAdminCount}" FontSize="26" FontWeight="Bold" Foreground="White" Margin="0,8,0,0"/>
+                                    <TextBlock Text="Quản trị hệ thống" Foreground="#E6FFFFFF" FontSize="12"/>
+                                </StackPanel>
+                            </Border>
                         </Grid>
 
-                        <Border Style="{StaticResource CardStyle}">
-                            <StackPanel Margin="25">
-                                <DataGrid Height="400" AutoGenerateColumns="False" CanUserAddRows="False"
-                                          ItemsSource="{Binding Users}">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="User ID" Width="100" Binding="{Binding UserID}"/>
-                                        <DataGridTextColumn Header="Name" Width="160" Binding="{Binding FullName}"/>
-                                        <DataGridTextColumn Header="Email" Width="200" Binding="{Binding Email}"/>
-                                        <DataGridTextColumn Header="Phone" Width="120" Binding="{Binding Phone}"/>
-                                        <DataGridTextColumn Header="Gender" Width="100" Binding="{Binding Gender}"/>
-                                        <DataGridTextColumn Header="Role" Width="120" Binding="{Binding Role}"/>
-                                        <DataGridTextColumn Header="Date of Birth" Width="140" Binding="{Binding DateOfBirth, StringFormat='{}{0:dd/MM/yyyy}'}"/>
-                                        <DataGridTemplateColumn Header="Actions" Width="200">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Button Content="👁️" ToolTip="View Details" Style="{StaticResource SecondaryButton}"
-                                                               Width="25" Height="25" Margin="2" FontSize="10"
-                                                               Command="{Binding DataContext.ViewUserDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                               CommandParameter="{Binding}"/>
-                                                        <Button Content="✏️" ToolTip="Edit User" Style="{StaticResource SecondaryButton}"
-                                                               Background="#FFFF9800" Width="25" Height="25" Margin="2" FontSize="10"
-                                                               Command="{Binding DataContext.EditUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                               CommandParameter="{Binding}"/>
-                                                        <Button Content="🚫" ToolTip="Deactivate" Style="{StaticResource SecondaryButton}"
-                                                               Background="#FFFF5722" Width="25" Height="25" Margin="2" FontSize="10"
-                                                               Command="{Binding DataContext.DeactivateUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                               CommandParameter="{Binding}"/>
-                                                        <Button Content="📧" ToolTip="Contact User" Style="{StaticResource SecondaryButton}"
-                                                               Background="#FF2196F3" Width="25" Height="25" Margin="2" FontSize="10"
-                                                               Command="{Binding DataContext.ContactUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                               CommandParameter="{Binding}"/>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
+                        <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                            <StackPanel Margin="24">
+                                <TextBlock Text="Bộ lọc người dùng" FontSize="18" FontWeight="Bold"/>
+                                <TextBlock Text="Sử dụng các bộ lọc theo vai trò và từ khóa để thu hẹp danh sách người dùng." FontSize="13" Foreground="#FF607D8B" Margin="0,8,0,0" TextWrapping="Wrap"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                    <Button Content="Tất cả" Style="{StaticResource PrimaryButton}" Width="90"
+                                            Command="{Binding SetUserRoleFilterCommand}" CommandParameter="All"/>
+                                    <Button Content="Khách hàng" Style="{StaticResource PrimaryButton}" Width="120" Margin="10,0,0,0" Background="#FF2196F3"
+                                            Command="{Binding SetUserRoleFilterCommand}" CommandParameter="Customer"/>
+                                    <Button Content="Hotel Admin" Style="{StaticResource PrimaryButton}" Width="120" Margin="10,0,0,0" Background="#FFFF9800"
+                                            Command="{Binding SetUserRoleFilterCommand}" CommandParameter="HotelAdmin"/>
+                                    <Button Content="Super Admin" Style="{StaticResource PrimaryButton}" Width="120" Margin="10,0,0,0" Background="#FFFF5722"
+                                            Command="{Binding SetUserRoleFilterCommand}" CommandParameter="SuperAdmin"/>
+                                </StackPanel>
+
+                                <Grid Margin="0,18,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" Style="{StaticResource ModernTextBox}"
+                                             Text="{Binding UserSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Height="32"/>
+
+                                    <Button Grid.Column="1" Content="🔍 Tìm kiếm" Style="{StaticResource SecondaryButton}" Width="110" Margin="10,0,0,0"
+                                            Command="{Binding SearchUsersCommand}"/>
+                                    <Button Grid.Column="2" Content="✖ Xóa" Style="{StaticResource SecondaryButton}" Width="100" Margin="10,0,0,0"
+                                            Command="{Binding ClearUserSearchCommand}"/>
+                                </Grid>
+
+                                <TextBlock Text="{Binding UserFilterSummary}" Foreground="#FF607D8B" FontSize="12" Margin="0,16,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,15,0">
+                                <StackPanel Margin="24">
+                                    <TextBlock Text="Danh sách người dùng" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+                                    <DataGrid Height="520" AutoGenerateColumns="False" CanUserAddRows="False"
+                                              ItemsSource="{Binding FilteredUsers}"
+                                              SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
+                                              IsReadOnly="True"
+                                              RowBackground="White"
+                                              AlternatingRowBackground="#FFF5F7FA"
+                                              BorderThickness="0"
+                                              HeadersVisibility="Column">
+                                        <DataGrid.Resources>
+                                            <Style TargetType="DataGridColumnHeader">
+                                                <Setter Property="Background" Value="#FFE8F5E9"/>
+                                                <Setter Property="Foreground" Value="#FF1B5E20"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="Padding" Value="8,6"/>
+                                            </Style>
+                                        </DataGrid.Resources>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Mã" Width="90" Binding="{Binding UserID}"/>
+                                            <DataGridTextColumn Header="Họ tên" Width="180" Binding="{Binding FullName}"/>
+                                            <DataGridTextColumn Header="Email" Width="220" Binding="{Binding Email}"/>
+                                            <DataGridTextColumn Header="Số điện thoại" Width="130" Binding="{Binding Phone}"/>
+                                            <DataGridTemplateColumn Header="Vai trò" Width="120">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Border CornerRadius="12" Padding="8,4" HorizontalAlignment="Center" Background="#FF90A4AE">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Background" Value="#FF90A4AE"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Role}" Value="Customer">
+                                                                            <Setter Property="Background" Value="#FF64B5F6"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Role}" Value="HotelAdmin">
+                                                                            <Setter Property="Background" Value="#FFFFB74D"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Role}" Value="Hotel Admin">
+                                                                            <Setter Property="Background" Value="#FFFFB74D"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Role}" Value="SuperAdmin">
+                                                                            <Setter Property="Background" Value="#FFFF8A65"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Role}" Value="Super Admin">
+                                                                            <Setter Property="Background" Value="#FFFF8A65"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <TextBlock Text="{Binding Role}" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Giới tính" Width="100" Binding="{Binding Gender}"/>
+                                            <DataGridTextColumn Header="Ngày sinh" Width="140" Binding="{Binding DateOfBirth, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+                                            <DataGridTemplateColumn Header="Tác vụ" Width="220">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Button Content="👁️" ToolTip="Xem chi tiết" Style="{StaticResource SecondaryButton}"
+                                                                    Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.ViewUserDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="✏️" ToolTip="Chỉnh sửa" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FFFF9800" Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.EditUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="🚫" ToolTip="Vô hiệu hóa" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FFFF5722" Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.DeactivateUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="📧" ToolTip="Liên hệ" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FF2196F3" Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.ContactUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                                <Grid Margin="24">
+                                    <Grid.DataContext>
+                                        <Binding Path="SelectedUser"/>
+                                    </Grid.DataContext>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <StackPanel>
+                                    <TextBlock Text="{Binding FullName}" FontSize="20" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    <Border Background="#FF3949AB" CornerRadius="12" Padding="8,4" HorizontalAlignment="Left" Margin="0,8,0,0">
+                                        <TextBlock Text="{Binding Role}" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
+                                    </Border>
+
+                                    <StackPanel Margin="0,16,0,0">
+                                        <TextBlock Text="Thông tin liên hệ" FontSize="12" Foreground="#FF607D8B"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                            <TextBlock Text="📧" FontSize="16" Margin="0,0,8,0"/>
+                                            <TextBlock Text="{Binding Email}" FontSize="13" Foreground="#FF37474F" TextWrapping="Wrap" Width="220"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                            <TextBlock Text="📱" FontSize="16" Margin="0,0,8,0"/>
+                                            <TextBlock Text="{Binding Phone}" FontSize="13" Foreground="#FF37474F"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <UniformGrid Columns="2" Margin="0,16,0,0">
+                                        <StackPanel Margin="0,0,12,12">
+                                            <TextBlock Text="Giới tính" FontSize="12" Foreground="#FF607D8B"/>
+                                            <TextBlock Text="{Binding Gender}" FontSize="15" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="12,0,0,12">
+                                            <TextBlock Text="Ngày sinh" FontSize="12" Foreground="#FF607D8B"/>
+                                            <TextBlock Text="{Binding DateOfBirth, StringFormat='{}{0:dd/MM/yyyy}'}" FontSize="15" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0" HorizontalAlignment="Right">
+                                        <Button Content="👁️ Xem" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0"
+                                                Command="{Binding DataContext.ViewUserDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                CommandParameter="{Binding}"/>
+                                        <Button Content="✏️ Sửa" Style="{StaticResource SecondaryButton}" Width="80" Margin="0,0,8,0" Background="#FFFF9800"
+                                                Command="{Binding DataContext.EditUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                CommandParameter="{Binding}"/>
+                                        <Button Content="🚫 Khóa" Style="{StaticResource SecondaryButton}" Width="90" Margin="0,0,8,0" Background="#FFFF5722"
+                                                Command="{Binding DataContext.DeactivateUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                CommandParameter="{Binding}"/>
+                                        <Button Content="📧 Liên hệ" Style="{StaticResource SecondaryButton}" Width="100" Background="#FF2196F3"
+                                                Command="{Binding DataContext.ContactUserAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+
+                                <TextBlock Text="Chọn một người dùng để xem thông tin chi tiết và thao tác nhanh." Foreground="#FF90A4AE" FontStyle="Italic" TextAlignment="Center" Margin="20">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedUser}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Border>
+                        </Grid>
+
+                        <Border Style="{StaticResource CardStyle}" Margin="0,20,0,0">
+                            <StackPanel Margin="24">
+                                <TextBlock Text="Thao tác nhanh" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <TextBlock Text="Các công cụ hỗ trợ chăm sóc khách hàng và quản trị người dùng." FontSize="13" Foreground="#FF607D8B" Margin="0,0,0,12"/>
+                                <WrapPanel>
+                                    <Button Content="📨 Gửi email hàng loạt" Style="{StaticResource PrimaryButton}" Margin="6"/>
+                                    <Button Content="📦 Xuất danh sách" Style="{StaticResource PrimaryButton}" Margin="6"/>
+                                    <Button Content="🛡️ Kiểm tra bảo mật" Style="{StaticResource PrimaryButton}" Margin="6"/>
+                                    <Button Content="📊 Báo cáo hoạt động" Style="{StaticResource PrimaryButton}" Margin="6"/>
+                                </WrapPanel>
                             </StackPanel>
                         </Border>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-
-
             <TabItem Style="{StaticResource TabItemStyle}" Header="👤 Profile" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <Grid MaxWidth="1000">
