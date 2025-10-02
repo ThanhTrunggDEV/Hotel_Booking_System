@@ -3,12 +3,16 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
-using Mscc.GenerativeAI;
+using Microsoft.Extensions.Logging;
 
 namespace Hotel_Booking_System.Services
 {
@@ -16,37 +20,32 @@ namespace Hotel_Booking_System.Services
     {
         private readonly IAIChatRepository _repository;
         private readonly GeminiOptions _options;
-        private readonly GenerativeModel _generativeModel;
+        private readonly HttpClient _httpClient;
         private readonly IHotelRepository _hotelRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly IReviewRepository _reviewRepository;
+        private readonly ILogger<AIChatService> _logger;
         private readonly ConcurrentDictionary<string, RoomSearchState> _roomSearchStates = new();
 
         public AIChatService(
             IAIChatRepository repository,
             GeminiOptions options,
+            HttpClient httpClient,
             IBookingRepository bookingRepository,
             IHotelRepository hotelRepository,
             IRoomRepository roomRepository,
-            IReviewRepository reviewRepository)
+            IReviewRepository reviewRepository,
+            ILogger<AIChatService> logger)
         {
-            _repository = repository;
-            _hotelRepository = hotelRepository;
-            _roomRepository = roomRepository;
-            _bookingRepository = bookingRepository;
-            _reviewRepository = reviewRepository;
-            _options = options;
-
-            var apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")
-                         ?? throw new InvalidOperationException("GEMINI_API_KEY is not set");
-
-            var modelName = Environment.GetEnvironmentVariable("GEMINI_MODEL")
-                            ?? _options.DefaultModel
-                            ?? Model.Gemini15Pro;
-
-            var googleAI = new GoogleAI(apiKey);
-            _generativeModel = googleAI.GenerativeModel(model: modelName);
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _bookingRepository = bookingRepository ?? throw new ArgumentNullException(nameof(bookingRepository));
+            _hotelRepository = hotelRepository ?? throw new ArgumentNullException(nameof(hotelRepository));
+            _roomRepository = roomRepository ?? throw new ArgumentNullException(nameof(roomRepository));
+            _reviewRepository = reviewRepository ?? throw new ArgumentNullException(nameof(reviewRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<AIChat> SendAsync(string userId, string message, string? model = null)
@@ -72,61 +71,25 @@ namespace Hotel_Booking_System.Services
                 return guidedChat;
             }
 
-            var context = new StringBuilder();
-            context.AppendLine("Dưới đây là ảnh chụp dữ liệu hiện có:");
-            context.AppendLine("\nDanh sách khách sạn:");
-            foreach (var h in hotels)
-            {
-                ratingsByHotel.TryGetValue(h.HotelID, out var userRating);
-                context.AppendLine($"- {h.HotelID}, {h.HotelName}, Địa chỉ: {h.Address}, {h.City}, Khoảng giá: {h.MinPrice}-{h.MaxPrice}, Đánh giá hệ thống: {h.Rating}, Điểm khách hàng: {userRating:F1}");
-            }
+            var history = await _repository.GetByUserId(userId);
+            var orderedHistory = history
+                .OrderBy(c => c.CreatedAt)
+                .TakeLast(10)
+                .ToList();
 
-            context.AppendLine("\nDanh sách phòng:");
-            foreach (var r in rooms)
-            {
-                context.AppendLine($"- Phòng {r.RoomNumber}: {r.RoomType}, Sức chứa: {r.Capacity}, Giá/đêm: {r.PricePerNight}, Trạng thái: {r.Status}");
-            }
+            var resolvedModel = string.IsNullOrWhiteSpace(model) ? _options.DefaultModel : model;
+            var systemPrompt = BuildSystemPrompt(message, hotels, rooms, ratingsByHotel, bookings);
+            var payload = BuildPayload(systemPrompt, orderedHistory, message);
 
-            context.AppendLine("\nMột số đặt phòng gần đây của người dùng:");
-            foreach (var b in bookings.Where(b => b != null).Take(10))
-            {
-                context.AppendLine($"- Mã {b!.BookingID}: Người dùng {b.UserID}, Phòng {b.RoomID}, Từ {b.CheckInDate} đến {b.CheckOutDate}, Trạng thái: {b.Status}");
-            }
-
-            var promptBuilder = new StringBuilder();
-            promptBuilder.AppendLine("Bạn là trợ lý du lịch ảo của hệ thống đặt phòng khách sạn NTT.");
-            promptBuilder.AppendLine("Yêu cầu bắt buộc:");
-            promptBuilder.AppendLine("1. Luôn trả lời 100% bằng tiếng Việt tự nhiên, ngắn gọn, súc tích.");
-            promptBuilder.AppendLine("2. Chỉ sử dụng dữ liệu được cung cấp trong ngữ cảnh. Nếu không đủ thông tin, hãy nói rõ rằng bạn không có dữ liệu.");
-            promptBuilder.AppendLine("3. Không được suy đoán hoặc sáng tạo thông tin mới, không được viện dẫn nguồn bên ngoài.");
-            promptBuilder.AppendLine("4. Khi cần thêm thông tin để hỗ trợ việc tìm phòng, hãy hỏi từng câu riêng biệt và chờ phản hồi.");
-            promptBuilder.AppendLine("5. Nếu người dùng hủy hoặc không muốn tiếp tục, hãy trả lời lịch sự và không cung cấp thêm gợi ý.");
-
-            var missingInformationInstruction = BuildRoomSearchGuidance(message, hotels.Select(h => h.City));
-            if (!string.IsNullOrEmpty(missingInformationInstruction))
-            {
-                promptBuilder.AppendLine();
-                promptBuilder.AppendLine(missingInformationInstruction);
-            }
-
-            promptBuilder.AppendLine();
-            promptBuilder.AppendLine("Ngữ cảnh dữ liệu (chỉ dùng để tham khảo khi cần trả lời):");
-            promptBuilder.AppendLine(context.ToString());
-            promptBuilder.AppendLine();
-            promptBuilder.AppendLine("Câu hỏi của người dùng:");
-            promptBuilder.AppendLine(message);
-
-            var prompt = promptBuilder.ToString();
-
-            var result = await _generativeModel.GenerateContent(prompt);
-            var response = result.Text ?? string.Empty;
+            var responseText = await GenerateModelResponseAsync(payload, resolvedModel);
+            var normalizedResponse = NormalizeResponse(responseText);
 
             var chat = new AIChat
             {
                 ChatID = Guid.NewGuid().ToString(),
                 UserID = userId,
                 Message = message,
-                Response = response,
+                Response = normalizedResponse,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -134,6 +97,196 @@ namespace Hotel_Booking_System.Services
             await _repository.SaveAsync();
 
             return chat;
+        }
+
+        private async Task<string> GenerateModelResponseAsync(object payload, string? modelName)
+        {
+            var apiKey = ResolveApiKey();
+            if (string.IsNullOrWhiteSpace(apiKey))
+            {
+                return "Xin lỗi, trợ lý AI chưa được cấu hình khóa truy cập. Bạn vui lòng liên hệ quản trị viên giúp mình nhé.";
+            }
+
+            var endpoint = BuildEndpoint(apiKey, modelName);
+
+            const int maxAttempts = 3;
+            var delay = TimeSpan.FromSeconds(1);
+
+            for (var attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                try
+                {
+                    using var response = await _httpClient.PostAsJsonAsync(endpoint, payload);
+                    var responseBody = await response.Content.ReadAsStringAsync();
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        if (ShouldRetry(response.StatusCode) && attempt < maxAttempts)
+                        {
+                            _logger.LogWarning("Gemini API trả về lỗi tạm thời {StatusCode} (attempt {Attempt}/{MaxAttempts}). Sẽ thử lại sau {Delay} giây.",
+                                (int)response.StatusCode, attempt, maxAttempts, delay.TotalSeconds);
+                        }
+                        else
+                        {
+                            _logger.LogError("Gemini API trả về lỗi {StatusCode}: {Body}", (int)response.StatusCode, responseBody);
+                            return "Xin lỗi, hiện mình chưa kết nối được với trợ lý AI. Bạn vui lòng thử lại sau ít phút nhé.";
+                        }
+                    }
+                    else
+                    {
+                        using var document = JsonDocument.Parse(responseBody);
+                        var text = ExtractText(document);
+
+                        if (string.IsNullOrWhiteSpace(text))
+                        {
+                            _logger.LogWarning("Gemini API không trả về nội dung văn bản.");
+                            return "Mình chưa nhận được phản hồi phù hợp. Bạn có thể diễn đạt lại yêu cầu giúp mình không?";
+                        }
+
+                        return StripCodeFence(text.Trim());
+                    }
+                }
+                catch (Exception ex) when (IsTransientException(ex) && attempt < maxAttempts)
+                {
+                    _logger.LogWarning(ex, "Không thể gọi Gemini API ở lần thử {Attempt}/{MaxAttempts}. Sẽ thử lại sau {Delay} giây.",
+                        attempt, maxAttempts, delay.TotalSeconds);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Không thể gọi Gemini API");
+                    return "Xin lỗi, trợ lý AI đang bận. Bạn vui lòng thử lại sau một lúc nhé.";
+                }
+
+                if (attempt < maxAttempts)
+                {
+                    await Task.Delay(delay);
+                    delay = TimeSpan.FromSeconds(Math.Min(delay.TotalSeconds * 2, 8));
+                }
+            }
+
+            _logger.LogError("Gemini API vẫn không phản hồi sau {MaxAttempts} lần thử.", maxAttempts);
+            return "Xin lỗi, hiện mình chưa thể truy vấn được dữ liệu từ trợ lý AI. Bạn hãy hỏi lại sau ít phút nhé.";
+        }
+
+        private object BuildPayload(string systemPrompt, IReadOnlyCollection<AIChat> history, string latestMessage)
+        {
+            var contents = new List<object>();
+
+            foreach (var entry in history)
+            {
+                if (!string.IsNullOrWhiteSpace(entry.Message))
+                {
+                    contents.Add(new
+                    {
+                        role = "user",
+                        parts = new[] { new { text = entry.Message } }
+                    });
+                }
+
+                if (!string.IsNullOrWhiteSpace(entry.Response))
+                {
+                    contents.Add(new
+                    {
+                        role = "model",
+                        parts = new[] { new { text = entry.Response } }
+                    });
+                }
+            }
+
+            contents.Add(new
+            {
+                role = "user",
+                parts = new[] { new { text = latestMessage } }
+            });
+
+            return new
+            {
+                systemInstruction = new
+                {
+                    role = "system",
+                    parts = new[]
+                    {
+                        new { text = systemPrompt }
+                    }
+                },
+                contents,
+                generationConfig = new
+                {
+                    temperature = 0.4,
+                    topP = 0.9,
+                    topK = 40,
+                    maxOutputTokens = _options.MaxOutputTokens
+                }
+            };
+        }
+
+        private string BuildSystemPrompt(
+            string userMessage,
+            IEnumerable<Hotel> hotels,
+            IEnumerable<Room> rooms,
+            IReadOnlyDictionary<string, double> ratingsByHotel,
+            IEnumerable<Booking?> bookings)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("Bạn là trợ lý đặt phòng khách sạn của hệ thống NTT.");
+            builder.AppendLine("Mục tiêu: hỗ trợ người dùng tìm khách sạn và phòng phù hợp dựa trên dữ liệu cung cấp.");
+            builder.AppendLine();
+            builder.AppendLine("Quy tắc bắt buộc:");
+            builder.AppendLine("1. Luôn trả lời 100% bằng tiếng Việt tự nhiên, thân thiện.");
+            builder.AppendLine("2. Chỉ sử dụng dữ liệu trong danh sách đã cung cấp. Không tự suy diễn hoặc thêm thông tin mới.");
+            builder.AppendLine("3. Nếu thiếu thông tin quan trọng (địa điểm, ngân sách, số khách, thời gian), hãy đặt một câu hỏi ngắn để làm rõ trước khi gợi ý.");
+            builder.AppendLine("4. Khi có đủ dữ liệu, hãy đề xuất tối đa 3 khách sạn/phòng còn trống, nêu rõ tên khách sạn, địa chỉ/khu vực, giá tham khảo và điểm nổi bật.");
+            builder.AppendLine("5. Nếu không có lựa chọn phù hợp, hãy nói rõ lý do và gợi ý người dùng điều chỉnh yêu cầu.");
+            builder.AppendLine("6. Nếu người dùng muốn kết thúc, hãy xác nhận lịch sự và không gợi ý thêm.");
+
+            var missingInformationInstruction = BuildRoomSearchGuidance(userMessage, hotels.Select(h => h.City));
+            if (!string.IsNullOrWhiteSpace(missingInformationInstruction))
+            {
+                builder.AppendLine();
+                builder.AppendLine(missingInformationInstruction);
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("Dữ liệu tham khảo (ưu tiên các phòng trạng thái Available):");
+
+            foreach (var hotel in hotels)
+            {
+                if (hotel == null)
+                {
+                    continue;
+                }
+
+                var ratingText = ratingsByHotel.TryGetValue(hotel.HotelID, out var userRating)
+                    ? userRating.ToString("F1", CultureInfo.InvariantCulture)
+                    : "Chưa có";
+
+                builder.AppendLine($"- {hotel.HotelName} (ID {hotel.HotelID}) tại {hotel.Address}, {hotel.City}. Khoảng giá: {hotel.MinPrice}-{hotel.MaxPrice} VNĐ. Hạng hệ thống: {hotel.Rating:F1}/5. Điểm khách đánh giá: {ratingText}.");
+
+                var availableRooms = rooms
+                    .Where(r => r.HotelID == hotel.HotelID)
+                    .Where(r => string.Equals(r.Status, "Available", StringComparison.OrdinalIgnoreCase))
+                    .OrderBy(r => r.PricePerNight)
+                    .Take(3)
+                    .ToList();
+
+                foreach (var room in availableRooms)
+                {
+                    builder.AppendLine($"   • Phòng {room.RoomNumber} ({room.RoomType}) - sức chứa {room.Capacity} khách, giá {room.PricePerNight} VNĐ/đêm.");
+                }
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("Một số thông tin đặt phòng gần đây của người dùng:");
+            foreach (var booking in bookings.Where(b => b != null).Take(5))
+            {
+                builder.AppendLine($"- Đặt phòng {booking!.BookingID} tại khách sạn {booking.HotelID}, phòng {booking.RoomID}, từ {booking.CheckInDate:d} đến {booking.CheckOutDate:d}, trạng thái {booking.Status}.");
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("Tin nhắn mới nhất của người dùng:");
+            builder.AppendLine(userMessage);
+
+            return builder.ToString();
         }
 
         private bool TryHandleGuidedRoomSearch(
@@ -263,8 +416,11 @@ namespace Hotel_Booking_System.Services
                 }
 
                 suggestionsAdded++;
-                ratingsByHotel.TryGetValue(hotel.HotelID, out var userRating);
-                sb.AppendLine($"{suggestionsAdded}. {hotel.HotelName} - {hotel.Address}. Hạng khách sạn: {hotel.Rating:F1}/5, điểm đánh giá khách: {userRating:F1}/5.");
+                var userRatingText = ratingsByHotel.TryGetValue(hotel.HotelID, out var userRating)
+                    ? userRating.ToString("F1", CultureInfo.InvariantCulture)
+                    : "Chưa có";
+
+                sb.AppendLine($"{suggestionsAdded}. {hotel.HotelName} - {hotel.Address}. Hạng khách sạn: {hotel.Rating:F1}/5, điểm đánh giá khách: {userRatingText}.");
 
                 foreach (var room in suitableRooms)
                 {
@@ -284,6 +440,134 @@ namespace Hotel_Booking_System.Services
 
             sb.AppendLine("Nếu bạn cần thêm lựa chọn hoặc muốn thay đổi thông tin, cứ cho tôi biết nhé!");
             return sb.ToString().TrimEnd();
+        }
+
+        private string NormalizeResponse(string responseText)
+        {
+            if (string.IsNullOrWhiteSpace(responseText))
+            {
+                return "Xin lỗi, mình chưa có câu trả lời phù hợp. Bạn có thể thử hỏi lại hoặc cung cấp thêm thông tin nhé.";
+            }
+
+            var trimmed = responseText.Trim();
+            if (!trimmed.Any(char.IsLetterOrDigit))
+            {
+                return "Xin lỗi, mình chưa có câu trả lời phù hợp. Bạn thử diễn đạt lại giúp mình nhé.";
+            }
+
+            return trimmed;
+        }
+
+        private string? ResolveApiKey()
+        {
+            if (!string.IsNullOrWhiteSpace(_options.ApiKey))
+            {
+                return _options.ApiKey;
+            }
+
+            var environmentApiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")
+                ?? Environment.GetEnvironmentVariable("GEMINI__APIKEY")
+                ?? Environment.GetEnvironmentVariable("GOOGLE_GEMINI_API_KEY");
+
+            if (!string.IsNullOrWhiteSpace(environmentApiKey))
+            {
+                _options.ApiKey = environmentApiKey.Trim();
+                return _options.ApiKey;
+            }
+
+            _logger.LogWarning("Gemini API key is not configured. Please set GEMINI_API_KEY or update application settings.");
+            return null;
+        }
+
+        private string BuildEndpoint(string apiKey, string? modelName)
+        {
+            var baseUrl = string.IsNullOrWhiteSpace(_options.ApiBaseUrl)
+                ? "https://generativelanguage.googleapis.com/v1beta"
+                : _options.ApiBaseUrl.TrimEnd('/');
+
+            var model = string.IsNullOrWhiteSpace(modelName)
+                ? (string.IsNullOrWhiteSpace(_options.DefaultModel) ? "gemini-2.0-flash" : _options.DefaultModel)
+                : modelName;
+
+            return $"{baseUrl}/models/{model}:generateContent?key={apiKey}";
+        }
+
+        private static bool ShouldRetry(HttpStatusCode statusCode)
+        {
+            if (statusCode == HttpStatusCode.TooManyRequests)
+            {
+                return true;
+            }
+
+            var numericStatus = (int)statusCode;
+            return numericStatus >= 500 && numericStatus < 600;
+        }
+
+        private static bool IsTransientException(Exception exception)
+        {
+            return exception switch
+            {
+                HttpRequestException => true,
+                TaskCanceledException => true,
+                _ => false
+            };
+        }
+
+        private static string? ExtractText(JsonDocument document)
+        {
+            if (!document.RootElement.TryGetProperty("candidates", out var candidates) || candidates.GetArrayLength() == 0)
+            {
+                return null;
+            }
+
+            var content = candidates[0].GetProperty("content");
+            if (!content.TryGetProperty("parts", out var parts) || parts.GetArrayLength() == 0)
+            {
+                return null;
+            }
+
+            foreach (var part in parts.EnumerateArray())
+            {
+                if (part.TryGetProperty("text", out var textElement))
+                {
+                    var text = textElement.GetString();
+                    if (!string.IsNullOrWhiteSpace(text))
+                    {
+                        return text;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static string StripCodeFence(string text)
+        {
+            var trimmed = text.Trim();
+            if (!trimmed.StartsWith("```", StringComparison.Ordinal))
+            {
+                return trimmed;
+            }
+
+            var endIndex = trimmed.LastIndexOf("```", StringComparison.Ordinal);
+            if (endIndex <= 0)
+            {
+                return trimmed;
+            }
+
+            var newlineIndex = trimmed.IndexOf('\n');
+            if (newlineIndex >= 0 && newlineIndex < endIndex)
+            {
+                return trimmed[(newlineIndex + 1)..endIndex].Trim();
+            }
+
+            var spaceIndex = trimmed.IndexOf(' ');
+            if (spaceIndex >= 0 && spaceIndex < endIndex)
+            {
+                return trimmed[(spaceIndex + 1)..endIndex].Trim();
+            }
+
+            return trimmed[3..endIndex].Trim();
         }
 
         private static void UpdateCity(RoomSearchState state, string normalizedMessage, string accentlessMessage, IEnumerable<string> cities)
