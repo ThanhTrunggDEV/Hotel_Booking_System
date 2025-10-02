@@ -1074,6 +1074,66 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         [RelayCommand]
+        private async Task DeleteHotelAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                ShowNotification("Unable to locate the selected hotel.");
+                return;
+            }
+
+            var confirmation = MessageBox.Show(
+                $"Are you sure you want to delete the hotel \"{hotel.HotelName}\"? This action cannot be undone.",
+                "Confirm delete hotel",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirmation != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                await _hotelRepository.DeleteAsync(hotel.HotelID);
+                await _hotelRepository.SaveAsync();
+
+                var storedHotel = Hotels.FirstOrDefault(h => h.HotelID == hotel.HotelID);
+                if (storedHotel != null)
+                {
+                    Hotels.Remove(storedHotel);
+                }
+
+                var pendingHotel = PendingHotels.FirstOrDefault(h => h.HotelID == hotel.HotelID);
+                if (pendingHotel != null)
+                {
+                    PendingHotels.Remove(pendingHotel);
+                }
+
+                if (SelectedPendingHotel?.HotelID == hotel.HotelID)
+                {
+                    SelectedPendingHotel = PendingHotels.FirstOrDefault();
+                }
+
+                if (hotel.IsApproved && TotalHotels > 0)
+                {
+                    TotalHotels--;
+                }
+
+                UpdateHotelStats();
+                UpdateCityOptions();
+                ApplyHotelFilters();
+                UpdatePendingCounts();
+
+                ShowNotification("Hotel has been permanently deleted.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to delete hotel: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
         private async Task ContactHotelAdminAsync(Hotel? hotel)
         {
             if (hotel == null)

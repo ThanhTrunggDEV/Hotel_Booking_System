@@ -565,9 +565,13 @@
                                                                     Background="#FF9C27B0" Width="26" Height="26" Margin="2" FontSize="11"
                                                                     Command="{Binding DataContext.ShowHotelAnalyticsCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                     CommandParameter="{Binding}"/>
-                                                            <Button Content="⚠️" ToolTip="Đổi trạng thái" Style="{StaticResource SecondaryButton}"
-                                                                    Background="#FFFF5722" Width="26" Height="26" Margin="2" FontSize="11"
+                                                            <Button Content="🙈" ToolTip="Ẩn/Hiện" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FFFF5722" Foreground="White" Width="26" Height="26" Margin="2" FontSize="11"
                                                                     Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="🗑️" ToolTip="Xóa khách sạn" Style="{StaticResource SecondaryButton}"
+                                                                    Background="#FFD32F2F" Foreground="White" Width="26" Height="26" Margin="2" FontSize="11"
+                                                                    Command="{Binding DataContext.DeleteHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                                     CommandParameter="{Binding}"/>
                                                             <Button Content="📧" ToolTip="Liên hệ admin" Style="{StaticResource SecondaryButton}"
                                                                     Background="#FF607D8B" Width="26" Height="26" Margin="2" FontSize="11"
@@ -645,8 +649,11 @@
                                                 <Button Content="⚙️ Phòng" Style="{StaticResource SecondaryButton}" Width="90" Margin="0,0,8,0" Background="#FFFF9800"
                                                         Command="{Binding DataContext.ManageHotelRoomsAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
-                                                <Button Content="🚦 Trạng thái" Style="{StaticResource SecondaryButton}" Width="110" Background="#FFFF5722"
+                                                <Button Content="🙈 Ẩn/Hiện" Style="{StaticResource SecondaryButton}" Width="110" Background="#FFFF5722" Foreground="White" Margin="0,0,8,0"
                                                         Command="{Binding DataContext.ToggleHotelVisibilityAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                        CommandParameter="{Binding}"/>
+                                                <Button Content="🗑️ Xóa" Style="{StaticResource SecondaryButton}" Width="100" Background="#FFD32F2F" Foreground="White"
+                                                        Command="{Binding DataContext.DeleteHotelAsyncCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                                         CommandParameter="{Binding}"/>
                                             </StackPanel>
                                         </StackPanel>
