@@ -13,6 +13,8 @@ namespace Hotel_Booking_System.Interfaces
         int PendingApprovals { get; set; }
         int ActiveBookings { get; set; }
         double MonthlyRevenue { get; set; }
+        HotelAdminRequest? SelectedPendingRequest { get; set; }
+        Hotel? SelectedPendingHotel { get; set; }
         ObservableCollection<HotelAdminRequest> PendingRequest { get; set; }
         ObservableCollection<Hotel> PendingHotels { get; set; }
         ObservableCollection<Hotel> FilteredHotels { get; }

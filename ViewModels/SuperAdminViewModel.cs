@@ -55,6 +55,8 @@ namespace Hotel_Booking_System.ViewModels
         private string _newPassword = string.Empty;
         private string _confirmPassword = string.Empty;
         private string _notificationMessage = string.Empty;
+        private HotelAdminRequest? _selectedPendingRequest;
+        private Hotel? _selectedPendingHotel;
         private DispatcherTimer? _notificationTimer;
         public int PendingRequests
         {
@@ -142,6 +144,18 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _notificationMessage, value);
         }
 
+        public HotelAdminRequest? SelectedPendingRequest
+        {
+            get => _selectedPendingRequest;
+            set => Set(ref _selectedPendingRequest, value);
+        }
+
+        public Hotel? SelectedPendingHotel
+        {
+            get => _selectedPendingHotel;
+            set => Set(ref _selectedPendingHotel, value);
+        }
+
 
 
         public ObservableCollection<HotelAdminRequest> PendingRequest { get; set; } = new();
@@ -175,6 +189,9 @@ namespace Hotel_Booking_System.ViewModels
         {
             try
             {
+                var previousRequestId = SelectedPendingRequest?.RequestID;
+                var previousHotelId = SelectedPendingHotel?.HotelID;
+
                 if (string.IsNullOrWhiteSpace(CurrentUser?.UserID))
                 {
                     await GetCurrentUserAsync();
@@ -223,6 +240,8 @@ namespace Hotel_Booking_System.ViewModels
                     }
                 }
 
+                SelectedPendingHotel = PendingHotels.FirstOrDefault(h => h.HotelID == previousHotelId) ?? PendingHotels.FirstOrDefault();
+
                 UpdateCityOptions();
                 UpdateHotelStats();
                 ApplyHotelFilters();
@@ -250,6 +269,8 @@ namespace Hotel_Booking_System.ViewModels
                         PendingRequest.Add(request);
                     }
                 }
+
+                SelectedPendingRequest = PendingRequest.FirstOrDefault(r => r.RequestID == previousRequestId) ?? PendingRequest.FirstOrDefault();
 
                 UpdatePendingCounts();
 
@@ -350,6 +371,10 @@ namespace Hotel_Booking_System.ViewModels
             {
                 PendingRequest.Remove(pending);
             }
+            if (SelectedPendingRequest == null || SelectedPendingRequest.RequestID == id)
+            {
+                SelectedPendingRequest = PendingRequest.FirstOrDefault();
+            }
             UpdatePendingCounts();
         }
 
@@ -364,6 +389,10 @@ namespace Hotel_Booking_System.ViewModels
             if (pending != null)
             {
                 PendingRequest.Remove(pending);
+            }
+            if (SelectedPendingRequest == null || SelectedPendingRequest.RequestID == id)
+            {
+                SelectedPendingRequest = PendingRequest.FirstOrDefault();
             }
             UpdatePendingCounts();
         }
@@ -511,6 +540,10 @@ namespace Hotel_Booking_System.ViewModels
             {
                 PendingHotels.Remove(pending);
             }
+            if (SelectedPendingHotel == null || SelectedPendingHotel.HotelID == id)
+            {
+                SelectedPendingHotel = PendingHotels.FirstOrDefault();
+            }
             var localHotel = Hotels.FirstOrDefault(h => h.HotelID == id);
             if (localHotel != null)
             {
@@ -533,6 +566,10 @@ namespace Hotel_Booking_System.ViewModels
             if (pending != null)
             {
                 PendingHotels.Remove(pending);
+            }
+            if (SelectedPendingHotel == null || SelectedPendingHotel.HotelID == id)
+            {
+                SelectedPendingHotel = PendingHotels.FirstOrDefault();
             }
             var localHotel = Hotels.FirstOrDefault(h => h.HotelID == id);
             if (localHotel != null)
