@@ -99,9 +99,9 @@
                             <StackPanel Margin="32">
                                 <TextBlock Text="Phê Duyệt Yêu Cầu & Khách Sạn Đang Chờ" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
                                 <TextBlock Text="Quản trị viên có thể chuyển đổi nhanh giữa danh sách yêu cầu đăng ký và các khách sạn chờ duyệt trong cùng một không gian làm việc." FontSize="13" Foreground="#FF607D8B" TextWrapping="Wrap"/>
-                                <TabControl Margin="0,24,0,0" Background="Transparent" BorderThickness="0">
+                                <TabControl Margin="0,24,0,0" Style="{StaticResource FlatInnerTabControl}">
                                     <TabItem Header="Yêu Cầu Quản Trị Khách Sạn">
-                                        <Grid Margin="0,12,0,0">
+                                        <Grid Margin="0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="3*"/>
                                                 <ColumnDefinition Width="2*"/>
@@ -213,7 +213,7 @@
                                         </Grid>
                                     </TabItem>
                                     <TabItem Header="Khách Sạn Đang Chờ">
-                                        <Grid Margin="0,12,0,0">
+                                        <Grid Margin="0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="3*"/>
                                                 <ColumnDefinition Width="2*"/>
