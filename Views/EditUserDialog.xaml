@@ -63,14 +63,20 @@
                             <Border Width="88"
                                     Height="88"
                                     CornerRadius="44"
-                                    Background="#FFFFFF22"
                                     BorderBrush="#FFFFFF44"
                                     BorderThickness="2"
                                     VerticalAlignment="Center"
+                                    Background="Transparent"
                                     Effect="{StaticResource ElevationShadow}">
-                                <Border.Background>
-                                    <ImageBrush ImageSource="{Binding AvatarUrl, FallbackValue=https://i.ibb.co/FLvg0hX4/avatar-default.png}"/>
-                                </Border.Background>
+                                <Grid>
+                                    <Border CornerRadius="44">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding AvatarUrl, FallbackValue=https://i.ibb.co/FLvg0hX4/avatar-default.png}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    <Border CornerRadius="44"
+                                            Background="#FFFFFF22"/>
+                                </Grid>
                             </Border>
 
                             <StackPanel Grid.Column="1"
