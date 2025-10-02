@@ -288,97 +288,151 @@
                                 </ListView.ItemContainerStyle>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Style="{StaticResource RoomCardStyle}" Width="Auto" CornerRadius="15" Background="White" Margin="5,0,0,10"
-                                    BorderThickness="1" BorderBrush="#FFE0E0E0">
+                                        <Border Style="{StaticResource RoomCardStyle}"
+                                                Width="Auto"
+                                                CornerRadius="20"
+                                                Background="White"
+                                                Margin="5,0,0,14"
+                                                Padding="0"
+                                                BorderThickness="1"
+                                                BorderBrush="#FFE0E0E0">
                                             <Border.Effect>
-                                                <DropShadowEffect Color="#FFE0E0E0" Opacity="0.3" BlurRadius="8" ShadowDepth="2"/>
+                                                <DropShadowEffect Color="#FFE0E0E0" Opacity="0.3" BlurRadius="12" ShadowDepth="3"/>
                                             </Border.Effect>
-                                            <Grid Height="220">
+                                            <Grid MinHeight="220">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="280"/>
+                                                    <ColumnDefinition Width="260"/>
                                                     <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="200"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <Border Grid.Column="0" CornerRadius="15,0,0,15" ClipToBounds="True">
-                                                    <Image Source="{Binding HotelImage, Converter={StaticResource ImageUrlToBitMap}}" 
-                                               Stretch="UniformToFill"/>
-                                                    <Border.Background>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                            <GradientStop Color="#80000000" Offset="0"/>
-                                                            <GradientStop Color="#00000000" Offset="0.7"/>
-                                                        </LinearGradientBrush>
-                                                    </Border.Background>
+                                                <Border Grid.Column="0" CornerRadius="20,0,0,20" ClipToBounds="True">
+                                                    <Grid>
+                                                        <Image Source="{Binding HotelImage, Converter={StaticResource ImageUrlToBitMap}}"
+                                                               Stretch="UniformToFill"/>
+                                                        <Border Background="#33000000"/>
+                                                        <StackPanel Margin="16"
+                                                                   VerticalAlignment="Stretch">
+                                                            <Border Background="#FF1976D2"
+                                                                    CornerRadius="12"
+                                                                    Padding="10,4"
+                                                                    HorizontalAlignment="Left">
+                                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                                    <TextBlock Text="⭐" FontSize="14" Margin="0,0,6,0"/>
+                                                                    <TextBlock Text="{Binding Rating}" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                            <StackPanel VerticalAlignment="Bottom"
+                                                                       Margin="0,0,0,4"
+                                                                       HorizontalAlignment="Left">
+                                                                <TextBlock Text="From"
+                                                                           FontSize="12"
+                                                                           Foreground="#FFF5F5F5"
+                                                                           Margin="0,12,0,2"/>
+                                                                <TextBlock FontSize="20" FontWeight="Bold" Foreground="White">
+                                                                    <Run Text="$"/>
+                                                                    <Run Text="{Binding MinPrice, StringFormat={}{0:F0}}"/>
+                                                                    <Run Text=" - " FontSize="18" Foreground="#FFF5F5F5"/>
+                                                                    <Run Text="{Binding MaxPrice, StringFormat={}{0:F0}}" FontSize="18" Foreground="#FFF5F5F5"/>
+                                                                </TextBlock>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Grid>
                                                 </Border>
 
-                                                <StackPanel Grid.Column="1" Margin="20,15" VerticalAlignment="Top">
-                                                    <TextBlock Text="{Binding HotelName}" 
-                                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,8"/>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Foreground="#666" Text="💲 From " FontSize="14"/>
-                                                        <TextBlock Foreground="#666" Text="{Binding MinPrice}"/>
-                                                        <TextBlock Foreground="#666" Text=" to "/>
-                                                        <TextBlock Foreground="#666" Text="{Binding MaxPrice}"/>
+                                                <Grid Grid.Column="1" Margin="24,20,24,24">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                                                        <TextBlock Text="{Binding HotelName}"
+                                                                   FontSize="22"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#222"
+                                                                   TextWrapping="Wrap"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                            <TextBlock Text="📍" FontSize="14"/>
+                                                            <TextBlock Foreground="#666" FontSize="14" Margin="6,0,0,0">
+                                                                <TextBlock.Text>
+                                                                    <MultiBinding Converter="{StaticResource LocationConverter}">
+                                                                        <Binding Path="City"/>
+                                                                        <Binding Path="Address"/>
+                                                                    </MultiBinding>
+                                                                </TextBlock.Text>
+                                                            </TextBlock>
+                                                        </StackPanel>
                                                     </StackPanel>
 
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                                        <TextBlock Text="📍" FontSize="14"/>
-                                                        <TextBlock Foreground="#666" FontSize="14" Margin="5,0,0,0">
-                                                            <TextBlock.Text>
-                                                                <MultiBinding Converter="{StaticResource LocationConverter}">
-                                                                    <Binding Path="City"/>
-                                                                    <Binding Path="Address"/>
-                                                                </MultiBinding>
-                                                            </TextBlock.Text>
-                                                        </TextBlock>
+                                                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12" Spacing="16">
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <TextBlock Text="🏨" FontSize="16"/>
+                                                            <TextBlock Text="{Binding AverageRating, StringFormat={}{0:F1}}" Margin="6,0,0,0" FontWeight="Bold" FontSize="14" Foreground="#444"/>
+                                                            <TextBlock Text="User rating" Margin="6,0,0,0" FontSize="12" Foreground="#888"/>
+                                                        </StackPanel>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <TextBlock Text="🌟" FontSize="16"/>
+                                                            <TextBlock Text="{Binding Rating}" Margin="6,0,0,0" FontWeight="Bold" FontSize="14" Foreground="#444"/>
+                                                            <TextBlock Text="Hotel rating" Margin="6,0,0,0" FontSize="12" Foreground="#888"/>
+                                                        </StackPanel>
                                                     </StackPanel>
 
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                                        <TextBlock Text="⭐" Foreground="Gold" FontSize="16"/>
-                                                        <TextBlock Text="{Binding Rating}" Margin="5,0,15,0" FontWeight="Bold" FontSize="14"/>
-                                                        <TextBlock Text="👤" FontSize="16"/>
-                                                        <TextBlock Text="{Binding AverageRating, StringFormat={}{0:F1}}" Margin="5,0,0,0" FontWeight="Bold" FontSize="14"/>
-                                                    </StackPanel>
+                                                    <ItemsControl Grid.Row="2" ItemsSource="{Binding Amenities}" Margin="0,0,0,12">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel Margin="0"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Border Background="#FFE3F2FD" CornerRadius="14" Padding="10,4" Margin="0,0,8,8">
+                                                                    <TextBlock Text="{Binding AmenityName}" FontSize="12" Foreground="#FF1976D2"/>
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
 
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                                        <ItemsControl ItemsSource="{Binding Amenities}">
-                                                            <ItemsControl.ItemsPanel>
-                                                                <ItemsPanelTemplate>
-                                                                    <StackPanel Orientation="Horizontal"/>
-                                                                </ItemsPanelTemplate>
-                                                            </ItemsControl.ItemsPanel>
-                                                            <ItemsControl.ItemTemplate>
-                                                                <DataTemplate>
-                                                                    <Border Background="#FFE3F2FD" CornerRadius="12" Padding="6,3" Margin="0,0,8,0">
-                                                                        <TextBlock Text="{Binding AmenityName}" FontSize="11" Foreground="#FF1976D2"/>
-                                                                    </Border>
-                                                                </DataTemplate>
-                                                            </ItemsControl.ItemTemplate>
-                                                        </ItemsControl>
-                                                    </StackPanel>
+                                                    <TextBlock Grid.Row="3"
+                                                               Text="{Binding Description}"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="#555"
+                                                               FontSize="13"
+                                                               MaxHeight="60"
+                                                               TextTrimming="CharacterEllipsis"/>
 
-                                                    <TextBlock Text="{Binding Description}" 
-                                                   HorizontalAlignment="Left"
-                                                   TextWrapping="Wrap" Foreground="#666" 
-                                                   FontSize="13" MaxHeight="40" Width="800"
-                                                   TextTrimming="CharacterEllipsis"/>
-                                                </StackPanel>
-
-                                                <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,15">
-                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                        <Button Content="Reviews"
-                                                                Style="{StaticResource SecondaryButton}"
-                                                                Width="90"
-                                                                Margin="0,0,10,0"
-                                                                Command="{Binding DataContext.ShowHotelReviewsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                CommandParameter="{Binding}"/>
-                                                        <Button Content="Details"
-                                                                Style="{StaticResource PrimaryButton}"
-                                                                Width="80"
-                                                                Command="{Binding DataContext.ShowHotelDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                                CommandParameter="{Binding HotelID}"/>
-                                                    </StackPanel>
-                                                </StackPanel>
+                                                    <Grid Grid.Row="4" Margin="0,16,0,0">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
+                                                            <TextBlock Text="💲" FontSize="20"/>
+                                                            <TextBlock FontSize="14">
+                                                                <Run Text="$"/>
+                                                                <Run Text="{Binding MinPrice, StringFormat={}{0:F0}}" FontWeight="Bold" FontSize="16"/>
+                                                                <Run Text=" - "/>
+                                                                <Run Text="{Binding MaxPrice, StringFormat={}{0:F0}}"/>
+                                                                <Run Text=" per night" FontSize="12" Foreground="#888"/>
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                                            <Button Content="Reviews"
+                                                                    Style="{StaticResource SecondaryButton}"
+                                                                    Width="100"
+                                                                    Margin="0,0,10,0"
+                                                                    Command="{Binding DataContext.ShowHotelReviewsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="Details"
+                                                                    Style="{StaticResource PrimaryButton}"
+                                                                    Width="100"
+                                                                    Command="{Binding DataContext.ShowHotelDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                    CommandParameter="{Binding HotelID}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Grid>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
