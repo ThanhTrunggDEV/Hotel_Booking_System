@@ -2,11 +2,26 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Edit User"
-        Height="520"
-        Width="640"
+        Height="640"
+        Width="680"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Background="#FFF3F4F6">
+        Background="{DynamicResource DialogBackdropBrush}">
+    <Window.Resources>
+        <LinearGradientBrush x:Key="DialogBackdropBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FFF7F9FF" Offset="0"/>
+            <GradientStop Color="#FFE8ECFF" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="AccentCardGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FF637DFF" Offset="0"/>
+            <GradientStop Color="#FF8453FF" Offset="1"/>
+        </LinearGradientBrush>
+        <DropShadowEffect x:Key="ElevationShadow"
+                           BlurRadius="22"
+                           ShadowDepth="0"
+                           Color="#26000000"
+                           Opacity="0.45"/>
+    </Window.Resources>
     <Grid Margin="30">
         <Border Style="{StaticResource CardStyle}"
                 Padding="0"
@@ -15,7 +30,7 @@
                 BorderThickness="0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="140"/>
+                    <RowDefinition Height="160"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
@@ -23,164 +38,300 @@
                 <Border Grid.Row="0"
                         Background="{StaticResource PrimaryGradient}"
                         CornerRadius="22,22,0,0">
-                    <Grid Margin="30,25">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid>
+                            <Ellipse Width="220"
+                                     Height="220"
+                                     Fill="#FFFFFF22"
+                                     HorizontalAlignment="Right"
+                                     VerticalAlignment="Top"
+                                     Margin="0,-80,40,0"/>
+                            <Ellipse Width="160"
+                                     Height="160"
+                                     Fill="#FFFFFF12"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Bottom"
+                                     Margin="-50,0,0,-60"/>
+                        </Grid>
 
-                        <Border Width="72"
-                                Height="72"
-                                CornerRadius="36"
-                                Background="#FFFFFF22"
-                                VerticalAlignment="Center">
-                            <Viewbox Stretch="Uniform" Margin="12">
-                                <TextBlock Text="👤"/>
-                            </Viewbox>
-                        </Border>
+                        <Grid Margin="30,25">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="1"
-                                    Margin="24,0,0,0"
-                                    VerticalAlignment="Center">
-                            <TextBlock Text="Chỉnh sửa người dùng"
-                                       FontSize="26"
-                                       FontWeight="Bold"
-                                       Foreground="White"/>
-                            <TextBlock Text="Cập nhật thông tin tài khoản và quản lý quyền truy cập cho hệ thống."
-                                       Margin="0,8,0,0"
-                                       Foreground="#E8EDFF"/>
-                        </StackPanel>
+                            <Border Width="88"
+                                    Height="88"
+                                    CornerRadius="44"
+                                    Background="#FFFFFF22"
+                                    BorderBrush="#FFFFFF44"
+                                    BorderThickness="2"
+                                    VerticalAlignment="Center"
+                                    Effect="{StaticResource ElevationShadow}">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding AvatarUrl, FallbackValue=https://i.ibb.co/FLvg0hX4/avatar-default.png}"/>
+                                </Border.Background>
+                            </Border>
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="24,0,0,0"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="{Binding FullName, FallbackValue=Chưa có tên}"
+                                           FontSize="26"
+                                           FontWeight="Bold"
+                                           Foreground="White"
+                                           TextWrapping="Wrap"/>
+                                <WrapPanel Margin="0,10,0,0"
+                                           VerticalAlignment="Center">
+                                    <Border Background="#FFFFFF22"
+                                            CornerRadius="12"
+                                            Padding="12,6"
+                                            Margin="0,0,10,10">
+                                        <TextBlock Text="{Binding Role, FallbackValue=Chưa phân quyền}"
+                                                   Foreground="White"
+                                                   FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Border Background="#FFFFFF14"
+                                            CornerRadius="12"
+                                            Padding="12,6"
+                                            Margin="0,0,10,10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="📧" FontSize="14"/>
+                                            <TextBlock Text="{Binding Email, FallbackValue=Không có email}" Foreground="#E8EDFF" Margin="8,0,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="#FFFFFF14"
+                                            CornerRadius="12"
+                                            Padding="12,6"
+                                            Margin="0,0,0,10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🆔" FontSize="14"/>
+                                            <TextBlock Text="{Binding UserID, FallbackValue=---}" Foreground="#E8EDFF" Margin="8,0,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </WrapPanel>
+                                <TextBlock Text="Cập nhật thông tin tài khoản và quản lý quyền truy cập cho hệ thống."
+                                           Margin="0,6,0,0"
+                                           Foreground="#E8EDFF"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </Border>
 
                 <ScrollViewer Grid.Row="1"
                               Margin="30"
                               VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <Border Background="#F7F9FC"
-                                CornerRadius="18"
-                                Padding="24"
-                                Margin="0,0,0,20">
-                            <StackPanel>
-                                <TextBlock Text="Thông tin cá nhân"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"
-                                           Foreground="#2C3E50"
-                                           Margin="0,0,0,20"/>
+                    <Grid Margin="0,0,4,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*" MinWidth="220"/>
+                        </Grid.ColumnDefinitions>
 
-                                <Grid Margin="0,0,0,18">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0"
-                                                Margin="0,0,12,0">
-                                        <TextBlock Text="Họ và tên"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="#5B6C84"
-                                                   Margin="0,0,0,6"/>
-                                        <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource ModernTextBox}"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1">
-                                        <TextBlock Text="Số điện thoại"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="#5B6C84"
-                                                   Margin="0,0,0,6"/>
-                                        <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource ModernTextBox}"/>
-                                    </StackPanel>
-                                </Grid>
+                        <StackPanel Grid.Column="0" Margin="0,0,24,0">
+                            <Border Background="#F7F9FC"
+                                    CornerRadius="18"
+                                    Padding="28"
+                                    Margin="0,0,0,24">
+                                <StackPanel>
+                                    <TextBlock Text="Thông tin cá nhân"
+                                               FontSize="18"
+                                               FontWeight="SemiBold"
+                                               Foreground="#2C3E50"
+                                               Margin="0,0,0,24"/>
 
-                                <Grid Margin="0,0,0,18">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0"
-                                                Margin="0,0,12,0">
-                                        <TextBlock Text="Giới tính"
+                                    <Grid Margin="0,0,0,20">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                            <TextBlock Text="Họ và tên"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#5B6C84"
+                                                       Margin="0,0,0,6"/>
+                                            <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource ModernTextBox}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Số điện thoại"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#5B6C84"
+                                                       Margin="0,0,0,6"/>
+                                            <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource ModernTextBox}"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid Margin="0,0,0,20">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                            <TextBlock Text="Giới tính"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#5B6C84"
+                                                       Margin="0,0,0,6"/>
+                                            <ComboBox SelectedValue="{Binding Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      SelectedValuePath="Content"
+                                                      Height="55"
+                                                      Padding="20,0"
+                                                      Background="#F8F9FA"
+                                                      BorderThickness="0"
+                                                      Foreground="#495057">
+                                                <ComboBoxItem Content="Male"/>
+                                                <ComboBoxItem Content="Female"/>
+                                                <ComboBoxItem Content="Other"/>
+                                            </ComboBox>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Ngày sinh"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#5B6C84"
+                                                       Margin="0,0,0,6"/>
+                                            <DatePicker SelectedDate="{Binding DateOfBirth, Mode=TwoWay}"
+                                                        Height="55"
+                                                        Background="#F8F9FA"
+                                                        BorderThickness="0"
+                                                        Padding="20,0"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel Margin="0,0,0,20">
+                                        <TextBlock Text="Email"
                                                    FontWeight="SemiBold"
                                                    Foreground="#5B6C84"
                                                    Margin="0,0,0,6"/>
-                                        <ComboBox SelectedValue="{Binding Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        <TextBox Text="{Binding Email}"
+                                                 Style="{StaticResource ModernTextBox}"
+                                                 IsReadOnly="True"
+                                                 Background="#E9EFF8"
+                                                 Foreground="#4A5568"/>
+                                        <TextBlock Text="Email được sử dụng làm tên đăng nhập và không thể thay đổi."
+                                                   Foreground="#7B8BA3"
+                                                   Margin="0,8,0,0"
+                                                   TextWrapping="Wrap"/>
+                                    </StackPanel>
+
+                                    <StackPanel>
+                                        <TextBlock Text="Vai trò hệ thống"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#5B6C84"
+                                                   Margin="0,0,0,6"/>
+                                        <ComboBox SelectedValue="{Binding Role, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   SelectedValuePath="Content"
                                                   Height="55"
                                                   Padding="20,0"
                                                   Background="#F8F9FA"
                                                   BorderThickness="0"
                                                   Foreground="#495057">
-                                            <ComboBoxItem Content="Male"/>
-                                            <ComboBoxItem Content="Female"/>
-                                            <ComboBoxItem Content="Other"/>
+                                            <ComboBoxItem Content="Customer"/>
+                                            <ComboBoxItem Content="HotelAdmin"/>
+                                            <ComboBoxItem Content="SuperAdmin"/>
                                         </ComboBox>
                                     </StackPanel>
-                                    <StackPanel Grid.Column="1">
-                                        <TextBlock Text="Ngày sinh"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="#5B6C84"
-                                                   Margin="0,0,0,6"/>
-                                        <DatePicker SelectedDate="{Binding DateOfBirth, Mode=TwoWay}"
-                                                    Height="55"
-                                                    Background="#F8F9FA"
-                                                    BorderThickness="0"
-                                                    Padding="20,0"/>
-                                    </StackPanel>
-                                </Grid>
+                                </StackPanel>
+                            </Border>
 
-                                <StackPanel Margin="0,0,0,18">
-                                    <TextBlock Text="Email"
+                            <Border Background="#FFFFFF"
+                                    CornerRadius="18"
+                                    Padding="24"
+                                    BorderBrush="#E0E7FF"
+                                    BorderThickness="1"
+                                    Effect="{StaticResource ElevationShadow}">
+                                <StackPanel>
+                                    <TextBlock Text="Ghi chú hệ thống"
+                                               FontSize="15"
                                                FontWeight="SemiBold"
-                                               Foreground="#5B6C84"
-                                               Margin="0,0,0,6"/>
-                                    <TextBox Text="{Binding Email}"
-                                             Style="{StaticResource ModernTextBox}"
-                                             IsReadOnly="True"
-                                             Background="#E9EFF8"
-                                             Foreground="#4A5568"/>
-                                    <TextBlock Text="Email được sử dụng làm tên đăng nhập và không thể thay đổi."
-                                               Foreground="#7B8BA3"
+                                               Foreground="#303B5A"/>
+                                    <TextBlock Text="Thông tin được đồng bộ trực tiếp tới tất cả các phân hệ quản trị."
                                                Margin="0,8,0,0"
+                                               Foreground="#6B7A99"
+                                               TextWrapping="Wrap"/>
+                                    <TextBlock Text="Vui lòng đảm bảo dữ liệu chính xác trước khi lưu."
+                                               Margin="0,4,0,0"
+                                               Foreground="#6B7A99"
                                                TextWrapping="Wrap"/>
                                 </StackPanel>
+                            </Border>
+                        </StackPanel>
 
+                        <StackPanel Grid.Column="1" Margin="0,0,0,24">
+                            <Border Background="{StaticResource AccentCardGradient}"
+                                    CornerRadius="20"
+                                    Padding="24"
+                                    Effect="{StaticResource ElevationShadow}">
                                 <StackPanel>
-                                    <TextBlock Text="Vai trò hệ thống"
+                                    <TextBlock Text="Tổng quan tài khoản"
+                                               FontSize="17"
                                                FontWeight="SemiBold"
-                                               Foreground="#5B6C84"
-                                               Margin="0,0,0,6"/>
-                                    <ComboBox SelectedValue="{Binding Role, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                              SelectedValuePath="Content"
-                                              Height="55"
-                                              Padding="20,0"
-                                              Background="#F8F9FA"
-                                              BorderThickness="0"
-                                              Foreground="#495057">
-                                        <ComboBoxItem Content="Customer"/>
-                                        <ComboBoxItem Content="HotelAdmin"/>
-                                        <ComboBoxItem Content="SuperAdmin"/>
-                                    </ComboBox>
+                                               Foreground="White"/>
+                                    <StackPanel Margin="0,16,0,0">
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                            <Border Width="36" Height="36" CornerRadius="18" Background="#FFFFFF33" VerticalAlignment="Center">
+                                                <TextBlock Text="📞" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
+                                            </Border>
+                                            <StackPanel Margin="12,0,0,0">
+                                                <TextBlock Text="Điện thoại" Foreground="#F1F4FF" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding Phone, FallbackValue=Chưa cập nhật}" Foreground="#FFFFFF"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                            <Border Width="36" Height="36" CornerRadius="18" Background="#FFFFFF33" VerticalAlignment="Center">
+                                                <TextBlock Text="🎂" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
+                                            </Border>
+                                            <StackPanel Margin="12,0,0,0">
+                                                <TextBlock Text="Ngày sinh" Foreground="#F1F4FF" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding DateOfBirth, StringFormat=d}" Foreground="#FFFFFF"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Width="36" Height="36" CornerRadius="18" Background="#FFFFFF33" VerticalAlignment="Center">
+                                                <TextBlock Text="⚙️" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
+                                            </Border>
+                                            <StackPanel Margin="12,0,0,0">
+                                                <TextBlock Text="Vai trò" Foreground="#F1F4FF" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding Role, FallbackValue=Chưa phân quyền}" Foreground="#FFFFFF"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                        </Border>
+                            </Border>
 
-                        <Border Background="#FFFDF5F5"
-                                BorderBrush="#FFE57373"
-                                BorderThickness="1"
-                                CornerRadius="18"
-                                Padding="24">
-                            <StackPanel>
-                                <TextBlock Text="Xóa người dùng"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"
-                                           Foreground="#C62828"/>
-                                <TextBlock Text="Thao tác này sẽ loại bỏ tài khoản khỏi hệ thống và không thể hoàn tác."
-                                           Margin="0,10,0,0"
-                                           Foreground="#8D6E63"
-                                           TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
+                            <Border Background="#FFFDF4F3"
+                                    BorderBrush="#FFE57373"
+                                    BorderThickness="1"
+                                    CornerRadius="20"
+                                    Padding="24"
+                                    Margin="0,18,0,0"
+                                    Effect="{StaticResource ElevationShadow}">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Width="36"
+                                                Height="36"
+                                                CornerRadius="18"
+                                                Background="#FFD32F2F"
+                                                VerticalAlignment="Top">
+                                            <TextBlock Text="⚠️"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Margin="12,0,0,0">
+                                            <TextBlock Text="Xóa người dùng"
+                                                       FontSize="16"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#C62828"/>
+                                            <TextBlock Text="Thao tác này sẽ loại bỏ tài khoản khỏi hệ thống và không thể hoàn tác."
+                                                       Margin="0,6,0,0"
+                                                       Foreground="#8D6E63"
+                                                       TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
                 </ScrollViewer>
 
                 <Grid Grid.Row="2"
