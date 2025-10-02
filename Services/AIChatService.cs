@@ -145,13 +145,23 @@ namespace Hotel_Booking_System.Services
                     else
                     {
                         using var document = JsonDocument.Parse(responseBody);
-                        var text = ExtractText(document);
+                        var text = ExtractText(document, out var noTextReason);
 
                         if (string.IsNullOrWhiteSpace(text))
                         {
-                            _logger.LogWarning("Gemini API không trả về nội dung văn bản.");
-                            return CreateFallbackChat(userId, message,
-                                "Mình chưa nhận được câu trả lời từ AI. Bạn có thể thử hỏi lại giúp mình không?");
+                            var fallbackMessage = noTextReason ??
+                                                  "Mình chưa nhận được câu trả lời từ AI. Bạn có thể thử hỏi lại giúp mình không?";
+
+                            if (noTextReason != null)
+                            {
+                                _logger.LogWarning("Gemini API không trả về nội dung văn bản: {Reason}", noTextReason);
+                            }
+                            else
+                            {
+                                _logger.LogWarning("Gemini API không trả về nội dung văn bản.");
+                            }
+
+                            return CreateFallbackChat(userId, message, fallbackMessage);
                         }
 
                         var modelResponse = ParseModelResponse(text);
@@ -337,11 +347,17 @@ namespace Hotel_Booking_System.Services
             };
         }
 
-        private static string BuildEndpoint(string apiKey, string model)
+        private string BuildEndpoint(string apiKey, string? model)
         {
             var baseUrl = DefaultApiBaseUrl.TrimEnd('/');
-            var modelName = string.IsNullOrWhiteSpace(model) ? "gemini-2.0-flash" : model;
-            return $"{baseUrl}/models/{modelName}:generateContent?key={apiKey}";
+            var resolvedModel = string.IsNullOrWhiteSpace(model) ? _options.DefaultModel : model;
+
+            if (string.IsNullOrWhiteSpace(resolvedModel))
+            {
+                resolvedModel = "gemini-2.0-flash";
+            }
+
+            return $"{baseUrl}/models/{resolvedModel}:generateContent?key={apiKey}";
         }
 
         private AIChat CreateFallbackChat(string userId, string message, string response)
@@ -440,29 +456,46 @@ namespace Hotel_Booking_System.Services
             return candidate <= maxDelay ? candidate : maxDelay;
         }
 
-        private static string? ExtractText(JsonDocument document)
+        private static string? ExtractText(JsonDocument document, out string? explanation)
         {
-            if (!document.RootElement.TryGetProperty("candidates", out var candidates) || candidates.GetArrayLength() == 0)
+            explanation = null;
+
+            if (!document.RootElement.TryGetProperty("candidates", out var candidates) || candidates.ValueKind != JsonValueKind.Array)
             {
+                TryBuildPromptFeedbackMessage(document.RootElement, out explanation);
                 return null;
             }
 
-            var content = candidates[0].GetProperty("content");
-            if (!content.TryGetProperty("parts", out var parts) || parts.GetArrayLength() == 0)
+            foreach (var candidate in candidates.EnumerateArray())
             {
-                return null;
-            }
-
-            foreach (var part in parts.EnumerateArray())
-            {
-                if (part.TryGetProperty("text", out var textElement))
+                if (TryExtractTextFromCandidate(candidate, out var text, out var candidateExplanation))
                 {
-                    var text = textElement.GetString();
-                    if (!string.IsNullOrWhiteSpace(text))
+                    return text;
+                }
+
+                if (explanation == null && !string.IsNullOrWhiteSpace(candidateExplanation))
+                {
+                    explanation = candidateExplanation;
+                }
+
+                if (explanation == null && candidate.TryGetProperty("finishReason", out var finishReasonElement))
+                {
+                    var finishReason = finishReasonElement.GetString();
+                    if (string.Equals(finishReason, "SAFETY", StringComparison.OrdinalIgnoreCase))
                     {
-                        return text;
+                        explanation = "Xin lỗi, yêu cầu vừa rồi bị hệ thống AI chặn vì lý do an toàn. Bạn hãy thử diễn đạt lại nội dung một cách khác nhé.";
                     }
                 }
+
+                if (explanation == null && candidate.TryGetProperty("safetyRatings", out var safetyRatings) && safetyRatings.ValueKind == JsonValueKind.Array)
+                {
+                    explanation = BuildSafetyRatingsMessage(safetyRatings);
+                }
+            }
+
+            if (explanation == null)
+            {
+                TryBuildPromptFeedbackMessage(document.RootElement, out explanation);
             }
 
             return null;
@@ -495,6 +528,200 @@ namespace Hotel_Booking_System.Services
                 Recommendations = new List<AiRecommendation>(),
                 RawText = raw
             };
+        }
+
+        private static bool TryExtractTextFromCandidate(JsonElement candidate, out string? text, out string? explanation)
+        {
+            text = null;
+            explanation = null;
+
+            if (!candidate.TryGetProperty("content", out var content))
+            {
+                return false;
+            }
+
+            if (TryExtractTextFromContent(content, out text, out explanation))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryExtractTextFromContent(JsonElement content, out string? text, out string? explanation)
+        {
+            text = null;
+            explanation = null;
+
+            JsonElement partsElement;
+            if (content.ValueKind == JsonValueKind.Array)
+            {
+                partsElement = content;
+            }
+            else if (content.ValueKind == JsonValueKind.Object && content.TryGetProperty("parts", out var extractedParts))
+            {
+                partsElement = extractedParts;
+            }
+            else
+            {
+                return false;
+            }
+
+            return TryExtractTextFromParts(partsElement, out text, out explanation);
+        }
+
+        private static bool TryExtractTextFromParts(JsonElement parts, out string? text, out string? explanation)
+        {
+            text = null;
+            explanation = null;
+
+            if (parts.ValueKind != JsonValueKind.Array)
+            {
+                return false;
+            }
+
+            foreach (var part in parts.EnumerateArray())
+            {
+                if (part.ValueKind != JsonValueKind.Object)
+                {
+                    continue;
+                }
+
+                if (part.TryGetProperty("text", out var textElement))
+                {
+                    var candidate = textElement.GetString();
+                    if (!string.IsNullOrWhiteSpace(candidate))
+                    {
+                        text = candidate;
+                        return true;
+                    }
+                }
+
+                if (part.TryGetProperty("inlineData", out var inlineData) && inlineData.ValueKind == JsonValueKind.Object)
+                {
+                    var decoded = TryDecodeInlineData(inlineData);
+                    if (!string.IsNullOrWhiteSpace(decoded))
+                    {
+                        text = decoded;
+                        return true;
+                    }
+                }
+
+                if (explanation == null && part.TryGetProperty("functionCall", out var functionCall) && functionCall.ValueKind == JsonValueKind.Object)
+                {
+                    var name = functionCall.TryGetProperty("name", out var nameElement) ? nameElement.GetString() : null;
+                    explanation = BuildFunctionCallExplanation(name);
+                }
+            }
+
+            return false;
+        }
+
+        private static string? TryDecodeInlineData(JsonElement inlineData)
+        {
+            if (!inlineData.TryGetProperty("data", out var dataElement))
+            {
+                return null;
+            }
+
+            var base64 = dataElement.GetString();
+            if (string.IsNullOrWhiteSpace(base64))
+            {
+                return null;
+            }
+
+            try
+            {
+                var bytes = Convert.FromBase64String(base64);
+                return Encoding.UTF8.GetString(bytes);
+            }
+            catch (FormatException)
+            {
+                return null;
+            }
+        }
+
+        private static string BuildFunctionCallExplanation(string? functionName)
+        {
+            if (string.IsNullOrWhiteSpace(functionName))
+            {
+                return "Gemini đang cố gắng gọi một công cụ và không trả về câu trả lời dạng văn bản. Bạn hãy thử mô tả yêu cầu chi tiết hơn hoặc đặt lại câu hỏi nhé.";
+            }
+
+            return $"Gemini đang cố gắng gọi công cụ \"{functionName}\" nên không trả về văn bản. Bạn hãy thử đặt lại câu hỏi hoặc cung cấp thêm chi tiết cụ thể hơn nhé.";
+        }
+
+        private static string? BuildSafetyRatingsMessage(JsonElement safetyRatings)
+        {
+            if (safetyRatings.ValueKind != JsonValueKind.Array)
+            {
+                return null;
+            }
+
+            var blockedCategories = new List<string>();
+
+            foreach (var rating in safetyRatings.EnumerateArray())
+            {
+                if (rating.ValueKind != JsonValueKind.Object)
+                {
+                    continue;
+                }
+
+                if (!rating.TryGetProperty("blocked", out var blockedElement) || blockedElement.ValueKind != JsonValueKind.True)
+                {
+                    continue;
+                }
+
+                if (rating.TryGetProperty("category", out var categoryElement))
+                {
+                    var category = categoryElement.GetString();
+                    if (!string.IsNullOrWhiteSpace(category))
+                    {
+                        blockedCategories.Add(category);
+                    }
+                }
+            }
+
+            if (blockedCategories.Count == 0)
+            {
+                return null;
+            }
+
+            var categories = string.Join(", ", blockedCategories);
+            return $"Xin lỗi, câu hỏi vừa rồi bị hệ thống AI chặn vì liên quan tới nhóm nội dung: {categories}. Bạn hãy thử diễn đạt lại hoặc thay đổi yêu cầu nhé.";
+        }
+
+        private static bool TryBuildPromptFeedbackMessage(JsonElement root, out string? message)
+        {
+            message = null;
+
+            if (!root.TryGetProperty("promptFeedback", out var feedback) || feedback.ValueKind != JsonValueKind.Object)
+            {
+                return false;
+            }
+
+            if (feedback.TryGetProperty("blockReason", out var blockReasonElement))
+            {
+                var blockReason = blockReasonElement.GetString();
+                if (!string.IsNullOrWhiteSpace(blockReason))
+                {
+                    message = blockReason switch
+                    {
+                        "SAFETY" => "Gemini đã từ chối trả lời vì nội dung có thể vi phạm chính sách an toàn. Bạn hãy thử mô tả yêu cầu khác đi nhé.",
+                        "OTHER" => "Gemini không thể trả lời yêu cầu này. Bạn hãy thử đặt câu hỏi khác hoặc đơn giản hơn.",
+                        _ => "Gemini hiện chưa thể trả lời yêu cầu này. Bạn hãy thử lại sau hoặc điều chỉnh câu hỏi nhé."
+                    };
+                    return true;
+                }
+            }
+
+            if (feedback.TryGetProperty("safetyRatings", out var safetyRatings) && safetyRatings.ValueKind == JsonValueKind.Array)
+            {
+                message = BuildSafetyRatingsMessage(safetyRatings);
+                return !string.IsNullOrWhiteSpace(message);
+            }
+
+            return false;
         }
 
         private static bool TryParsePayload(string json, string raw, out AiAssistantResponse? response)
