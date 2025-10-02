@@ -283,7 +283,8 @@ namespace Hotel_Booking_System.Services
                                "]" +
                                "}");
             builder.AppendLine("\nTrước khi đề xuất phòng, hãy đảm bảo đã biết thành phố hoặc điểm đến, ngày nhận phòng, ngày trả phòng, số lượng khách và ngân sách mong muốn. Nếu thiếu bất kỳ thông tin nào, hãy đặt câu hỏi trong trường reply và để mảng recommendedRooms trống.");
-            builder.AppendLine("Khi người dùng yêu cầu tóm tắt hoặc thông tin cụ thể về phòng/khách sạn, hãy trả lời trong reply và chỉ đưa phòng vào recommendedRooms nếu thực sự phù hợp.");
+            builder.AppendLine("Hãy thu thập thông tin theo từng bước rõ ràng: (1) hỏi thành phố hoặc địa điểm, (2) hỏi ngày nhận phòng, (3) hỏi ngày trả phòng, (4) hỏi số lượng khách, (5) hỏi ngân sách. Chỉ chuyển sang bước tiếp theo khi đã nhận được câu trả lời rõ ràng cho bước hiện tại. Nếu người dùng đã cung cấp một vài thông tin, chỉ hỏi tiếp những mục còn thiếu theo đúng thứ tự này.");
+            builder.AppendLine("Khi đã có đủ dữ liệu, hãy tóm tắt lại thông tin hiểu được trước khi đề xuất phòng. Nếu người dùng yêu cầu tóm tắt hoặc thông tin cụ thể về phòng/khách sạn, hãy trả lời trong reply và chỉ đưa phòng vào recommendedRooms nếu thực sự phù hợp.");
 
             var missingInformationInstruction = BuildRoomSearchGuidance(userMessage, availableHotels.Select(h => h.city ?? string.Empty));
             if (!string.IsNullOrWhiteSpace(missingInformationInstruction))
@@ -517,14 +518,13 @@ namespace Hotel_Booking_System.Services
                 return parsedResponse!;
             }
 
-            var friendlyReply = ExtractReplyText(cleaned) ??
-                                 "Xin lỗi, mình chưa đọc được phản hồi phù hợp. Bạn thử hỏi lại giúp mình nhé?";
+            var fallbackReply = ExtractReplyText(cleaned) ?? cleaned;
 
             _logger.LogWarning("Không thể phân tích phản hồi JSON từ Gemini: {Text}", cleaned);
 
             return new AiAssistantResponse
             {
-                Reply = friendlyReply,
+                Reply = fallbackReply,
                 Recommendations = new List<AiRecommendation>(),
                 RawText = raw
             };
