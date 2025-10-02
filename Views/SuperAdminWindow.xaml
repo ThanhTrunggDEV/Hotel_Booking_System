@@ -122,20 +122,6 @@
                                                 <DataGridTextColumn Header="Người Nộp" Width="160" Binding="{Binding ApplicantName}"/>
                                                 <DataGridTextColumn Header="Khách Sạn" Width="200" Binding="{Binding HotelName}"/>
                                                 <DataGridTextColumn Header="Ngày Gửi" Width="140" Binding="{Binding CreatedAt, StringFormat={}{0:dd/MM/yyyy}}"/>
-                                                <DataGridTemplateColumn Header="Thao Tác" Width="180">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Button Content="✅" ToolTip="Duyệt" Style="{StaticResource SecondaryButton}" Background="#FF4CAF50" Width="34" Height="26" Margin="2" FontSize="12"
-                                                                        Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                        CommandParameter="{Binding RequestID}"/>
-                                                                <Button Content="❌" ToolTip="Từ chối" Style="{StaticResource SecondaryButton}" Background="#FFFF5722" Width="34" Height="26" Margin="2" FontSize="12"
-                                                                        Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                        CommandParameter="{Binding RequestID}"/>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
                                             </DataGrid.Columns>
                                         </DataGrid>
                                         <Border Grid.Column="1" Background="#FFF7F9FC" CornerRadius="16" Padding="28">
@@ -254,20 +240,6 @@
                                                 <DataGridTextColumn Header="Thành Phố" Width="140" Binding="{Binding City}"/>
                                                 <DataGridTextColumn Header="Giá Từ" Width="100" Binding="{Binding MinPrice, StringFormat={}{0:C}}"/>
                                                 <DataGridTextColumn Header="Giá Đến" Width="100" Binding="{Binding MaxPrice, StringFormat={}{0:C}}"/>
-                                                <DataGridTemplateColumn Header="Thao Tác" Width="160">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Button Content="✅" ToolTip="Duyệt" Style="{StaticResource SecondaryButton}" Background="#FF4CAF50" Width="34" Height="26" Margin="2" FontSize="12"
-                                                                        Command="{Binding DataContext.ApproveHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                        CommandParameter="{Binding HotelID}"/>
-                                                                <Button Content="❌" ToolTip="Từ chối" Style="{StaticResource SecondaryButton}" Background="#FFFF5722" Width="34" Height="26" Margin="2" FontSize="12"
-                                                                        Command="{Binding DataContext.RejectHotelCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                        CommandParameter="{Binding HotelID}"/>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
                                             </DataGrid.Columns>
                                         </DataGrid>
                                         <Border Grid.Column="1" Background="#FFFCF4FF" CornerRadius="16" Padding="28">
