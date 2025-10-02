@@ -299,9 +299,9 @@
                                             <Border.Effect>
                                                 <DropShadowEffect Color="#FFE0E0E0" Opacity="0.3" BlurRadius="12" ShadowDepth="3"/>
                                             </Border.Effect>
-                                            <Grid MinHeight="220">
+                                            <Grid MinHeight="240">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="260"/>
+                                                    <ColumnDefinition Width="320"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
 
