@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -54,7 +55,11 @@ namespace Hotel_Booking_System.Services
             _logger = logger;
         }
 
-        public async Task<AIChat> SendAsync(string userId, string message, string? model = null)
+        public async Task<AIChat> SendAsync(
+            string userId,
+            string message,
+            string? model = null,
+            CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(userId))
                 throw new ArgumentException("User ID is required", nameof(userId));
@@ -75,6 +80,8 @@ namespace Hotel_Booking_System.Services
             var historyTask = _repository.GetByUserId(userId);
 
             await Task.WhenAll(hotelsTask, roomsTask, bookingsTask, reviewsTask, historyTask);
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             var hotels = hotelsTask.Result;
             var rooms = roomsTask.Result;
@@ -106,10 +113,13 @@ namespace Hotel_Booking_System.Services
 
             for (var attempt = 1; attempt <= maxAttempts; attempt++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 try
                 {
-                    using var response = await _httpClient.PostAsJsonAsync(endpoint, payload);
-                    var responseBody = await response.Content.ReadAsStringAsync();
+                    using var response = await _httpClient.PostAsJsonAsync(endpoint, payload, cancellationToken);
+                    var serverSuggestedDelay = GetServerSuggestedDelay(response);
+                    var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
                     if (!response.IsSuccessStatusCode)
                     {
@@ -117,9 +127,13 @@ namespace Hotel_Booking_System.Services
 
                         if (ShouldRetry(statusCode) && attempt < maxAttempts)
                         {
+                            var nextDelay = CalculateNextDelay(delay, serverSuggestedDelay);
                             _logger.LogWarning(
                                 "Gemini API returned status {StatusCode} on attempt {Attempt}/{MaxAttempts}. Retrying after {Delay}s.",
-                                (int)statusCode, attempt, maxAttempts, delay.TotalSeconds);
+                                (int)statusCode, attempt, maxAttempts, nextDelay.TotalSeconds);
+                            await Task.Delay(nextDelay, cancellationToken);
+                            delay = nextDelay;
+                            continue;
                         }
                         else
                         {
@@ -158,23 +172,25 @@ namespace Hotel_Booking_System.Services
                         return chat;
                     }
                 }
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                {
+                    throw;
+                }
                 catch (Exception ex) when (IsTransientException(ex) && attempt < maxAttempts)
                 {
+                    var nextDelay = CalculateNextDelay(delay, null);
                     _logger.LogWarning(ex,
                         "Không thể gọi Gemini API ở lần thử {Attempt}/{MaxAttempts}. Sẽ thử lại sau {Delay} giây.",
-                        attempt, maxAttempts, delay.TotalSeconds);
+                        attempt, maxAttempts, nextDelay.TotalSeconds);
+                    await Task.Delay(nextDelay, cancellationToken);
+                    delay = nextDelay;
+                    continue;
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Không thể gọi Gemini API");
                     return CreateFallbackChat(userId, message,
                         "Xin lỗi, trợ lý AI không hoạt động tạm thời. Bạn vui lòng thử lại sau nhé.");
-                }
-
-                if (attempt < maxAttempts)
-                {
-                    await Task.Delay(delay);
-                    delay = TimeSpan.FromSeconds(Math.Min(delay.TotalSeconds * 2, 8));
                 }
             }
 
@@ -375,6 +391,53 @@ namespace Hotel_Booking_System.Services
         private static bool IsTransientException(Exception exception)
         {
             return exception is HttpRequestException or TaskCanceledException;
+        }
+
+        private static TimeSpan? GetServerSuggestedDelay(HttpResponseMessage response)
+        {
+            var retryAfter = response.Headers.RetryAfter;
+            if (retryAfter == null)
+            {
+                return null;
+            }
+
+            if (retryAfter.Delta is { } delta && delta > TimeSpan.Zero)
+            {
+                return delta;
+            }
+
+            if (retryAfter.Date is { } date)
+            {
+                var deltaFromDate = date - DateTimeOffset.UtcNow;
+                if (deltaFromDate > TimeSpan.Zero)
+                {
+                    return deltaFromDate;
+                }
+            }
+
+            return null;
+        }
+
+        private static TimeSpan CalculateNextDelay(TimeSpan currentDelay, TimeSpan? serverSuggestedDelay)
+        {
+            const double backoffMultiplier = 2.0;
+            var maxDelay = TimeSpan.FromSeconds(10);
+
+            TimeSpan baseDelay;
+            if (serverSuggestedDelay is { } suggested && suggested > TimeSpan.Zero)
+            {
+                baseDelay = suggested;
+            }
+            else
+            {
+                var nextSeconds = Math.Min(currentDelay.TotalSeconds * backoffMultiplier, maxDelay.TotalSeconds);
+                baseDelay = TimeSpan.FromSeconds(nextSeconds);
+            }
+
+            var jitterMilliseconds = Random.Shared.Next(250, 750);
+            var candidate = baseDelay + TimeSpan.FromMilliseconds(jitterMilliseconds);
+
+            return candidate <= maxDelay ? candidate : maxDelay;
         }
 
         private static string? ExtractText(JsonDocument document)
