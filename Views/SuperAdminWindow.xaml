@@ -236,8 +236,8 @@
                                                       RowBackground="White" AlternatingRowBackground="#FFF5F7FA" BorderThickness="0" HeadersVisibility="Column" Margin="0,0,24,0">
                                                 <DataGrid.Resources>
                                                     <Style TargetType="DataGridColumnHeader">
-                                                        <Setter Property="Background" Value="#FFF3E5F5"/>
-                                                        <Setter Property="Foreground" Value="#FF6A1B9A"/>
+                                                        <Setter Property="Background" Value="#FFE3F2FD"/>
+                                                        <Setter Property="Foreground" Value="#FF0D47A1"/>
                                                         <Setter Property="FontWeight" Value="SemiBold"/>
                                                         <Setter Property="BorderThickness" Value="0"/>
                                                         <Setter Property="Padding" Value="8,6"/>
@@ -251,7 +251,7 @@
                                                     <DataGridTextColumn Header="Giá Đến" Width="100" Binding="{Binding MaxPrice, StringFormat={}{0:C}}"/>
                                                 </DataGrid.Columns>
                                             </DataGrid>
-                                            <Border Grid.Column="1" Background="#FFFCF4FF" CornerRadius="16" Padding="28">
+                                            <Border Grid.Column="1" Background="#FFF7F9FC" CornerRadius="16" Padding="28">
                                                 <Border.Effect>
                                                     <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.1"/>
                                                 </Border.Effect>
@@ -263,12 +263,12 @@
                                                         <Grid.Resources>
                                                             <Style TargetType="TextBlock" x:Key="HotelDetailLabel">
                                                                 <Setter Property="FontSize" Value="12"/>
-                                                                <Setter Property="Foreground" Value="#FF6A1B9A"/>
+                                                                <Setter Property="Foreground" Value="#FF607D8B"/>
                                                                 <Setter Property="FontWeight" Value="SemiBold"/>
                                                             </Style>
                                                             <Style TargetType="TextBlock" x:Key="HotelDetailValue">
                                                                 <Setter Property="FontSize" Value="16"/>
-                                                                <Setter Property="Foreground" Value="#FF311B92"/>
+                                                                <Setter Property="Foreground" Value="#FF263238"/>
                                                                 <Setter Property="FontWeight" Value="Bold"/>
                                                             </Style>
                                                         </Grid.Resources>
@@ -290,11 +290,11 @@
                                                             </StackPanel>
                                                             <StackPanel Orientation="Vertical" Margin="0,0,0,12">
                                                                 <TextBlock Text="Quản trị viên" Style="{StaticResource HotelDetailLabel}"/>
-                                                                <TextBlock Text="{Binding AdminName}" FontSize="14" Foreground="#FF4527A0" FontWeight="SemiBold"/>
+                                                                <TextBlock Text="{Binding AdminName}" Style="{StaticResource HotelDetailValue}" FontSize="14"/>
                                                             </StackPanel>
                                                             <StackPanel Orientation="Vertical" Margin="0,0,0,12">
                                                                 <TextBlock Text="Địa chỉ" Style="{StaticResource HotelDetailLabel}"/>
-                                                                <TextBlock Text="{Binding Address}" FontSize="14" Foreground="#FF4527A0" TextWrapping="Wrap"/>
+                                                                <TextBlock Text="{Binding Address}" Style="{StaticResource HotelDetailValue}" FontSize="14" TextWrapping="Wrap"/>
                                                             </StackPanel>
                                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
                                                                 <StackPanel Margin="0,0,16,0">
@@ -320,7 +320,7 @@
                                                                 <TextBlock Text="Mô tả" Style="{StaticResource HotelDetailLabel}"/>
                                                                 <Border Background="#FFFFFFFF" Padding="12" Margin="0,8,0,0" CornerRadius="10">
                                                                     <ScrollViewer Height="110" VerticalScrollBarVisibility="Auto" Background="Transparent">
-                                                                        <TextBlock Text="{Binding Description}" FontSize="13" Foreground="#FF4527A0" TextWrapping="Wrap"/>
+                                                                        <TextBlock Text="{Binding Description}" FontSize="13" Foreground="#FF37474F" TextWrapping="Wrap"/>
                                                                     </ScrollViewer>
                                                                 </Border>
                                                             </StackPanel>
@@ -344,7 +344,7 @@
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Grid>
-                                                    <TextBlock Text="Chọn một khách sạn để xem thông tin chi tiết." Foreground="#FFB39DDB" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock Text="Chọn một khách sạn để xem thông tin chi tiết." Foreground="#FF90A4AE" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                         <TextBlock.Style>
                                                             <Style TargetType="TextBlock">
                                                                 <Setter Property="Visibility" Value="Collapsed"/>
