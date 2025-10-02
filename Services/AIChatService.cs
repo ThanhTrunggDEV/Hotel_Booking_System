@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Hotel_Booking_System.DomainModels;
 using Hotel_Booking_System.Interfaces;
 using Mscc.GenerativeAI;
@@ -18,8 +21,15 @@ namespace Hotel_Booking_System.Services
         private readonly IRoomRepository _roomRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly IReviewRepository _reviewRepository;
+        private readonly ConcurrentDictionary<string, RoomSearchState> _roomSearchStates = new();
 
-        public AIChatService(IAIChatRepository repository, GeminiOptions options, IBookingRepository bookingRepository, IHotelRepository hotelRepository, IRoomRepository roomRepository, IReviewRepository reviewRepository)
+        public AIChatService(
+            IAIChatRepository repository,
+            GeminiOptions options,
+            IBookingRepository bookingRepository,
+            IHotelRepository hotelRepository,
+            IRoomRepository roomRepository,
+            IReviewRepository reviewRepository)
         {
             _repository = repository;
             _hotelRepository = hotelRepository;
@@ -33,9 +43,8 @@ namespace Hotel_Booking_System.Services
 
             var modelName = Environment.GetEnvironmentVariable("GEMINI_MODEL")
                             ?? _options.DefaultModel
-                            ?? Model.Gemini15Pro; 
+                            ?? Model.Gemini15Pro;
 
-         
             var googleAI = new GoogleAI(apiKey);
             _generativeModel = googleAI.GenerativeModel(model: modelName);
         }
@@ -47,7 +56,6 @@ namespace Hotel_Booking_System.Services
             if (string.IsNullOrWhiteSpace(message))
                 throw new ArgumentException("Message is required", nameof(message));
 
-            // 1. Lấy data từ DB
             var hotels = await _hotelRepository.GetAllAsync();
             var rooms = await _roomRepository.GetAllAsync();
             var bookings = await _bookingRepository.GetBookingByUserId(userId);
@@ -57,7 +65,13 @@ namespace Hotel_Booking_System.Services
                 .GroupBy(r => r.HotelID)
                 .ToDictionary(g => g.Key, g => g.Average(r => r.Rating));
 
-            // 2. Build context text
+            if (TryHandleGuidedRoomSearch(userId, message, hotels, rooms, ratingsByHotel, out var guidedChat))
+            {
+                await _repository.AddAsync(guidedChat);
+                await _repository.SaveAsync();
+                return guidedChat;
+            }
+
             var context = new StringBuilder();
             context.AppendLine("Here is the current hotel database snapshot:");
             context.AppendLine("\nHotels:");
@@ -74,12 +88,11 @@ namespace Hotel_Booking_System.Services
             }
 
             context.AppendLine("\nBookings:");
-            foreach (var b in bookings.Where(b => b != null).Take(10)) // limit tránh prompt quá dài
+            foreach (var b in bookings.Where(b => b != null).Take(10))
             {
                 context.AppendLine($"- Booking {b!.BookingID}: User {b.UserID}, Room {b.RoomID}, From {b.CheckInDate} To {b.CheckOutDate}, Status: {b.Status}");
             }
 
-            // 3. Prompt = system + context + user message
             var promptBuilder = new StringBuilder();
             promptBuilder.AppendLine("You are an AI assistant for NTT hotel booking system.");
             promptBuilder.AppendLine("Always answer based only on the given database information.");
@@ -97,11 +110,9 @@ namespace Hotel_Booking_System.Services
 
             var prompt = promptBuilder.ToString();
 
-            // 4. Gọi AI
             var result = await _generativeModel.GenerateContent(prompt);
             var response = result.Text ?? string.Empty;
 
-            // 5. Save chat log
             var chat = new AIChat
             {
                 ChatID = Guid.NewGuid().ToString(),
@@ -115,6 +126,301 @@ namespace Hotel_Booking_System.Services
             await _repository.SaveAsync();
 
             return chat;
+        }
+
+        private bool TryHandleGuidedRoomSearch(
+            string userId,
+            string message,
+            IEnumerable<Hotel> hotels,
+            IEnumerable<Room> rooms,
+            IReadOnlyDictionary<string, double> ratingsByHotel,
+            out AIChat chat)
+        {
+            chat = null!;
+            var normalizedMessage = message.ToLowerInvariant();
+            var accentlessMessage = RemoveDiacritics(normalizedMessage);
+
+            var state = _roomSearchStates.GetOrAdd(userId, _ => new RoomSearchState());
+            var wasActive = state.IsActive;
+
+            if (IsResetRequest(accentlessMessage))
+            {
+                state.Reset();
+                if (wasActive)
+                {
+                    chat = new AIChat
+                    {
+                        ChatID = Guid.NewGuid().ToString(),
+                        UserID = userId,
+                        Message = message,
+                        Response = "Không sao, khi nào cần tìm phòng nữa cứ nói với tôi nhé!",
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    return true;
+                }
+
+                return false;
+            }
+
+            if (!state.IsActive && !IsRoomSearchRequest(accentlessMessage))
+            {
+                return false;
+            }
+
+            state.IsActive = true;
+            UpdateCity(state, normalizedMessage, accentlessMessage, hotels.Select(h => h.City));
+            UpdateBudget(state, message);
+            UpdateGuests(state, accentlessMessage);
+
+            var nextQuestion = GetNextMissingField(state);
+            string response;
+
+            if (nextQuestion != null)
+            {
+                response = nextQuestion switch
+                {
+                    MissingField.City => "Bạn muốn tìm khách sạn ở thành phố hoặc khu vực nào?",
+                    MissingField.Budget => "Ngân sách mỗi đêm của bạn khoảng bao nhiêu?",
+                    MissingField.GuestCount => "Bạn dự định có bao nhiêu khách ở cùng?",
+                    _ => "Tôi cần thêm vài thông tin nữa để gợi ý chính xác."
+                };
+            }
+            else
+            {
+                response = BuildRoomSuggestions(state, hotels, rooms, ratingsByHotel);
+                state.Reset();
+            }
+
+            chat = new AIChat
+            {
+                ChatID = Guid.NewGuid().ToString(),
+                UserID = userId,
+                Message = message,
+                Response = response,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            return true;
+        }
+
+        private static string BuildRoomSuggestions(
+            RoomSearchState state,
+            IEnumerable<Hotel> hotels,
+            IEnumerable<Room> rooms,
+            IReadOnlyDictionary<string, double> ratingsByHotel)
+        {
+            var comparisonCity = RemoveDiacritics(state.City ?? string.Empty).ToLowerInvariant();
+
+            var matchingHotels = hotels
+                .Where(h => !string.IsNullOrWhiteSpace(h.City))
+                .Where(h => RemoveDiacritics(h.City).ToLowerInvariant().Contains(comparisonCity) ||
+                            RemoveDiacritics(h.Address).ToLowerInvariant().Contains(comparisonCity))
+                .ToList();
+
+            if (!matchingHotels.Any())
+            {
+                return "Hiện tại tôi chưa tìm thấy khách sạn nào phù hợp với địa điểm bạn yêu cầu. Bạn có thể thử với khu vực khác không?";
+            }
+
+            double? minBudget = state.MinBudget;
+            double? maxBudget = state.MaxBudget;
+            if (minBudget.HasValue && maxBudget.HasValue && minBudget > maxBudget)
+            {
+                (minBudget, maxBudget) = (maxBudget, minBudget);
+            }
+
+            var guestCount = state.GuestCount ?? 1;
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"Dưới đây là một vài gợi ý phù hợp tại {state.City}:");
+
+            var suggestionsAdded = 0;
+            var culture = CultureInfo.GetCultureInfo("vi-VN");
+
+            foreach (var hotel in matchingHotels)
+            {
+                var suitableRooms = rooms
+                    .Where(r => r.HotelID == hotel.HotelID)
+                    .Where(r => r.Capacity >= guestCount)
+                    .Where(r => string.Equals(r.Status, "Available", StringComparison.OrdinalIgnoreCase))
+                    .Where(r => (!minBudget.HasValue || r.PricePerNight >= minBudget) &&
+                                (!maxBudget.HasValue || r.PricePerNight <= maxBudget))
+                    .OrderBy(r => r.PricePerNight)
+                    .Take(2)
+                    .ToList();
+
+                if (!suitableRooms.Any())
+                {
+                    continue;
+                }
+
+                suggestionsAdded++;
+                ratingsByHotel.TryGetValue(hotel.HotelID, out var userRating);
+                sb.AppendLine($"{suggestionsAdded}. {hotel.HotelName} - {hotel.Address}. Hạng khách sạn: {hotel.Rating:F1}/5, điểm đánh giá khách: {userRating:F1}/5.");
+
+                foreach (var room in suitableRooms)
+                {
+                    sb.AppendLine($"   • Phòng {room.RoomNumber} ({room.RoomType}), sức chứa {room.Capacity} người, giá {room.PricePerNight.ToString("C0", culture)}/đêm.");
+                }
+
+                if (suggestionsAdded >= 3)
+                {
+                    break;
+                }
+            }
+
+            if (suggestionsAdded == 0)
+            {
+                return "Tôi chưa tìm thấy phòng nào phù hợp với ngân sách và số lượng khách bạn đưa ra. Bạn có muốn điều chỉnh lại thông tin không?";
+            }
+
+            sb.AppendLine("Nếu bạn cần thêm lựa chọn hoặc muốn thay đổi thông tin, cứ cho tôi biết nhé!");
+            return sb.ToString().TrimEnd();
+        }
+
+        private static void UpdateCity(RoomSearchState state, string normalizedMessage, string accentlessMessage, IEnumerable<string> cities)
+        {
+            foreach (var city in cities)
+            {
+                if (string.IsNullOrWhiteSpace(city))
+                    continue;
+
+                var normalizedCity = city.ToLowerInvariant();
+                var accentlessCity = RemoveDiacritics(normalizedCity);
+
+                if (normalizedMessage.Contains(normalizedCity) || accentlessMessage.Contains(accentlessCity))
+                {
+                    state.City = city;
+                    return;
+                }
+            }
+        }
+
+        private static void UpdateBudget(RoomSearchState state, string originalMessage)
+        {
+            var (min, max) = ExtractBudgetRange(originalMessage);
+            if (min.HasValue)
+            {
+                state.MinBudget = min.Value;
+            }
+            if (max.HasValue)
+            {
+                state.MaxBudget = max.Value;
+            }
+        }
+
+        private static void UpdateGuests(RoomSearchState state, string accentlessMessage)
+        {
+            var guests = ExtractGuestCount(accentlessMessage);
+            if (guests.HasValue)
+            {
+                state.GuestCount = guests.Value;
+            }
+        }
+
+        private static bool IsResetRequest(string accentlessMessage)
+        {
+            return accentlessMessage.Contains("huy") || accentlessMessage.Contains("khong can");
+        }
+
+        private static bool IsRoomSearchRequest(string accentlessMessage)
+        {
+            var searchKeywords = new[]
+            {
+                "tim phong", "tim khach san", "dat phong", "dat khach san", "find room", "find hotel", "book room", "book hotel"
+            };
+
+            return searchKeywords.Any(keyword => accentlessMessage.Contains(keyword));
+        }
+
+        private static MissingField? GetNextMissingField(RoomSearchState state)
+        {
+            if (string.IsNullOrWhiteSpace(state.City))
+                return MissingField.City;
+            if (!state.MinBudget.HasValue && !state.MaxBudget.HasValue)
+                return MissingField.Budget;
+            if (!state.GuestCount.HasValue)
+                return MissingField.GuestCount;
+            return null;
+        }
+
+        private static (double? min, double? max) ExtractBudgetRange(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+                return (null, null);
+
+            var matches = Regex.Matches(message, @"(?<value>\d+(?:[\.,]\d+)?)\s*(?<unit>trieu|tr|triệu|tr\.|k|ngan|ngàn|nghin|nghìn|vnđ|vnd|đ|d)?", RegexOptions.IgnoreCase);
+            if (matches.Count == 0)
+                return (null, null);
+
+            var values = new List<double>();
+            foreach (Match match in matches)
+            {
+                var numericPart = match.Groups["value"].Value.Replace(" ", string.Empty);
+                var parsed = false;
+                if (double.TryParse(numericPart.Replace(".", string.Empty).Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out var invariantValue))
+                {
+                    values.Add(ApplyUnit(invariantValue, match.Groups["unit"].Value));
+                    parsed = true;
+                }
+
+                if (!parsed && double.TryParse(numericPart, NumberStyles.Any, CultureInfo.GetCultureInfo("vi-VN"), out var viValue))
+                {
+                    values.Add(ApplyUnit(viValue, match.Groups["unit"].Value));
+                }
+            }
+
+            if (!values.Any())
+                return (null, null);
+
+            var min = values.Min();
+            var max = values.Max();
+            return (min, values.Count > 1 ? max : min);
+        }
+
+        private static double ApplyUnit(double value, string unitRaw)
+        {
+            var unit = unitRaw.ToLowerInvariant();
+            return unit switch
+            {
+                "trieu" => value * 1_000_000,
+                "triệu" => value * 1_000_000,
+                "tr" => value * 1_000_000,
+                "tr." => value * 1_000_000,
+                "k" => value * 1_000,
+                "ngan" => value * 1_000,
+                "ngàn" => value * 1_000,
+                "nghin" => value * 1_000,
+                "nghìn" => value * 1_000,
+                _ => value
+            };
+        }
+
+        private static int? ExtractGuestCount(string accentlessMessage)
+        {
+            var match = Regex.Match(accentlessMessage, @"(\d+)\s*(nguoi|khach|people|guest)");
+            if (match.Success && int.TryParse(match.Groups[1].Value, out var guests))
+            {
+                return guests;
+            }
+
+            var roomTypeKeywords = new Dictionary<string, int>
+            {
+                {"single", 1},
+                {"double", 2},
+                {"twin", 2},
+                {"family", 4}
+            };
+
+            foreach (var keyword in roomTypeKeywords)
+            {
+                if (accentlessMessage.Contains(keyword.Key))
+                {
+                    return keyword.Value;
+                }
+            }
+
+            return null;
         }
 
         private static string BuildRoomSearchGuidance(string userMessage, IEnumerable<string> cities)
@@ -216,6 +522,31 @@ namespace Hotel_Booking_System.Services
             }
 
             return builder.ToString().Normalize(NormalizationForm.FormC);
+        }
+
+        private enum MissingField
+        {
+            City,
+            Budget,
+            GuestCount
+        }
+
+        private sealed class RoomSearchState
+        {
+            public bool IsActive { get; set; }
+            public string? City { get; set; }
+            public double? MinBudget { get; set; }
+            public double? MaxBudget { get; set; }
+            public int? GuestCount { get; set; }
+
+            public void Reset()
+            {
+                IsActive = false;
+                City = null;
+                MinBudget = null;
+                MaxBudget = null;
+                GuestCount = null;
+            }
         }
     }
 }
