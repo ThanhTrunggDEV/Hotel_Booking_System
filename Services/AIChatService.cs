@@ -73,40 +73,48 @@ namespace Hotel_Booking_System.Services
             }
 
             var context = new StringBuilder();
-            context.AppendLine("Here is the current hotel database snapshot:");
-            context.AppendLine("\nHotels:");
+            context.AppendLine("Dưới đây là ảnh chụp dữ liệu hiện có:");
+            context.AppendLine("\nDanh sách khách sạn:");
             foreach (var h in hotels)
             {
                 ratingsByHotel.TryGetValue(h.HotelID, out var userRating);
-                context.AppendLine($"- {h.HotelID}, {h.HotelName}, Location: {h.Address}, {h.City}, Price Range: {h.MinPrice}-{h.MaxPrice}, Hotel Rating: {h.Rating}, User Rating: {userRating:F1}");
+                context.AppendLine($"- {h.HotelID}, {h.HotelName}, Địa chỉ: {h.Address}, {h.City}, Khoảng giá: {h.MinPrice}-{h.MaxPrice}, Đánh giá hệ thống: {h.Rating}, Điểm khách hàng: {userRating:F1}");
             }
 
-            context.AppendLine("\nRooms:");
+            context.AppendLine("\nDanh sách phòng:");
             foreach (var r in rooms)
             {
-                context.AppendLine($"- Room {r.RoomNumber}: {r.RoomType}, Capacity: {r.Capacity}, Price per night: {r.PricePerNight}, Status: {r.Status}");
+                context.AppendLine($"- Phòng {r.RoomNumber}: {r.RoomType}, Sức chứa: {r.Capacity}, Giá/đêm: {r.PricePerNight}, Trạng thái: {r.Status}");
             }
 
-            context.AppendLine("\nBookings:");
+            context.AppendLine("\nMột số đặt phòng gần đây của người dùng:");
             foreach (var b in bookings.Where(b => b != null).Take(10))
             {
-                context.AppendLine($"- Booking {b!.BookingID}: User {b.UserID}, Room {b.RoomID}, From {b.CheckInDate} To {b.CheckOutDate}, Status: {b.Status}");
+                context.AppendLine($"- Mã {b!.BookingID}: Người dùng {b.UserID}, Phòng {b.RoomID}, Từ {b.CheckInDate} đến {b.CheckOutDate}, Trạng thái: {b.Status}");
             }
 
             var promptBuilder = new StringBuilder();
-            promptBuilder.AppendLine("You are an AI assistant for NTT hotel booking system.");
-            promptBuilder.AppendLine("Always answer based only on the given database information.");
-            promptBuilder.AppendLine("If the user asks something outside the data, politely say you don't know.");
+            promptBuilder.AppendLine("Bạn là trợ lý du lịch ảo của hệ thống đặt phòng khách sạn NTT.");
+            promptBuilder.AppendLine("Yêu cầu bắt buộc:");
+            promptBuilder.AppendLine("1. Luôn trả lời 100% bằng tiếng Việt tự nhiên, ngắn gọn, súc tích.");
+            promptBuilder.AppendLine("2. Chỉ sử dụng dữ liệu được cung cấp trong ngữ cảnh. Nếu không đủ thông tin, hãy nói rõ rằng bạn không có dữ liệu.");
+            promptBuilder.AppendLine("3. Không được suy đoán hoặc sáng tạo thông tin mới, không được viện dẫn nguồn bên ngoài.");
+            promptBuilder.AppendLine("4. Khi cần thêm thông tin để hỗ trợ việc tìm phòng, hãy hỏi từng câu riêng biệt và chờ phản hồi.");
+            promptBuilder.AppendLine("5. Nếu người dùng hủy hoặc không muốn tiếp tục, hãy trả lời lịch sự và không cung cấp thêm gợi ý.");
 
             var missingInformationInstruction = BuildRoomSearchGuidance(message, hotels.Select(h => h.City));
             if (!string.IsNullOrEmpty(missingInformationInstruction))
             {
+                promptBuilder.AppendLine();
                 promptBuilder.AppendLine(missingInformationInstruction);
             }
 
             promptBuilder.AppendLine();
-            promptBuilder.AppendLine($"Database context: {context}");
-            promptBuilder.AppendLine($"User question: {message}");
+            promptBuilder.AppendLine("Ngữ cảnh dữ liệu (chỉ dùng để tham khảo khi cần trả lời):");
+            promptBuilder.AppendLine(context.ToString());
+            promptBuilder.AppendLine();
+            promptBuilder.AppendLine("Câu hỏi của người dùng:");
+            promptBuilder.AppendLine(message);
 
             var prompt = promptBuilder.ToString();
 
@@ -458,11 +466,23 @@ namespace Hotel_Booking_System.Services
 
             if (!missingDetails.Any())
             {
-                return "Khi người dùng đã cung cấp đủ thành phố, ngân sách và số lượng khách, hãy đưa ra gợi ý phòng phù hợp dựa trên dữ liệu hiện có.";
+                return "Nếu người dùng đã cung cấp đủ thành phố, ngân sách và số lượng khách thì hãy tổng hợp ngắn gọn và đưa ra gợi ý phòng dựa hoàn toàn trên dữ liệu đã cho.";
             }
 
-            var detailsSentence = string.Join(", ", missingDetails);
-            return $"Người dùng đang muốn tìm phòng nhưng chưa cung cấp {detailsSentence}. Hãy hỏi thêm những thông tin này (theo từng câu hỏi riêng) trước khi đưa ra gợi ý.";
+            var orderedPrompts = missingDetails
+                .Select((detail, index) => $"{index + 1}. Hỏi rõ về {detail} (chỉ một câu hỏi).")
+                .ToList();
+
+            var guidanceBuilder = new StringBuilder();
+            guidanceBuilder.AppendLine("Người dùng đang muốn tìm phòng nhưng thông tin còn thiếu.");
+            guidanceBuilder.AppendLine("Thực hiện lần lượt các bước sau trước khi đưa ra gợi ý:");
+            foreach (var prompt in orderedPrompts)
+            {
+                guidanceBuilder.AppendLine($"- {prompt}");
+            }
+
+            guidanceBuilder.Append("Luôn chờ câu trả lời của người dùng trước khi chuyển sang câu hỏi tiếp theo.");
+            return guidanceBuilder.ToString();
         }
 
         private static bool HasCityMention(string normalizedMessage, string accentlessMessage, IEnumerable<string> cities)
