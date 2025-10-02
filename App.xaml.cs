@@ -11,6 +11,7 @@ using Hotel_Booking_System.Services;
 using Hotel_Booking_System.ViewModels;
 using Hotel_Booking_System.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Hotel_Booking_System
 {
@@ -83,6 +84,7 @@ namespace Hotel_Booking_System
                 .AddScoped<IUserViewModel, UserViewModel>()
                 .AddScoped<IHotelAdminViewModel, HotelAdminViewModel>()
                 .AddScoped<HotelAdminViewModel>()
+                .AddLogging()
                 .BuildServiceProvider();
         }
     }

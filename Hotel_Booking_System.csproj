@@ -18,7 +18,6 @@
     <PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
-    <PackageReference Include="Mscc.GenerativeAI" Version="2.8.9" />
   </ItemGroup>
 
   <ItemGroup>
