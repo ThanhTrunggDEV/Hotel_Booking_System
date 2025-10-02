@@ -2,75 +2,252 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Edit User"
-        Height="420"
-        Width="520"
+        Height="620"
+        Width="640"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Background="#FFF8F9FA">
-    <Grid Margin="20">
+        Background="#F5F7FB">
+    <Window.Resources>
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+            <Setter Property="Background" Value="#FFE53935"/>
+            <Setter Property="BorderBrush" Value="#FFE53935"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Update user details"
-                   FontSize="20"
-                   FontWeight="Bold"
-                   Foreground="#FF1976D2"/>
-
-        <StackPanel Grid.Row="1" Margin="0,20,0,0">
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="Full name" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>
-
-            <Grid Margin="0,0,0,12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                    <TextBlock Text="Phone" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                    <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="1">
-                    <TextBlock Text="Gender" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                    <ComboBox SelectedValue="{Binding Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              SelectedValuePath="Content">
-                        <ComboBoxItem Content="Male"/>
-                        <ComboBoxItem Content="Female"/>
-                        <ComboBoxItem Content="Other"/>
-                    </ComboBox>
-                </StackPanel>
-            </Grid>
-
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="Email" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                <TextBox Text="{Binding Email}" IsReadOnly="True" Background="#FFEFF2F7"/>
-            </StackPanel>
-
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="Date of birth" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                <DatePicker SelectedDate="{Binding DateOfBirth, Mode=TwoWay}"/>
-            </StackPanel>
-
-            <StackPanel Margin="0,0,0,12">
-                <TextBlock Text="Role" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                <ComboBox SelectedValue="{Binding Role, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedValuePath="Content">
-                    <ComboBoxItem Content="Customer"/>
-                    <ComboBoxItem Content="HotelAdmin"/>
-                    <ComboBoxItem Content="SuperAdmin"/>
-                </ComboBox>
-            </StackPanel>
+        <StackPanel Grid.Row="0"
+                    Margin="30,26,30,16">
+            <TextBlock Text="Chỉnh sửa người dùng"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Foreground="#1F2A44"/>
+            <TextBlock Text="Cập nhật thông tin cá nhân và vai trò truy cập của người dùng trong hệ thống."
+                       Foreground="#64748B"
+                       Margin="0,6,0,0"
+                       TextWrapping="Wrap"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button x:Name="btnCancel" Content="Cancel" Width="90" Margin="0,0,10,0" Click="Cancel_Click"/>
-            <Button x:Name="btnSave" Content="Save" Width="90" Click="Save_Click" Background="#FF1976D2" Foreground="White"/>
-        </StackPanel>
+        <Border Grid.Row="1"
+                Margin="30,0,30,0"
+                Padding="24"
+                CornerRadius="20"
+                Background="White">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Width="88"
+                                Height="88"
+                                CornerRadius="44"
+                                Background="#F1F5F9"
+                                BorderBrush="#E2E8F0"
+                                BorderThickness="1"
+                                ClipToBounds="True">
+                            <Image Source="{Binding AvatarUrl, FallbackValue=https://i.ibb.co/FLvg0hX4/avatar-default.png}"
+                                   Stretch="UniformToFill"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1"
+                                    Margin="20,0,0,0"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="{Binding FullName, FallbackValue=Chưa có tên}"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"
+                                       Foreground="#1F2937"/>
+                            <TextBlock Text="{Binding Email, FallbackValue=Không có email}"
+                                       Foreground="#64748B"
+                                       Margin="0,4,0,0"/>
+                            <TextBlock Text="{Binding Role, FallbackValue=Chưa phân quyền}"
+                                       Foreground="#4F46E5"
+                                       FontWeight="SemiBold"
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Margin="0,24"/>
+
+                    <TextBlock Text="Thông tin cơ bản"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#1F2937"
+                               Margin="0,0,0,16"/>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                            <TextBlock Text="Họ và tên"
+                                       Foreground="#475569"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource ModernTextBox}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Số điện thoại"
+                                       Foreground="#475569"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource ModernTextBox}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                            <TextBlock Text="Giới tính"
+                                       Foreground="#475569"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,0,6"/>
+                            <ComboBox SelectedValue="{Binding Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      Style="{StaticResource ModernComboBox}">
+                                <ComboBoxItem Content="Male"/>
+                                <ComboBoxItem Content="Female"/>
+                                <ComboBoxItem Content="Other"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Ngày sinh"
+                                       Foreground="#475569"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,0,6"/>
+                            <DatePicker SelectedDate="{Binding DateOfBirth, Mode=TwoWay}"
+                                        Style="{StaticResource ModernDatePicker}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Margin="0,0,0,12">
+                        <TextBlock Text="Email"
+                                   Foreground="#475569"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,6"/>
+                        <TextBox Text="{Binding Email}"
+                                 Style="{StaticResource ModernTextBox}"
+                                 IsReadOnly="True"
+                                 Background="#EEF2F7"
+                                 Foreground="#475569"/>
+                        <TextBlock Text="Email được sử dụng làm tên đăng nhập và không thể thay đổi."
+                                   Foreground="#94A3B8"
+                                   Margin="0,8,0,0"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,24">
+                        <TextBlock Text="Vai trò hệ thống"
+                                   Foreground="#475569"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,6"/>
+                        <ComboBox SelectedValue="{Binding Role, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedValuePath="Content"
+                                  Style="{StaticResource ModernComboBox}">
+                            <ComboBoxItem Content="User"/>
+                            <ComboBoxItem Content="HotelAdmin"/>
+                            <ComboBoxItem Content="SuperAdmin"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Border Background="#F8FAFC"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            Padding="16"
+                            Margin="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="Ghi chú hệ thống"
+                                       FontWeight="SemiBold"
+                                       Foreground="#1F2937"/>
+                            <TextBlock Text="Thông tin sẽ được đồng bộ đến các phân hệ quản trị ngay sau khi lưu."
+                                       Foreground="#64748B"
+                                       Margin="0,6,0,0"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock Text="Vui lòng kiểm tra kỹ dữ liệu trước khi xác nhận."
+                                       Foreground="#64748B"
+                                       Margin="0,2,0,0"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#FEF2F2"
+                            BorderBrush="#FCA5A5"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            Padding="16">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="36"
+                                    Height="36"
+                                    CornerRadius="18"
+                                    Background="#F87171"
+                                    VerticalAlignment="Top">
+                                <TextBlock Text="!"
+                                           FontWeight="Bold"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Margin="12,0,0,0">
+                                <TextBlock Text="Xóa người dùng"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"
+                                           Foreground="#B91C1C"/>
+                                <TextBlock Text="Thao tác này sẽ loại bỏ hoàn toàn tài khoản khỏi hệ thống và không thể hoàn tác."
+                                           Margin="0,6,0,0"
+                                           Foreground="#7F1D1D"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <Grid Grid.Row="2"
+              Margin="30,20,30,30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Xóa người dùng"
+                    Click="Delete_Click"
+                    Style="{StaticResource DangerButton}"
+                    Width="160"
+                    Grid.Column="0"/>
+
+            <StackPanel Grid.Column="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button x:Name="btnCancel"
+                        Content="Hủy"
+                        Width="120"
+                        Margin="0,0,12,0"
+                        Style="{StaticResource SecondaryButton}"
+                        Click="Cancel_Click"/>
+                <Button x:Name="btnSave"
+                        Content="Lưu thay đổi"
+                        Width="150"
+                        Style="{StaticResource PrimaryButton}"
+                        Click="Save_Click"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

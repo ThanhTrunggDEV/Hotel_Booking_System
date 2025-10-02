@@ -57,6 +57,14 @@ namespace Hotel_Booking_System.ViewModels
         private string _notificationMessage = string.Empty;
         private HotelAdminRequest? _selectedPendingRequest;
         private Hotel? _selectedPendingHotel;
+        private Hotel? _selectedHotel;
+        private User? _selectedUser;
+        private int _customerCount;
+        private int _hotelAdminCount;
+        private int _superAdminCount;
+        private string _selectedUserRole = "All";
+        private string _userSearchTerm = string.Empty;
+        private string _userFilterSummary = string.Empty;
         private DispatcherTimer? _notificationTimer;
         public int PendingRequests
         {
@@ -120,6 +128,24 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _membershipLevel, value);
         }
 
+        public int CustomerCount
+        {
+            get => _customerCount;
+            set => Set(ref _customerCount, value);
+        }
+
+        public int HotelAdminCount
+        {
+            get => _hotelAdminCount;
+            set => Set(ref _hotelAdminCount, value);
+        }
+
+        public int SuperAdminCount
+        {
+            get => _superAdminCount;
+            set => Set(ref _superAdminCount, value);
+        }
+
         public string CurrentPassword
         {
             get => _currentPassword;
@@ -156,6 +182,50 @@ namespace Hotel_Booking_System.ViewModels
             set => Set(ref _selectedPendingHotel, value);
         }
 
+        public Hotel? SelectedHotel
+        {
+            get => _selectedHotel;
+            set => Set(ref _selectedHotel, value);
+        }
+
+        public User? SelectedUser
+        {
+            get => _selectedUser;
+            set => Set(ref _selectedUser, value);
+        }
+
+        public string SelectedUserRole
+        {
+            get => _selectedUserRole;
+            set
+            {
+                if (_selectedUserRole != value)
+                {
+                    Set(ref _selectedUserRole, value);
+                    ApplyUserFilters();
+                }
+            }
+        }
+
+        public string UserSearchTerm
+        {
+            get => _userSearchTerm;
+            set
+            {
+                if (_userSearchTerm != value)
+                {
+                    Set(ref _userSearchTerm, value);
+                    ApplyUserFilters();
+                }
+            }
+        }
+
+        public string UserFilterSummary
+        {
+            get => _userFilterSummary;
+            set => Set(ref _userFilterSummary, value);
+        }
+
 
 
         public ObservableCollection<HotelAdminRequest> PendingRequest { get; set; } = new();
@@ -163,6 +233,7 @@ namespace Hotel_Booking_System.ViewModels
         public ObservableCollection<Hotel> Hotels { get; set; } = new();
         public ObservableCollection<Hotel> PendingHotels { get; set; } = new();
         public ObservableCollection<Hotel> FilteredHotels { get; } = new();
+        public ObservableCollection<User> FilteredUsers { get; } = new();
         public ObservableCollection<string> CityOptions { get; } = new();
         public SuperAdminViewModel(IRoomRepository roomRepository, IHotelAdminRequestRepository hotelAdminRequestRepository, IHotelRepository hotelRepository, IUserRepository userRepository, INavigationService navigationService, IBookingRepository bookingRepository, IPaymentRepository paymentRepository, IAuthentication authenticationService)
         {
@@ -214,6 +285,9 @@ namespace Hotel_Booking_System.ViewModels
                     Users.Add(user);
                 }
 
+                UpdateUserRoleCounts();
+                ApplyUserFilters();
+
                 var userLookup = users.ToDictionary(u => u.UserID, u => u.FullName);
                 var roomGroups = rooms.GroupBy(r => r.HotelID)
                     .ToDictionary(g => g.Key, g => g.Count());
@@ -245,6 +319,7 @@ namespace Hotel_Booking_System.ViewModels
                 UpdateCityOptions();
                 UpdateHotelStats();
                 ApplyHotelFilters();
+                SelectedHotel ??= FilteredHotels.FirstOrDefault();
 
                 ActiveBookings = _allBookings.Count(b => string.Equals(b.Status, "Confirmed", StringComparison.OrdinalIgnoreCase) || string.Equals(b.Status, "Pending", StringComparison.OrdinalIgnoreCase));
                 var today = DateTime.Today;
@@ -660,6 +735,7 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
+            var previousSelection = SelectedHotel?.HotelID;
             IEnumerable<Hotel> filtered = Hotels;
 
             if (!string.IsNullOrWhiteSpace(SelectedCity) && SelectedCity != "All Cities")
@@ -689,6 +765,8 @@ namespace Hotel_Booking_System.ViewModels
             HotelCountText = FilteredHotels.Count == Hotels.Count
                 ? $"Showing {FilteredHotels.Count} of {Hotels.Count} hotels"
                 : $"Showing {FilteredHotels.Count} of {Hotels.Count} hotels (filtered)";
+
+            SelectedHotel = FilteredHotels.FirstOrDefault(h => h.HotelID == previousSelection) ?? FilteredHotels.FirstOrDefault();
         }
 
         private void UpdateHotelStats()
@@ -697,6 +775,61 @@ namespace Hotel_Booking_System.ViewModels
             SuspendedHotelsCount = Hotels.Count(h => h.IsApproved && !h.IsVisible);
             PendingHotelsCount = Hotels.Count(h => !h.IsApproved);
             AverageHotelRating = Hotels.Count > 0 ? Math.Round(Hotels.Average(h => h.Rating), 1) : 0;
+        }
+
+        private void UpdateUserRoleCounts()
+        {
+            CustomerCount = Users.Count(u => NormalizeRole(u.Role) == "customer");
+            HotelAdminCount = Users.Count(u => NormalizeRole(u.Role) == "hoteladmin");
+            SuperAdminCount = Users.Count(u =>
+            {
+                var role = NormalizeRole(u.Role);
+                return role == "superadmin" || role == "admin";
+            });
+        }
+
+        private void ApplyUserFilters()
+        {
+            if (Users == null)
+            {
+                return;
+            }
+
+            var previousSelection = SelectedUser?.UserID;
+            IEnumerable<User> filtered = Users;
+
+            if (!string.IsNullOrWhiteSpace(SelectedUserRole) && !string.Equals(SelectedUserRole, "All", StringComparison.OrdinalIgnoreCase))
+            {
+                var normalizedRole = NormalizeRole(SelectedUserRole);
+                filtered = filtered.Where(u => string.Equals(NormalizeRole(u.Role), normalizedRole, StringComparison.Ordinal));
+            }
+
+            if (!string.IsNullOrWhiteSpace(UserSearchTerm))
+            {
+                filtered = filtered.Where(u =>
+                    (!string.IsNullOrWhiteSpace(u.FullName) && u.FullName.Contains(UserSearchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(u.Email) && u.Email.Contains(UserSearchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrWhiteSpace(u.Phone) && u.Phone.Contains(UserSearchTerm, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            FilteredUsers.Clear();
+            foreach (var user in filtered.OrderBy(u => u.FullName ?? u.Email ?? u.UserID))
+            {
+                FilteredUsers.Add(user);
+            }
+
+            UserFilterSummary = FilteredUsers.Count == Users.Count
+                ? $"Showing {FilteredUsers.Count} of {Users.Count} users"
+                : $"Showing {FilteredUsers.Count} of {Users.Count} users (filtered)";
+
+            SelectedUser = FilteredUsers.FirstOrDefault(u => u.UserID == previousSelection) ?? FilteredUsers.FirstOrDefault();
+        }
+
+        private static string NormalizeRole(string? role)
+        {
+            return string.IsNullOrWhiteSpace(role)
+                ? string.Empty
+                : role.Trim().Replace(" ", string.Empty).ToLowerInvariant();
         }
 
         [RelayCommand]
@@ -715,6 +848,24 @@ namespace Hotel_Booking_System.ViewModels
         private void SetHotelStatusFilter(string status)
         {
             SelectedHotelStatus = status;
+        }
+
+        [RelayCommand]
+        private void SearchUsers()
+        {
+            ApplyUserFilters();
+        }
+
+        [RelayCommand]
+        private void ClearUserSearch()
+        {
+            UserSearchTerm = string.Empty;
+        }
+
+        [RelayCommand]
+        private void SetUserRoleFilter(string role)
+        {
+            SelectedUserRole = role;
         }
 
         [RelayCommand]
@@ -923,6 +1074,66 @@ namespace Hotel_Booking_System.ViewModels
         }
 
         [RelayCommand]
+        private async Task DeleteHotelAsync(Hotel? hotel)
+        {
+            if (hotel == null)
+            {
+                ShowNotification("Unable to locate the selected hotel.");
+                return;
+            }
+
+            var confirmation = MessageBox.Show(
+                $"Are you sure you want to delete the hotel \"{hotel.HotelName}\"? This action cannot be undone.",
+                "Confirm delete hotel",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirmation != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                await _hotelRepository.DeleteAsync(hotel.HotelID);
+                await _hotelRepository.SaveAsync();
+
+                var storedHotel = Hotels.FirstOrDefault(h => h.HotelID == hotel.HotelID);
+                if (storedHotel != null)
+                {
+                    Hotels.Remove(storedHotel);
+                }
+
+                var pendingHotel = PendingHotels.FirstOrDefault(h => h.HotelID == hotel.HotelID);
+                if (pendingHotel != null)
+                {
+                    PendingHotels.Remove(pendingHotel);
+                }
+
+                if (SelectedPendingHotel?.HotelID == hotel.HotelID)
+                {
+                    SelectedPendingHotel = PendingHotels.FirstOrDefault();
+                }
+
+                if (hotel.IsApproved && TotalHotels > 0)
+                {
+                    TotalHotels--;
+                }
+
+                UpdateHotelStats();
+                UpdateCityOptions();
+                ApplyHotelFilters();
+                UpdatePendingCounts();
+
+                ShowNotification("Hotel has been permanently deleted.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to delete hotel: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
         private async Task ContactHotelAdminAsync(Hotel? hotel)
         {
             if (hotel == null)
@@ -1010,6 +1221,35 @@ namespace Hotel_Booking_System.ViewModels
                 return;
             }
 
+            if (dialog.IsDeleteRequested)
+            {
+                if (CurrentUser != null && CurrentUser.UserID == user.UserID)
+                {
+                    MessageBox.Show("You cannot delete your own account while logged in.", "User management", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                try
+                {
+                    await _userRepository.DeleteAsync(user.UserID);
+                    await _userRepository.SaveAsync();
+
+                    Users.Remove(user);
+                    TotalUsers = Math.Max(0, TotalUsers - 1);
+
+                    UpdateUserRoleCounts();
+                    ApplyUserFilters();
+
+                    ShowNotification("User has been deleted.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to delete user: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                return;
+            }
+
             try
             {
                 var storedUser = await _userRepository.GetByIdAsync(user.UserID) ?? user;
@@ -1033,6 +1273,9 @@ namespace Hotel_Booking_System.ViewModels
                     Users.RemoveAt(index);
                     Users.Insert(index, user);
                 }
+
+                UpdateUserRoleCounts();
+                ApplyUserFilters();
 
                 ShowNotification("User information updated successfully.");
             }
@@ -1070,6 +1313,9 @@ namespace Hotel_Booking_System.ViewModels
 
                 Users.Remove(user);
                 TotalUsers = Math.Max(0, TotalUsers - 1);
+
+                UpdateUserRoleCounts();
+                ApplyUserFilters();
 
                 ShowNotification("User has been deactivated.");
             }
