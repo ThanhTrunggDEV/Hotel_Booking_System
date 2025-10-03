@@ -23,6 +23,7 @@ namespace Hotel_Booking_System.Views
             {
                 var uploadedPath = await UploadImageService.UploadAsync(openFileDialog.FileName);
                 hotel.HotelImage = uploadedPath;
+                imgHotel.Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(hotel.HotelImage));
             }
         }
 

@@ -106,7 +106,8 @@
                                             ClipToBounds="True">
                                         <Grid>
                                             <Image Source="{Binding HotelImage}"
-                                                   Stretch="UniformToFill" />
+                                                   Stretch="UniformToFill"
+                                                   x:Name="imgHotel"/>
                                             <TextBlock Text="Chưa có ảnh"
                                                        Foreground="#5B6C84"
                                                        FontWeight="SemiBold"

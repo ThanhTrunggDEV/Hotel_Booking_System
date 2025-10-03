@@ -310,32 +310,7 @@
                                                         <Image Source="{Binding HotelImage, Converter={StaticResource ImageUrlToBitMap}}"
                                                                Stretch="UniformToFill"/>
                                                         <Border Background="#33000000"/>
-                                                        <StackPanel Margin="16"
-                                                                   VerticalAlignment="Stretch">
-                                                            <Border Background="#FF1976D2"
-                                                                    CornerRadius="12"
-                                                                    Padding="10,4"
-                                                                    HorizontalAlignment="Left">
-                                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                                    <TextBlock Text="⭐" FontSize="14" Margin="0,0,6,0"/>
-                                                                    <TextBlock Text="{Binding Rating}" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
-                                                                </StackPanel>
-                                                            </Border>
-                                                            <StackPanel VerticalAlignment="Bottom"
-                                                                       Margin="0,0,0,4"
-                                                                       HorizontalAlignment="Left">
-                                                                <TextBlock Text="From"
-                                                                           FontSize="12"
-                                                                           Foreground="#FFF5F5F5"
-                                                                           Margin="0,12,0,2"/>
-                                                                <TextBlock FontSize="20" FontWeight="Bold" Foreground="White">
-                                                                    <Run Text="$"/>
-                                                                    <Run Text="{Binding MinPrice, StringFormat={}{0:F0}}"/>
-                                                                    <Run Text=" - " FontSize="18" Foreground="#FFF5F5F5"/>
-                                                                    <Run Text="{Binding MaxPrice, StringFormat={}{0:F0}}" FontSize="18" Foreground="#FFF5F5F5"/>
-                                                                </TextBlock>
-                                                            </StackPanel>
-                                                        </StackPanel>
+                                                        
                                                     </Grid>
                                                 </Border>
 
@@ -411,10 +386,10 @@
                                                         <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                                                             <TextBlock Text="💲" FontSize="20"/>
                                                             <TextBlock FontSize="14">
-                                                                <Run Text="$"/>
+                                                                <Run Text=""/>
                                                                 <Run Text="{Binding MinPrice, StringFormat={}{0:F0}}" FontWeight="Bold" FontSize="16"/>
                                                                 <Run Text=" - "/>
-                                                                <Run Text="{Binding MaxPrice, StringFormat={}{0:F0}}"/>
+                                                                <Run Text="{Binding MaxPrice, StringFormat={}{0:F0}}" FontWeight="Bold" FontSize="16"/>
                                                                 <Run Text=" per night" FontSize="12" Foreground="#888"/>
                                                             </TextBlock>
                                                         </StackPanel>

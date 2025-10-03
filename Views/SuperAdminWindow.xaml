@@ -44,7 +44,7 @@
 
 
 
- 
+
             <TabItem Style="{StaticResource TabItemStyle}" x:Name="SuperAdminDashboard" Header="👑 System Overview" Visibility="Visible">
                 <ScrollViewer Margin="30,20" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
@@ -234,7 +234,7 @@
                                             </Grid.ColumnDefinitions>
                                             <DataGrid Grid.Column="0" Height="320" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingHotels}"
                                                       SelectedItem="{Binding SelectedPendingHotel, Mode=TwoWay}" SelectionMode="Single" IsReadOnly="True"
-                                                      RowBackground="White" AlternatingRowBackground="#FFF5F7FA" BorderThickness="0" HeadersVisibility="Column" Margin="0,0,24,0">
+                                                      RowBackground="White" AlternatingRowBackground="#FFF5F7FA" BorderThickness="0" HeadersVisibility="Column" Margin="0,0,24,0" Grid.ColumnSpan="2">
                                                 <DataGrid.Resources>
                                                     <Style TargetType="DataGridColumnHeader">
                                                         <Setter Property="Background" Value="#FFE3F2FD"/>
@@ -252,7 +252,7 @@
                                                     <DataGridTextColumn Header="Giá Đến" Width="100" Binding="{Binding MaxPrice, StringFormat={}{0:C}}"/>
                                                 </DataGrid.Columns>
                                             </DataGrid>
-                                            <Border Grid.Column="1" Background="#FFF7F9FC" CornerRadius="16" Padding="28">
+                                            <Border Grid.Column="2" Background="#FFF7F9FC" CornerRadius="16" Padding="28">
                                                 <Border.Effect>
                                                     <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.1"/>
                                                 </Border.Effect>
@@ -647,7 +647,7 @@
                             </Border>
                         </Grid>
 
-                       
+
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
