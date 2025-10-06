@@ -719,8 +719,7 @@
                                             <Style TargetType="ListBoxItem">
                                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                                 <Setter Property="Focusable" Value="False"/>
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </Style>
+                                            </Style>
                                         </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
@@ -762,13 +761,48 @@
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                         </Grid>
 
-                                                        <Border Grid.Column="1" HorizontalAlignment="Left" Background="#FFE8F5E8"
-                    CornerRadius="12" Margin="0,0,0,0" Padding="12">
-                                                            <Grid>
-                                                                <TextBlock x:Name="ResponseText" Text="{Binding Response}" TextWrapping="Wrap" FontSize="12" MaxWidth="220"/>
-                                                                <TextBlock x:Name="TypingText" Text="{Binding TypingIndicator}" FontSize="12" MaxWidth="220" Visibility="Collapsed"/>
-                                                            </Grid>
-                                                        </Border>
+                                                          <Border Grid.Column="1" HorizontalAlignment="Left" Background="#FFE8F5E8"
+                      CornerRadius="12" Margin="0,0,0,0" Padding="12">
+                                                              <StackPanel>
+                                                                  <Grid>
+                                                                      <TextBlock x:Name="ResponseText" Text="{Binding Response}" TextWrapping="Wrap" FontSize="12" MaxWidth="240"/>
+                                                                      <TextBlock x:Name="TypingText" Text="{Binding TypingIndicator}" FontSize="12" MaxWidth="240" Visibility="Collapsed"/>
+                                                                  </Grid>
+                                                                  <ItemsControl ItemsSource="{Binding SuggestedRooms}" Margin="0,8,0,0" MaxWidth="240">
+                                                                      <ItemsControl.Style>
+                                                                          <Style TargetType="ItemsControl">
+                                                                              <Setter Property="Visibility" Value="Collapsed"/>
+                                                                              <Style.Triggers>
+                                                                                  <Trigger Property="HasItems" Value="True">
+                                                                                      <Setter Property="Visibility" Value="Visible"/>
+                                                                                  </Trigger>
+                                                                              </Style.Triggers>
+                                                                          </Style>
+                                                                      </ItemsControl.Style>
+                                                                      <ItemsControl.ItemTemplate>
+                                                                          <DataTemplate>
+                                                                              <Border Background="White" CornerRadius="8" Padding="10" Margin="0,8,0,0" BorderBrush="#FFBBDEFB" BorderThickness="1">
+                                                                                  <StackPanel>
+                                                                                      <TextBlock Text="{Binding DisplayTitle}" FontWeight="Bold" FontSize="12" Foreground="#FF0D47A1"/>
+                                                                                      <TextBlock Text="{Binding DisplayLocation}" FontSize="11" Foreground="#FF424242" Margin="0,2,0,0"/>
+                                                                                      <TextBlock Text="{Binding DisplaySubtitle}" FontSize="11" Foreground="#FF424242" Margin="0,2,0,0"/>
+                                                                                      <TextBlock Text="{Binding RatingText}" FontSize="11" Foreground="#FF424242" Margin="0,2,0,0"/>
+                                                                                      <Button Content="Đặt phòng"
+                                                                                              Style="{StaticResource PrimaryButton}"
+                                                                                              Command="{Binding DataContext.BookRoomCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                                              CommandParameter="{Binding Room}"
+                                                                                              HorizontalAlignment="Left"
+                                                                                              Margin="0,10,0,0"
+                                                                                              Padding="16,0"
+                                                                                              Height="32"
+                                                                                              MinWidth="120"/>
+                                                                                  </StackPanel>
+                                                                              </Border>
+                                                                          </DataTemplate>
+                                                                      </ItemsControl.ItemTemplate>
+                                                                  </ItemsControl>
+                                                              </StackPanel>
+                                                          </Border>
                                                     </Grid>
                                                 </StackPanel>
                                                 <DataTemplate.Triggers>

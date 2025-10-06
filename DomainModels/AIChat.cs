@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -41,6 +43,36 @@ namespace Hotel_Booking_System.DomainModels
         {
             get => _typingIndicator;
             set => Set(ref _typingIndicator, value);
+        }
+
+        [NotMapped]
+        private ObservableCollection<ChatRoomSuggestion> _suggestedRooms = new();
+
+        public AIChat()
+        {
+            _suggestedRooms.CollectionChanged += SuggestedRoomsChanged;
+        }
+
+        [NotMapped]
+        public ObservableCollection<ChatRoomSuggestion> SuggestedRooms
+        {
+            get => _suggestedRooms;
+            set
+            {
+                _suggestedRooms.CollectionChanged -= SuggestedRoomsChanged;
+                var newValue = value ?? new ObservableCollection<ChatRoomSuggestion>();
+                Set(ref _suggestedRooms, newValue);
+                _suggestedRooms.CollectionChanged += SuggestedRoomsChanged;
+                OnPropertyChanged(nameof(HasSuggestions));
+            }
+        }
+
+        [NotMapped]
+        public bool HasSuggestions => SuggestedRooms?.Count > 0;
+
+        private void SuggestedRoomsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(HasSuggestions));
         }
     }
 }
