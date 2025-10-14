@@ -581,6 +581,7 @@ namespace Hotel_Booking_System.ViewModels
                 StopTypingIndicator(chat);
                 chat.ChatID = responseChat.ChatID;
                 chat.CreatedAt = responseChat.CreatedAt;
+                chat.SuggestedRooms = responseChat.SuggestedRooms;
                 await TypeOutResponse(chat, responseChat.Response);
             }
             catch (Exception ex)
