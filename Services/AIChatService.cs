@@ -499,6 +499,118 @@ namespace Hotel_Booking_System.Services
             return $"{response.TrimEnd()}\n\nMình đã đính kèm một vài lựa chọn phù hợp phía dưới, bạn có thể bấm \"Đặt phòng\" để giữ chỗ ngay nhé!";
         }
 
+        private static string NormalizeResponse(string? response)
+        {
+            if (string.IsNullOrWhiteSpace(response))
+            {
+                return "Mình chưa nhận được phản hồi phù hợp. Bạn có thể hỏi lại giúp mình nhé!";
+            }
+
+            var normalized = response
+                .Replace("\r\n", "\n", StringComparison.Ordinal)
+                .Replace('\r', '\n')
+                .Trim();
+
+            normalized = Regex.Replace(normalized, "\n{3,}", "\n\n");
+            normalized = Regex.Replace(normalized, "[ \t]{2,}", " ");
+
+            return normalized;
+        }
+
+        private string ResolveApiKey()
+        {
+            if (!string.IsNullOrWhiteSpace(_options.ApiKey))
+            {
+                return _options.ApiKey;
+            }
+
+            var fromEnvironment = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+            if (!string.IsNullOrWhiteSpace(fromEnvironment))
+            {
+                return fromEnvironment;
+            }
+
+            _logger.LogWarning("Gemini API key is not configured in options or environment.");
+            return string.Empty;
+        }
+
+        private string BuildEndpoint(string apiKey, string? modelName)
+        {
+            var baseUrl = string.IsNullOrWhiteSpace(_options.ApiBaseUrl)
+                ? "https://generativelanguage.googleapis.com/v1beta"
+                : _options.ApiBaseUrl.TrimEnd('/');
+
+            var effectiveModel = string.IsNullOrWhiteSpace(modelName) ? _options.DefaultModel : modelName!;
+            var encodedModel = Uri.EscapeDataString(effectiveModel);
+
+            return $"{baseUrl}/models/{encodedModel}:generateContent?key={Uri.EscapeDataString(apiKey)}";
+        }
+
+        private static bool ShouldRetry(HttpStatusCode statusCode)
+        {
+            return statusCode == HttpStatusCode.RequestTimeout ||
+                   statusCode == (HttpStatusCode)429 ||
+                   (int)statusCode >= 500;
+        }
+
+        private static string ExtractText(JsonDocument document)
+        {
+            if (document.RootElement.TryGetProperty("candidates", out var candidates) &&
+                candidates.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var candidate in candidates.EnumerateArray())
+                {
+                    if (candidate.TryGetProperty("content", out var content))
+                    {
+                        if (content.TryGetProperty("parts", out var parts) && parts.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var part in parts.EnumerateArray())
+                            {
+                                if (part.TryGetProperty("text", out var textElement) && textElement.ValueKind == JsonValueKind.String)
+                                {
+                                    return textElement.GetString() ?? string.Empty;
+                                }
+                            }
+                        }
+                    }
+
+                    if (candidate.TryGetProperty("output", out var output) && output.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var item in output.EnumerateArray())
+                        {
+                            if (item.TryGetProperty("content", out var innerContent) &&
+                                innerContent.TryGetProperty("parts", out var innerParts) &&
+                                innerParts.ValueKind == JsonValueKind.Array)
+                            {
+                                foreach (var innerPart in innerParts.EnumerateArray())
+                                {
+                                    if (innerPart.TryGetProperty("text", out var innerText) && innerText.ValueKind == JsonValueKind.String)
+                                    {
+                                        return innerText.GetString() ?? string.Empty;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (document.RootElement.TryGetProperty("text", out var rootText) && rootText.ValueKind == JsonValueKind.String)
+            {
+                return rootText.GetString() ?? string.Empty;
+            }
+
+            return string.Empty;
+        }
+
+        private static bool IsTransientException(Exception ex)
+        {
+            return ex is HttpRequestException ||
+                   ex is TaskCanceledException ||
+                   ex is TimeoutException ||
+                   ex is OperationCanceledException;
+        }
+
         private static string StripCodeFence(string text)
         {
             var trimmed = text.Trim();
