@@ -25,7 +25,7 @@ namespace Hotel_Booking_System.Converters
                     var bitmap = new BitmapImage();
                     bitmap.BeginInit();
                     bitmap.UriSource = new Uri(url);
-                   // bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
                     bitmap.EndInit();
                     return bitmap;
                 }
