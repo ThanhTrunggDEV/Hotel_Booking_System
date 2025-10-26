@@ -112,7 +112,8 @@
                                             </Grid.ColumnDefinitions>
                                             <DataGrid Grid.Column="0" Height="320" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingRequest}"
                                                       SelectedItem="{Binding SelectedPendingRequest, Mode=TwoWay}" SelectionMode="Single" IsReadOnly="True"
-                                                      RowBackground="White" AlternatingRowBackground="#FFF5F7FA" BorderThickness="0" HeadersVisibility="Column" Margin="0,0,24,0">
+                                                      RowBackground="White" AlternatingRowBackground="#FFF5F7FA" BorderThickness="0" HeadersVisibility="Column" Margin="0,0,24,0"
+                                                      VerticalAlignment="Top">
                                                 <DataGrid.Resources>
                                                     <Style TargetType="DataGridColumnHeader">
                                                         <Setter Property="Background" Value="#FFE3F2FD"/>
@@ -123,13 +124,13 @@
                                                     </Style>
                                                 </DataGrid.Resources>
                                                 <DataGrid.Columns>
-                                                    <DataGridTextColumn Header="Mã" Width="100" Binding="{Binding RequestID}"/>
-                                                    <DataGridTextColumn Header="Người Nộp" Width="160" Binding="{Binding ApplicantName}"/>
-                                                    <DataGridTextColumn Header="Khách Sạn" Width="200" Binding="{Binding HotelName}"/>
-                                                    <DataGridTextColumn Header="Ngày Gửi" Width="140" Binding="{Binding CreatedAt, StringFormat={}{0:dd/MM/yyyy}}"/>
+                                                    <DataGridTextColumn Header="Mã" Width="*" Binding="{Binding RequestID}"/>
+                                                    <DataGridTextColumn Header="Người Nộp" Width="1.6*" Binding="{Binding ApplicantName}"/>
+                                                    <DataGridTextColumn Header="Khách Sạn" Width="2*" Binding="{Binding HotelName}"/>
+                                                    <DataGridTextColumn Header="Ngày Gửi" Width="1.4*" Binding="{Binding CreatedAt, StringFormat={}{0:dd/MM/yyyy}}"/>
                                                 </DataGrid.Columns>
                                             </DataGrid>
-                                            <Border Grid.Column="1" Background="#FFF7F9FC" CornerRadius="16" Padding="28">
+                                            <Border Grid.Column="1" Background="#FFF7F9FC" CornerRadius="16" Padding="28" VerticalAlignment="Top">
                                                 <Border.Effect>
                                                     <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.1"/>
                                                 </Border.Effect>
@@ -234,7 +235,8 @@
                                             </Grid.ColumnDefinitions>
                                             <DataGrid Grid.Column="0" Height="320" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding PendingHotels}"
                                                       SelectedItem="{Binding SelectedPendingHotel, Mode=TwoWay}" SelectionMode="Single" IsReadOnly="True"
-                                                      RowBackground="White" AlternatingRowBackground="#FFF5F7FA" BorderThickness="0" HeadersVisibility="Column" Margin="0,0,24,0" Grid.ColumnSpan="2">
+                                                      RowBackground="White" AlternatingRowBackground="#FFF5F7FA" BorderThickness="0" HeadersVisibility="Column" Margin="0,0,24,0"
+                                                      VerticalAlignment="Top">
                                                 <DataGrid.Resources>
                                                     <Style TargetType="DataGridColumnHeader">
                                                         <Setter Property="Background" Value="#FFE3F2FD"/>
@@ -245,14 +247,14 @@
                                                     </Style>
                                                 </DataGrid.Resources>
                                                 <DataGrid.Columns>
-                                                    <DataGridTextColumn Header="Mã" Width="80" Binding="{Binding HotelID}"/>
-                                                    <DataGridTextColumn Header="Tên Khách Sạn" Width="220" Binding="{Binding HotelName}"/>
-                                                    <DataGridTextColumn Header="Thành Phố" Width="140" Binding="{Binding City}"/>
-                                                    <DataGridTextColumn Header="Giá Từ" Width="100" Binding="{Binding MinPrice, StringFormat={}{0:C}}"/>
-                                                    <DataGridTextColumn Header="Giá Đến" Width="100" Binding="{Binding MaxPrice, StringFormat={}{0:C}}"/>
+                                                    <DataGridTextColumn Header="Mã" Width="0.8*" Binding="{Binding HotelID}"/>
+                                                    <DataGridTextColumn Header="Tên Khách Sạn" Width="2*" Binding="{Binding HotelName}"/>
+                                                    <DataGridTextColumn Header="Thành Phố" Width="1.2*" Binding="{Binding City}"/>
+                                                    <DataGridTextColumn Header="Giá Từ" Width="*" Binding="{Binding MinPrice, StringFormat={}{0:C}}"/>
+                                                    <DataGridTextColumn Header="Giá Đến" Width="*" Binding="{Binding MaxPrice, StringFormat={}{0:C}}"/>
                                                 </DataGrid.Columns>
                                             </DataGrid>
-                                            <Border Grid.Column="2" Background="#FFF7F9FC" CornerRadius="16" Padding="28">
+                                            <Border Grid.Column="1" Background="#FFF7F9FC" CornerRadius="16" Padding="28" VerticalAlignment="Top">
                                                 <Border.Effect>
                                                     <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.1"/>
                                                 </Border.Effect>
