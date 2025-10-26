@@ -469,7 +469,7 @@
 
                                     <TextBox Grid.Column="1" Margin="10,0,0,0" Style="{StaticResource ModernTextBox}"
                                              Text="{Binding HotelSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             Height="32"/>
+                                             />
 
                                     <Button Grid.Column="2" Content="🔍 Tìm kiếm" Style="{StaticResource SecondaryButton}" Width="110" Margin="10,0,0,0"
                                             Command="{Binding SearchHotelsCommand}"/>
