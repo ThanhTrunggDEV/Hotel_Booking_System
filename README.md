@@ -85,7 +85,8 @@ A comprehensive hotel management and booking system built with **WPF (Windows Pr
 
 ### External Services
 - **Google Gemini AI**: AI chatbot integration
-- **Cloudinary**: Image upload and storage service
+- **ImgBB**: Image upload and hosting service
+- **Zoho Mail/Gmail**: Email service for OTP and notifications
 
 ### Libraries & Packages
 ```xml
@@ -147,11 +148,16 @@ The application uses constructor injection for all ViewModels and Services, mana
    
    Create a `.env` file in the project root:
    ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_API_KEY=your_api_key
-   CLOUDINARY_API_SECRET=your_api_secret
+   ZOHO_MAIL_USER=your_email@gmail.com
+   ZOHO_MAIL_PASSWORD=your_app_password
+   IMAGE_API=your_imgbb_api_key
+   GEMINI_API_KEY=your_gemini_api_key
    ```
+   
+   **Getting API Keys:**
+   - **ZOHO_MAIL**: Use Gmail App Password (enable 2FA, then generate app-specific password)
+   - **IMAGE_API**: Get free API key from [ImgBB](https://api.imgbb.com/)
+   - **GEMINI_API_KEY**: Get from [Google AI Studio](https://makersuite.google.com/app/apikey)
 
 3. **Restore NuGet packages**
    ```bash
@@ -464,17 +470,34 @@ new GeminiOptions
 ### App Settings
 Configure in `.env` file:
 ```env
-# AI Configuration
-GEMINI_API_KEY=your_key_here
+# Email Service (for OTP and notifications)
+ZOHO_MAIL_USER=your_email@gmail.com
+ZOHO_MAIL_PASSWORD=your_gmail_app_password
 
-# Image Upload
-CLOUDINARY_CLOUD_NAME=your_cloud
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
+# Image Upload Service
+IMAGE_API=your_imgbb_api_key
+
+# AI Chatbot
+GEMINI_API_KEY=your_gemini_api_key
 
 # Database (optional - defaults to SQLite)
 DATABASE_PATH=data.dat
 ```
+
+### Getting API Keys
+
+1. **Gmail App Password** (ZOHO_MAIL_PASSWORD):
+   - Enable 2-Factor Authentication on your Google account
+   - Go to Google Account → Security → App passwords
+   - Generate a new app password for "Mail"
+   
+2. **ImgBB API Key** (IMAGE_API):
+   - Visit [ImgBB API](https://api.imgbb.com/)
+   - Sign up/Login and get your free API key
+   
+3. **Gemini API Key** (GEMINI_API_KEY):
+   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Create a new API key for Gemini
 
 ---
 
@@ -529,9 +552,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **OxyPlot** - For beautiful chart rendering
 - **Google Gemini AI** - For intelligent chatbot capabilities
-- **Cloudinary** - For image hosting services
+- **ImgBB** - For image hosting services
 - **CommunityToolkit.Mvvm** - For MVVM framework support
 - **Entity Framework Core** - For database management
+- **Gmail/Zoho Mail** - For email delivery services
 
 ---
 
